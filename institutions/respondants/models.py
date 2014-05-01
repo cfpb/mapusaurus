@@ -1,5 +1,5 @@
 from django.db import models
-from localflavor.us.models.USStateField
+from localflavor.us.models import USStateField
 
 class ZipcodeCityState(models.Model):
     """ For each zipcode, maintain the city, state information. """
@@ -32,8 +32,10 @@ class Institution(models.Model):
     parent = models.ForeignKey(
         'self',
         null=True,
+        related_name='children',
         help_text='The parent institution')
     top_holder = models.ForeignKey(
         'self',
+        related_name='descendants',
         null=True,
         help_text='The company at the top of the ownership chain.')
