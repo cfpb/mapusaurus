@@ -20,12 +20,20 @@ class Institution(models.Model):
     """
 
     year = models.SmallIntegerField()
-    FFIEC_id = models.CharField(max_length=10)
+    ffiec_id = models.CharField(max_length=10, unique=True)
     agency = models.ForeignKey('Agency')
     tax_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     mailing_address = models.CharField(max_length=40)
-    zip_code = models.ForeignKey('ZipCodeCityState')
-    rssd_id = models.CharField(max_length=10)
-    parent = models.ForeignKey('self')
-    top_holder = models.ForeignKey('self')
+    zip_code = models.ForeignKey('ZipCodeCityState', null=False)
+    rssd_id = models.CharField(
+        max_length=10,
+        help_text='Id on the National Information Center repository')
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        help_text='The parent institution')
+    top_holder = models.ForeignKey(
+        'self',
+        null=True,
+        help_text='The company at the top of the ownership chain.')
