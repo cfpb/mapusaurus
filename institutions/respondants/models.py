@@ -4,9 +4,12 @@ from localflavor.us.models import USStateField
 class ZipcodeCityState(models.Model):
     """ For each zipcode, maintain the city, state information. """
     zip_code = models.IntegerField()
-    plus_four = models.IntegerField()
+    plus_four = models.IntegerField(null=True)
     city = models.CharField(max_length=25)
     state = USStateField()
+
+    class Meta:
+        unique_together = ('zip_code', 'city')
 
 class Agency(models.Model):
     """ Agencies of the government that are referenced in the HMDA dataset. """
