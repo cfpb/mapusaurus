@@ -1,6 +1,6 @@
 import csv
 from django.core.management.base import BaseCommand, CommandError
-from respondants.models import Institution, ZipcodeCityState
+from respondants.models import Institution, ZipcodeCityState, Agency
 from respondants.zipcode_utils import create_zipcode
 
 class Command(BaseCommand):
@@ -9,6 +9,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         transmittal_filename = args[0]
+
+        agencies = Agency.objects.get_all_by_code()
+        self.stdout.write('%s' % agencies)
+
         with open(transmittal_filename, encoding='utf-8') as institutioncsv:
             transmittal_reader = csv.reader(institutioncsv, delimiter='\t')
             institutions = []
@@ -16,17 +20,19 @@ class Command(BaseCommand):
                 zip_code = inst_line[8]
                 state = inst_line[7]
                 city = inst_line[6]
-                zipcode_city = create_zipcode(zip_code, state, city)
+                zipcode_city = create_zipcode(zip_code, city, state)
+
+                agency = agencies[int(inst_line[2])]
 
                 inst = Institution(
-                    year = inst_line[0]
-                    ffiec_id = inst_line[1]
-                    agency = inst_line[2]
-                    tax_id = inst_line[3]
-                    name = inst_line[4]
-                    mailing_address = inst_line[5]
-                    zip_code = zipcode_city
+                    year = inst_line[0],
+                    ffiec_id = inst_line[1],
+                    agency = agency,
+                    tax_id = inst_line[3],
+                    name = inst_line[4],
+                    mailing_address = inst_line[5],
+                    zip_code = zipcode_city,
                 )
 
                 institutions.append(inst)
-           bulk_create(institutions) 
+            Institution.objects.bulk_create(institutions) 
