@@ -1,5 +1,6 @@
 from django.db import models
 from localflavor.us.models import USStateField
+from respondants.managers import AgencyManager
 
 class ZipcodeCityState(models.Model):
     """ For each zipcode, maintain the city, state information. """
@@ -18,12 +19,14 @@ class Agency(models.Model):
     acronym = models.CharField(max_length=10)
     full_name = models.CharField(max_length=50)
 
+    objects = AgencyManager()
+
 class Institution(models.Model):
     """ An institution's (aka respondant) details. These can change per year.
     """
 
     year = models.SmallIntegerField()
-    ffiec_id = models.CharField(max_length=10, unique=True)
+    ffiec_id = models.CharField(max_length=10)
     agency = models.ForeignKey('Agency')
     tax_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
@@ -42,3 +45,6 @@ class Institution(models.Model):
         related_name='descendants',
         null=True,
         help_text='The company at the top of the ownership chain.')
+
+    class Meta:
+        unique_together = ('ffiec_id', 'agency')
