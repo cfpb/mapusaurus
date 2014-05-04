@@ -21,6 +21,21 @@ class Agency(models.Model):
 
     objects = AgencyManager()
 
+class TopHolderInstitution(models.Model):
+    """ Top holder institutions can be international, so we store 
+    them differently. """
+    year = models.SmallIntegerField()
+    name = models.CharField(max_length=30)
+    city = models.CharField(max_length=25)
+    state = models.CharField(max_length=2, null=True)
+    country = models.CharField(max_length=40)
+    rssd_id = models.CharField(
+        max_length=10,
+        unique=True,
+        help_text='Id on the National Information Center repository', 
+        null=True)
+
+
 class Institution(models.Model):
     """ An institution's (aka respondant) details. These can change per year.
     """
@@ -41,7 +56,7 @@ class Institution(models.Model):
         related_name='children',
         help_text='The parent institution')
     top_holder = models.ForeignKey(
-        'self',
+        'TopHolderInstitution',
         related_name='descendants',
         null=True,
         help_text='The company at the top of the ownership chain.')
