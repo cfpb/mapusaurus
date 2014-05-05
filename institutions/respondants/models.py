@@ -64,3 +64,5 @@ class Institution(models.Model):
 
     class Meta:
         unique_together = ('ffiec_id', 'agency')
+        index_together = [['ffiec_id', 'agency', 'year']]
+
