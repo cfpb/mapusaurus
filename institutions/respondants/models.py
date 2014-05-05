@@ -49,6 +49,7 @@ class Institution(models.Model):
     zip_code = models.ForeignKey('ZipCodeCityState', null=False)
     rssd_id = models.CharField(
         max_length=10,
+        null=True,
         help_text='Id on the National Information Center repository')
     parent = models.ForeignKey(
         'self',
