@@ -1,5 +1,5 @@
 from django.db import models
-srom localflavor.us.models import USStateField
+from localflavor.us.models import USStateField
 from respondants.managers import AgencyManager
 
 class ZipcodeCityState(models.Model):
