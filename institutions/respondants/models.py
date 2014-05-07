@@ -1,5 +1,5 @@
 from django.db import models
-from localflavor.us.models import USStateField
+srom localflavor.us.models import USStateField
 from respondants.managers import AgencyManager
 
 class ZipcodeCityState(models.Model):
@@ -30,7 +30,7 @@ class ParentInstitution(models.Model):
     name = models.CharField(max_length=30)
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=2, null=True)
-    country = models.CharField(max_length=40)
+    country = models.CharField(max_length=40, null=True)
     rssd_id = models.CharField(
         max_length=10,
         unique=True,
@@ -53,12 +53,12 @@ class Institution(models.Model):
         null=True,
         help_text='Id on the National Information Center repository')
     parent = models.ForeignKey(
-        'ParentInstitution',
+        'self',
         null=True,
         related_name='children',
         help_text='The parent institution')
     non_reporting_parent = models.ForeignKey(
-        'self', 
+        'ParentInstitution', 
         null=True,
         related_name='children',
         help_text='Non-HMDA reporting parent')
