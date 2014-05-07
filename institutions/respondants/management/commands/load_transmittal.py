@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 from respondants.models import Institution, ZipcodeCityState, Agency
 from respondants.zipcode_utils import create_zipcode
 
+
 class Command(BaseCommand):
     args = "<filename>"
     help = "Loads the data from a HMDA Transmittal Sheet."
@@ -25,14 +26,14 @@ class Command(BaseCommand):
                 agency = agencies[int(inst_line[2])]
 
                 inst = Institution(
-                    year = inst_line[0],
-                    ffiec_id = inst_line[1],
-                    agency = agency,
-                    tax_id = inst_line[3],
-                    name = inst_line[4],
-                    mailing_address = inst_line[5],
-                    zip_code = zipcode_city,
+                    year=inst_line[0],
+                    ffiec_id=inst_line[1],
+                    agency=agency,
+                    tax_id=inst_line[3],
+                    name=inst_line[4],
+                    mailing_address=inst_line[5],
+                    zip_code=zipcode_city,
                 )
 
                 institutions.append(inst)
-            Institution.objects.bulk_create(institutions) 
+            Institution.objects.bulk_create(institutions)
