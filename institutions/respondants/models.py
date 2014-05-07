@@ -21,9 +21,11 @@ class Agency(models.Model):
 
     objects = AgencyManager()
 
-class TopHolderInstitution(models.Model):
-    """ Top holder institutions can be international, so we store 
-    them differently. """
+class ParentInstitution(models.Model):
+    """ Parent and top holder institutions need to be stored a bit differently
+    because (1) they can be international and (2) they might not report HMDA so
+    we have fewer details. If we have an RSSD ID we try and store it here. """
+
     year = models.SmallIntegerField()
     name = models.CharField(max_length=30)
     city = models.CharField(max_length=25)
@@ -34,7 +36,6 @@ class TopHolderInstitution(models.Model):
         unique=True,
         help_text='Id on the National Information Center repository', 
         null=True)
-
 
 class Institution(models.Model):
     """ An institution's (aka respondant) details. These can change per year.
@@ -52,12 +53,17 @@ class Institution(models.Model):
         null=True,
         help_text='Id on the National Information Center repository')
     parent = models.ForeignKey(
-        'self',
+        'ParentInstitution',
         null=True,
         related_name='children',
         help_text='The parent institution')
+    non_reporting_parent = models.ForeignKey(
+        'self', 
+        null=True,
+        related_name='children',
+        help_text='Non-HMDA reporting parent')
     top_holder = models.ForeignKey(
-        'TopHolderInstitution',
+        'ParentInstitution',
         related_name='descendants',
         null=True,
         help_text='The company at the top of the ownership chain.')
