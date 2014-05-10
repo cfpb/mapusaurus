@@ -6,6 +6,7 @@ from respondants.models import Institution
 
 def respondant(request, respondant_id):
     respondant = get_object_or_404(Institution, pk=respondant_id)
+    context = {'respondant':respondant}
 
     parents = [respondant]
 
@@ -16,15 +17,15 @@ def respondant(request, respondant_id):
 
     last = parents[-1]
     if last.non_reporting_parent:
-        parents.append(last.non_reporting_parent)
+        context['non_reporting_parent'] = last.non_reporting_parent
 
     parents = parents[1:]
-    parents = reversed(parents)
+    context['parents'] = reversed(parents)
 
     return render(
         request, 
         'respondants/respondant.html',
-        {'parents': parents, 'respondant':respondant}
+        context
     )
     
 def index(request):

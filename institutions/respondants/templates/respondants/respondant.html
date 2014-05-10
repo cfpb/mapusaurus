@@ -1,5 +1,11 @@
 <html>
     <body>
+        {% if non_reporting_parent %} 
+            {% with non_reporter=non_reporting_parent %}
+                {% include 'respondants/non_reporting_details.html'%}
+            {% endwith %}
+        {% endif %}
+
         {% if parents %}
             {% for p in parents %}
                 {% with institution=p %}
@@ -9,6 +15,7 @@
                 {% endwith %}
             {% endfor %}
         {% endif %}
+
         {% with institution=respondant %}
         <div class="boxed" style="border: 1px solid black">
             <p>
@@ -16,5 +23,8 @@
             </p>
         </div>
         {% endwith %}
+
+        <hr /> 
+        Institutions that don't report HMDA don't have a HMDA ID
     </body>
 </html>
