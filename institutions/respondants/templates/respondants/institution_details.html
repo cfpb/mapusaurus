@@ -1,0 +1,4 @@
+<a href="/institutions/{{institution.id}}">{{institution.name|title}}</a> <br />
+{{institution.zip_code.city|title}}, {{institution.zip_code.state|upper}} <br />
+HMDA ID: {{institution.ffiec_id}}  <br />
+RSSD ID: <a href="http://www.ffiec.gov/nicpubweb/nicweb/OrgHierarchySearchForm.aspx?parID_RSSD={{institution.rssd_id}}&parDT_END=99991231">{{institution.rssd_id}}</a>

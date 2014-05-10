@@ -1,0 +1,20 @@
+<html>
+    <body>
+        {% if parents %}
+            {% for p in parents %}
+                {% with institution=p %}
+                    <p>
+                    {% include 'respondants/institution_details.html' %}
+                    </p>
+                {% endwith %}
+            {% endfor %}
+        {% endif %}
+        {% with institution=respondant %}
+        <div class="boxed" style="border: 1px solid black">
+            <p>
+            {% include 'respondants/institution_details.html' %}
+            </p>
+        </div>
+        {% endwith %}
+    </body>
+</html>
