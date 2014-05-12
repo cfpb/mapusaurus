@@ -53,7 +53,6 @@ def search(request):
         institution_name = institution_name.upper()
         respondant_results = Institution.objects.filter(
             name__contains=institution_name)
-        print(len(respondant_results))
         if len(respondant_results) > 0:
             results['respondants'] = respondant_results
 

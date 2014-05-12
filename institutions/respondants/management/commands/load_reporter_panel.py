@@ -56,10 +56,10 @@ def parse_line(line):
         filler_2=line[192:202],
         filler_3=line[202:212],
         top_holder_rssd_id=line[212:222],
-        top_holder_name=line[222:252],
-        top_holder_city=line[252:277],
-        top_holder_state=line[277:279],
-        top_holder_country=line[279:319],
+        top_holder_name=line[222:252].strip(),
+        top_holder_city=line[252:277].strip(),
+        top_holder_state=line[277:279].strip(),
+        top_holder_country=line[279:319].strip(),
         respondant_rssd_id=line[319:329],
         parent_rssd_id=line[329:339],
         respondant_fips_state=line[339:341],
@@ -99,6 +99,22 @@ def get_parent(reporter):
         if len(parents) > 0:
             return parents[0]
 
+def create_top_holder(reporter):
+    parent = ParentInstitution(
+        year=reporter.year,
+        name=reporter.top_holder_name,
+        city=reporter.top_holder_city,
+        rssd_id=reporter.top_holder_rssd_id,
+        country=reporter.top_holder_country
+    )
+
+    if reporter.top_holder_state != '0':
+        parent.state = reporter.top_holder_state
+    else:
+        parent.state = None
+    parent.save()
+    return parent
+
 
 def create_parent_institution(reporter):
     parent = ParentInstitution(
@@ -112,12 +128,12 @@ def create_parent_institution(reporter):
     return parent
 
 
-def get_or_create_parent(reporter):
+def get_or_create_parent_institution(creator, rssd_id, reporter):
     try:
         parent = ParentInstitution.objects.get(
-            rssd_id=reporter.parent_rssd_id)
+            rssd_id=rssd_id)
     except ParentInstitution.DoesNotExist:
-        parent = create_parent_institution(reporter)
+        parent = creator(reporter)
     return parent
 
 
@@ -127,10 +143,21 @@ def assign_parent(bank, reporter):
     else:
         parent = get_parent(reporter)
         if parent is None:
-            parent = get_or_create_parent(reporter)
+            parent = get_or_create_parent_institution(
+                create_parent_institution, reporter.parent_rssd_id, reporter)
             bank.non_reporting_parent = parent
         else:
             bank.parent = parent
+    return bank
+
+
+def assign_top_holder(bank, reporter):
+    """ Assign a top holder to a bank. """
+    if reporter.top_holder_name == '':
+        bank.top_holder = None
+    else:
+        bank.top_holder = get_or_create_parent_institution(
+            create_top_holder, reporter.top_holder_rssd_id, reporter)
     return bank
 
 
@@ -145,6 +172,8 @@ def process_reporter(reporters):
             bank.rssd_id = reporter.respondant_rssd_id
 
         bank = assign_parent(bank, reporter)
+
+        assign_top_holder(bank, reporter)
         bank.save()
 
 
