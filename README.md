@@ -33,8 +33,18 @@ Python 3.2.3
 Postgres 9.1.13
 (You could likely use other databases, I just haven't tested them)
 
+There's also a requirements.txt file in the repository root directory.  
+
 
 ## Loading the data
+
+This uses South. 
+
+To create the tables, you need to run:
+
+```
+    python manage.py migrate respondants
+```
 
 Download the two transmittal sheet and reporter panel flat files. 
 
@@ -42,7 +52,7 @@ There are two management commands that will load data, and need to be run
 in the following order:
 
 ``` 
-1. python manage.py load_transmittal <path/to/transmittal sheet >
+1. python manage.py load_transmittal <path/to/transmittal_sheet>
 2. python manage.py load_reporter_panel <path/to/reporter_panel>
 ```
 
