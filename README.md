@@ -41,6 +41,8 @@ Download the two transmittal sheet and reporter panel flat files.
 There are two management commands that will load data, and need to be run 
 in the following order:
 
+``` 
 1. python manage.py load_transmittal <path/to/transmittal sheet >
 2. python manage.py load_reporter_panel <path/to/reporter_panel>
+```
 
