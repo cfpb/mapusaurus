@@ -182,7 +182,7 @@ def parse_file(filename):
     pre-determined by the FFIEC. """
 
     reporters = []
-    with open(filename, encoding='utf-8') as panelcsv:
+    with open(filename) as panelcsv:
         for line in panelcsv:
             reporter_row = parse_line(line)
             reporters.append(reporter_row)

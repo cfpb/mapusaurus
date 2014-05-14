@@ -12,9 +12,8 @@ class Command(BaseCommand):
         transmittal_filename = args[0]
 
         agencies = Agency.objects.get_all_by_code()
-        self.stdout.write('%s' % agencies)
 
-        with open(transmittal_filename, encoding='utf-8') as institutioncsv:
+        with open(transmittal_filename) as institutioncsv:
             transmittal_reader = csv.reader(institutioncsv, delimiter='\t')
             institutions = []
             for inst_line in transmittal_reader:
