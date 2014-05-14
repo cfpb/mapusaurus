@@ -46,6 +46,14 @@ To create the tables, you need to run:
     python manage.py migrate respondants
 ```
 
+There's also a fixture that you need to load some information from:
+
+```
+    python manage.py loaddata agency
+```
+
+This loads static regulator agency data. 
+
 Download the two transmittal sheet and reporter panel flat files. 
 
 There are two management commands that will load data, and need to be run 
