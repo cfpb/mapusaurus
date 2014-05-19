@@ -1,10 +1,11 @@
 # This is an auto-generated Django model module created by ogrinspect.
 from django.contrib.gis.db import models
 
+
 class StateCensusTract(models.Model):
-    """ 
+    """
         This model represents the shapefile for census tracts per state. This
-        model is auto-generated using the ogrinspect Django command. 
+        model is auto-generated using the ogrinspect Django command.
     """
 
     statefp = models.CharField(max_length=2)
@@ -28,17 +29,17 @@ class StateCensusTract(models.Model):
 
 # Auto-generated `LayerMapping` dictionary for CensusTract model
 censustract_mapping = {
-    'statefp' : 'STATEFP',
-    'countyfp' : 'COUNTYFP',
-    'tractce' : 'TRACTCE',
-    'geoid' : 'GEOID',
-    'name' : 'NAME',
-    'namelsad' : 'NAMELSAD',
-    'mtfcc' : 'MTFCC',
-    'funcstat' : 'FUNCSTAT',
-    'aland' : 'ALAND',
-    'awater' : 'AWATER',
-    'intptlat' : 'INTPTLAT',
-    'intptlon' : 'INTPTLON',
-    'geom' : 'MULTIPOLYGON',
+    'statefp': 'STATEFP',
+    'countyfp': 'COUNTYFP',
+    'tractce': 'TRACTCE',
+    'geoid': 'GEOID',
+    'name': 'NAME',
+    'namelsad': 'NAMELSAD',
+    'mtfcc': 'MTFCC',
+    'funcstat': 'FUNCSTAT',
+    'aland': 'ALAND',
+    'awater': 'AWATER',
+    'intptlat': 'INTPTLAT',
+    'intptlon': 'INTPTLON',
+    'geom': 'MULTIPOLYGON',
 }
