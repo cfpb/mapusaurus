@@ -64,3 +64,25 @@ in the following order:
 2. python manage.py load_reporter_panel <path/to/reporter_panel>
 ```
 
+## GEO
+
+The 'geo' application requires GeoDjango and PostGIS. Follow the instructions
+for installing GeoDjango. 
+
+Here are some separate instructions for running the geo application. 
+
+```
+    python manage.py migrate geo
+```
+
+Currently this works with Census Tract files. You can download those here: 
+
+```
+ftp://ftp2.census.gov/geo/tiger/TIGER2013/TRACT/
+```
+
+This is how you load the data:
+
+```
+    python manage.py load_state_shapefile /vagrant/data/CENSUS/tract/17/tl_2013_17_tract.shp
+```
