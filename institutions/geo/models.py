@@ -22,6 +22,10 @@ class StateCensusTract(models.Model):
     geom = models.MultiPolygonField(srid=4269)
     objects = models.GeoManager()
 
+    def __str__(self):
+        return '%s (county: %s, state: %s)' % (
+            self.namelsad, self.countyfp, self.statefp)
+
 # Auto-generated `LayerMapping` dictionary for CensusTract model
 censustract_mapping = {
     'statefp' : 'STATEFP',
