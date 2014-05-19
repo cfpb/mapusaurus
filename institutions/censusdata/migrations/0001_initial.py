@@ -12,7 +12,7 @@ class Migration(SchemaMigration):
         db.create_table(u'censusdata_census2010race', (
             ('geoid', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['geo.StateCensusTract'], to_field='geoid', unique=True, primary_key=True)),
             ('total_pop', self.gf('django.db.models.fields.IntegerField')()),
-            ('while_alone', self.gf('django.db.models.fields.IntegerField')()),
+            ('white_alone', self.gf('django.db.models.fields.IntegerField')()),
             ('black_alone', self.gf('django.db.models.fields.IntegerField')()),
             ('amind_alone', self.gf('django.db.models.fields.IntegerField')()),
             ('asian_alone', self.gf('django.db.models.fields.IntegerField')()),
@@ -39,7 +39,7 @@ class Migration(SchemaMigration):
             'pacis_alone': ('django.db.models.fields.IntegerField', [], {}),
             'total_pop': ('django.db.models.fields.IntegerField', [], {}),
             'two_or_more': ('django.db.models.fields.IntegerField', [], {}),
-            'while_alone': ('django.db.models.fields.IntegerField', [], {})
+            'white_alone': ('django.db.models.fields.IntegerField', [], {})
         },
         u'geo.statecensustract': {
             'Meta': {'object_name': 'StateCensusTract'},

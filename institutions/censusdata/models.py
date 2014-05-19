@@ -6,7 +6,7 @@ class Census2010Race(models.Model):
                               unique=True, db_index=True, primary_key=True)
 
     total_pop = models.IntegerField()
-    while_alone = models.IntegerField()
+    white_alone = models.IntegerField()
     black_alone = models.IntegerField()
     amind_alone = models.IntegerField()
     asian_alone = models.IntegerField()
