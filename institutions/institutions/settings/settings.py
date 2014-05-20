@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'localflavor',
     'south',
+    'leaflet',
     'respondants',
     'geo',
     'censusdata',
@@ -60,7 +61,7 @@ WSGI_APPLICATION = 'institutions.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-DATABASES = {'default': {'ENGINE': '', 'NAME':'', 'USER':'', 'PASSWORD': ''},}
+DATABASES = {'default': {'ENGINE': '', 'NAME': '', 'USER': '', 'PASSWORD': ''},}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
