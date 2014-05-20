@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'leaflet',
     'respondants',
     'geo',
+    'censusdata',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -86,3 +86,31 @@ This is how you load the data:
 ```
     python manage.py load_state_shapefile /vagrant/data/CENSUS/tract/17/tl_2013_17_tract.shp
 ```
+
+
+## Census Data
+
+The 'censusdata' loads census data to the census tracts found in the 'geo'
+application. As such, 'censusdata' relies on 'geo'.
+
+First, run migrate to create the appropriate tables
+
+```
+    python manage.py migrate censusdata
+```
+
+You'll then want to import census data related to the tracts you've loaded
+while setting up the 'geo' app. Go to
+```
+http://www2.census.gov/census_2010/04-Summary_File_1/
+```
+and select the state you care about. Download the associated `*.sf1.zip` file,
+which you should then unzip.
+
+Loading the data looks like this:
+```
+    python manage.py load_summary_one /path/to/XXgeo2010.sf1
+```
+
+Warning: currently, data will not be updated in place; to re-import, you'll
+need to delete everything from the `censusdata_census2010race` table.

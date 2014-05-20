@@ -11,7 +11,7 @@ class StateCensusTract(models.Model):
     statefp = models.CharField(max_length=2)
     countyfp = models.CharField(max_length=3)
     tractce = models.CharField(max_length=6)
-    geoid = models.CharField(max_length=11)
+    geoid = models.CharField(max_length=11, unique=True)
     name = models.CharField(max_length=7)
     namelsad = models.CharField(max_length=20)
     mtfcc = models.CharField(max_length=5)
