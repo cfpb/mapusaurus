@@ -64,3 +64,38 @@ class Census2010Age(models.Model):
     seventyfive_seventynine = models.IntegerField()
     eighty_eightyfour = models.IntegerField()
     eightyfive_up = models.IntegerField()
+
+
+class Census2010RaceStats(models.Model):
+    geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
+                              unique=True, db_index=True, primary_key=True)
+
+    total_pop = models.IntegerField()
+    hispanic = models.IntegerField()
+    non_hisp_white_only = models.IntegerField()
+    non_hisp_black_only = models.IntegerField()
+    non_hisp_asian_only = models.IntegerField()
+
+    hispanic_perc = models.FloatField()
+    non_hisp_white_only_perc = models.FloatField()
+    non_hisp_black_only_perc = models.FloatField()
+    non_hisp_asian_only_perc = models.FloatField()
+
+    def auto_fields(self):
+        if self.total_pop:
+            self.hispanic_perc = 1.0 * self.hispanic / self.total_pop
+            self.non_hisp_white_only_perc = (1.0 * self.non_hisp_white_only
+                                             / self.total_pop)
+            self.non_hisp_black_only_perc = (1.0 * self.non_hisp_black_only
+                                             / self.total_pop)
+            self.non_hisp_asian_only_perc = (1.0 * self.non_hisp_asian_only
+                                             / self.total_pop)
+        else:
+            self.hispanic_perc = 1.00
+            self.non_hisp_white_only_perc = 1.00
+            self.non_hisp_black_only_perc = 1.00
+            self.non_hisp_asian_only_perc = 1.00
+
+    def save(self):
+        self.auto_fields()
+        super(Census2010RaceStats, self).save()

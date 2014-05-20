@@ -3,7 +3,8 @@ from csv import reader
 from django.core.management.base import BaseCommand, CommandError
 
 from censusdata.models import (
-    Census2010Age, Census2010HispanicOrigin, Census2010Race, Census2010Sex)
+    Census2010Age, Census2010HispanicOrigin, Census2010Race,
+    Census2010RaceStats, Census2010Sex)
 
 
 class Command(BaseCommand):
@@ -29,7 +30,7 @@ class Command(BaseCommand):
     def handle_filethree(self, geofile_name, geoids_by_record):
         file3_name = geofile_name[:-11] + "000032010.sf1"
         datafile = open(file3_name, 'r')
-        race, hispanic = [], []
+        race, hispanic, stats = [], [], []
         for row in reader(datafile):
             recordnum = row[4]
             if recordnum in geoids_by_record:
@@ -47,10 +48,20 @@ class Command(BaseCommand):
                     hispanic=int(row[15]))
                 data.geoid_id = geoids_by_record[recordnum]
                 hispanic.append(data)
+
+                data = Census2010RaceStats(
+                    total_pop=int(row[16]), hispanic=int(row[25]),
+                    non_hisp_white_only=int(row[18]),
+                    non_hisp_black_only=int(row[19]),
+                    non_hisp_asian_only=int(row[21]))
+                data.geoid_id = geoids_by_record[recordnum]
+                data.auto_fields()
+                stats.append(data)
         datafile.close()
 
         Census2010Race.objects.bulk_create(race)
         Census2010HispanicOrigin.objects.bulk_create(hispanic)
+        Census2010RaceStats.objects.bulk_create(stats)
 
     def handle_filefour(self, geofile_name, geoids_by_record):
         file4_name = geofile_name[:-11] + "000042010.sf1"
