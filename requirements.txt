@@ -3,3 +3,5 @@ psycopg2
 requests
 south
 django-localflavor
+django-geojson
+django-leaflet
