@@ -1,0 +1,14 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+install:
+  - |
+    echo "DATABASES = {'default': {'ENGINE': 'django.contrib.gis.db.backends.postgis', 'NAME': 'travisdb', 'USER': 'postgres'}}" > institutions/institutions/settings/local_settings.py
+  - pip install -r requirements.txt --use-mirrors
+before_script:
+  - psql -c 'CREATE DATABASE travisdb;' -U postgres
+  - psql -c 'CREATE EXTENSION postgis;' -U postgres -d travisdb
+script:
+  - cd institutions
+  - python manage.py test
