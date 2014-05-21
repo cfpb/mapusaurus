@@ -113,4 +113,4 @@ Loading the data looks like this:
 ```
 
 Warning: currently, data will not be updated in place; to re-import, you'll
-need to delete everything from the `censusdata_census2010race` table.
+need to delete everything from the `censusdata_census2010*` tables.
