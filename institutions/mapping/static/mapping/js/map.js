@@ -1,7 +1,7 @@
 var Mapusaurus = {
-    function mainMapInit(map, options) {
+        mainMapInit: function (map, options) {
         //Use Leaflet API here. 
-        var tractsJsonUrl = '{% url "tractsgeojson"%}?state_fips=17&county_fips=031';
+        var tractsJsonUrl = '/shapes/tracts/?state_fips=17&county_fips=031';
 
         $.getJSON(tractsJsonUrl, function(data) {
             var lat = data.features[0].properties.intptlat,
@@ -11,5 +11,4 @@ var Mapusaurus = {
             L.geoJson(data).addTo(map);
         });
     }
-}
-
+};
