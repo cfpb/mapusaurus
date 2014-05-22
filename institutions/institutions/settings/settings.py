@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'localflavor',
     'south',
     'leaflet',
+    'mapping',
     'respondants',
     'geo',
     'censusdata',
