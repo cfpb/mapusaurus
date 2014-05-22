@@ -9,7 +9,7 @@
             {% leaflet_map "map" callback="mainMapInit"%}
 
             <script type="text/javascript">
-                $document.ready(function mainMapInit(map, options) {
+                $(document).ready(function mainMapInit(map, options) {
                     //Use Leaflet API here. 
                     var tractsJsonUrl = '{% url "tractsgeojson"%}?state_fips=17&county_fips=031';
 
