@@ -6,21 +6,21 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     </head>
     <body>
-            {% leaflet_map "map" callback="main_map_init"%}
+            {% leaflet_map "map" callback="mainMapInit"%}
 
             <script type="text/javascript">
-                function main_map_init(map, options) {
+                $document.ready(function mainMapInit(map, options) {
                     //Use Leaflet API here. 
-                    var tracts_json_url = '{% url "tractsgeojson"%}?state_fips=17&county_fips=031';
+                    var tractsJsonUrl = '{% url "tractsgeojson"%}?state_fips=17&county_fips=031';
 
-                    $.getJSON(tracts_json_url, function(data) {
-                        var lat = data.features[0].properties.intptlat;
-                        var lon = data.features[0].properties.intptlon;
+                    $.getJSON(tractsJsonUrl, function(data) {
+                        var lat = data.features[0].properties.intptlat,
+                            lon = data.features[0].properties.intptlon;
 
                         map.setView([lat, lon], 12);
                         L.geoJson(data).addTo(map);
                     });
-                }
+                });
             </script>
     </body>
 </html>
