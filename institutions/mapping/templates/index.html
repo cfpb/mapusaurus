@@ -1,0 +1,14 @@
+{% load leaflet_tags %}
+{% load staticfiles %}
+<html>
+    <head>
+        {% leaflet_js %}
+        {% leaflet_css %}
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    </head>
+    <body>
+            {% leaflet_map "map" callback="Mapusaurus.mainMapInit"%}
+
+            <script src="{% static 'mapping/js/map.js' %}"></script>
+    </body>
+</html>
