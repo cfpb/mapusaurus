@@ -13,8 +13,6 @@
                     //Use Leaflet API here. 
                     var tracts_json_url = '{% url "tractsgeojson"%}?state_fips=17&county_fips=031';
 
-                    console.log(tracts_json_url);
-
                     $.getJSON(tracts_json_url, function(data) {
                         var lat = data.features[0].properties.intptlat;
                         var lon = data.features[0].properties.intptlon;
