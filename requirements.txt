@@ -5,3 +5,4 @@ south
 django-localflavor
 django-geojson
 django-leaflet
+mock
