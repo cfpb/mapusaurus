@@ -4,5 +4,5 @@ requests
 south
 django-localflavor
 django-geojson
-django-leaflet
+git+https://github.com/makinacorpus/django-leaflet.git#egg=django-leaflet
 mock
