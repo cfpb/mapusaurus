@@ -1,0 +1,79 @@
+[
+  {
+    "pk": 101,
+    "model": "geo.statecensustract",
+    "fields": {
+      "aland": 2097335.0,
+      "awater": 0.0,
+      "countyfp": "222",
+      "funcstat": "S",
+      "geoid": "1122233300",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "intptlat": "0.0",
+      "intptlon": "0.0",
+      "mtfcc": "G5020",
+      "name": "333",
+      "namelsad": "Census Tract 333",
+      "statefp": "11",
+      "tractce": "33300"
+    }
+  },
+  {
+    "pk": 102,
+    "model": "geo.statecensustract",
+    "fields": {
+      "aland": 2097335.0,
+      "awater": 0.0,
+      "countyfp": "222",
+      "funcstat": "S",
+      "geoid": "1122233400",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "intptlat": "0.0",
+      "intptlon": "0.0",
+      "mtfcc": "G5020",
+      "name": "334",
+      "namelsad": "Census Tract 334",
+      "statefp": "11",
+      "tractce": "33400"
+    }
+  },
+  {
+    "pk": 103,
+    "model": "geo.statecensustract",
+    "fields": {
+      "aland": 2097335.0,
+      "awater": 0.0,
+      "countyfp": "222",
+      "funcstat": "S",
+      "geoid": "1122233500",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "intptlat": "0.0",
+      "intptlon": "0.0",
+      "mtfcc": "G5020",
+      "name": "335",
+      "namelsad": "Census Tract 335",
+      "statefp": "11",
+      "tractce": "33500"
+    }
+  },
+  {
+    "pk": 104,
+    "model": "geo.statecensustract",
+    "fields": {
+      "aland": 2097335.0,
+      "awater": 0.0,
+      "countyfp": "222",
+      "funcstat": "S",
+      "geoid": "1122233600",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "intptlat": "0.0",
+      "intptlon": "0.0",
+      "mtfcc": "G5020",
+      "name": "336",
+      "namelsad": "Census Tract 336",
+      "statefp": "11",
+      "tractce": "33600"
+    }
+  }
+]
+
