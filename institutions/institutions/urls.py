@@ -7,5 +7,5 @@ urlpatterns = patterns('',
     url(r'^institutions/', include('respondants.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^shapes/', include('geo.urls')),
-    url(r'^census/', include('censusdata.urls'))
+    url(r'^census/', include('censusdata.urls', namespace='censusdata'))
 )

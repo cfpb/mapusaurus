@@ -1,5 +1,6 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 
-urlpatterns = patterns('',
-    url(r'race-summary', 'censusdata.views.race_summary'),
+urlpatterns = patterns(
+    '',
+    url(r'race-summary', 'censusdata.views.race_summary', name="race_summary"),
 )
