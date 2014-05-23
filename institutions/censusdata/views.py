@@ -1,6 +1,6 @@
-from django.shortcuts import render
-from django.core import serializers
-from django.http import HttpResponse
+import json
+
+from django.http import HttpResponse, Http404
 
 from .models import Census2010RaceStats
 
@@ -19,7 +19,19 @@ def race_summary(request):
     state_fips = request.GET.get('state_fips', '')
 
     if county_fips and state_fips:
-        tract_data = race_by_county(county_fips, state_fips)
-        return HttpResponse(
-            serializers.serialize('json', tract_data),
-            content_type='application/json')
+        data = {}
+        for stats in race_by_county(county_fips, state_fips):
+            data[stats.geoid_id] = {
+                'total_pop': stats.total_pop,
+                'hispanic': stats.hispanic,
+                'non_hisp_white_only': stats.non_hisp_white_only,
+                'non_hisp_black_only': stats.non_hisp_black_only,
+                'non_hisp_asian_only': stats.non_hisp_asian_only,
+                'hispanic_perc': stats.hispanic_perc,
+                'non_hisp_white_only_perc': stats.non_hisp_white_only_perc,
+                'non_hisp_black_only_perc': stats.non_hisp_black_only_perc,
+                'non_hisp_asian_only_perc': stats.non_hisp_asian_only_perc
+            }
+        return HttpResponse(json.dumps(data), content_type='application/json')
+    else:
+        raise Http404
