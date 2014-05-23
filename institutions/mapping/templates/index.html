@@ -1,14 +1,59 @@
 {% load leaflet_tags %}
 {% load staticfiles %}
-<html>
+<!DOCTYPE HTML>
     <head>
         {% leaflet_js %}
         {% leaflet_css %}
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="{% static 'mapping/js/map.js' %}"></script>
+        <!-- temporary, until real styles are developed -->
+        <style type="text/css">
+            .p100, .p75, .p50, .p25 {
+                width: 35%;
+            }
+
+            .p100 {
+               background-color: #d12124; 
+            }
+
+            .p75 {
+                background-color: #da6750;
+            }
+
+            .p50 {
+                background-color: #e8a091;
+            }
+
+            .p25 {
+                background-color: #f6d9d3;
+            }
+        </style>
     </head>
     <body>
-            {% leaflet_map "map" callback="Mapusaurus.initialize"%}
+        {% leaflet_map "map" callback="Mapusaurus.initialize"%}
 
-            <script src="{% static 'mapping/js/map.js' %}"></script>
+        <table>
+            <thead>
+                <tr>
+                    <td colspan="2">Minority population percent</td>
+                </tr>
+            </thead>
+            <tr>
+                <td class="p100"></td>
+                <td>> 75%</td>
+            </tr>
+            <tr>
+                <td class="p75"></td>
+                <td>> 50%</td>
+            </tr>
+            <tr>
+                <td class="p50"></td>
+                <td>> 25%</td>
+            </tr>
+            <tr>
+                <td class="p25"></td>
+                <td>< 25%</td>
+            </tr>            
+        </table>
     </body>
 </html>
