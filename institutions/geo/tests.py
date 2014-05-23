@@ -37,7 +37,7 @@ class ViewTest(TestCase):
     def test_tracts_page(self):
         resp = self.client.get(reverse('geo:tractsgeojson'),
                                {'state_fips': '11', 'county_fips': '222',
-                                'page_size': 2, 'page_num': 0})
+                                'page_size': 2, 'page_num': 1})
         resp = json.loads(resp.content)
         features = resp['features']
         self.assertEqual(len(features), 2)
@@ -48,7 +48,7 @@ class ViewTest(TestCase):
 
         resp = self.client.get(reverse('geo:tractsgeojson'),
                                {'state_fips': '11', 'county_fips': '222',
-                                'page_size': 3, 'page_num': 1})
+                                'page_size': 3, 'page_num': 2})
         resp = json.loads(resp.content)
         features = resp['features']
         self.assertEqual(len(features), 1)
