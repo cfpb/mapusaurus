@@ -2,7 +2,7 @@
 
 var Mapusaurus = {
     initialize: function (map, options) {
-        this.map = map;
+        Mapusaurus.map = map;
         var tractsJsonUrl = '/shapes/tracts/?state_fips=17&county_fips=031',
             censusDataJsonUrl= 'census/race-summary?county_fips=031&state_fips=17';
 
@@ -46,8 +46,8 @@ var Mapusaurus = {
       layer.setStyle(Mapusaurus.polygonStyle(feature));
 
       //  keep expected functionality with double clicking
-      layer.on('dblclick', function() {
-        Mapusaurus.map.zoomIn();
+      layer.on('dblclick', function(ev) {
+        Mapusaurus.map.setZoomAround(ev.latlng, Mapusaurus.map.getZoom() + 1);
       });
       var nonHispanicWhite = Mapusaurus.censusData[feature.properties.geoid].non_hisp_white_only_perc;
       layer.on('mouseover', function() {
