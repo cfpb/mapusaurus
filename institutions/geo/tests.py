@@ -3,7 +3,7 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from .models import censustract_mapping
+from .models import censustract_mapping, StateCensusTract
 
 
 class StateCensusTractModelTest(TestCase):
@@ -16,6 +16,33 @@ class StateCensusTractModelTest(TestCase):
                 self.assertEqual(value, 'MULTIPOLYGON')
             else:
                 self.assertEqual(key.upper(), value)
+
+    def test_auto_populated(self):
+        tract = StateCensusTract(
+            statefp='00', countyfp='111', tractce='2222', geoid='001112222',
+            name='name', namelsad='nameslad', mtfcc='G5020', funcstat='S',
+            aland=2097335.0, awater=0.0, intptlat="15.1234",
+            intptlon="-22.345",
+            geom="MULTIPOLYGON(((0 0, 0 1, 1 1, 0 0), (2 2, 2 4, 4 4, 2 2)))")
+        tract.save()
+        self.assertEqual(tract.minlat, 0)
+        self.assertEqual(tract.minlon, 0)
+        self.assertEqual(tract.maxlat, 4)
+        self.assertEqual(tract.maxlon, 4)
+        tract.delete()
+
+        tract = StateCensusTract(
+            statefp='00', countyfp='111', tractce='2222', geoid='001112222',
+            name='name', namelsad='nameslad', mtfcc='G5020', funcstat='S',
+            aland=2097335.0, awater=0.0, intptlat="15.1234",
+            intptlon="-22.345",
+            geom=("MULTIPOLYGON(((0 0, 0 1, 1 1, 0 0), "
+                    + "(2 2, 2 -4, 2 -4, 2 2)))"))
+        tract.auto_fields()
+        self.assertEqual(tract.minlat, 0)
+        self.assertEqual(tract.minlon, -4)
+        self.assertEqual(tract.maxlat, 2)
+        self.assertEqual(tract.maxlon, 2)
 
 
 class ViewTest(TestCase):
