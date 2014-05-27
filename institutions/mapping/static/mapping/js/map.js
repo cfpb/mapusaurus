@@ -28,6 +28,8 @@ var Mapusaurus = {
             fillColor: Mapusaurus.colorFromPercent(1 - nonMinorityPercent,
                                                    246, 217, 211, 209, 65, 36),
             fillOpacity: 0.7,
+            weight: 2,
+            clickable: false,
             color: '#babbbd'
         }
     },
