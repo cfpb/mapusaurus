@@ -1,5 +1,5 @@
 var Mapusaurus = {
-        initialize: function (map, options) {
+    initialize: function (map, options) {
         //Use Leaflet API here. 
         var tractsJsonUrl = '/shapes/tracts/?state_fips=17&county_fips=031',
             censusDataJsonUrl= 'census/race-summary?county_fips=031&state_fips=17';
@@ -25,32 +25,19 @@ var Mapusaurus = {
     polygonStyle: function(feature) {
         var nonMinorityPercent = Mapusaurus.censusData[feature.properties.geoid].non_hisp_white_only_perc;
         return {
-            fillColor: Mapusaurus.colorFromPercent(1 - nonMinorityPercent),
+            fillColor: Mapusaurus.colorFromPercent(1 - nonMinorityPercent,
+                                                   246, 217, 211, 209, 65, 36),
             fillOpacity: 0.7,
             color: '#babbbd'
         }
     },
 
-    colorFromPercent: function(percent) {
-        if (percent < 0.5) {
-            if (percent < 0.25) {
-                // red orange 20%
-                return '#f6d9d3';
-            }
-            else {
-                // red orange 50%
-                return '#e8a091';
-            }
-        }
-        else {
-            if (percent > 0.75) {
-                // red orange 80%
-                return '#da6750';
-            }
-            else {
-                // red orange 100%
-                return '#d12124';
-            }
-        }
+    colorFromPercent: function(percent, lowR, lowG, lowB, highR, highG, highB) {
+        var diffR = (highR - lowR) * percent,
+            diffG = (highG - lowG) * percent,
+            diffB = (highB - lowB) * percent;
+        return 'rgb(' + (lowR + diffR).toFixed() + ', '
+                      + (lowG + diffG).toFixed() + ', '
+                      + (lowB + diffB).toFixed() + ')';
     }
 };
