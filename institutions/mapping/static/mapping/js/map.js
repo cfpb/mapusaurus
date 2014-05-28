@@ -1,8 +1,10 @@
 'use strict';
 
 var Mapusaurus = {
+    map: null,
+    slowLayer: null,
     initialize: function (map, options) {
-        this.map = map;
+        Mapusaurus.map = map;
         var tractsJsonUrl = '/shapes/tracts/?state_fips=17&county_fips=031',
             censusDataJsonUrl= 'census/race-summary?county_fips=031&state_fips=17';
 
@@ -15,6 +17,27 @@ var Mapusaurus = {
 
             map.setView([lat, lon], 12);
             L.geoJson(data, {onEachFeature: Mapusaurus.eachFeature}).addTo(map);
+        });
+
+        Mapusaurus.slowLayer = L.geoJson({type: 'FeatureCollection', features: []},
+                                         {style: function() {
+                                            return {weight: 3, color: '#66f'}
+                                         }});
+        Mapusaurus.slowLayer.addTo(map);
+    },
+
+    loadTractData: function(page) {
+        var bounds = Mapusaurus.map.getBounds();
+        //  Sorry, but this is north-western hemisphere-centric for now
+        $.getJSON('/shapes/tracts-in/?minlat=' + bounds.getSouth().toString()
+                  + '&maxlat=' + bounds.getNorth().toString()
+                  + '&minlon=' + bounds.getWest().toString()
+                  + '&maxlon=' + bounds.getEast().toString()
+                  + '&page_num=' + page.toString(), function(data) {
+          Mapusaurus.slowLayer.addData(data);
+          if (data.features.length > 0) {
+            Mapusaurus.loadTractData(page + 1)
+          }
         });
     },
 

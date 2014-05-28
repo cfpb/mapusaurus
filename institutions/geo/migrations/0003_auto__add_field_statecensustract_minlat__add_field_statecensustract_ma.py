@@ -23,8 +23,8 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.FloatField')(null=True, db_index=True),
                       keep_default=False)
 
-        # Adding field 'StateCensusTract.manlon'
-        db.add_column(u'geo_statecensustract', 'manlon',
+        # Adding field 'StateCensusTract.maxlon'
+        db.add_column(u'geo_statecensustract', 'maxlon',
                       self.gf('django.db.models.fields.FloatField')(null=True, db_index=True),
                       keep_default=False)
 
@@ -39,8 +39,8 @@ class Migration(SchemaMigration):
         # Deleting field 'StateCensusTract.minlon'
         db.delete_column(u'geo_statecensustract', 'minlon')
 
-        # Deleting field 'StateCensusTract.manlon'
-        db.delete_column(u'geo_statecensustract', 'manlon')
+        # Deleting field 'StateCensusTract.maxlon'
+        db.delete_column(u'geo_statecensustract', 'maxlon')
 
 
     models = {
@@ -55,7 +55,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'intptlat': ('django.db.models.fields.CharField', [], {'max_length': '11'}),
             'intptlon': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
-            'manlon': ('django.db.models.fields.FloatField', [], {'null': 'True', 'db_index': 'True'}),
+            'maxlon': ('django.db.models.fields.FloatField', [], {'null': 'True', 'db_index': 'True'}),
             'maxlat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'db_index': 'True'}),
             'minlat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'db_index': 'True'}),
             'minlon': ('django.db.models.fields.FloatField', [], {'null': 'True', 'db_index': 'True'}),

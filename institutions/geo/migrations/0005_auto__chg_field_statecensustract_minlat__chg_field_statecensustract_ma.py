@@ -12,8 +12,8 @@ class Migration(SchemaMigration):
         # Changing field 'StateCensusTract.minlat'
         db.alter_column(u'geo_statecensustract', 'minlat', self.gf('django.db.models.fields.FloatField')(default=0))
 
-        # Changing field 'StateCensusTract.manlon'
-        db.alter_column(u'geo_statecensustract', 'manlon', self.gf('django.db.models.fields.FloatField')(default=0))
+        # Changing field 'StateCensusTract.maxlon'
+        db.alter_column(u'geo_statecensustract', 'maxlon', self.gf('django.db.models.fields.FloatField')(default=0))
 
         # Changing field 'StateCensusTract.maxlat'
         db.alter_column(u'geo_statecensustract', 'maxlat', self.gf('django.db.models.fields.FloatField')(default=0))
@@ -26,8 +26,8 @@ class Migration(SchemaMigration):
         # Changing field 'StateCensusTract.minlat'
         db.alter_column(u'geo_statecensustract', 'minlat', self.gf('django.db.models.fields.FloatField')(null=True))
 
-        # Changing field 'StateCensusTract.manlon'
-        db.alter_column(u'geo_statecensustract', 'manlon', self.gf('django.db.models.fields.FloatField')(null=True))
+        # Changing field 'StateCensusTract.maxlon'
+        db.alter_column(u'geo_statecensustract', 'maxlon', self.gf('django.db.models.fields.FloatField')(null=True))
 
         # Changing field 'StateCensusTract.maxlat'
         db.alter_column(u'geo_statecensustract', 'maxlat', self.gf('django.db.models.fields.FloatField')(null=True))
@@ -47,7 +47,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'intptlat': ('django.db.models.fields.CharField', [], {'max_length': '11'}),
             'intptlon': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
-            'manlon': ('django.db.models.fields.FloatField', [], {'db_index': 'True'}),
+            'maxlon': ('django.db.models.fields.FloatField', [], {'db_index': 'True'}),
             'maxlat': ('django.db.models.fields.FloatField', [], {'db_index': 'True'}),
             'minlat': ('django.db.models.fields.FloatField', [], {'db_index': 'True'}),
             'minlon': ('django.db.models.fields.FloatField', [], {'db_index': 'True'}),

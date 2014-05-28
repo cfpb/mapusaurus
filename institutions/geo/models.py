@@ -25,7 +25,7 @@ class StateCensusTract(models.Model):
     minlat = models.FloatField(db_index=True)
     maxlat = models.FloatField(db_index=True)
     minlon = models.FloatField(db_index=True)
-    manlon = models.FloatField(db_index=True)
+    maxlon = models.FloatField(db_index=True)
 
     objects = models.GeoManager()
 
@@ -35,7 +35,7 @@ class StateCensusTract(models.Model):
 
     def auto_fields(self):
         """Populate the min and max lat/lon based on this object's geometry"""
-        lats, lons = zip(*[pt for polygon in self.geom.coords
+        lons, lats = zip(*[pt for polygon in self.geom.coords
                            for line in polygon
                            for pt in line])
         self.minlat = min(lats)

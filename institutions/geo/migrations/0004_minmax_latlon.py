@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
+
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        # Note: Don't use "from appname.models import ModelName". 
+        # Note: Don't use "from appname.models import ModelName".
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
         for tract in orm.StateCensusTract.objects.all():
-            # Fills in auto-populated fields
+            # Can't use auto_fields since we are using south's ORM
+            lons, lats = zip(*[pt for polygon in tract.geom.coords
+                               for line in polygon
+                               for pt in line])
+            tract.minlat = min(lats)
+            tract.maxlat = max(lats)
+            tract.minlon = min(lons)
+            tract.maxlon = max(lons)
             tract.save()
 
     def backwards(self, orm):
@@ -30,7 +35,7 @@ class Migration(DataMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'intptlat': ('django.db.models.fields.CharField', [], {'max_length': '11'}),
             'intptlon': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
-            'manlon': ('django.db.models.fields.FloatField', [], {'null': 'True', 'db_index': 'True'}),
+            'maxlon': ('django.db.models.fields.FloatField', [], {'null': 'True', 'db_index': 'True'}),
             'maxlat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'db_index': 'True'}),
             'minlat': ('django.db.models.fields.FloatField', [], {'null': 'True', 'db_index': 'True'}),
             'minlon': ('django.db.models.fields.FloatField', [], {'null': 'True', 'db_index': 'True'}),
