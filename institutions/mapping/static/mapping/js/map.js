@@ -95,7 +95,7 @@ var Mapusaurus = {
             return !_.has(Mapusaurus.dataStore.tract[geoid].properties,
                           'layer_minority');
         });
-        missingData = _.map(newTracts, function(geoid) {
+        missingData = _.map(missingData, function(geoid) {
             var geo = Mapusaurus.dataStore.tract[geoid];
             return geo.properties.statefp + geo.properties.countyfp;
         });
@@ -124,7 +124,6 @@ var Mapusaurus = {
                       '&county_fips=' + county, afterLoad);
         });
     },
-
 
     /* Given a list of geo ids, add them to the minority layer */
     draw: function(geoids) {
