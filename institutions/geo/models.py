@@ -21,11 +21,32 @@ class StateCensusTract(models.Model):
     intptlat = models.CharField(max_length=11)
     intptlon = models.CharField(max_length=12)
     geom = models.MultiPolygonField(srid=4269)
+
+    minlat = models.FloatField(db_index=True)
+    maxlat = models.FloatField(db_index=True)
+    minlon = models.FloatField(db_index=True)
+    maxlon = models.FloatField(db_index=True)
+
     objects = models.GeoManager()
 
     def __str__(self):
         return '%s (county: %s, state: %s)' % (
             self.namelsad, self.countyfp, self.statefp)
+
+    def auto_fields(self):
+        """Populate the min and max lat/lon based on this object's geometry"""
+        lons, lats = zip(*[pt for polygon in self.geom.coords
+                           for line in polygon
+                           for pt in line])
+        self.minlat = min(lats)
+        self.maxlat = max(lats)
+        self.minlon = min(lons)
+        self.maxlon = max(lons)
+
+    def save(self):
+        self.auto_fields()
+        super(StateCensusTract, self).save()
+
 
 # Auto-generated `LayerMapping` dictionary for CensusTract model
 censustract_mapping = {
