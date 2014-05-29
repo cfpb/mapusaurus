@@ -1,9 +1,13 @@
 'use strict';
 
 var Mapusaurus = {
+    //  Leaflet map
     map: null,
-    dataStore: {tract: {}},
+    //  Leaflet layers
     layers: {tract: {minority: null}},
+    //  Stores geo data, along with fields for layers
+    dataStore: {tract: {}},
+    //  Stores stat data when the associated geos aren't loaded
     dataWithoutGeo: {tract: {minority: {}}},
 
     initialize: function (map) {
@@ -16,6 +20,7 @@ var Mapusaurus = {
         Mapusaurus.layers.tract.minority.addTo(map);
         map.on('moveend', Mapusaurus.reloadGeo);
         map.on('zoomend', Mapusaurus.reloadGeo);
+        //  Kick it off
         Mapusaurus.reloadGeo();
     },
 
@@ -31,11 +36,7 @@ var Mapusaurus = {
         }
     },
 
-    contTract: function(feature, layer) {
-        layer.setStyle({weight: 1, color: '#000'});
-    },
-
-    /* Recursively load census tract geo data into Mapusaurus.geos */
+    /* Load census tract geo data (by pages) into dataStore */
     loadTractData: function(page, minlat, maxlat, minlon, maxlon) {
         $.getJSON('/shapes/tracts-in/?minlat=' + minlat.toString() +
                   '&maxlat=' + maxlat.toString() +
@@ -43,62 +44,65 @@ var Mapusaurus = {
                   '&maxlon=' + maxlon.toString() +
                   '&page_num=' + page.toString(),
                   function(data) {
-            var newTracts = [];
-            for (var idx = 0; idx < data.features.length; idx++) {
-                var feature = data.features[idx],
-                    geoid = feature.properties.geoid;
-                if (!Mapusaurus.dataStore.tract[geoid]) {
+            var newTracts = [];   //  geos we've never seen
+
+            //  Collect new tracts, add them to dataStore
+            _.each(data.features, function(feature) {
+                var geoid = feature.properties.geoid;
+                if (!_.has(Mapusaurus.dataStore.tract, geoid)) {
                     Mapusaurus.dataStore.tract[geoid] = feature;
                     newTracts.push(geoid);
                 }
-            }
+            });
+
+            //  Check if there's anything new to draw, load stats data
             if (newTracts.length > 0) {
                 Mapusaurus.updateDataWithoutGeos(newTracts);
-                Mapusaurus.fetchMissingData(newTracts);
+                Mapusaurus.fetchMissingStats(newTracts);
             }
+
+            //  Continue with next page of geo results
             if (data.features.length > 0) {
-                // continue with next page
                 Mapusaurus.loadTractData(page + 1, minlat, maxlat, minlon,
                                          maxlon);
             }
         });
     },
 
+    /*  We may have previously loaded stats data without the geos. Run through
+     *  that data and see if the new geo data matches */
     updateDataWithoutGeos: function(newTracts) {
-        var toDraw = [];
-        for (var idx = 0; idx < newTracts.length; idx++) {
-            var geoid = newTracts[idx];
-            if (Mapusaurus.dataWithoutGeo.tract.minority[geoid]) {
+        var toDraw = [];  // geoids
+        _.each(newTracts, function(geoid) {
+            //  Stats data is present
+            if (_.has(Mapusaurus.dataWithoutGeo.tract.minority, geoid)) {
                 Mapusaurus.dataStore.tract[geoid].properties.layer_minority =
                     Mapusaurus.dataWithoutGeo.tract.minority[geoid];
                 toDraw.push(geoid);
                 delete Mapusaurus.dataWithoutGeo.tract.minority[geoid];
             }
-        }
+        });
         Mapusaurus.draw(toDraw);
     },
 
-    fetchMissingData: function(newTracts) {
-        var missingData = {},
-            afterLoad = null;
-        for (var idx = 0; idx < newTracts.length; idx++) {
-            var geoid = newTracts[idx],
-                geo = Mapusaurus.dataStore.tract[geoid];
-            if (!geo.properties.layer_minority) {
-                var state = geo.properties.statefp,
-                    county = geo.properties.countyfp;
-                if (!missingData[state]) {
-                    missingData[state] = {};
-                }
-                if (!missingData[state][county]) {
-                    missingData[state][county] = true;
-                }
-            }
-        }
-        // function to be called after each data load
+    /* We have geos without their associated stats - kick off the load */
+    fetchMissingStats: function(newTracts) {
+        var missingData = null,   //  state + county strings
+            afterLoad = null;     //  fn to be called after each data load
+        //  We only care about unseen stat data
+        missingData = _.filter(newTracts, function(geoid) {
+            return !_.has(Mapusaurus.dataStore.tract[geoid].properties,
+                          'layer_minority');
+        });
+        missingData = _.map(newTracts, function(geoid) {
+            var geo = Mapusaurus.dataStore.tract[geoid];
+            return geo.properties.statefp + geo.properties.countyfp;
+        });
+        missingData = _.uniq(missingData);
+        
         afterLoad = function(data) {
             var toRedraw = [];
-            for (var geoid in data) {
+            _.each(_.keys(data), function(geoid) {
                 var geo = Mapusaurus.dataStore.tract[geoid];
                 if (!geo) {
                     Mapusaurus.dataWithoutGeo.tract.minority[geoid] =
@@ -108,17 +112,28 @@ var Mapusaurus = {
                         data[geoid].non_hisp_white_only_perc;
                     toRedraw.push(geoid);
                 }
-            }
+            });
             Mapusaurus.draw(toRedraw);
         };
-        for (var state in missingData) {
-            for (var county in missingData[state]) {
-                $.getJSON('/census/race-summary?state_fips=' +
-                          state + '&county_fips=' + county, afterLoad);
-            }
-        }
+        //  start loading the stat data
+        _.each(missingData, function(stateCounty) {
+            var state = stateCounty.substr(0, 2),
+                county = stateCounty.substr(2);
+            $.getJSON('/census/race-summary?state_fips=' + state +
+                      '&county_fips=' + county, afterLoad);
+        });
     },
 
+
+    /* Given a list of geo ids, add them to the minority layer */
+    draw: function(geoids) {
+        var geoData = _.map(geoids, function(geoid) {
+            return Mapusaurus.dataStore.tract[geoid];
+        });
+        Mapusaurus.layers.tract.minority.addData(geoData);
+    },
+
+    /* Style/extras for each census tract in the minorities layer */
     eachMinority: function(feature, layer) {
       var nonMinorityPercent = feature.properties.layer_minority;
       layer.setStyle({
@@ -153,18 +168,14 @@ var Mapusaurus = {
       });
     },
 
-    draw: function(geoids) {
-        var toDraw = [];
-        for (var idx = 0; idx < geoids.length; idx++) {
-          toDraw.push(Mapusaurus.dataStore.tract[geoids[idx]]);
-        }
-        Mapusaurus.layers.tract.minority.addData(toDraw);
-    },
-
+    /* Given low and high colors and a percent, figure out the RGB of said
+     * percent in that scale */
     colorFromPercent: function(percent, lowR, lowG, lowB, highR, highG, highB) {
         var diffR = (highR - lowR) * percent,
             diffG = (highG - lowG) * percent,
             diffB = (highB - lowB) * percent;
-        return 'rgb(' + (lowR + diffR).toFixed() + ', ' + (lowG + diffG).toFixed() + ', ' + (lowB + diffB).toFixed() + ')';
+        return 'rgb(' + (lowR + diffR).toFixed() + ', ' +
+               (lowG + diffG).toFixed() + ', ' +
+               (lowB + diffB).toFixed() + ')';
     }
 };
