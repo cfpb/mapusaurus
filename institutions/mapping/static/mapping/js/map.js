@@ -18,8 +18,10 @@ var Mapusaurus = {
             {onEachFeature: Mapusaurus.eachMinority}
         );
         Mapusaurus.layers.tract.minority.addTo(map);
+        //  @todo: really, we only care about the part of the viewport which
+        //  is new
         map.on('moveend', Mapusaurus.reloadGeo);
-        //  @todo: really, we only care on zoom-out
+        //  @todo: really, we only care on zoom-out + part which is new
         map.on('zoomend', Mapusaurus.reloadGeo);
         //  Kick it off
         Mapusaurus.reloadGeo();
@@ -95,6 +97,7 @@ var Mapusaurus = {
             return !_.has(Mapusaurus.dataStore.tract[geoid].properties,
                           'layer_minority');
         });
+        //  convert to state + county strings
         missingData = _.map(missingData, function(geoid) {
             var geo = Mapusaurus.dataStore.tract[geoid];
             return geo.properties.statefp + geo.properties.countyfp;
@@ -102,19 +105,21 @@ var Mapusaurus = {
         missingData = _.uniq(missingData);
         
         afterLoad = function(data) {
-            var toRedraw = [];
+            var toDraw = [];
             _.each(_.keys(data), function(geoid) {
                 var geo = Mapusaurus.dataStore.tract[geoid];
+                //  Have not loaded the geo data yet
                 if (!geo) {
                     Mapusaurus.dataWithoutGeo.tract.minority[geoid] =
                         data[geoid].non_hisp_white_only_perc;
+                //  Have the geo data, but haven't drawn the stats yet
                 } else if (!geo.properties.layer_minority) {
                     geo.properties.layer_minority =
                         data[geoid].non_hisp_white_only_perc;
-                    toRedraw.push(geoid);
+                    toDraw.push(geoid);
                 }
             });
-            Mapusaurus.draw(toRedraw);
+            Mapusaurus.draw(toDraw);
         };
         //  start loading the stat data
         _.each(missingData, function(stateCounty) {
