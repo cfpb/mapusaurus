@@ -144,8 +144,8 @@ var Mapusaurus = {
           color: '#babbbd'
       });
       //  keep expected functionality with double clicking
-      layer.on('dblclick', function() {
-        Mapusaurus.map.zoomIn();
+      layer.on('dblclick', function(ev) {
+        Mapusaurus.map.setZoomAround(ev.latlng, Mapusaurus.map.getZoom() + 1);
       });
       layer.on('mouseover', function() {
         $('<div></div>', {
