@@ -37,7 +37,7 @@ class StateCensusTractModelTest(TestCase):
             aland=2097335.0, awater=0.0, intptlat="15.1234",
             intptlon="-22.345",
             geom=("MULTIPOLYGON(((0 0, 0 1, 1 1, 0 0), "
-                    + "(2 2, 2 -4, 2 -4, 2 2)))"))
+                    + "(2 2, -4 2, -4 2, 2 2)))"))
         tract.auto_fields()
         self.assertEqual(tract.minlat, 0)
         self.assertEqual(tract.minlon, -4)

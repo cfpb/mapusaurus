@@ -15,7 +15,11 @@
       "name": "333",
       "namelsad": "Census Tract 333",
       "statefp": "11",
-      "tractce": "33300"
+      "tractce": "33300",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1
     }
   },
   {
@@ -34,7 +38,11 @@
       "name": "334",
       "namelsad": "Census Tract 334",
       "statefp": "11",
-      "tractce": "33400"
+      "tractce": "33400",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1
     }
   },
   {
@@ -53,7 +61,11 @@
       "name": "333",
       "namelsad": "Census Tract 333",
       "statefp": "11",
-      "tractce": "33300"
+      "tractce": "33300",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1
     }
   },
   {
@@ -72,7 +84,11 @@
       "name": "333",
       "namelsad": "Census Tract 333",
       "statefp": "12",
-      "tractce": "33300"
+      "tractce": "33300",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1
     }
   }
 ]

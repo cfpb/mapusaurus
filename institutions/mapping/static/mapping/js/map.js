@@ -19,6 +19,7 @@ var Mapusaurus = {
         );
         Mapusaurus.layers.tract.minority.addTo(map);
         map.on('moveend', Mapusaurus.reloadGeo);
+        //  @todo: really, we only care on zoom-out
         map.on('zoomend', Mapusaurus.reloadGeo);
         //  Kick it off
         Mapusaurus.reloadGeo();
