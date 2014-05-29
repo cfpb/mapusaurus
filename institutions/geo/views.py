@@ -49,8 +49,6 @@ def tracts_in_rect(request):
         raise Http404
 
     # check that any of the three points are inside the boundary
-    print minlat, minlon
-    print maxlat, maxlon
     query = Q(minlat__gte=minlat, minlat__lte=maxlat,
               minlon__gte=minlon, minlon__lte=maxlon)
     query = query | Q(minlat__gte=minlat, minlat__lte=maxlat,

@@ -89,3 +89,17 @@ class ViewTest(TestCase):
         resp = json.loads(resp.content)
         features = resp['features']
         self.assertEqual(len(features), 0)
+
+    def test_tracts_in_rect(self):
+        resp = self.client.get(reverse('geo:tracts_in_rect'),
+                               {'minlat': -10, 'minlon': -10,
+                                'maxlat': 10, 'maxlon': 10})
+        resp = json.loads(resp.content)
+        self.assertEqual(len(resp['features']),
+                         StateCensusTract.objects.all().count())
+
+        resp = self.client.get(reverse('geo:tracts_in_rect'),
+                               {'minlat': -10, 'minlon': -10,
+                                'maxlat': -1, 'maxlon': -1})
+        resp = json.loads(resp.content)
+        self.assertEqual(len(resp['features']), 1)
