@@ -32,19 +32,18 @@ var Mapusaurus = {
         /* To be responsive, only load census tract data at zoom-level 10
          * or above */
         if (Mapusaurus.map.getZoom() >= 10) {
-            var bounds = Mapusaurus.map.getBounds();
-            //  This is north-western-hemisphere-centric for now
-            Mapusaurus.loadTractData(1, bounds.getSouth(), bounds.getNorth(),
-                                     bounds.getWest(), bounds.getEast());
+            Mapusaurus.loadTractData(1, Mapusaurus.map.getBounds());
         }
     },
 
-    /* Load census tract geo data (by pages) into dataStore */
-    loadTractData: function(page, minlat, maxlat, minlon, maxlon) {
-        $.getJSON('/shapes/tracts-in/?minlat=' + minlat.toString() +
-                  '&maxlat=' + maxlat.toString() +
-                  '&minlon=' + minlon.toString() +
-                  '&maxlon=' + maxlon.toString() +
+    /* Load census tract geo data (by pages) into dataStore. Bounds should
+     * remain consistent between pages of results */
+    loadTractData: function(page, bounds) {
+        //  This is north-western-hemisphere-centric for now
+        $.getJSON('/shapes/tracts-in/?minlat=' + bounds.getSouth().toString() +
+                  '&maxlat=' + bounds.getNorth().toString() +
+                  '&minlon=' + bounds.getWest().toString() +
+                  '&maxlon=' + bounds.getEast().toString() +
                   '&page_num=' + page.toString(),
                   function(data) {
             var newTracts = [];   //  geos we've never seen
@@ -66,8 +65,7 @@ var Mapusaurus = {
 
             //  Continue with next page of geo results
             if (data.features.length > 0) {
-                Mapusaurus.loadTractData(page + 1, minlat, maxlat, minlon,
-                                         maxlon);
+                Mapusaurus.loadTractData(page + 1, bounds);
             }
         });
     },
