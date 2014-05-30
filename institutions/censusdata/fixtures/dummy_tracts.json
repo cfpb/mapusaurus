@@ -19,7 +19,8 @@
       "minlat": 0,
       "minlon": 0,
       "maxlat": 1,
-      "maxlon": 1
+      "maxlon": 1,
+      "geojson": ""
     }
   },
   {
@@ -42,7 +43,8 @@
       "minlat": 0,
       "minlon": 0,
       "maxlat": 1,
-      "maxlon": 1
+      "maxlon": 1,
+      "geojson": ""
     }
   },
   {
@@ -65,7 +67,8 @@
       "minlat": 0,
       "minlon": 0,
       "maxlat": 1,
-      "maxlon": 1
+      "maxlon": 1,
+      "geojson": ""
     }
   },
   {
@@ -88,7 +91,8 @@
       "minlat": 0,
       "minlon": 0,
       "maxlat": 1,
-      "maxlon": 1
+      "maxlon": 1,
+      "geojson": ""
     }
   }
 ]

@@ -66,7 +66,9 @@ class StateCensusTract(models.Model):
             'maxlon': self.maxlon
         }
         geojson = json.dumps(geojson)
-        geojson = geojson.replace('"$_$"', self.geom.simplify().geojson)
+        geojson = geojson.replace(
+            '"$_$"',
+            self.geom.simplify(preserve_topology=True).geojson)
         self.geojson = geojson
 
     def save(self):

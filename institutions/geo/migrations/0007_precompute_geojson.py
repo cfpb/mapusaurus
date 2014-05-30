@@ -30,7 +30,9 @@ class Migration(DataMigration):
                 'maxlon': geo.maxlon
             }
             geojson = json.dumps(geojson)
-            geojson = geojson.replace('"$_$"', geo.geom.simplify().geojson)
+            geojson = geojson.replace(
+                '"$_$"',
+                geo.geom.simplify(preserve_topology=True).geojson)
             geo.geojson = geojson
             geo.save()
 
