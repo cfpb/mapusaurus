@@ -36,7 +36,8 @@ class StateCensusTract(models.Model):
             self.namelsad, self.countyfp, self.statefp)
 
     def auto_fields(self):
-        """Populate the min and max lat/lon based on this object's geometry"""
+        """Populate the min and max lat/lon based on this object's geometry;
+        also pre-compute a geojson representation for this model"""
         lons, lats = zip(*[pt for polygon in self.geom.coords
                            for line in polygon
                            for pt in line])
@@ -45,6 +46,8 @@ class StateCensusTract(models.Model):
         self.minlon = min(lons)
         self.maxlon = max(lons)
 
+        # geometry is a placeholder, as we'll be inserting a pre-serialized
+        # json string
         geojson = {"type": "Feature", "geometry": "$_$"}
         geojson['properties'] = {
             'statefp': self.statefp,

@@ -59,7 +59,13 @@ def tracts_in_rect(request):
                       maxlon__gte=minlon, maxlon__lte=maxlon)
 
     tracts = StateCensusTract.objects.filter(query).order_by('geoid')
+    tracts = tracts.values_list('geojson')
     tracts = _paged(tracts, request)
-    return HttpResponse(
-        GeoJSONSerializer().serialize(tracts, use_natural_keys=True),
-        content_type='application/json')
+
+    # We already have the json strings per model pre-computed, so just place
+    # them inside a static response
+    response = '{"crs": {"type": "link", "properties": {"href": '
+    response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
+    response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
+    response = response % ', '.join(t[0] for t in tracts)
+    return HttpResponse(response, content_type='application/json')
