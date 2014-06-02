@@ -1,4 +1,5 @@
-# This is an auto-generated Django model module created by ogrinspect.
+import json
+
 from django.contrib.gis.db import models
 
 
@@ -26,6 +27,7 @@ class StateCensusTract(models.Model):
     maxlat = models.FloatField(db_index=True)
     minlon = models.FloatField(db_index=True)
     maxlon = models.FloatField(db_index=True)
+    geojson = models.TextField()
 
     objects = models.GeoManager()
 
@@ -34,7 +36,8 @@ class StateCensusTract(models.Model):
             self.namelsad, self.countyfp, self.statefp)
 
     def auto_fields(self):
-        """Populate the min and max lat/lon based on this object's geometry"""
+        """Populate the min and max lat/lon based on this object's geometry;
+        also pre-compute a geojson representation for this model"""
         lons, lats = zip(*[pt for polygon in self.geom.coords
                            for line in polygon
                            for pt in line])
@@ -42,6 +45,31 @@ class StateCensusTract(models.Model):
         self.maxlat = max(lats)
         self.minlon = min(lons)
         self.maxlon = max(lons)
+
+        # geometry is a placeholder, as we'll be inserting a pre-serialized
+        # json string
+        geojson = {"type": "Feature", "geometry": "$_$"}
+        geojson['properties'] = {
+            'statefp': self.statefp,
+            'countyfp': self.countyfp,
+            'tractce': self.tractce,
+            'geoid': self.geoid,
+            'name': self.name,
+            'namelsad': self.namelsad,
+            'aland': self.aland,
+            'awater': self.awater,
+            'intptlat': self.intptlat,
+            'intptlon': self.intptlon,
+            'minlat': self.minlat,
+            'maxlat': self.maxlat,
+            'minlon': self.minlon,
+            'maxlon': self.maxlon
+        }
+        geojson = json.dumps(geojson)
+        geojson = geojson.replace(
+            '"$_$"',
+            self.geom.simplify(preserve_topology=True).geojson)
+        self.geojson = geojson
 
     def save(self):
         self.auto_fields()

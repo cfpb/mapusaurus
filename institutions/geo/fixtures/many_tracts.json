@@ -19,7 +19,8 @@
       "minlat": 0,
       "minlon": 0,
       "maxlat": 1,
-      "maxlon": 1
+      "maxlon": 1,
+      "geojson": "{\"type\": \"Feature\", \"geometry\": {\"type\": \"Polygon\", \"coordinates\": [[[0, 0], [0, 1], [1, 1], [0, 0]]]}}"
     }
   },
   {
@@ -42,7 +43,8 @@
       "minlat": 0,
       "minlon": 0,
       "maxlat": 1,
-      "maxlon": 1
+      "maxlon": 1,
+      "geojson": "{\"type\": \"Feature\", \"geometry\": {\"type\": \"Polygon\", \"coordinates\": [[[0, 0], [0, 1], [1, 1], [0, 0]]]}}"
     }
   },
   {
@@ -65,7 +67,8 @@
       "minlat": 0,
       "minlon": 0,
       "maxlat": 1,
-      "maxlon": 1
+      "maxlon": 1,
+      "geojson": "{\"type\": \"Feature\", \"geometry\": {\"type\": \"Polygon\", \"coordinates\": [[[0, 0], [0, 1], [1, 1], [0, 0]]]}}"
     }
   },
   {
@@ -88,7 +91,8 @@
       "minlat": -5,
       "minlon": -5,
       "maxlat": -4,
-      "maxlon": -4
+      "maxlon": -4,
+      "geojson": "{\"type\": \"Feature\", \"geometry\": {\"type\": \"Polygon\", \"coordinates\": [[[-5, -5], [-5, -4], [-4, -4], [-5, -5]]]}}"
     }
   }
 ]

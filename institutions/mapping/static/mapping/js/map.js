@@ -29,10 +29,22 @@ var Mapusaurus = {
 
     /* Whenever the map is shifted/zoomed, reload geo data */
     reloadGeo: function() {
+        var bounds = Mapusaurus.map.getBounds(),
+            halfWidth = Math.abs(bounds.getEast() - bounds.getWest()) / 2,
+            halfHeight = Math.abs(bounds.getNorth() - bounds.getSouth()) / 2,
+            //  NW-hemisphere centric
+            expandedN = bounds.getNorth() + halfHeight,
+            expandedS = bounds.getSouth() - halfHeight,
+            expandedW = bounds.getWest() - halfWidth,
+            expandedE = bounds.getEast() + halfWidth;
+
         /* To be responsive, only load census tract data at zoom-level 10
          * or above */
         if (Mapusaurus.map.getZoom() >= 10) {
-            Mapusaurus.loadTractData(1, Mapusaurus.map.getBounds());
+            Mapusaurus.loadTractData(
+                1, 
+                L.latLngBounds(L.latLng(expandedS, expandedW),
+                               L.latLng(expandedN, expandedE)));
         }
     },
 

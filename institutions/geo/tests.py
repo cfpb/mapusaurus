@@ -43,6 +43,17 @@ class StateCensusTractModelTest(TestCase):
         self.assertEqual(tract.minlon, -4)
         self.assertEqual(tract.maxlat, 2)
         self.assertEqual(tract.maxlon, 2)
+        geojson = json.loads(tract.geojson)
+        self.assertEqual(geojson['type'], "Feature")
+        self.assertEqual(geojson['properties']['statefp'], '00')
+        self.assertEqual(geojson['properties']['countyfp'], '111')
+        self.assertEqual(geojson['properties']['tractce'], '2222')
+        self.assertEqual(geojson['properties']['geoid'], '001112222')
+        self.assertEqual(geojson['properties']['name'], 'name')
+        self.assertEqual(geojson['properties']['namelsad'], 'nameslad')
+        self.assertEqual(geojson['geometry']['coordinates'],
+                         [[[0, 0], [0, 1], [1, 1], [0, 0]],
+                          [[2, 2], [-4, 2], [-4, 2], [2, 2]]])
 
 
 class ViewTest(TestCase):
