@@ -152,8 +152,7 @@ var Mapusaurus = {
     eachMinority: function(feature, layer) {
       var nonMinorityPercent = feature.properties.layer_minority;
       layer.setStyle({
-          fillColor: Mapusaurus.colorFromPercent(1 - nonMinorityPercent,
-                                                 246, 217, 211, 209, 65, 36),
+          fillColor: Mapusaurus.getColorValue(1 - nonMinorityPercent),
           fillOpacity: 0.7,
           weight: 2,
           color: '#babbbd'
@@ -183,14 +182,65 @@ var Mapusaurus = {
       });
     },
 
+    colorRanges: [
+        {
+            upperBound: 0.4999,
+            colors: {
+                lowR: 255,
+                lowG: 255,
+                lowB: 217,
+                highR: 242,
+                highG: 251,
+                highB: 184
+            }
+        },
+        {
+            upperBound: 0.79999,
+            colors: {
+                lowR: 198,
+                lowG: 234,
+                lowB: 178,
+                highR: 124,
+                highG: 206,
+                highB: 187
+            }
+        },
+        {
+            upperBound: 1,
+            colors: {
+                lowR: 14,
+                lowG: 144,
+                lowB: 194,
+                highR: 29,
+                highG: 92,
+                highB: 170
+            }
+        }
+    ],
+
+    toBucket: function(percent) {
+        var i, 
+            len = Mapusaurus.colorRanges.length;
+        for (i = 0; i < len; i++) {
+            if (Mapusaurus.colorRanges[i]['upperBound'] >= percent) {
+                return Mapusaurus.colorRanges[i]['colors'];
+            }
+        } 
+    },
+
+    getColorValue: function(percent) {
+        var colorVals = Mapusaurus.toBucket(percent);
+        return Mapusaurus.colorFromPercent(percent, colorVals);
+    },    
+
     /* Given low and high colors and a percent, figure out the RGB of said
      * percent in that scale */
-    colorFromPercent: function(percent, lowR, lowG, lowB, highR, highG, highB) {
-        var diffR = (highR - lowR) * percent,
-            diffG = (highG - lowG) * percent,
-            diffB = (highB - lowB) * percent;
-        return 'rgb(' + (lowR + diffR).toFixed() + ', ' +
-               (lowG + diffG).toFixed() + ', ' +
-               (lowB + diffB).toFixed() + ')';
+    colorFromPercent: function(percent, c) {
+        var diffR = (c.highR - c.lowR) * percent,
+            diffG = (c.highG - c.lowG) * percent,
+            diffB = (c.highB - c.lowB) * percent;
+        return 'rgb(' + (c.lowR + diffR).toFixed() + ', ' +
+               (c.lowG + diffG).toFixed() + ', ' +
+               (c.lowB + diffB).toFixed() + ')';
     }
 };
