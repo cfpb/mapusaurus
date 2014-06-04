@@ -184,7 +184,7 @@ var Mapusaurus = {
 
     colorRanges: [
         {
-            upperBound: 0.4999,
+            upperBound: 0.5,
             colors: {
                 lowR: 255,
                 lowG: 255,
@@ -195,7 +195,7 @@ var Mapusaurus = {
             }
         },
         {
-            upperBound: 0.79999,
+            upperBound: 0.8,
             colors: {
                 lowR: 198,
                 lowG: 234,
@@ -222,7 +222,7 @@ var Mapusaurus = {
         var i, 
             len = Mapusaurus.colorRanges.length;
         for (i = 0; i < len; i++) {
-            if (Mapusaurus.colorRanges[i]['upperBound'] >= percent) {
+            if (Mapusaurus.colorRanges[i]['upperBound'] > percent) {
                 return Mapusaurus.colorRanges[i]['colors'];
             }
         } 
