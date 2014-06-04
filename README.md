@@ -90,7 +90,7 @@ This is how you load the data:
 
 ## Census Data
 
-The 'censusdata' loads census data to the census tracts found in the 'geo'
+The 'censusdata' app loads census data to the census tracts found in the 'geo'
 application. As such, 'censusdata' relies on 'geo'.
 
 First, run migrate to create the appropriate tables
@@ -114,3 +114,30 @@ Loading the data looks like this:
 
 Warning: currently, data will not be updated in place; to re-import, you'll
 need to delete everything from the `censusdata_census2010*` tables.
+
+
+## HMDA
+
+The 'hmda' app loads HMDA data to the census tracts found in the 'geo'
+application. As such, 'hmda' relies on 'geo'. In fact, 'hmda' will only store
+data for states that are loaded via the 'geo' app.
+
+First, run migrate to create the appropriate tables
+
+```
+    python manage.py migrate hmda
+```
+
+Next, download a flat file representing all of the HMDA LAR data:
+```
+http://www.ffiec.gov/hmda/hmdaflat.htm
+```
+and download the zip file. Unzip it and then:
+```
+    python manage.py load_hmda /path/to/2012HMDALAR\ -\ National.csv
+```
+
+Note that this process takes several minutes (though you will receive progress
+notifications).
+
+The HMDA data in your database is wiped with each reload.
