@@ -206,7 +206,7 @@ var Mapusaurus = {
             }
         },
         {
-            upperBound: 1,
+            upperBound: 1.1,
             colors: {
                 lowR: 14,
                 lowG: 144,
