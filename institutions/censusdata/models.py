@@ -107,3 +107,21 @@ class Census2010RaceStats(models.Model):
     def save(self):
         self.auto_fields()
         super(Census2010RaceStats, self).save()
+
+
+class Census2010Households(models.Model):
+    """Number of households per census tract, pulled from Summary1, file 5"""
+    geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
+                              unique=True, db_index=True, primary_key=True)
+
+    total = models.IntegerField()
+
+    total_family = models.IntegerField()
+    husband_wife = models.IntegerField()
+    total_family_other = models.IntegerField()
+    male_no_wife = models.IntegerField()
+    female_no_husband = models.IntegerField()
+
+    total_nondamily = models.IntegerField()
+    living_alone = models.IntegerField()
+    not_living_alone = models.IntegerField()
