@@ -122,6 +122,6 @@ class Census2010Households(models.Model):
     male_no_wife = models.IntegerField()
     female_no_husband = models.IntegerField()
 
-    total_nondamily = models.IntegerField()
+    total_nonfamily = models.IntegerField()
     living_alone = models.IntegerField()
     not_living_alone = models.IntegerField()

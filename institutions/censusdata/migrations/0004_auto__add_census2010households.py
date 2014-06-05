@@ -17,7 +17,7 @@ class Migration(SchemaMigration):
             ('total_family_other', self.gf('django.db.models.fields.IntegerField')()),
             ('male_no_wife', self.gf('django.db.models.fields.IntegerField')()),
             ('female_no_husband', self.gf('django.db.models.fields.IntegerField')()),
-            ('total_nondamily', self.gf('django.db.models.fields.IntegerField')()),
+            ('total_nonfamily', self.gf('django.db.models.fields.IntegerField')()),
             ('living_alone', self.gf('django.db.models.fields.IntegerField')()),
             ('not_living_alone', self.gf('django.db.models.fields.IntegerField')()),
         ))
@@ -76,7 +76,7 @@ class Migration(SchemaMigration):
             'total': ('django.db.models.fields.IntegerField', [], {}),
             'total_family': ('django.db.models.fields.IntegerField', [], {}),
             'total_family_other': ('django.db.models.fields.IntegerField', [], {}),
-            'total_nondamily': ('django.db.models.fields.IntegerField', [], {})
+            'total_nonfamily': ('django.db.models.fields.IntegerField', [], {})
         },
         u'censusdata.census2010race': {
             'Meta': {'object_name': 'Census2010Race'},
