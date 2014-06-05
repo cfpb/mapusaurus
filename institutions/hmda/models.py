@@ -49,20 +49,15 @@ class HMDARecord(models.Model):
                    + "application resulted in a mortgage. Loan purchased "
                    + "means that the lender bought the loan on the "
                    + "secondary market."))
-    state_code = models.CharField(
+    statefp = models.CharField(
         max_length=2, db_index=True,
         help_text=("A two-digit code representing the state the property is "
                    + " located in."))
-    county_code = models.CharField(
+    countyfp = models.CharField(
         max_length=3, db_index=True,
         help_text=("A three-digit code representing the county of the "
                    + "property. This code is only unique when combined with "
                    + "the state code."))
-    census_tract = models.CharField(
-        max_length=6,       # 7, if including decimal
-        help_text=("The number of the census tract for the property. This "
-                   + "code is only unique when combined with the state and "
-                   + "county codes."))
 
     lender = models.CharField(max_length=11, db_index=True)
     geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
@@ -70,7 +65,6 @@ class HMDARecord(models.Model):
 
     def auto_fields(self):
         self.lender = self.agency_code + self.respondent_id
-        self.geoid_id = self.state_code + self.county_code + self.census_tract
 
     def save(self):
         self.auto_fields()

@@ -14,11 +14,16 @@ class Command(BaseCommand):
         if not args:
             raise CommandError("Needs a first argument, " + Command.args)
 
-        HMDARecord.objects.all().delete()
-        known_states = set(
+        geo_states = set(
             row['statefp'] for row in
             StateCensusTract.objects.values('statefp').distinct())
-        print "Filtering by states", ", ".join(list(sorted(known_states)))
+        self.stdout.write("Filtering by states "
+                          + ", ".join(list(sorted(geo_states))))
+        known_hmda = set(
+            row['statefp'] for row in
+            HMDARecord.objects.values('statefp').distinct())
+        self.stdout.write("Already have data for "
+                          + ", ".join(list(sorted(known_hmda))))
 
         def records():
             """A generator returning a new Record with each call. Required as
@@ -27,18 +32,15 @@ class Command(BaseCommand):
             i = 0
             for row in reader(datafile):
                 if i % 1000000 == 0:
-                    print "Record", i // 1000000, "000,000"
+                    self.stdout.write("Record %d 000,000" % (i // 1000000))
                 record = HMDARecord(
-                    as_of_year=int(row[0]),
-                    respondent_id=row[1],
-                    agency_code=row[2],
-                    loan_amount_000s=int(row[7]),
-                    action_taken=row[9],
-                    state_code=row[11],
-                    county_code=row[12],
-                    census_tract=row[13].replace('.', ''))
+                    as_of_year=int(row[0]), respondent_id=row[1],
+                    agency_code=row[2], loan_amount_000s=int(row[7]),
+                    action_taken=row[9], statefp=row[11], countyfp=row[12])
+                record.geoid_id = row[11] + row[12] + row[13].replace('.', '')
                 record.auto_fields()
-                if row[11] in known_states and 'NA' not in record.geoid_id:
+                if (row[11] not in known_hmda and row[11] in geo_states
+                        and 'NA' not in record.geoid_id):
                     yield record
                 i += 1
             datafile.close()

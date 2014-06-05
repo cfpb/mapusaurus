@@ -138,6 +138,8 @@ and download the zip file. Unzip it and then:
 ```
 
 Note that this process takes several minutes (though you will receive progress
-notifications).
+notifications). This import can be ran repeatedly (if additional geos are
+added later, for example).
 
-The HMDA data in your database is wiped with each reload.
+Warning: At the moment, the import assumes a single year of information.
+That's a todo.
