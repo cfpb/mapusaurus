@@ -8,6 +8,9 @@ from censusdata.models import (
 
 
 class Command(BaseCommand):
+    """Loads Summary File 1 data from the decennial census. Official
+    documentation for fields at
+    http://www.census.gov/prod/cen2010/doc/sf1.pdf"""
     args = "<path/to/XXgeo2010.sf1>"
     help = """
         Load Decennial Census data for a state.
@@ -32,6 +35,8 @@ class Command(BaseCommand):
         self.handle_filefive(args[0], state, geoids_by_record)
 
     def handle_filethree(self, geofile_name, state, geoids_by_record):
+        """File three (XX000032010.sf1) contains race and ethnicity summaries.
+        Documentation starts at page 6-22."""
         file3_name = geofile_name[:-11] + "000032010.sf1"
         datafile = open(file3_name, 'r')
         state = geoids_by_record.values()[0][:2]
@@ -81,6 +86,9 @@ class Command(BaseCommand):
             Census2010RaceStats.objects.bulk_create(stats)
 
     def handle_filefour(self, geofile_name, state, geoids_by_record):
+        """File four (XX000042010.sf1) contains age demographics and
+        correlations with race, ethnicity, and sex. Documentation starts at
+        page 6-30"""
         file4_name = geofile_name[:-11] + "000042010.sf1"
         datafile = open(file4_name, 'r')
         sex, age = [], []
@@ -114,6 +122,9 @@ class Command(BaseCommand):
             Census2010Age.objects.bulk_create(age)
 
     def handle_filefive(self, geofile_name, state, geoids_by_record):
+        """File five (XX000052010.sf1) contains household metrics, including
+        divisions by household type, household size, etc. Documentation starts
+        at page 6-38"""
         file4_name = geofile_name[:-11] + "000052010.sf1"
         datafile = open(file4_name, 'r')
         households = []
