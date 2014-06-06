@@ -34,15 +34,15 @@ class ViewsTest(TestCase):
     def tearDown(self):
         Census2010RaceStats.objects.all().delete()
 
-    def test_race_summary_404s(self):
+    def test_race_summary_400s(self):
         resp = self.client.get(reverse('censusdata:race_summary'))
-        self.assertEqual(404, resp.status_code)
+        self.assertEqual(400, resp.status_code)
         resp = self.client.get(reverse('censusdata:race_summary'),
                                {'county_fips': '1'})
-        self.assertEqual(404, resp.status_code)
+        self.assertEqual(400, resp.status_code)
         resp = self.client.get(reverse('censusdata:race_summary'),
                                {'state_fips': '1'})
-        self.assertEqual(404, resp.status_code)
+        self.assertEqual(400, resp.status_code)
 
     def test_race_summary(self):
         resp = self.client.get(reverse('censusdata:race_summary'),

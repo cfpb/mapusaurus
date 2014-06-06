@@ -1,6 +1,6 @@
 import json
 
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, HttpResponseBadRequest
 
 from .models import Census2010RaceStats
 
@@ -34,4 +34,4 @@ def race_summary(request):
             }
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
-        raise Http404
+        return HttpResponseBadRequest("Missing one of state_fips, county_fips")

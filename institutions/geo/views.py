@@ -1,7 +1,6 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
-from django.http import Http404, HttpResponse
-from djgeojson.serializers import Serializer as GeoJSONSerializer
+from django.http import HttpResponse, HttpResponseBadRequest
 
 from .models import StateCensusTract
 
@@ -51,7 +50,8 @@ def tracts_in_rect(request):
         minlat, maxlat = float(minlat), float(maxlat)
         minlon, maxlon = float(minlon), float(maxlon)
     except ValueError:
-        raise Http404
+        return HttpResponseBadRequest(
+            "Bad or missing: one of minlat, maxlat, minlon, maxlon")
 
     # check that any of the three points are inside the boundary
     query = Q(minlat__gte=minlat, minlat__lte=maxlat,
