@@ -4,7 +4,7 @@ var Mapusaurus = {
     //  Leaflet map
     map: null,
     //  Leaflet layers
-    layers: {tract: {minority: null}},
+    layers: {tract: {minority: null, minorityBubbles: null}},
     //  Stores geo data, along with fields for layers
     dataStore: {tract: {}},
     //  Stores stat data when the associated geos aren't loaded
@@ -17,7 +17,9 @@ var Mapusaurus = {
             {type: 'FeatureCollection', features: []},
             {onEachFeature: Mapusaurus.eachMinority}
         );
+        Mapusaurus.layers.tract.minorityBubbles = L.layerGroup([]);
         Mapusaurus.layers.tract.minority.addTo(map);
+        Mapusaurus.layers.tract.minorityBubbles.addTo(map);
         //  @todo: really, we only care about the part of the viewport which
         //  is new
         map.on('moveend', Mapusaurus.reloadGeo);
@@ -146,6 +148,13 @@ var Mapusaurus = {
             return Mapusaurus.dataStore.tract[geoid];
         });
         Mapusaurus.layers.tract.minority.addData(geoData);
+        _.each(geoData, function(geo) {
+          Mapusaurus.layers.tract.minorityBubbles.addLayer(
+            L.circle([geo.properties.intptlat, geo.properties.intptlon],
+                     100,
+                     {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
+                      color: '#000'}));
+        });
     },
 
     /* Style/extras for each census tract in the minorities layer */
