@@ -8,5 +8,6 @@ urlpatterns = patterns(
     url(r'^institutions/', include('respondants.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^shapes/', include('geo.urls', namespace='geo')),
+    url(r'^hmda/', include('hmda.urls', namespace='hmda')),
     url(r'^census/', include('censusdata.urls', namespace='censusdata'))
 )
