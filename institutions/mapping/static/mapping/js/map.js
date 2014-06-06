@@ -4,7 +4,7 @@ var Mapusaurus = {
     //  Leaflet map
     map: null,
     //  Leaflet layers
-    layers: {tract: {minority: null, minorityBubbles: null}},
+    layers: {tract: {minority: null}},
     //  Stores geo data, along with fields for layers
     dataStore: {tract: {}},
     //  Stores stat data when the associated geos aren't loaded
@@ -17,9 +17,12 @@ var Mapusaurus = {
             {type: 'FeatureCollection', features: []},
             {onEachFeature: Mapusaurus.eachMinority}
         );
-        Mapusaurus.layers.tract.minorityBubbles = L.layerGroup([]);
         Mapusaurus.layers.tract.minority.addTo(map);
-        Mapusaurus.layers.tract.minorityBubbles.addTo(map);
+        if (Mapusaurus.urlParam('lender')) {
+            Mapusaurus.layers.tract.loanVolume = L.layerGroup([]);
+            Mapusaurus.layers.tract.loanVolume.addTo(map);
+            Mapusaurus.dataWithoutGeo.tract.loanVolume = {};
+        }
         //  @todo: really, we only care about the part of the viewport which
         //  is new
         map.on('moveend', Mapusaurus.reloadGeo);
@@ -27,6 +30,22 @@ var Mapusaurus = {
         map.on('zoomend', Mapusaurus.reloadGeo);
         //  Kick it off
         Mapusaurus.reloadGeo();
+    },
+
+    /* Naive url parameter parser */
+    urlParam: function(field) {
+        var url = window.location.search.replace('?', ''),
+            keyValueStrs = url.split('&'),
+            pairs = _.map(keyValueStrs, function(keyValueStr) {
+                return keyValueStr.split('=');
+            }),
+            params = _.reduce(pairs, function(soFar, pair) {
+                if (pair.length === 2) {
+                    soFar[pair[0]] = pair[1];
+                }
+                return soFar;
+            }, {});
+        return params[field];
     },
 
     /* Whenever the map is shifted/zoomed, reload geo data */
@@ -87,79 +106,150 @@ var Mapusaurus = {
     /*  We may have previously loaded stats data without the geos. Run through
      *  that data and see if the new geo data matches */
     updateDataWithoutGeos: function(newTracts) {
-        var toDraw = [];  // geoids
-        _.each(newTracts, function(geoid) {
-            //  Stats data is present
-            if (_.has(Mapusaurus.dataWithoutGeo.tract.minority, geoid)) {
-                Mapusaurus.dataStore.tract[geoid].properties.layer_minority =
-                    Mapusaurus.dataWithoutGeo.tract.minority[geoid];
-                toDraw.push(geoid);
-                delete Mapusaurus.dataWithoutGeo.tract.minority[geoid];
-            }
+        var toDraw = {},  // geoids by layer
+            undrawnData = Mapusaurus.dataWithoutGeo.tract;
+        //  For each layer
+        _.each(_.keys(undrawnData), function (layerName) {
+            toDraw[layerName] = [];
+
+            //  For each shape
+            _.each(newTracts, function(geoid) {
+                var geoProps = Mapusaurus.dataStore.tract[geoid].properties;
+                //  Check if the data can now be drawn
+                if (_.has(undrawnData[layerName], geoid)) {
+                    geoProps['layer_' + layerName] = 
+                        undrawnData[layerName][geoid];
+                    toDraw[layerName].push(geoid);
+                    delete undrawnData[layerName][geoid];
+                }
+            });
         });
         Mapusaurus.draw(toDraw);
     },
 
     /* We have geos without their associated stats - kick off the load */
     fetchMissingStats: function(newTracts) {
-        var missingData = null,   //  state + county strings
-            afterLoad = null;     //  fn to be called after each data load
-        //  We only care about unseen stat data
-        missingData = _.filter(newTracts, function(geoid) {
-            return !_.has(Mapusaurus.dataStore.tract[geoid].properties,
-                          'layer_minority');
+        //  For each layer
+        _.each(_.keys(Mapusaurus.layers.tract), function(layerName) {
+            //  We only care about unseen stat data
+            var missingData = _.filter(newTracts, function(geoid) {
+              return !_.has(Mapusaurus.dataStore.tract[geoid].properties,
+                            'layer_' + layerName);
+            });
+            //  convert to state + county strings
+            missingData = _.map(missingData, function(geoid) {
+                var geo = Mapusaurus.dataStore.tract[geoid];
+                return geo.properties.statefp + geo.properties.countyfp;
+            });
+            //  remove any duplicates; we end with what state/counties need to
+            //  be retrieved
+            missingData = _.uniq(missingData);
+
+            //  start loading the data for each county
+            _.each(missingData, function(stateCounty) {
+                var state = stateCounty.substr(0, 2),
+                    county = stateCounty.substr(2);
+                Mapusaurus.loadLayerData(layerName, state, county);
+            });
         });
-        //  convert to state + county strings
-        missingData = _.map(missingData, function(geoid) {
-            var geo = Mapusaurus.dataStore.tract[geoid];
-            return geo.properties.statefp + geo.properties.countyfp;
-        });
-        missingData = _.uniq(missingData);
-        
-        afterLoad = function(data) {
-            var toDraw = [];
+    },
+
+    /* Each layer has a different end point associated with it. Use that to 
+     * load (and eventually, draw) the layer stats */
+    loadLayerData: function(layerName, state, county) {
+        var url = null;
+        switch(layerName) {
+            case 'minority':
+                url = ('/census/race-summary?state_fips=' + state +
+                       '&county_fips=' + county);
+                break;
+            case 'loanVolume':
+                url = ('/hmda/volume?state_fips=' + state + 
+                       '&county_fips=' + county +
+                       '&lender=' + Mapusaurus.urlParam('lender'));
+                break;
+            default:
+                window.alert('Unknown layer to load');
+        }
+
+        //  Now kick off the load for that layer
+        $.getJSON(url, function(data) {
+            var toDraw = {};
+            toDraw[layerName] = [];
             _.each(_.keys(data), function(geoid) {
                 var geo = Mapusaurus.dataStore.tract[geoid];
                 //  Have not loaded the geo data yet
                 if (!geo) {
-                    Mapusaurus.dataWithoutGeo.tract.minority[geoid] =
-                        data[geoid].non_hisp_white_only_perc;
+                    Mapusaurus.dataWithoutGeo.tract[layerName][geoid] =
+                        data[geoid];
                 //  Have the geo data, but haven't drawn the stats yet
-                } else if (!geo.properties.layer_minority) {
-                    geo.properties.layer_minority =
-                        data[geoid].non_hisp_white_only_perc;
-                    toDraw.push(geoid);
+                } else if (!geo.properties['layer_' + layerName]) {
+                    geo.properties['layer_' + layerName] = data[geoid];
+                    toDraw[layerName].push(geoid);
                 }
             });
             Mapusaurus.draw(toDraw);
-        };
-        //  start loading the stat data
-        _.each(missingData, function(stateCounty) {
-            var state = stateCounty.substr(0, 2),
-                county = stateCounty.substr(2);
-            $.getJSON('/census/race-summary?state_fips=' + state +
-                      '&county_fips=' + county, afterLoad);
         });
     },
 
-    /* Given a list of geo ids, add them to the minority layer */
-    draw: function(geoids) {
-        var geoData = _.map(geoids, function(geoid) {
-            return Mapusaurus.dataStore.tract[geoid];
-        });
-        Mapusaurus.layers.tract.minority.addData(geoData);
-        _.each(geoData, function(geo) {
-          Mapusaurus.layers.tract.minorityBubbles.addLayer(
-            L.circle([geo.properties.intptlat, geo.properties.intptlon],
-                     100,
-                     {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
-                      color: '#000'}));
+    /* Given a list of geo ids, segmented by layer name, add them to the
+     * leaflet layer. */
+    draw: function(layerToGeoids) {
+        // For each layer
+        _.each(_.keys(layerToGeoids), function(layerName) {
+            var geoData = _.map(layerToGeoids[layerName], function(geoid) {
+              return Mapusaurus.dataStore.tract[geoid];
+            });
+            switch(layerName) {
+                case 'minority':
+                    Mapusaurus.layers.tract.minority.addData(geoData);
+                    Mapusaurus.layers.tract.minority.bringToBack();
+                    break;
+                case 'loanVolume':
+                    _.each(geoData, function(geo) {
+                      var data = geo.properties['layer_loanVolume'],
+                          circle = L.circle(
+                          [geo.properties.intptlat, geo.properties.intptlon],
+                          100 * data['volume_per_100_households'],
+                          {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
+                           color: '#000'});
+                      //  keep expected functionality with double clicking
+                      circle.on('dblclick', function(ev) {
+                          Mapusaurus.map.setZoomAround(
+                              ev.latlng, Mapusaurus.map.getZoom() + 1);
+                      });
+                      circle.on('mouseover', function() {
+                          var div = $('<div></div>', {
+                              id: 'household-popup-' + geo.properties.geoid,
+                              css: {
+                                  position: 'absolute',
+                                  bottom: '85px',
+                                  left: '50px',
+                                  zIndex: 1002,
+                                  backgroundColor: 'white',
+                                  padding: '8px',
+                                  border: '1px solid #ccc'
+                              }
+                          });
+                          div.html(data['volume'] + ' loans<br />' +
+                                   data['households'] + ' households');
+                          div.appendTo('#map');
+                      });
+                      circle.on('mouseout', function() {
+                          $('#household-popup-' +
+                            geo.properties.geoid).remove();
+                      });
+                      Mapusaurus.layers.tract.loanVolume.addLayer(circle);
+                    });
+                    break;
+            }
         });
     },
 
     /* Style/extras for each census tract in the minorities layer */
     eachMinority: function(feature, layer) {
-      var nonMinorityPercent = feature.properties.layer_minority;
+      var nonMinorityPercent = feature.properties['layer_minority'][
+          'non_hisp_white_only_perc'];
       layer.setStyle({
           fillColor: Mapusaurus.getColorValue(1 - nonMinorityPercent),
           fillOpacity: 0.7,

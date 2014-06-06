@@ -34,6 +34,7 @@ def loan_originations(request):
         for row in query:
             data[row['geoid']] = {
                 'volume': row['volume'],
+                'households': row['geoid__census2010households__total'],
                 'volume_per_100_households': volume_per_100_households(
                     row['volume'], row['geoid__census2010households__total'])
             }
