@@ -43,24 +43,24 @@ class ViewsTest(TestCase):
         Census2010Households.objects.all().delete()
         HMDARecord.objects.all().delete()
 
-    def test_volume_404(self):
+    def test_volume_400(self):
         resp = self.client.get(reverse('hmda:volume'))
-        self.assertEqual(404, resp.status_code)
+        self.assertEqual(400, resp.status_code)
         resp = self.client.get(reverse('hmda:volume'),
                                {'county_fips': '1'})
-        self.assertEqual(404, resp.status_code)
+        self.assertEqual(400, resp.status_code)
         resp = self.client.get(reverse('hmda:volume'),
                                {'state_fips': '1'})
-        self.assertEqual(404, resp.status_code)
+        self.assertEqual(400, resp.status_code)
         resp = self.client.get(reverse('hmda:volume'),
                                {'county_fips': '1', 'state_fips': '3'})
-        self.assertEqual(404, resp.status_code)
+        self.assertEqual(400, resp.status_code)
         resp = self.client.get(reverse('hmda:volume'),
                                {'county_fips': '1', 'lender': '3'})
-        self.assertEqual(404, resp.status_code)
+        self.assertEqual(400, resp.status_code)
         resp = self.client.get(reverse('hmda:volume'),
                                {'lender': '1', 'state_fips': '3'})
-        self.assertEqual(404, resp.status_code)
+        self.assertEqual(400, resp.status_code)
 
     def test_volume(self):
         resp = self.client.get(reverse('hmda:volume'),
