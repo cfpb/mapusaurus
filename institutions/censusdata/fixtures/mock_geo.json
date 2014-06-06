@@ -1,0 +1,51 @@
+[
+  {
+    "pk": 30101,
+    "model": "geo.statecensustract",
+    "fields": {
+      "aland": 2097335.0,
+      "awater": 0.0,
+      "countyfp": "001",
+      "funcstat": "S",
+      "geoid": "11001000100",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "intptlat": "0.0",
+      "intptlon": "0.0",
+      "mtfcc": "G5020",
+      "name": "1",
+      "namelsad": "Census Tract 1",
+      "statefp": "11",
+      "tractce": "000100",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1,
+      "geojson": ""
+    }
+  },
+  {
+    "pk": 30102,
+    "model": "geo.statecensustract",
+    "fields": {
+      "aland": 2097335.0,
+      "awater": 0.0,
+      "countyfp": "001",
+      "funcstat": "S",
+      "geoid": "11001000902",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "intptlat": "0.0",
+      "intptlon": "0.0",
+      "mtfcc": "G5020",
+      "name": "9.02",
+      "namelsad": "Census Tract 9.02",
+      "statefp": "11",
+      "tractce": "000902",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1,
+      "geojson": ""
+    }
+  }
+]
+

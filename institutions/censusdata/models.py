@@ -7,7 +7,7 @@ from django.db import models
 class Census2010Race(models.Model):
     """Race population fields, pulled from Summary1, file 3"""
     geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              unique=True, db_index=True, primary_key=True)
+                              primary_key=True)
 
     total_pop = models.IntegerField()
     white_alone = models.IntegerField()
@@ -22,7 +22,7 @@ class Census2010Race(models.Model):
 class Census2010HispanicOrigin(models.Model):
     """Hispanic/Latino population fields, pulled from Summary1, file 3"""
     geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              unique=True, db_index=True, primary_key=True)
+                              primary_key=True)
 
     total_pop = models.IntegerField()
     non_hispanic = models.IntegerField()
@@ -32,7 +32,7 @@ class Census2010HispanicOrigin(models.Model):
 class Census2010Sex(models.Model):
     """Sex/Gender population fields, pulled from Summary1, file 4"""
     geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              unique=True, db_index=True, primary_key=True)
+                              primary_key=True)
 
     total_pop = models.IntegerField()
     male = models.IntegerField()
@@ -43,7 +43,7 @@ class Census2010Age(models.Model):
     """Population grouped by age, pulled from Summary1, file 4. We use the
     exact breakdown as in the census"""
     geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              unique=True, db_index=True, primary_key=True)
+                              primary_key=True)
 
     total_pop = models.IntegerField()
     under_five = models.IntegerField()
@@ -76,7 +76,7 @@ class Census2010RaceStats(models.Model):
     the above data, particularly segmenting out minority groups by race and
     hispanic/latino"""
     geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              unique=True, db_index=True, primary_key=True)
+                              primary_key=True)
 
     total_pop = models.IntegerField()
     hispanic = models.IntegerField()
@@ -107,3 +107,39 @@ class Census2010RaceStats(models.Model):
     def save(self):
         self.auto_fields()
         super(Census2010RaceStats, self).save()
+
+
+class Census2010Households(models.Model):
+    """Number of households per census tract, pulled from Summary1, file 5"""
+    geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
+                              primary_key=True)
+
+    total = models.IntegerField(
+        help_text="Total number of households in census tract. P0180001")
+
+    total_family = models.IntegerField(
+        help_text=("Total number of family households. Combined with "
+                   + "total_nonfamily to check total. P0180002"))
+    husband_wife = models.IntegerField(
+        help_text=("Husband-wife family households. Combine with "
+                   + "total_family_other to check total_family. P0180003"))
+    total_family_other = models.IntegerField(
+        help_text=("'Other' family households. Combine with husband_wife "
+                   "to check total_family. P0180004"))
+    male_no_wife = models.IntegerField(
+        help_text=("Male householder, no wife present. Combine with "
+                   + "female_no_husband to check total_family_other. "
+                   + "P0180005"))
+    female_no_husband = models.IntegerField(
+        help_text=("Female householder, no husband present. Combine with "
+                   + "male_no_wife to check total_family_other. P0180006"))
+
+    total_nonfamily = models.IntegerField(
+        help_text=("Total number of nonfamily households. Combine with "
+                   + "total_family to check total. P0180007"))
+    living_alone = models.IntegerField(
+        help_text=("Householder living alone. Combine with not_living_alone "
+                   + "to check total_nonfamily. P0180008"))
+    not_living_alone = models.IntegerField(
+        help_text=("Householder not living alone. Combine with living_alone "
+                   + "to check total_nonfamily. P0180009"))
