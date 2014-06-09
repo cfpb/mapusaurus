@@ -59,6 +59,11 @@ class StateCensusTractModelTest(TestCase):
 class ViewTest(TestCase):
     fixtures = ['many_tracts']
 
+    def setUp(self):
+        """To avoid hand-typing escaped JSON, just generate each here"""
+        for tract in StateCensusTract.objects.all():
+            tract.save()
+
     def test_tracts(self):
         resp = self.client.get(reverse('geo:tractsgeojson'),
                                {'state_fips': '11', 'county_fips': '222'})

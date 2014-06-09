@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'respondants',
     'geo',
     'censusdata',
+    'hmda'
 )
 
 MIDDLEWARE_CLASSES = (

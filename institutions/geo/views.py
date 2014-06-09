@@ -1,7 +1,6 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
-from django.http import Http404, HttpResponse
-from djgeojson.serializers import Serializer as GeoJSONSerializer
+from django.http import HttpResponse, HttpResponseBadRequest
 
 from .models import StateCensusTract
 
@@ -30,11 +29,16 @@ def tracts(request):
 
     tracts = StateCensusTract.objects.filter(
         countyfp=county_fips, statefp=state_fips).order_by('geoid')
+    tracts = tracts.values_list('geojson')
     tracts = _paged(tracts, request)
 
-    return HttpResponse(
-        GeoJSONSerializer().serialize(tracts, use_natural_keys=True),
-        content_type='application/json')
+    # We already have the json strings per model pre-computed, so just place
+    # them inside a static response
+    response = '{"crs": {"type": "link", "properties": {"href": '
+    response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
+    response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
+    response = response % ', '.join(t[0] for t in tracts)
+    return HttpResponse(response, content_type='application/json')
 
 
 def tracts_in_rect(request):
@@ -46,7 +50,8 @@ def tracts_in_rect(request):
         minlat, maxlat = float(minlat), float(maxlat)
         minlon, maxlon = float(minlon), float(maxlon)
     except ValueError:
-        raise Http404
+        return HttpResponseBadRequest(
+            "Bad or missing: one of minlat, maxlat, minlon, maxlon")
 
     # check that any of the three points are inside the boundary
     query = Q(minlat__gte=minlat, minlat__lte=maxlat,
