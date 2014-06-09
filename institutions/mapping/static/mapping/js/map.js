@@ -207,43 +207,49 @@ var Mapusaurus = {
                     break;
                 case 'loanVolume':
                     _.each(geoData, function(geo) {
-                      var data = geo.properties['layer_loanVolume'],
-                          circle = L.circle(
-                          [geo.properties.intptlat, geo.properties.intptlon],
-                          100 * data['volume_per_100_households'],
-                          {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
-                           color: '#000'});
-                      //  keep expected functionality with double clicking
-                      circle.on('dblclick', function(ev) {
-                          Mapusaurus.map.setZoomAround(
-                              ev.latlng, Mapusaurus.map.getZoom() + 1);
-                      });
-                      circle.on('mouseover', function() {
-                          var div = $('<div></div>', {
-                              id: 'household-popup-' + geo.properties.geoid,
-                              css: {
-                                  position: 'absolute',
-                                  bottom: '85px',
-                                  left: '50px',
-                                  zIndex: 1002,
-                                  backgroundColor: 'white',
-                                  padding: '8px',
-                                  border: '1px solid #ccc'
-                              }
-                          });
-                          div.html(data['volume'] + ' loans<br />' +
-                                   data['households'] + ' households');
-                          div.appendTo('#map');
-                      });
-                      circle.on('mouseout', function() {
-                          $('#household-popup-' +
-                            geo.properties.geoid).remove();
-                      });
-                      Mapusaurus.layers.tract.loanVolume.addLayer(circle);
+                        Mapusaurus.layers.tract.loanVolume.addLayer(
+                            Mapusaurus.mkBubble(geo.properties)
+                        );
                     });
                     break;
             }
         });
+    },
+
+    /* Styles/extras for originations layer */
+    mkBubble: function(geoProps) {
+        var data = geoProps['layer_loanVolume'],
+            circle = L.circle([geoProps.intptlat, geoProps.intptlon],
+                              100 * data['volume_per_100_households'],
+                              {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
+                               color: '#000'});
+        //  keep expected functionality with double clicking
+        circle.on('dblclick', function(ev) {
+            Mapusaurus.map.setZoomAround(
+                ev.latlng, Mapusaurus.map.getZoom() + 1);
+        });
+        circle.on('mouseover', function() {
+            var div = $('<div></div>', {
+                id: 'household-popup-' + geoProps.geoid,
+                css: {
+                    position: 'absolute',
+                    bottom: '85px',
+                    left: '50px',
+                    zIndex: 1002,
+                    backgroundColor: 'white',
+                    padding: '8px',
+                    border: '1px solid #ccc'
+                }
+            });
+            div.html(data['volume'] + ' loans<br />' +
+                     data['households'] + ' households');
+            div.appendTo('#map');
+        });
+        circle.on('mouseout', function() {
+            $('#household-popup-' +
+              geoProps.geoid).remove();
+        });
+        return circle;
     },
 
     /* Style/extras for each census tract in the minorities layer */
