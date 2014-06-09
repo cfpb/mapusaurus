@@ -37,8 +37,7 @@ def race_summary(request):
             }
         return HttpResponse(json.dumps(data), content_type='application/json')
     else:
-<<<<<<< HEAD
-        raise Http404
+        return HttpResponseBadRequest("Missing one of state_fips, county_fips")
 
 
 def find_bin_indices(field):
@@ -99,6 +98,3 @@ def statistics_retriever(request):
         statistics = process_statistics(statistics_request)
         return HttpResponse(
             json.dumps(statistics), content_type='application/json')
-=======
-        return HttpResponseBadRequest("Missing one of state_fips, county_fips")
->>>>>>> 9ba3cd18056c902f0c723cddd71218e3fec5e880
