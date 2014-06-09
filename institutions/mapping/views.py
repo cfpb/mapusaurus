@@ -1,4 +1,9 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.template import RequestContext
+from django.template.loader import select_template
+
 
 def home(request):
-    return render(request, 'index.html', {})
+    context = RequestContext(request, {})
+    template = select_template(['custom-index.html', 'index.html'])
+    return HttpResponse(template.render(context))
