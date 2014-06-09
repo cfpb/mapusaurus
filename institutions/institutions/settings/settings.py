@@ -44,7 +44,8 @@ INSTALLED_APPS = (
     'respondants',
     'geo',
     'censusdata',
-    'hmda'
+    'hmda',
+    'cfpbstyle',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -65,7 +66,7 @@ WSGI_APPLICATION = 'institutions.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-DATABASES = {'default': {'ENGINE': '', 'NAME': '', 'USER': '', 'PASSWORD': ''},}
+DATABASES = {'default': {'ENGINE': '', 'NAME': '', 'USER': '', 'PASSWORD': ''}}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -86,5 +87,10 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'
+
+LEAFLET_CONFIG = {
+    'RESET_VIEW': False,
+    'TILES': 'http://tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg',
+}
 
 from institutions.settings.local_settings import *
