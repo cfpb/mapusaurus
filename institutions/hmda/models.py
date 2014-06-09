@@ -66,6 +66,6 @@ class HMDARecord(models.Model):
     def auto_fields(self):
         self.lender = self.agency_code + self.respondent_id
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.auto_fields()
-        super(HMDARecord, self).save()
+        super(HMDARecord, self).save(*args, **kwargs)

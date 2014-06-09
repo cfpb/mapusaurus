@@ -104,9 +104,9 @@ class Census2010RaceStats(models.Model):
             self.non_hisp_black_only_perc = 1.00
             self.non_hisp_asian_only_perc = 1.00
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.auto_fields()
-        super(Census2010RaceStats, self).save()
+        super(Census2010RaceStats, self).save(*args, **kwargs)
 
 
 class Census2010Households(models.Model):
