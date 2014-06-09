@@ -58,6 +58,7 @@ class StateCensusTract(models.Model):
             'namelsad': self.namelsad,
             'aland': self.aland,
             'awater': self.awater,
+            # Convert to floats now to avoid it client-side (JS)
             'intptlat': float(self.intptlat),
             'intptlon': float(self.intptlon),
             'minlat': self.minlat,

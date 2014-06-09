@@ -208,7 +208,7 @@ var Mapusaurus = {
                 case 'loanVolume':
                     _.each(geoData, function(geo) {
                         Mapusaurus.layers.tract.loanVolume.addLayer(
-                            Mapusaurus.mkBubble(geo.properties)
+                            Mapusaurus.makeBubble(geo.properties)
                         );
                     });
                     break;
@@ -217,7 +217,7 @@ var Mapusaurus = {
     },
 
     /* Styles/extras for originations layer */
-    mkBubble: function(geoProps) {
+    makeBubble: function(geoProps) {
         var data = geoProps['layer_loanVolume'],
             circle = L.circle([geoProps.intptlat, geoProps.intptlon],
                               100 * data['volume_per_100_households'],
@@ -242,7 +242,7 @@ var Mapusaurus = {
                 }
             });
             div.html(data['volume'] + ' loans<br />' +
-                     data['households'] + ' households');
+                     data['num_households'] + ' households');
             div.appendTo('#map');
         });
         circle.on('mouseout', function() {
