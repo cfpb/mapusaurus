@@ -6,3 +6,4 @@ django-localflavor
 django-geojson
 git+https://github.com/makinacorpus/django-leaflet.git#egg=django-leaflet
 mock
+numpy
