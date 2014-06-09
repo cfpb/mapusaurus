@@ -3,6 +3,8 @@ Mapusaurus
 
 ## Introduction
 
+Just some notes on the more complex APIs we have. Most of the APIs are 
+reasonably straightforward. 
 
 ## censusdata
 
