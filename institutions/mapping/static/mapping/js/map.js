@@ -9,6 +9,13 @@ var Mapusaurus = {
     dataStore: {tract: {}},
     //  Stores stat data when the associated geos aren't loaded
     dataWithoutGeo: {tract: {minority: {}}},
+    //  Some style info
+    bubbleStyle: {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
+                  color: '#000'},
+    //  @todo: just make this a class
+    hoverCSS: {position: 'absolute', bottom: '85px', left: '50px',
+               zIndex: 1002, backgroundColor: '#fff', padding: '8px',
+               border: '1px solid #ccc'},
 
     initialize: function (map) {
         map.setView([41.88, -87.63], 12);
@@ -221,8 +228,7 @@ var Mapusaurus = {
         var data = geoProps['layer_loanVolume'],
             circle = L.circle([geoProps.intptlat, geoProps.intptlon],
                               100 * data['volume_per_100_households'],
-                              {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
-                               color: '#000'});
+                              Mapusaurus.bubbleStyle);
         //  keep expected functionality with double clicking
         circle.on('dblclick', function(ev) {
             Mapusaurus.map.setZoomAround(
@@ -231,15 +237,7 @@ var Mapusaurus = {
         circle.on('mouseover', function() {
             var div = $('<div></div>', {
                 id: 'household-popup-' + geoProps.geoid,
-                css: {
-                    position: 'absolute',
-                    bottom: '85px',
-                    left: '50px',
-                    zIndex: 1002,
-                    backgroundColor: 'white',
-                    padding: '8px',
-                    border: '1px solid #ccc'
-                }
+                css: Mapusaurus.hoverCSS
             });
             div.html(data['volume'] + ' loans<br />' +
                      data['num_households'] + ' households');
@@ -271,15 +269,7 @@ var Mapusaurus = {
           id: 'perc-popup-' + feature.properties.geoid,
           text: (nonMinorityPercent * 100).toFixed() + 
                  '% Non-hispanic White-Only',
-          css: {
-            position: 'absolute',
-            bottom: '85px',
-            left: '50px',
-            zIndex: 1002,
-            backgroundColor: 'white',
-            padding: '8px',
-            border: '1px solid #ccc'
-          }
+          css: Mapusaurus.hoverCSS
         }).appendTo('#map');
       });
       layer.on('mouseout', function() {
