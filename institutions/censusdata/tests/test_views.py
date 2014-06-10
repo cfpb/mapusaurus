@@ -72,16 +72,16 @@ class ViewsTest(TestCase):
         self.assertEqual(resp['1122233400']['non_hisp_asian_only_perc'], .2)
 
     def test_split_binned_and_raw_fields(self):
-        
+
         requested_fields = [
             {
                 'name': 'non_hisp_asian_only_perc',
-                'type': 'binned', 
+                'type': 'binned',
                 'bins': [0, 0.5, 0.8, 1.01]},
             {
-                'name': 'total_pop', 
+                'name': 'total_pop',
                 'type': 'raw'}]
-        
+
         bins, raw_fields = views.split_binned_and_raw_fields(requested_fields)
         self.assertEqual(['total_pop'], raw_fields)
 
