@@ -3,7 +3,6 @@ import json
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 import numpy as np
-from django.http import HttpResponse, HttpResponseBadRequest
 
 from .models import Census2010RaceStats
 
@@ -89,9 +88,6 @@ def process_statistics(statreq):
         bins, raw_fields = split_binned_and_raw_fields(statreq['fields'])
         bins, statsids = collect_field_values(tract_data, bins)
         bins = find_all_bin_indices(bins)
-    
-        #for field, vbin in bins.items():
-        #    vbin['bin_indices'] = dict(zip(statsids, find_bin_indices(vbin)))
 
         for stats in tract_data:
             sdata = {}
