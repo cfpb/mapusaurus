@@ -1,3 +1,22 @@
 #map {
   height: 550px;
 }
+
+
+#key {
+  width: 300px;
+  border: solid 1px #000;
+  background: #fff;
+  padding: 10px;
+}
+
+#key label {
+  font-size: larger;
+  font-weight: bold;
+}
+
+#minority-key {
+  width: 100%;
+  margin-top: 5px;
+  background: linear-gradient(to right, #ffffd9, #c6eab2 50%, #0e90c2 80%, #1d5caa);
+}

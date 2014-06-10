@@ -20,6 +20,7 @@ var Mapusaurus = {
     initialize: function (map) {
         map.setView([41.88, -87.63], 12);
         Mapusaurus.map = map;
+        Mapusaurus.addKey(map);
         Mapusaurus.layers.tract.minority = L.geoJson(
             {type: 'FeatureCollection', features: []},
             {onEachFeature: Mapusaurus.eachMinority}
@@ -37,6 +38,15 @@ var Mapusaurus = {
         map.on('zoomend', Mapusaurus.reloadGeo);
         //  Kick it off
         Mapusaurus.reloadGeo();
+    },
+
+    /* Indicates what the colors mean */
+    addKey: function(map) {
+        var key = L.control();
+        key.onAdd = function() {
+            return L.DomUtil.get('key');
+        };
+        key.addTo(map);
     },
 
     /* Naive url parameter parser */
