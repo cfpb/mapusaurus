@@ -143,3 +143,12 @@ added later, for example).
 
 Warning: At the moment, the import assumes a single year of information.
 That's a todo.
+
+
+## Styles
+
+While the base application attempts to appear "acceptable", you will likely
+wish to provide your own icons, colors, etc. We provide an example app
+(`cfpbstyle`) which you can modify directly or copy into a separate Django
+app. If you go the latter route, remember to activate your new app and
+deactivate the CFPB style.

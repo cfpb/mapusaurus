@@ -279,29 +279,32 @@ var Mapusaurus = {
 
     colorRanges: [
         {
-            upperBound: 0.5,
+            span: 0.5,
+            lowerBound: 0,
             colors: {
                 lowR: 255,
                 lowG: 255,
                 lowB: 217,
-                highR: 242,
-                highG: 251,
-                highB: 184
+                highR: 198,
+                highG: 234,
+                highB: 178
             }
         },
         {
-            upperBound: 0.8,
+            span: 0.3,
+            lowerBound: 0.5,
             colors: {
                 lowR: 198,
                 lowG: 234,
                 lowB: 178,
-                highR: 124,
-                highG: 206,
-                highB: 187
+                highR: 14,
+                highG: 144,
+                highB: 194
             }
         },
         {
-            upperBound: 1.1,
+            span: 0.2,
+            lowerBound: 0.8,
             colors: {
                 lowR: 14,
                 lowG: 144,
@@ -314,18 +317,22 @@ var Mapusaurus = {
     ],
 
     toBucket: function(percent) {
-        var i, 
+        var i,
             len = Mapusaurus.colorRanges.length;
-        for (i = 0; i < len; i++) {
-            if (Mapusaurus.colorRanges[i]['upperBound'] > percent) {
-                return Mapusaurus.colorRanges[i]['colors'];
+        for (i = 0; i < len - 1; i++) {
+            //  Next bucket is too far
+            if (Mapusaurus.colorRanges[i + 1].lowerBound > percent) {
+                return Mapusaurus.colorRanges[i];
             }
         } 
+        return Mapusaurus.colorRanges[len - 1];  //  last color
     },
 
     getColorValue: function(percent) {
-        var colorVals = Mapusaurus.toBucket(percent);
-        return Mapusaurus.colorFromPercent(percent, colorVals);
+        var bucket = Mapusaurus.toBucket(percent),
+            // convert given percentage to percents within bucket's bounds
+            bucketPercent = (percent - bucket.lowerBound) / bucket.span;
+        return Mapusaurus.colorFromPercent(bucketPercent, bucket.colors);
     },    
 
     /* Given low and high colors and a percent, figure out the RGB of said
