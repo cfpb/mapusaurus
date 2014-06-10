@@ -72,9 +72,9 @@ class StateCensusTract(models.Model):
             self.geom.simplify(preserve_topology=True).geojson)
         self.geojson = geojson
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.auto_fields()
-        super(StateCensusTract, self).save()
+        super(StateCensusTract, self).save(*args, **kwargs)
 
 
 # Auto-generated `LayerMapping` dictionary for CensusTract model
