@@ -209,6 +209,10 @@ var Mapusaurus = {
             });
             switch(layerName) {
                 case 'minority':
+                    geoData = _.filter(geoData, function(geo) {
+                        return geo.properties['layer_minority'][
+                            'total_pop'] > 0;
+                    });
                     Mapusaurus.layers.tract.minority.addData(geoData);
                     Mapusaurus.layers.tract.minority.bringToBack();
                     break;
