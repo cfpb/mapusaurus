@@ -12,10 +12,8 @@ var Mapusaurus = {
     //  Some style info
     bubbleStyle: {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
                   color: '#000'},
-    //  @todo: just make this a class
-    hoverCSS: {position: 'absolute', bottom: '85px', left: '50px',
-               zIndex: 1002, backgroundColor: '#fff', padding: '8px',
-               border: '1px solid #ccc'},
+    //  fillColor will be assigned when rendering
+    tractStyle: {fillOpacity: 0.7, weight: 2, color: '#babbbd'},
 
     initialize: function (map) {
         map.setView([41.88, -87.63], 12);
@@ -225,6 +223,7 @@ var Mapusaurus = {
             });
             switch(layerName) {
                 case 'minority':
+                    // Filter out geos with no people; don't want to draw them
                     geoData = _.filter(geoData, function(geo) {
                         return geo.properties['layer_minority'][
                             'total_pop'] > 0;
@@ -257,7 +256,7 @@ var Mapusaurus = {
         circle.on('mouseover', function() {
             var div = $('<div></div>', {
                 id: 'household-popup-' + geoProps.geoid,
-                css: Mapusaurus.hoverCSS
+                class: 'hover-box'
             });
             div.html(data['volume'] + ' loans<br />' +
                      data['num_households'] + ' households');
@@ -277,13 +276,10 @@ var Mapusaurus = {
             bucket = Mapusaurus.toBucket(minorityPercent),
             // convert given percentage to percents within bucket's bounds
             bucketPercent = (minorityPercent - bucket.lowerBound) / bucket.span;
-        return {
+        return $.extend({}, Mapusaurus.tractStyle, {
             fillColor: Mapusaurus.colorFromPercent(bucketPercent,
-                                                   bucket.colors),
-            fillOpacity: 0.7,
-            weight: 2,
-            color: '#babbbd'
-        };
+                                                   bucket.colors)
+        });
 
     },
 
@@ -292,12 +288,9 @@ var Mapusaurus = {
         var minorityPercent = 1 - feature.properties['layer_minority'][
                                 'non_hisp_white_only_perc'],
             bucket = Mapusaurus.toBucket(minorityPercent);
-        return {
-            fillColor: Mapusaurus.colorFromPercent(0.5, bucket.colors),
-            fillOpacity: 0.7,
-            weight: 2,
-            color: '#babbbd'
-        };
+        return $.extend({}, Mapusaurus.tractStyle, {
+            fillColor: Mapusaurus.colorFromPercent(0.5, bucket.colors)
+        });
     },
 
     /* Style/extras for each census tract in the minorities layer */
@@ -313,7 +306,7 @@ var Mapusaurus = {
           id: 'perc-popup-' + feature.properties.geoid,
           text: (nonMinorityPercent * 100).toFixed() + 
                  '% Non-hispanic White-Only',
-          css: Mapusaurus.hoverCSS
+          class: 'hover-box'
         }).appendTo('#map');
       });
       layer.on('mouseout', function() {
