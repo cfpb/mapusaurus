@@ -100,7 +100,7 @@ def process_statistics(statreq):
 
         bins, raw_fields = split_binned_and_raw_fields(statreq['fields'])
         bins, statsids = collect_field_values(tract_data, bins)
-        bins = find_all_bin_indices(bins)
+        bins = find_all_bin_indices(bins, statsids)
 
         for stats in tract_data:
             sdata = {}
