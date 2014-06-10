@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from censusdata.models import Census2010RaceStats
+from censusdata import views
 
 
 class ViewsTest(TestCase):
@@ -21,8 +22,8 @@ class ViewsTest(TestCase):
         stats.geoid_id = '1122233400'
         stats.save()
         stats = Census2010RaceStats(
-            total_pop=1, hispanic=10, non_hisp_white_only=20,
-            non_hisp_black_only=30, non_hisp_asian_only=40)
+            total_pop=100, hispanic=10, non_hisp_white_only=20,
+            non_hisp_black_only=30, non_hisp_asian_only=4)
         stats.geoid_id = '1122333300'
         stats.save()
         stats = Census2010RaceStats(
@@ -69,3 +70,60 @@ class ViewsTest(TestCase):
         self.assertEqual(resp['1122233400']['non_hisp_white_only_perc'], .05)
         self.assertEqual(resp['1122233400']['non_hisp_black_only_perc'], .25)
         self.assertEqual(resp['1122233400']['non_hisp_asian_only_perc'], .2)
+
+    def test_split_binned_and_raw_fields(self):
+        
+        requested_fields = [
+            {
+                'name': 'non_hisp_asian_only_perc',
+                'type': 'binned', 
+                'bins': [0, 0.5, 0.8, 1.01]},
+            {
+                'name': 'total_pop', 
+                'type': 'raw'}]
+        
+        bins, raw_fields = views.split_binned_and_raw_fields(requested_fields)
+        self.assertEqual(['total_pop'], raw_fields)
+
+        bins_result = {
+            'non_hisp_asian_only_perc': {
+                'values': [], 'bins': [0, 0.5, 0.8, 1.01]}}
+
+        self.assertEqual(bins_result, bins)
+
+    def test_collect_field_values(self):
+        bins = {
+            'non_hisp_asian_only_perc': {
+                'values': [], 'bins': [0, 0.5, 0.8, 1.01]}}
+
+        tract_data = Census2010RaceStats.objects.all()
+        bins, statsids = views.collect_field_values(tract_data, bins)
+
+        self.assertEqual(
+            ['1122233300', '1122233400', '1122333300', '1222233300'],
+            statsids)
+
+        self.assertEqual(
+            [0.5, 0.2, 0.04, 0.07],
+            bins['non_hisp_asian_only_perc']['values'])
+
+    def test_find_bin_indices(self):
+        field = {
+            'bins': [0.5, 0.75, 1.0],
+            'values': [0.5, 0.6, 0.8, 0.95]
+        }
+
+        indices = views.find_bin_indices(field)
+        self.assertEqual([1, 1, 2, 2], list(indices))
+
+    def test_find_all_bin_indices(self):
+        bins = {
+            'non_hisp_asian_only_perc': {
+                'values': [0.5, 0.6, 0.8, 0.95], 'bins': [0.5, 0.75, 1.0]}}
+
+        statsids = [4, 2, 3, 1]
+
+        bins_results = views.find_all_bin_indices(bins, statsids)
+        self.assertEqual(
+            {1: 2, 2: 1, 3: 2, 4: 1},
+            bins_results['non_hisp_asian_only_perc']['bin_indices'])
