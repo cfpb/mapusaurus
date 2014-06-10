@@ -23,7 +23,8 @@ var Mapusaurus = {
         Mapusaurus.addKey(map);
         Mapusaurus.layers.tract.minority = L.geoJson(
             {type: 'FeatureCollection', features: []},
-            {onEachFeature: Mapusaurus.eachMinority}
+            {onEachFeature: Mapusaurus.eachMinority,
+             style: Mapusaurus.minorityContinuousStyle}
         );
         Mapusaurus.layers.tract.minority.addTo(map);
         if (Mapusaurus.urlParam('lender')) {
@@ -36,6 +37,11 @@ var Mapusaurus = {
         map.on('moveend', Mapusaurus.reloadGeo);
         //  @todo: really, we only care on zoom-out + part which is new
         map.on('zoomend', Mapusaurus.reloadGeo);
+        //  Connect style selector
+        $('#style-selector').on('change', function() {
+            Mapusaurus.layers.tract.minority.setStyle(
+                Mapusaurus[$('#style-selector').val()]);
+        });
         //  Kick it off
         Mapusaurus.reloadGeo();
     },
@@ -264,16 +270,40 @@ var Mapusaurus = {
         return circle;
     },
 
+    //  Used to determine color within a gradient
+    minorityContinuousStyle: function(feature) {
+        var minorityPercent = 1 - feature.properties['layer_minority'][
+                                'non_hisp_white_only_perc'],
+            bucket = Mapusaurus.toBucket(minorityPercent),
+            // convert given percentage to percents within bucket's bounds
+            bucketPercent = (minorityPercent - bucket.lowerBound) / bucket.span;
+        return {
+            fillColor: Mapusaurus.colorFromPercent(bucketPercent,
+                                                   bucket.colors),
+            fillOpacity: 0.7,
+            weight: 2,
+            color: '#babbbd'
+        };
+
+    },
+
+    //  Determines colors via distinct buckets
+    minorityBucketedStyle: function(feature) {
+        var minorityPercent = 1 - feature.properties['layer_minority'][
+                                'non_hisp_white_only_perc'],
+            bucket = Mapusaurus.toBucket(minorityPercent);
+        return {
+            fillColor: Mapusaurus.colorFromPercent(0.5, bucket.colors),
+            fillOpacity: 0.7,
+            weight: 2,
+            color: '#babbbd'
+        };
+    },
+
     /* Style/extras for each census tract in the minorities layer */
     eachMinority: function(feature, layer) {
       var nonMinorityPercent = feature.properties['layer_minority'][
           'non_hisp_white_only_perc'];
-      layer.setStyle({
-          fillColor: Mapusaurus.getColorValue(1 - nonMinorityPercent),
-          fillOpacity: 0.7,
-          weight: 2,
-          color: '#babbbd'
-      });
       //  keep expected functionality with double clicking
       layer.on('dblclick', function(ev) {
         Mapusaurus.map.setZoomAround(ev.latlng, Mapusaurus.map.getZoom() + 1);
@@ -341,13 +371,6 @@ var Mapusaurus = {
         } 
         return Mapusaurus.colorRanges[len - 1];  //  last color
     },
-
-    getColorValue: function(percent) {
-        var bucket = Mapusaurus.toBucket(percent),
-            // convert given percentage to percents within bucket's bounds
-            bucketPercent = (percent - bucket.lowerBound) / bucket.span;
-        return Mapusaurus.colorFromPercent(bucketPercent, bucket.colors);
-    },    
 
     /* Given low and high colors and a percent, figure out the RGB of said
      * percent in that scale */

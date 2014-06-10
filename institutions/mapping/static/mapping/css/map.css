@@ -20,3 +20,9 @@
   margin-top: 5px;
   background: linear-gradient(to right, #ffffd9, #c6eab2 50%, #0e90c2 80%, #1d5caa);
 }
+
+#style-selector {
+  width: 100%;
+  margin-top: 10px;
+  font-size: large;
+}
