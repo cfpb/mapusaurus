@@ -271,25 +271,27 @@ var Mapusaurus = {
 
     //  Used to determine color within a gradient
     minorityContinuousStyle: function(feature) {
+        return Mapusaurus.minorityStyle(
+            feature, 
+            function(minorityPercent, bucket) {
+                return (minorityPercent - bucket.lowerBound) / bucket.span;
+            }
+        );
+    },
+    //  Determines colors via distinct buckets
+    minorityBucketedStyle: function(feature) {
+        return Mapusaurus.minorityStyle(feature, function() { return 0.5; });
+    },
+    //  Shared function for minority styling; called by the two previous fns
+    minorityStyle: function(feature, percentFn) {
         var minorityPercent = 1 - feature.properties['layer_minority'][
                                 'non_hisp_white_only_perc'],
             bucket = Mapusaurus.toBucket(minorityPercent),
             // convert given percentage to percents within bucket's bounds
-            bucketPercent = (minorityPercent - bucket.lowerBound) / bucket.span;
+            bucketPercent = percentFn(minorityPercent, bucket);
         return $.extend({}, Mapusaurus.tractStyle, {
             fillColor: Mapusaurus.colorFromPercent(bucketPercent,
                                                    bucket.colors)
-        });
-
-    },
-
-    //  Determines colors via distinct buckets
-    minorityBucketedStyle: function(feature) {
-        var minorityPercent = 1 - feature.properties['layer_minority'][
-                                'non_hisp_white_only_perc'],
-            bucket = Mapusaurus.toBucket(minorityPercent);
-        return $.extend({}, Mapusaurus.tractStyle, {
-            fillColor: Mapusaurus.colorFromPercent(0.5, bucket.colors)
         });
     },
 
