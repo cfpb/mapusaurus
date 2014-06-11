@@ -1,3 +1,54 @@
 #map {
   height: 550px;
 }
+
+
+#map .hover-box {
+  position: absolute;
+  bottom: 85px;
+  left: 50px;
+  z-index: 1002;
+  background-color: #fff;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+
+#key {
+  width: 300px;
+  border: solid 1px #000;
+  background: #fff;
+  padding: 10px;
+}
+
+#key label {
+  font-size: larger;
+  font-weight: bold;
+}
+
+#minority-key {
+  width: 100%;
+  margin-top: 5px;
+  background: linear-gradient(to right, #ffffd9, #c6eab2 50%, #0e90c2 80%, #1d5caa);
+}
+
+#style-selector {
+  width: 100%;
+  margin-top: 10px;
+  font-size: large;
+}
+
+#percentage-container .left {
+  display: inline-block;
+  width: 25%;
+}
+#percentage-container .center {
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+}
+#percentage-container .right {
+  display: inline-block;
+  width: 25%;
+  text-align: right;
+}

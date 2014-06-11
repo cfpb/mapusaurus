@@ -12,17 +12,17 @@ var Mapusaurus = {
     //  Some style info
     bubbleStyle: {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
                   color: '#000'},
-    //  @todo: just make this a class
-    hoverCSS: {position: 'absolute', bottom: '85px', left: '50px',
-               zIndex: 1002, backgroundColor: '#fff', padding: '8px',
-               border: '1px solid #ccc'},
+    //  fillColor will be assigned when rendering
+    tractStyle: {fillOpacity: 0.7, weight: 2, color: '#babbbd'},
 
     initialize: function (map) {
         map.setView([41.88, -87.63], 12);
         Mapusaurus.map = map;
+        Mapusaurus.addKey(map);
         Mapusaurus.layers.tract.minority = L.geoJson(
             {type: 'FeatureCollection', features: []},
-            {onEachFeature: Mapusaurus.eachMinority}
+            {onEachFeature: Mapusaurus.eachMinority,
+             style: Mapusaurus.minorityContinuousStyle}
         );
         Mapusaurus.layers.tract.minority.addTo(map);
         if (Mapusaurus.urlParam('lender')) {
@@ -35,8 +35,22 @@ var Mapusaurus = {
         map.on('moveend', Mapusaurus.reloadGeo);
         //  @todo: really, we only care on zoom-out + part which is new
         map.on('zoomend', Mapusaurus.reloadGeo);
+        //  Connect style selector
+        $('#style-selector').on('change', function() {
+            Mapusaurus.layers.tract.minority.setStyle(
+                Mapusaurus[$('#style-selector').val()]);
+        });
         //  Kick it off
         Mapusaurus.reloadGeo();
+    },
+
+    /* Indicates what the colors mean */
+    addKey: function(map) {
+        var key = L.control();
+        key.onAdd = function() {
+            return L.DomUtil.get('key');
+        };
+        key.addTo(map);
     },
 
     /* Naive url parameter parser */
@@ -209,6 +223,11 @@ var Mapusaurus = {
             });
             switch(layerName) {
                 case 'minority':
+                    // Filter out geos with no people; don't want to draw them
+                    geoData = _.filter(geoData, function(geo) {
+                        return geo.properties['layer_minority'][
+                            'total_pop'] > 0;
+                    });
                     Mapusaurus.layers.tract.minority.addData(geoData);
                     Mapusaurus.layers.tract.minority.bringToBack();
                     break;
@@ -237,7 +256,7 @@ var Mapusaurus = {
         circle.on('mouseover', function() {
             var div = $('<div></div>', {
                 id: 'household-popup-' + geoProps.geoid,
-                css: Mapusaurus.hoverCSS
+                class: 'hover-box'
             });
             div.html(data['volume'] + ' loans<br />' +
                      data['num_households'] + ' households');
@@ -250,16 +269,36 @@ var Mapusaurus = {
         return circle;
     },
 
+    //  Used to determine color within a gradient
+    minorityContinuousStyle: function(feature) {
+        return Mapusaurus.minorityStyle(
+            feature, 
+            function(minorityPercent, bucket) {
+                return (minorityPercent - bucket.lowerBound) / bucket.span;
+            }
+        );
+    },
+    //  Determines colors via distinct buckets
+    minorityBucketedStyle: function(feature) {
+        return Mapusaurus.minorityStyle(feature, function() { return 0.5; });
+    },
+    //  Shared function for minority styling; called by the two previous fns
+    minorityStyle: function(feature, percentFn) {
+        var minorityPercent = 1 - feature.properties['layer_minority'][
+                                'non_hisp_white_only_perc'],
+            bucket = Mapusaurus.toBucket(minorityPercent),
+            // convert given percentage to percents within bucket's bounds
+            bucketPercent = percentFn(minorityPercent, bucket);
+        return $.extend({}, Mapusaurus.tractStyle, {
+            fillColor: Mapusaurus.colorFromPercent(bucketPercent,
+                                                   bucket.colors)
+        });
+    },
+
     /* Style/extras for each census tract in the minorities layer */
     eachMinority: function(feature, layer) {
       var nonMinorityPercent = feature.properties['layer_minority'][
           'non_hisp_white_only_perc'];
-      layer.setStyle({
-          fillColor: Mapusaurus.getColorValue(1 - nonMinorityPercent),
-          fillOpacity: 0.7,
-          weight: 2,
-          color: '#babbbd'
-      });
       //  keep expected functionality with double clicking
       layer.on('dblclick', function(ev) {
         Mapusaurus.map.setZoomAround(ev.latlng, Mapusaurus.map.getZoom() + 1);
@@ -269,7 +308,7 @@ var Mapusaurus = {
           id: 'perc-popup-' + feature.properties.geoid,
           text: (nonMinorityPercent * 100).toFixed() + 
                  '% Non-hispanic White-Only',
-          css: Mapusaurus.hoverCSS
+          class: 'hover-box'
         }).appendTo('#map');
       });
       layer.on('mouseout', function() {
@@ -327,13 +366,6 @@ var Mapusaurus = {
         } 
         return Mapusaurus.colorRanges[len - 1];  //  last color
     },
-
-    getColorValue: function(percent) {
-        var bucket = Mapusaurus.toBucket(percent),
-            // convert given percentage to percents within bucket's bounds
-            bucketPercent = (percent - bucket.lowerBound) / bucket.span;
-        return Mapusaurus.colorFromPercent(bucketPercent, bucket.colors);
-    },    
 
     /* Given low and high colors and a percent, figure out the RGB of said
      * percent in that scale */
