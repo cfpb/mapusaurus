@@ -54,7 +54,7 @@ class HMDARecord(models.Model):
         help_text=("A two-digit code representing the state the property is "
                    + " located in."))
     countyfp = models.CharField(
-        max_length=3, db_index=True,
+        max_length=3,
         help_text=("A three-digit code representing the county of the "
                    + "property. This code is only unique when combined with "
                    + "the state code."))
