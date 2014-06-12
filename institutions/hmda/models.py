@@ -42,7 +42,7 @@ class HMDARecord(models.Model):
         help_text=("The amount of the loan applied for, in thousands of "
                    + "dollars."))
     action_taken = models.PositiveIntegerField(
-        choices=ACTION_TAKEN_CHOICES,
+        choices=ACTION_TAKEN_CHOICES, db_index=True,
         help_text=("A code representing the action taken on the loan or "
                    + "application, such as whether an application was "
                    + "approved or denied. Loan originated means the "
@@ -62,6 +62,11 @@ class HMDARecord(models.Model):
     lender = models.CharField(max_length=11, db_index=True)
     geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
                               db_index=True)
+
+    class Meta:
+        index_together = [("statefp", "countyfp"),
+                          ("statefp", "countyfp", "lender"),
+                          ("statefp", "countyfp", "action_taken", "lender")]
 
     def auto_fields(self):
         self.lender = self.agency_code + self.respondent_id

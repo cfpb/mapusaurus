@@ -9,8 +9,8 @@ class StateCensusTract(models.Model):
         model is auto-generated using the ogrinspect Django command.
     """
 
-    statefp = models.CharField(max_length=2)
-    countyfp = models.CharField(max_length=3)
+    statefp = models.CharField(max_length=2, db_index=True)
+    countyfp = models.CharField(max_length=3, db_index=True)
     tractce = models.CharField(max_length=6)
     geoid = models.CharField(max_length=11, unique=True)
     name = models.CharField(max_length=7)
@@ -30,6 +30,9 @@ class StateCensusTract(models.Model):
     geojson = models.TextField()
 
     objects = models.GeoManager()
+
+    class Meta:
+        index_together = [("statefp", "countyfp")]
 
     def __str__(self):
         return '%s (county: %s, state: %s)' % (
