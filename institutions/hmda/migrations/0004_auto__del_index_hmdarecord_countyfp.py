@@ -8,14 +8,13 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Removing index on 'HMDARecord', fields ['countyfp']. Unfortunately,
         # the index name may not have changed
-        try:
-            db.delete_index(u'hmda_hmdarecord', ['countyfp'])
-        except Exception:
-            db.delete_index(u'hmda_hmdarecord', ['county_code'])
+        db.delete_index(u'hmda_hmdarecord', ['county_code'])
 
     def backwards(self, orm):
         # Adding index on 'HMDARecord', fields ['countyfp']
         db.create_index(u'hmda_hmdarecord', ['countyfp'])
+        # Account for south not renaming the index
+        db.execute("ALTER INDEX hmda_hmdarecord_countyfp RENAME TO hmda_hmdarecord_county_code")
 
 
     models = {
