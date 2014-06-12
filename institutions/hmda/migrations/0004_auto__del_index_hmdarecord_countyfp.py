@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Removing index on 'HMDARecord', fields ['countyfp']
-        db.delete_index(u'hmda_hmdarecord', ['countyfp'])
-
+        # Removing index on 'HMDARecord', fields ['countyfp']. Unfortunately,
+        # the index name may not have changed
+        try:
+            db.delete_index(u'hmda_hmdarecord', ['countyfp'])
+        except Exception:
+            db.delete_index(u'hmda_hmdarecord', ['county_code'])
 
     def backwards(self, orm):
         # Adding index on 'HMDARecord', fields ['countyfp']
