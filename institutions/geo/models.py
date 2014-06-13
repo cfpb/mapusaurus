@@ -32,7 +32,11 @@ class StateCensusTract(models.Model):
     objects = models.GeoManager()
 
     class Meta:
-        index_together = [("statefp", "countyfp")]
+        index_together = [("statefp", "countyfp"),
+                          ("minlat", "minlon"),
+                          ("minlat", "maxlon"),
+                          ("maxlat", "minlon"),
+                          ("maxlat", "maxlon")]
 
     def __str__(self):
         return '%s (county: %s, state: %s)' % (
