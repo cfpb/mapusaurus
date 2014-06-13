@@ -15,10 +15,10 @@ def race_by_county(county_fips, state_fips):
     return tract_data
 
 
-def race_summary(request):
-    """ Get race summary statistics. """
-    county_fips = request.GET.get('county_fips', '')
-    state_fips = request.GET.get('state_fips', '')
+def race_summary(request_dict):
+    """Race summary statistics"""
+    county_fips = request_dict.get('county_fips', '')
+    state_fips = request_dict.get('state_fips', '')
 
     if county_fips and state_fips:
         data = {}
@@ -34,9 +34,19 @@ def race_summary(request):
                 'non_hisp_black_only_perc': stats.non_hisp_black_only_perc,
                 'non_hisp_asian_only_perc': stats.non_hisp_asian_only_perc
             }
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return data
     else:
         return HttpResponseBadRequest("Missing one of state_fips, county_fips")
+
+
+def race_summary_http(request):
+    """ Get race summary statistics. """
+    response = race_summary(request.GET)
+    if isinstance(response, dict):
+        return HttpResponse(json.dumps(response),
+                            content_type='application/json')
+    else:
+        return response
 
 
 def find_bin_indices(field):

@@ -167,17 +167,60 @@ var Mapusaurus = {
             missingData = _.uniq(missingData);
 
             //  start loading the data for each county
+            /*
             _.each(missingData, function(stateCounty) {
                 var state = stateCounty.substr(0, 2),
                     county = stateCounty.substr(2);
                 Mapusaurus.loadLayerData(layerName, state, county);
             });
+            */
+            missingData = _.map(missingData, function(stateCounty) {
+                return {'state_fips': stateCounty.substr(0, 2),
+                        'county_fips': stateCounty.substr(2)};
+            });
+            Mapusaurus.loadLayerData(layerName, missingData);
         });
     },
 
+
+
     /* Each layer has a different end point associated with it. Use that to 
      * load (and eventually, draw) the layer stats */
-    loadLayerData: function(layerName, state, county) {
+    loadLayerData: function(layerName, stateCounties) {
+        $.ajax({
+            type: 'POST',
+            url: '/batch',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                requests: _.map(stateCounties, function(stateCounty) {
+                    return {endpoint: 'race-summary',
+                            params: stateCounty};
+                })
+            }),
+            success: function(data) {
+                var toDraw = {};
+                toDraw[layerName] = [];
+                _.each(data.responses, function(response) {
+                    _.each(_.keys(response), function(geoid) {
+                        var geo = Mapusaurus.dataStore.tract[geoid];
+                        //  Have not loaded the geo data yet
+                        if (!geo) {
+                            Mapusaurus.dataWithoutGeo.tract[layerName][geoid] =
+                                response[geoid];
+                        //  Have the geo data, but haven't drawn the stats yet
+                        } else if (!geo.properties['layer_' + layerName]) {
+                            geo.properties['layer_' + layerName] = response[geoid];
+                            toDraw[layerName].push(geoid);
+                        }
+                    });
+                });
+                Mapusaurus.draw(toDraw);
+            }
+        });
+    },
+    /* Each layer has a different end point associated with it. Use that to 
+     * load (and eventually, draw) the layer stats */
+    loadLayerData2: function(layerName, state, county) {
         var url = null;
         switch(layerName) {
             case 'minority':
