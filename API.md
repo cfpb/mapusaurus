@@ -42,3 +42,38 @@ parameters. Here's an example:
 The bins are specified as in:
 http://docs.scipy.org/doc/numpy/reference/generated/numpy.digitize.html with
 right=False. 
+
+## batch
+
+To limit the number of open HTTP requests, we have a "batch" API, which allows
+you to collect multiple requests and response in a single cycle. As there's
+a more complicated structure, you will need to POST a JSON structure:
+
+URL: '.../batch'
+INPUT:
+```json
+{
+    "requests": [
+        {"endpoint": "minority",
+         "params": {"state_fips": "XX", "county_fips", "YYY"}},
+        {"endpoint": "minority",
+         "params": {"state_fips": "XX", "county_fips", "ZZZ"}},
+        {"endpoint": "loanVolume",
+         "params": {"state_fips": "XX", "county_fips", "YYY",
+                    "lender": "somelender"}},
+        {"endpoint": "something-else"}
+    ]
+}
+```
+
+OUTPUT:
+```json
+{
+    "responses": [
+        {"first": "result"},
+        {"second": "result"},
+        {"third": "result"},
+        {"fourth": "result"}
+    ]
+}
+```
