@@ -9,6 +9,8 @@ var Mapusaurus = {
     dataStore: {tract: {}},
     //  Stores stat data when the associated geos aren't loaded
     dataWithoutGeo: {tract: {minority: {}}},
+    //  Keep track of which stateXcounties we've loaded
+    statsLoaded: {minority: {}},
     //  Some style info
     bubbleStyle: {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
                   color: '#000'},
@@ -29,6 +31,7 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.loanVolume = L.layerGroup([]);
             Mapusaurus.layers.tract.loanVolume.addTo(map);
             Mapusaurus.dataWithoutGeo.tract.loanVolume = {};
+            Mapusaurus.statsLoaded.loanVolume = {};
         }
         //  @todo: really, we only care about the part of the viewport which
         //  is new
@@ -82,7 +85,7 @@ var Mapusaurus = {
 
         /* To be responsive, only load census tract data at zoom-level 10
          * or above */
-        if (Mapusaurus.map.getZoom() >= 10) {
+        if (Mapusaurus.map.getZoom() >  10) {
             Mapusaurus.loadTractData(
                 1, 
                 L.latLngBounds(L.latLng(expandedS, expandedW),
@@ -155,8 +158,10 @@ var Mapusaurus = {
         _.each(_.keys(Mapusaurus.layers.tract), function(layerName) {
             //  We only care about unseen stat data
             var missingData = _.filter(newTracts, function(geoid) {
-              return !_.has(Mapusaurus.dataStore.tract[geoid].properties,
-                            'layer_' + layerName);
+                var geo = Mapusaurus.dataStore.tract[geoid],
+                    stateCounty = geo.properties.statefp +
+                                  geo.properties.countyfp;
+                return !Mapusaurus.statsLoaded[layerName][stateCounty];
             });
             //  convert to state + county strings
             missingData = _.map(missingData, function(geoid) {
@@ -167,10 +172,13 @@ var Mapusaurus = {
             //  be retrieved
             missingData = _.uniq(missingData);
 
-            //  start loading the data for each county
+            //  Keep track of what we will be loading
             _.each(missingData, function(stateCounty) {
+                //  Add to the list of data to load
                 missingStats.push([layerName, stateCounty.substr(0, 2),
                                    stateCounty.substr(2)]);
+                //  Signify that we are loading it...
+                Mapusaurus.statsLoaded[layerName][stateCounty] = 'loading';
             });
         });
         if (missingStats.length > 0) {
@@ -212,7 +220,9 @@ var Mapusaurus = {
             _.each(requests, function(request, idx) {
                 var layerName = request['endpoint'],
                     llName = 'layer_' + layerName,
-                    response = data['responses'][idx];
+                    response = data['responses'][idx],
+                    stateCounty = request.params['state_fips'] +
+                                  request.params['county_fips'];
                 _.each(_.keys(response), function(geoid) {
                     var geo = Mapusaurus.dataStore.tract[geoid];
                     //  Have not loaded the geo data yet
@@ -225,6 +235,7 @@ var Mapusaurus = {
                         toDraw[layerName].push(geoid);
                     }
                 });
+                Mapusaurus.statsLoaded[layerName][stateCounty] = true;
             });
             Mapusaurus.draw(toDraw);
         };
