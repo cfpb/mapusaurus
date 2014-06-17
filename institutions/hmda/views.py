@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.http import HttpResponseBadRequest
 
-from batch.conversions import use_get_dict_in
+from batch.conversions import use_GET_in
 from hmda.models import HMDARecord
 
 
@@ -44,4 +44,4 @@ def loan_originations(request_dict):
 
 
 def loan_originations_http(request):
-    return use_get_dict_in(loan_originations, request)
+    return use_GET_in(loan_originations, request)

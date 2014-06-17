@@ -8,6 +8,7 @@ from censusdata.views import race_summary
 from hmda.views import loan_originations
 
 
+#   JSON Schema for batch request -- used to validate input
 BATCH_SCHEMA = {
     'type': 'object',
     'additionalProperties': False,
@@ -20,7 +21,7 @@ BATCH_SCHEMA = {
             'items': {
                 'type': 'object',
                 'additionalProperties': False,
-                'required': ['endpoint', 'params'],
+                'required': ['endpoint'],
                 'properties': {
                     'endpoint': {'type': 'string'},
                     'params': {
@@ -34,6 +35,7 @@ BATCH_SCHEMA = {
 }
 
 
+# Mapping between requested endpoints (i.e. JS layers) and their handlers
 ENDPOINTS = {
     'minority': race_summary,
     'loanVolume': loan_originations
@@ -42,14 +44,16 @@ ENDPOINTS = {
 
 @csrf_exempt
 def batch(request):
-    """ As the query may be complicated, we use an json-encoded post body """
+    """This endpoint allows multiple statistical queries to be made in a
+    single HTTP request"""
     try:
         body = json.loads(request.body)
         jsonschema.validate(body, BATCH_SCHEMA)
         responses = []
+        #   @todo: these should be parallelized
         for request in body['requests']:
             fn = ENDPOINTS[request['endpoint']]
-            response = fn(request['params'])
+            response = fn(request.get('params', {}))
             if isinstance(response, dict):
                 responses.append(response)
             else:

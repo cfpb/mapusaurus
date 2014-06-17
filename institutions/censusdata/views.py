@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import numpy as np
 
 from .models import Census2010RaceStats
-from batch.conversions import use_get_dict_in
+from batch.conversions import use_GET_in
 
 
 def race_by_county(county_fips, state_fips):
@@ -41,7 +41,7 @@ def race_summary(request_dict):
 
 
 def race_summary_http(request):
-    return use_get_dict_in(race_summary, request)
+    return use_GET_in(race_summary, request)
 
 
 def find_bin_indices(field):
