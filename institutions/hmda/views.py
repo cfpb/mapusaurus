@@ -1,8 +1,7 @@
-import json
-
 from django.db.models import Count
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseBadRequest
 
+from batch.conversions import use_get_dict_in
 from hmda.models import HMDARecord
 
 
@@ -15,13 +14,13 @@ def volume_per_100_households(volume, num_households):
         return 0
 
 
-def loan_originations(request):
+def loan_originations(request_dict):
     """Get loan originations for a given lender, county combination. This
     ignores year for the moment."""
 
-    state_fips = request.GET.get('state_fips', '')
-    county_fips = request.GET.get('county_fips', '')
-    lender = request.GET.get('lender', '')
+    state_fips = request_dict.get('state_fips', '')
+    county_fips = request_dict.get('county_fips', '')
+    lender = request_dict.get('lender', '')
 
     if state_fips and county_fips and lender:
         records = HMDARecord.objects.filter(
@@ -38,7 +37,11 @@ def loan_originations(request):
                 'volume_per_100_households': volume_per_100_households(
                     row['volume'], row['geoid__census2010households__total'])
             }
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return data
     else:
         return HttpResponseBadRequest(
             "Missing one of state_fips, county_fips, lender")
+
+
+def loan_originations_http(request):
+    return use_get_dict_in(loan_originations, request)
