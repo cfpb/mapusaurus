@@ -30,6 +30,24 @@
             </select>
         </section>
 
+        {% if lender %}
+        <section id="lender-info">
+            <h2>{{ lender.name}}</h2>
+            <span class="lender-id">{{ lender.ffiec_id }} ({{ lender.agency.acronym }})</span>
+            <table>
+                <tr>
+                    <th>Address</th>
+                    <td>{{ lender.mailing_address }}<br />
+                      {{lender.zip_code.city}}, {{lender.zip_code.state}}
+                      {{lender.zip_code.zip_code }}</td>
+                </tr>
+                <tr>
+                    <th>Year</th>
+                    <td>{{ lender.year }}</li>
+                </tr>
+            </table>
+        </section>
+        {% endif %}
 
         {% leaflet_js %}
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>

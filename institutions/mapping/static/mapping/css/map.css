@@ -1,5 +1,5 @@
 #map {
-  height: 550px;
+  height: 500px;
 }
 
 
@@ -51,4 +51,27 @@
   display: inline-block;
   width: 25%;
   text-align: right;
+}
+
+
+#lender-info {
+  margin-top: 0.5em;
+  margin-left: 5em;
+  font-family: "Avenir Next W01", Arial, sans-serif;
+}
+#lender-info h2 {
+  margin-bottom: 0;
+}
+#lender-info .lender-id {
+  font-size: small;
+}
+#lender-info table {
+  margin-top: 0.5em;
+}
+#lender-info th {
+  vertical-align: top;
+  padding-bottom: 0.25em;
+}
+#lender-info td {
+  padding-bottom: 0.25em;
 }
