@@ -6,6 +6,7 @@ from respondants.management.commands import load_reporter_panel
 # Create your tests here.
 class ZipcodeUtilsTests(TestCase):
     def test_createzipcode(self):
+        ZipcodeCityState.objects.all().delete()
         zipcode = zipcode_utils.create_zipcode('20852', 'Rockville', 'MD')
         self.assertEqual(zipcode.pk, 1)
 
