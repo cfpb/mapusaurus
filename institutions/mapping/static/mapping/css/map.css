@@ -1,3 +1,7 @@
+.hidden {
+  display: block;
+}
+
 #map {
   height: 500px;
   border-bottom: 1px solid #000;
