@@ -253,18 +253,14 @@ var Mapusaurus = {
             Mapusaurus.map.setZoomAround(
                 ev.latlng, Mapusaurus.map.getZoom() + 1);
         });
-        circle.on('mouseover', function() {
-            var div = $('<div></div>', {
-                id: 'household-popup-' + geoProps.geoid,
-                class: 'hover-box'
-            });
-            div.html(data['volume'] + ' loans<br />' +
-                     data['num_households'] + ' households');
-            div.appendTo('#map');
+        circle.on('mouseover mousemove', function(e){
+            new L.Rrose({ offset: new L.Point(0,-10), closeButton: false, autoPan: false })
+              .setContent(data['volume'] + ' loans<br />' + data['num_households'] + ' households')
+              .setLatLng(e.latlng)
+              .openOn(Mapusaurus.map);
         });
-        circle.on('mouseout', function() {
-            $('#household-popup-' +
-              geoProps.geoid).remove();
+        circle.on('mouseout', function(){ 
+            Mapusaurus.map.closePopup();
         });
         return circle;
     },
@@ -301,18 +297,16 @@ var Mapusaurus = {
           'non_hisp_white_only_perc'];
       //  keep expected functionality with double clicking
       layer.on('dblclick', function(ev) {
-        Mapusaurus.map.setZoomAround(ev.latlng, Mapusaurus.map.getZoom() + 1);
+          Mapusaurus.map.setZoomAround(ev.latlng, Mapusaurus.map.getZoom() + 1);
       });
-      layer.on('mouseover', function() {
-        $('<div></div>', {
-          id: 'perc-popup-' + feature.properties.geoid,
-          text: (nonMinorityPercent * 100).toFixed() + 
-                 '% Non-hispanic White-Only',
-          class: 'hover-box'
-        }).appendTo('#map');
+      layer.on('mouseover mousemove', function(e){
+          new L.Rrose({ offset: new L.Point(0,-10), closeButton: false, autoPan: false })
+              .setContent(((1 - nonMinorityPercent) * 100).toFixed() + '% "Minority"')
+              .setLatLng(e.latlng)
+              .openOn(Mapusaurus.map);
       });
-      layer.on('mouseout', function() {
-        $('#perc-popup-' + feature.properties.geoid).remove();
+      layer.on('mouseout', function(){
+          Mapusaurus.map.closePopup();
       });
     },
 
