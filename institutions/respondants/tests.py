@@ -3,11 +3,11 @@ from respondants import zipcode_utils
 from respondants.models import ZipcodeCityState
 from respondants.management.commands import load_reporter_panel
 
-# Create your tests here.
+
 class ZipcodeUtilsTests(TestCase):
     def test_createzipcode(self):
-        zipcode = zipcode_utils.create_zipcode('20852', 'Rockville', 'MD')
-        self.assertEqual(zipcode.pk, 1)
+        ZipcodeCityState.objects.all().delete()
+        zipcode_utils.create_zipcode('20852', 'Rockville', 'MD')
 
         results = ZipcodeCityState.objects.filter(state='MD')
         self.assertEqual(1, len(results))
@@ -16,11 +16,10 @@ class ZipcodeUtilsTests(TestCase):
         self.assertEqual(results[0].city, 'Rockville')
         self.assertEqual(results[0].state, 'MD')
 
-
     def test_duplicate_entries(self):
-        """ We insert a duplicate entry, and check that it wasn't in fact 
+        """ We insert a duplicate entry, and check that it wasn't in fact
         duplicated. """
-        zipcode = zipcode_utils.create_zipcode('20852', 'Rockville', 'MD')
+        zipcode_utils.create_zipcode('20852', 'Rockville', 'MD')
         results = ZipcodeCityState.objects.filter(state='MD')
         self.assertEqual(1, len(results))
 
