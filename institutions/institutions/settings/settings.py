@@ -91,6 +91,7 @@ STATIC_URL = '/static/'
 LEAFLET_CONFIG = {
     'RESET_VIEW': False,
     'TILES': 'http://tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg',
+    'SCALE': 'imperial',
 }
 
 from institutions.settings.local_settings import *
