@@ -18,9 +18,11 @@ var Mapusaurus = {
     tractStyle: {fillOpacity: 0.7, weight: 2, color: '#babbbd'},
 
     initialize: function (map) {
+        var tiles = new L.TileLayer.GeoJSON('/shapes/tiles/{z}/{x}/{y}');
         map.setView([41.88, -87.63], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
+        map.addLayer(tiles);
         Mapusaurus.layers.tract.minority = L.geoJson(
             {type: 'FeatureCollection', features: []},
             {onEachFeature: Mapusaurus.eachMinority,
