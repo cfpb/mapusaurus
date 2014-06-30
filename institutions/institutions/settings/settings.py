@@ -40,6 +40,8 @@ INSTALLED_APPS = (
     'localflavor',
     'south',
     'leaflet',
+    'haystack',
+
     'mapping',
     'respondants',
     'geo',
@@ -92,6 +94,14 @@ LEAFLET_CONFIG = {
     'RESET_VIEW': False,
     'TILES': 'http://tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg',
     'SCALE': 'imperial',
+}
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'mapusaurus',
+    },
 }
 
 from institutions.settings.local_settings import *

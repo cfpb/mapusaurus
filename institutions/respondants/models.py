@@ -2,6 +2,7 @@ from django.db import models
 from localflavor.us.models import USStateField
 from respondants.managers import AgencyManager
 
+
 class ZipcodeCityState(models.Model):
     """ For each zipcode, maintain the city, state information. """
     zip_code = models.IntegerField()
@@ -12,6 +13,7 @@ class ZipcodeCityState(models.Model):
     class Meta:
         unique_together = ('zip_code', 'city')
 
+
 class Agency(models.Model):
     """ Agencies of the government that are referenced in the HMDA dataset. """
 
@@ -20,6 +22,7 @@ class Agency(models.Model):
     full_name = models.CharField(max_length=50)
 
     objects = AgencyManager()
+
 
 class ParentInstitution(models.Model):
     """ Parent and top holder institutions need to be stored a bit differently
@@ -34,8 +37,9 @@ class ParentInstitution(models.Model):
     rssd_id = models.CharField(
         max_length=10,
         unique=True,
-        help_text='Id on the National Information Center repository', 
+        help_text='Id on the National Information Center repository',
         null=True)
+
 
 class Institution(models.Model):
     """ An institution's (aka respondant) details. These can change per year.
@@ -58,7 +62,7 @@ class Institution(models.Model):
         related_name='children',
         help_text='The parent institution')
     non_reporting_parent = models.ForeignKey(
-        'ParentInstitution', 
+        'ParentInstitution',
         null=True,
         related_name='children',
         help_text='Non-HMDA reporting parent')
@@ -71,4 +75,3 @@ class Institution(models.Model):
     class Meta:
         unique_together = ('ffiec_id', 'agency')
         index_together = [['ffiec_id', 'agency', 'year']]
-
