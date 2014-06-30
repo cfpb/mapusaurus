@@ -54,7 +54,7 @@ def index(request):
 
 
 def search(request):
-    query_str = request.GET.get('q', '')
+    query_str = request.GET.get('q', '').strip()
     results = {}
     query = SearchQuerySet().models(Institution).load_all()
     if re.match(r"\d{11}", query_str):
@@ -62,8 +62,10 @@ def search(request):
         if len(query):
             return HttpResponseRedirect('/institutions/'
                                         + str(query[0].object.id))
-    else:
+    elif query_str:
         query = query.filter(content=AutoQuery(query_str))
+    else:
+        query = []
 
     search_results = map(lambda inst: inst.object, query)
     if len(search_results) > 0:
