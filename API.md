@@ -88,6 +88,8 @@ INPUT:
 
 * q - search term. Can be either a phrase (searches the institution name) or
   an 11-digit lender id (agency id + ffiec id)
+* auto - if present, search completes using an ngram field (i.e. partial
+  match). Most useful for auto-complete fields
 
 OUTPUT:
 ```json
