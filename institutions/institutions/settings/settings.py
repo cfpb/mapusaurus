@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'south',
     'leaflet',
     'haystack',
+    'rest_framework',
 
     'mapping',
     'respondants',
@@ -102,5 +103,13 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     },
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.TemplateHTMLRenderer',
+        'rest_framework.renderers.JSONRenderer',
+    ],
+}
+
 
 from institutions.settings.local_settings import *

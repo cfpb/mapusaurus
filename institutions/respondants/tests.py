@@ -1,9 +1,11 @@
+import json
+
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from mock import Mock, patch
 
 from respondants import zipcode_utils
-from respondants.models import ZipcodeCityState
+from respondants.models import Institution, ZipcodeCityState
 from respondants.management.commands import load_reporter_panel
 
 
@@ -64,6 +66,7 @@ class ViewTest(TestCase):
         self.assertTrue('content' in str(SQS.filter.call_args))
         self.assertTrue('Some Bank' in resp.content)
         self.assertTrue('Bank &amp; Loan' in resp.content)
+        self.assertRaises(ValueError, json.loads, resp.content)
 
     @patch('respondants.views.SearchQuerySet')
     def test_search_id(self, SQS):
@@ -77,9 +80,25 @@ class ViewTest(TestCase):
         self.assertTrue('01234567' in str(SQS.filter.call_args))
         self.assertTrue('content' in str(SQS.filter.call_args))
         self.assertTrue('Some Bank' in resp.content)
+        self.assertRaises(ValueError, json.loads, resp.content)
 
         resp = self.client.get(reverse('search'), {'q': '01234567899'})
         self.assertTrue('01234567899' in str(SQS.filter.call_args))
         self.assertFalse('content' in str(SQS.filter.call_args))
         self.assertTrue('lender_id' in str(SQS.filter.call_args))
-        self.assertEqual(resp.status_code, 302)
+        self.assertTrue('Some Bank' in resp.content)
+        self.assertRaises(ValueError, json.loads, resp.content)
+
+    @patch('respondants.views.SearchQuerySet')
+    def test_search_json(self, SQS):
+        SQS = SQS.return_value.models.return_value.load_all.return_value
+        result = Mock()
+        SQS.filter.return_value = [result]
+        result.object = Institution(name='Some Bank')
+
+        resp = self.client.get(reverse('search'), {'q': 'Bank'},
+                               HTTP_ACCEPT='application/json')
+        resp = json.loads(resp.content)
+        self.assertEqual(1, len(resp['institutions']))
+        inst = resp['institutions'][0]
+        self.assertEqual('Some Bank', inst['name'])
