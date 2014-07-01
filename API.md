@@ -81,7 +81,7 @@ OUTPUT:
 ## Institution Search
 
 Results for institution search can be returned as both nicely styled markup
-and as JSON.
+and as JSON. Use the 'Accept: application/json' header for JSON.
 
 URL: '.../institutions/search?q=search+term'
 INPUT:
