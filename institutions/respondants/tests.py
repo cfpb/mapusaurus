@@ -69,6 +69,18 @@ class ViewTest(TestCase):
         self.assertRaises(ValueError, json.loads, resp.content)
 
     @patch('respondants.views.SearchQuerySet')
+    def test_search_autocomplete(self, SQS):
+        SQS = SQS.return_value.models.return_value.load_all.return_value
+        result = Mock()
+        SQS.filter.return_value = [result]
+        result.object = Mock()
+        result.object.name, result.object.id = 'Some Bank', 1234
+        self.client.get(reverse('search'), {'q': 'Bank', 'auto': '1'})
+        self.assertTrue('Bank' in str(SQS.filter.call_args))
+        self.assertFalse('content' in str(SQS.filter.call_args))
+        self.assertTrue('text_auto' in str(SQS.filter.call_args))
+
+    @patch('respondants.views.SearchQuerySet')
     def test_search_id(self, SQS):
         SQS = SQS.return_value.models.return_value.load_all.return_value
         result = Mock()

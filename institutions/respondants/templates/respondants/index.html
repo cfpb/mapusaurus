@@ -1,9 +1,20 @@
+{% load staticfiles %}
+<!DOCTYPE HTML>
 <html>
-    Institution Search
+    <head>
+        <title>Institution Search</title>
+        <link rel="stylesheet" href="{% static 'respondants/css/search.css' %}" />
+    </head>
 
-    <form action="/institutions/" method="POST">
-        {% csrf_token %}
-        {{search_form.as_p}}
-        <input type="submit" value="submit" />
-    </form>
+    <body>
+        <form action="/institutions/" method="POST">
+            {% csrf_token %}
+            {{search_form.as_p}}
+            <input type="submit" value="submit" />
+        </form>
+
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
+        <script type="text/javascript" src="{% static 'respondants/js/search.js' %}"></script>
+    </body>
 </html>
