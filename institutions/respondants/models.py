@@ -52,7 +52,7 @@ class Institution(models.Model):
     name = models.CharField(max_length=30)
     mailing_address = models.CharField(max_length=40)
     zip_code = models.ForeignKey('ZipCodeCityState', null=False)
-    assets = models.PositiveIntegerField()
+    assets = models.PositiveIntegerField(default=0)
     rssd_id = models.CharField(
         max_length=10,
         null=True,
