@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'censusdata',
     'hmda',
     'cfpbstyle',
+    'batch',
 )
 
 MIDDLEWARE_CLASSES = (

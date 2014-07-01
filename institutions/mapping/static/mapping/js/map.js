@@ -9,6 +9,8 @@ var Mapusaurus = {
     dataStore: {tract: {}},
     //  Stores stat data when the associated geos aren't loaded
     dataWithoutGeo: {tract: {minority: {}}},
+    //  Keep track of which stateXcounties we've loaded
+    statsLoaded: {minority: {}},
     //  Some style info
     bubbleStyle: {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
                   color: '#000'},
@@ -29,6 +31,7 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.loanVolume = L.layerGroup([]);
             Mapusaurus.layers.tract.loanVolume.addTo(map);
             Mapusaurus.dataWithoutGeo.tract.loanVolume = {};
+            Mapusaurus.statsLoaded.loanVolume = {};
         }
         //  @todo: really, we only care about the part of the viewport which
         //  is new
@@ -72,17 +75,17 @@ var Mapusaurus = {
     /* Whenever the map is shifted/zoomed, reload geo data */
     reloadGeo: function() {
         var bounds = Mapusaurus.map.getBounds(),
-            halfWidth = Math.abs(bounds.getEast() - bounds.getWest()) / 2,
-            halfHeight = Math.abs(bounds.getNorth() - bounds.getSouth()) / 2,
+            xtraWidth = Math.abs(bounds.getEast() - bounds.getWest()) / 3,
+            xtraHeight = Math.abs(bounds.getNorth() - bounds.getSouth()) / 3,
             //  NW-hemisphere centric
-            expandedN = bounds.getNorth() + halfHeight,
-            expandedS = bounds.getSouth() - halfHeight,
-            expandedW = bounds.getWest() - halfWidth,
-            expandedE = bounds.getEast() + halfWidth;
+            expandedN = bounds.getNorth() + xtraHeight,
+            expandedS = bounds.getSouth() - xtraHeight,
+            expandedW = bounds.getWest() - xtraWidth,
+            expandedE = bounds.getEast() + xtraWidth;
 
         /* To be responsive, only load census tract data at zoom-level 10
          * or above */
-        if (Mapusaurus.map.getZoom() >= 10) {
+        if (Mapusaurus.map.getZoom() >  10) {
             Mapusaurus.loadTractData(
                 1, 
                 L.latLngBounds(L.latLng(expandedS, expandedW),
@@ -150,12 +153,15 @@ var Mapusaurus = {
 
     /* We have geos without their associated stats - kick off the load */
     fetchMissingStats: function(newTracts) {
-        //  For each layer
+        //  This is a list of triples: [[layer name, state, county]]
+        var missingStats = [];
         _.each(_.keys(Mapusaurus.layers.tract), function(layerName) {
             //  We only care about unseen stat data
             var missingData = _.filter(newTracts, function(geoid) {
-              return !_.has(Mapusaurus.dataStore.tract[geoid].properties,
-                            'layer_' + layerName);
+                var geo = Mapusaurus.dataStore.tract[geoid],
+                    stateCounty = geo.properties.statefp +
+                                  geo.properties.countyfp;
+                return !Mapusaurus.statsLoaded[layerName][stateCounty];
             });
             //  convert to state + county strings
             missingData = _.map(missingData, function(geoid) {
@@ -166,51 +172,73 @@ var Mapusaurus = {
             //  be retrieved
             missingData = _.uniq(missingData);
 
-            //  start loading the data for each county
+            //  Keep track of what we will be loading
             _.each(missingData, function(stateCounty) {
-                var state = stateCounty.substr(0, 2),
-                    county = stateCounty.substr(2);
-                Mapusaurus.loadLayerData(layerName, state, county);
+                //  Add to the list of data to load
+                missingStats.push([layerName, stateCounty.substr(0, 2),
+                                   stateCounty.substr(2)]);
+                //  Signify that we are loading it...
+                Mapusaurus.statsLoaded[layerName][stateCounty] = 'loading';
             });
+        });
+        if (missingStats.length > 0) {
+            Mapusaurus.batchLoadStats(missingStats);
+        }
+    },
+
+    /* We load stats data in one batch request. We need to provide the
+     * endpoint/layer we care about, the data it needs (state, county, etc.),
+     * and then we need to process the result. */
+    batchLoadStats: function(missingStats) {
+        var requests = _.map(missingStats, function(triple) {
+            var params = {'state_fips': triple[1],
+                          'county_fips': triple[2]};
+            if (Mapusaurus.urlParam('lender')) {
+                params['lender'] = Mapusaurus.urlParam('lender');
+            }
+            return {endpoint: triple[0], params: params};
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: '/batch',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({requests: requests}),
+            success: Mapusaurus.makeBatchSuccessFn(requests)
         });
     },
 
-    /* Each layer has a different end point associated with it. Use that to 
-     * load (and eventually, draw) the layer stats */
-    loadLayerData: function(layerName, state, county) {
-        var url = null;
-        switch(layerName) {
-            case 'minority':
-                url = ('/census/race-summary?state_fips=' + state +
-                       '&county_fips=' + county);
-                break;
-            case 'loanVolume':
-                url = ('/hmda/volume?state_fips=' + state + 
-                       '&county_fips=' + county +
-                       '&lender=' + Mapusaurus.urlParam('lender'));
-                break;
-            default:
-                window.alert('Unknown layer to load');
-        }
-
-        //  Now kick off the load for that layer
-        $.getJSON(url, function(data) {
+    /*  As the success function for making a batch request relies on the
+     *  requests made, this returns a closure to handle the results of a batch
+     *  load */
+    makeBatchSuccessFn: function(requests) {
+        return function(data) {
             var toDraw = {};
-            toDraw[layerName] = [];
-            _.each(_.keys(data), function(geoid) {
-                var geo = Mapusaurus.dataStore.tract[geoid];
-                //  Have not loaded the geo data yet
-                if (!geo) {
-                    Mapusaurus.dataWithoutGeo.tract[layerName][geoid] =
-                        data[geoid];
-                //  Have the geo data, but haven't drawn the stats yet
-                } else if (!geo.properties['layer_' + layerName]) {
-                    geo.properties['layer_' + layerName] = data[geoid];
-                    toDraw[layerName].push(geoid);
-                }
+            _.each(_.keys(Mapusaurus.layers.tract), function(layerName) {
+                toDraw[layerName] = [];
+            });
+            _.each(requests, function(request, idx) {
+                var layerName = request['endpoint'],
+                    llName = 'layer_' + layerName,
+                    response = data['responses'][idx],
+                    stateCounty = request.params['state_fips'] +
+                                  request.params['county_fips'];
+                _.each(_.keys(response), function(geoid) {
+                    var geo = Mapusaurus.dataStore.tract[geoid];
+                    //  Have not loaded the geo data yet
+                    if (!geo) {
+                        Mapusaurus.dataWithoutGeo.tract[layerName][geoid] =
+                            response[geoid];
+                    //  Have the geo data, but haven't drawn the stats yet
+                    } else if (!geo.properties[llName]) {
+                        geo.properties[llName] = response[geoid];
+                        toDraw[layerName].push(geoid);
+                    }
+                });
+                Mapusaurus.statsLoaded[layerName][stateCounty] = true;
             });
             Mapusaurus.draw(toDraw);
-        });
+        };
     },
 
     /* Given a list of geo ids, segmented by layer name, add them to the
