@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 from censusdata.models import (
     Census2010Age, Census2010HispanicOrigin, Census2010Households,
     Census2010Race, Census2010RaceStats, Census2010Sex)
+from geo.management.commands.load_state_shapefile import errors_in_2010
 
 
 class Command(BaseCommand):
@@ -27,7 +28,10 @@ class Command(BaseCommand):
         for line in geofile:
             if line[8:11] == '140':    # Aggregated by Census Tract
                 recordnum = line[18:25]
-                geoids_by_record[recordnum] = line[27:32] + line[54:60]
+                censustract = line[27:32] + line[54:60]
+                censustract = errors_in_2010.get(censustract, censustract)
+                if censustract is not None:
+                    geoids_by_record[recordnum] = censustract
                 state = line[27:29]
         geofile.close()
         self.handle_filethree(args[0], state, geoids_by_record)
