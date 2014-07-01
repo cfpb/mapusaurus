@@ -4,7 +4,9 @@ requests
 south
 django-localflavor
 django-geojson
+django-haystack
 git+https://github.com/makinacorpus/django-leaflet.git#egg=django-leaflet
 mock
 numpy
+pyelasticsearch
 jsonschema
