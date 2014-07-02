@@ -12,6 +12,13 @@ class ZipcodeCityState(models.Model):
 
     class Meta:
         unique_together = ('zip_code', 'city')
+    
+    @property
+    def unique_name(self):
+        return '%s, %s %s' % (self.city, self.state, self.zip_code)
+
+    def __unicode__(self):  
+        return self.unique_name
 
 
 class Agency(models.Model):
@@ -22,6 +29,9 @@ class Agency(models.Model):
     full_name = models.CharField(max_length=50)
 
     objects = AgencyManager()
+
+    def __unicode__(self):  
+        return self.acronym
 
 
 class ParentInstitution(models.Model):
@@ -39,6 +49,9 @@ class ParentInstitution(models.Model):
         unique=True,
         help_text='Id on the National Information Center repository',
         null=True)
+
+    def __unicode__(self):  
+        return self.name
 
 
 class Institution(models.Model):
@@ -79,3 +92,6 @@ class Institution(models.Model):
     class Meta:
         unique_together = ('ffiec_id', 'agency')
         index_together = [['ffiec_id', 'agency', 'year']]
+
+    def __unicode__(self):  
+        return self.name
