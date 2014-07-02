@@ -2,18 +2,16 @@
     <body>
     <h1> Search results</h1>
 
-    <h2>Respondants</h2>
+    <h2>Lenders</h2>
 
-    {% if results.respondants %}
-        {% for res in results.respondants %}
-            <p> 
-                <a href="/institutions/{{res.id}}">{{res.name|title}}</a> <br />
-                {{res.zip_code.city|title}}, {{res.zip_code.state|upper}} <br />
-                HMDA ID: {{res.ffiec_id}}  <br />
-                RSSD ID: <a href="http://www.ffiec.gov/nicpubweb/nicweb/OrgHierarchySearchForm.aspx?parID_RSSD={{res.rssd_id}}&parDT_END=99991231">{{res.rssd_id}}</a>
-            </p>
-        {% endfor %}
-    {% endif %}
+    {% for res in institutions %}
+      <p> 
+        <a href="/institutions/{{res.id}}">{{res.name|title}}</a> <br />
+        {{res.zip_code.city|title}}, {{res.zip_code.state|upper}} <br />
+        HMDA ID: {{res.ffiec_id}}  <br />
+        RSSD ID: <a href="http://www.ffiec.gov/nicpubweb/nicweb/OrgHierarchySearchForm.aspx?parID_RSSD={{res.rssd_id}}&parDT_END=99991231">{{res.rssd_id}}</a>
+      </p>
+    {% endfor %}
 
 
     <hr />

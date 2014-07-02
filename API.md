@@ -77,3 +77,23 @@ OUTPUT:
     ]
 }
 ```
+
+## Institution Search
+
+Results for institution search can be returned as both nicely styled markup
+and as JSON. Use the 'Accept: application/json' header for JSON.
+
+URL: '.../institutions/search?q=search+term'
+INPUT:
+
+* q - search term. Can be either a phrase (searches the institution name) or
+  an 11-digit lender id (agency id + ffiec id)
+
+OUTPUT:
+```json
+{
+    "institutions": [
+        {"id": ..., "name": ..., ....}
+    ]
+}
+```

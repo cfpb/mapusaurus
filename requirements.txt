@@ -5,6 +5,7 @@ south
 django-localflavor
 django-geojson
 django-haystack
+djangorestframework
 git+https://github.com/makinacorpus/django-leaflet.git#egg=django-leaflet
 mock
 numpy

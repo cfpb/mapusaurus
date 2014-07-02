@@ -4,6 +4,9 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from haystack.inputs import AutoQuery, Exact
 from haystack.query import SearchQuerySet
+from rest_framework import serializers
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from respondants.forms import InstitutionSearchForm
 from respondants.models import Institution
@@ -53,26 +56,27 @@ def index(request):
     )
 
 
+class InstitutionSerializer(serializers.ModelSerializer):
+    """Used in RESTful endpoints"""
+    class Meta:
+        model = Institution
+
+
+@api_view(['GET'])
 def search(request):
     query_str = request.GET.get('q', '').strip()
-    results = {}
     query = SearchQuerySet().models(Institution).load_all()
     if re.match(r"\d{11}", query_str):
         query = query.filter(lender_id=Exact(query_str))
-        if len(query):
-            return HttpResponseRedirect('/institutions/'
-                                        + str(query[0].object.id))
     elif query_str:
         query = query.filter(content=AutoQuery(query_str))
     else:
         query = []
 
-    search_results = map(lambda inst: inst.object, query)
-    if len(search_results) > 0:
-        results['respondants'] = search_results
+    results = map(lambda inst: inst.object, query)
+    if request.accepted_renderer.format != 'html':
+        results = InstitutionSerializer(results, many=True).data
 
-    return render(
-        request,
-        'respondants/search_results.html',
-        {'results': results}
-    )
+    return Response(
+        {'institutions': results},
+        template_name='respondants/search_results.html')
