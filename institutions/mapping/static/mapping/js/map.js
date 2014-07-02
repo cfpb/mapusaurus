@@ -1,20 +1,12 @@
 'use strict';
 
 L.TileLayer.HookableGeoJSON = L.TileLayer.GeoJSON.extend({
-    _tileLoaded: function(tile) {
-        var geoids = _.map(tile.datum.features, function(feature) {
-                return feature.properties.geoid;
-            }),
-            newTracts = _.filter(geoids, function(geoid) {
-                return !_.has(Mapusaurus.dataStore.tract, geoid);
-            });
-
+    _tileLoaded: function() {
         //  "super"
         L.TileLayer.GeoJSON.prototype._tileLoaded.apply(this, arguments);
 
-        if (newTracts.length > 0) {
-            Mapusaurus.updateDataWithoutGeos(newTracts);
-            Mapusaurus.fetchMissingStats(newTracts);
+        if (this.options.afterTileLoaded) {
+            this.options.afterTileLoaded.apply(this, arguments);
         }
     }
 });
@@ -24,13 +16,15 @@ var Mapusaurus = {
     map: null,
     //  Leaflet layers
     layers: {tract: {minority: null}},
-    //  Stores geo data, along with fields for layers
+    //  Tracks layer data/stats
     dataStore: {tract: {}},
+    //  Tracks which tracts have been drawn
     drawn: {},
     //  Stores stat data when the associated geos aren't loaded
     dataWithoutGeo: {tract: {minority: {}}},
     //  Keep track of which stateXcounties we've loaded
     statsLoaded: {minority: {}},
+
     //  Some style info
     bubbleStyle: {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
                   color: '#000'},
@@ -38,6 +32,8 @@ var Mapusaurus = {
     tractStyle: {stroke: true, fillOpacity: 0.7, weight: 2, color: '#babbbd',
                  fill: true},
     //  used when loading census tracts
+    loadingStyle: {stroke: true, weight: 2, color: '#babbbd', fill: false},
+    //  population-less tracts
     noStyle: {stroke: false, fill: false},
 
     initialize: function (map) {
@@ -45,7 +41,18 @@ var Mapusaurus = {
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
         Mapusaurus.layers.tract.minority = new L.TileLayer.HookableGeoJSON(
-            '/shapes/tiles/{z}/{x}/{y}', {}, {
+            '/shapes/tiles/tracts/{z}/{x}/{y}', {
+                afterTileLoaded: function(tile) {
+                    var geoids = _.map(tile.datum.features, function(feature) {
+                        return feature.properties.geoid;
+                    });
+
+                    Mapusaurus.updateDataWithoutGeos(geoids);
+                    Mapusaurus.fetchMissingStats(geoids);
+
+                    this.geojsonLayer.bringToBack();
+                }
+            }, {
                 onEachFeature: Mapusaurus.eachTract,
                 style: Mapusaurus.minorityContinousStyle,
                 // Don't redraw any tracts
@@ -63,6 +70,16 @@ var Mapusaurus = {
         //  Census tracts get cleared whenever zooming in/out (analogous to
         //  other tile layers)
         map.on('zoomstart', function() { Mapusaurus.drawn = {}; });
+        //  Turn off the census tract layer if too zoomed out
+        map.on('zoomend', function() {
+            if (map.getZoom() > 10 &&
+                !map.hasLayer(Mapusaurus.layers.tract.minority)) {
+                Mapusaurus.layers.tract.minority.addTo(map);
+            } else if (map.getZoom() <= 10 &&
+                       map.hasLayer(Mapusaurus.layers.tract.minority)) {
+                map.removeLayer(Mapusaurus.layers.tract.minority);
+            }
+        });
 
         //  Selector to change bucket/continuous shading
         $('#style-selector').on('change', function() {
@@ -109,6 +126,7 @@ var Mapusaurus = {
             Mapusaurus.map.setZoomAround(ev.latlng,
                                          Mapusaurus.map.getZoom() + 1);
         });
+        //  hover bubble
         layer.on('mouseover mousemove', function(e){
             var marker = new L.Rrose({
                 offset: new L.Point(0, -10),
@@ -123,6 +141,7 @@ var Mapusaurus = {
         layer.on('mouseout', function(){
             Mapusaurus.map.closePopup();
         });
+        layer.setStyle(Mapusaurus.minorityContinuousStyle(feature));
     },
 
     /* Depending on whether or not stats have been loaded, the hover text may
@@ -318,8 +337,9 @@ var Mapusaurus = {
             tract = Mapusaurus.dataStore.tract[geoid];
         //  If we haven't loaded the data yet or the tract has zero people,
         //  don't draw it
-        if (!_.has(tract, 'layer_minority') ||
-            tract['layer_minority']['total_pop'] === 0) {
+        if (!_.has(tract, 'layer_minority')) {
+            return Mapusaurus.loadingStyle;
+        } else if (tract['layer_minority']['total_pop'] === 0) {
             return Mapusaurus.noStyle;
         } else {
             var minorityPercent = 1 - tract['layer_minority'][
