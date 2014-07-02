@@ -22,6 +22,7 @@
     "Backbone": true,
     "_": true,
     "require": true,
-    "define": true
+    "define": true,
+    "Bloodhound": true
   }
 }

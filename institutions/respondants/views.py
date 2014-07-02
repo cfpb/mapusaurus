@@ -68,10 +68,13 @@ def search(request):
     query = SearchQuerySet().models(Institution).load_all()
     if re.match(r"\d{11}", query_str):
         query = query.filter(lender_id=Exact(query_str))
+    elif query_str and request.GET.get('auto'):
+        query = query.filter(text_auto=AutoQuery(query_str))
     elif query_str:
         query = query.filter(content=AutoQuery(query_str))
     else:
         query = []
+    query = query[:25]
 
     results = map(lambda inst: inst.object, query)
     if request.accepted_renderer.format != 'html':
