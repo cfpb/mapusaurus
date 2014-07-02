@@ -13,9 +13,9 @@ class ZipcodeCityState(models.Model):
     class Meta:
         unique_together = ('zip_code', 'city')
     
-    def _get_unique_name(self):
+    @property
+    def unique_name(self):
         return '%s, %s %s' % (self.city, self.state, self.zip_code)
-    unique_name = property(_get_unique_name)
 
     def __unicode__(self):  
         return self.unique_name
