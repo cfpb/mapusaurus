@@ -13,7 +13,7 @@ $(document).ready(function() {
     });
     search.initialize();
 
-    $('#id_name_contains').typeahead(null, {
+    $('#search_name').typeahead(null, {
         displayKey: 'name',
         source: search.ttAdapter()
     });

@@ -101,6 +101,13 @@ class ViewTest(TestCase):
         self.assertTrue('Some Bank' in resp.content)
         self.assertRaises(ValueError, json.loads, resp.content)
 
+        resp = self.client.get(reverse('search'), {'lender_id': '01234567899'})
+        self.assertTrue('01234567899' in str(SQS.filter.call_args))
+        self.assertFalse('content' in str(SQS.filter.call_args))
+        self.assertTrue('lender_id' in str(SQS.filter.call_args))
+        self.assertTrue('Some Bank' in resp.content)
+        self.assertRaises(ValueError, json.loads, resp.content)
+
     @patch('respondants.views.SearchQuerySet')
     def test_search_json(self, SQS):
         SQS = SQS.return_value.models.return_value.load_all.return_value

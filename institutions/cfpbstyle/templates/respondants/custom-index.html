@@ -1,0 +1,19 @@
+{% extends "respondants/index.html" %}
+{% load staticfiles %}
+
+{% block custom_css %}
+<link rel="stylesheet" href="//fast.fonts.net/cssapi/0a274127-32a9-474a-bbdb-f23f410e88c5.css">
+<link rel="stylesheet" href="//cfpb.github.io/css/site.css" />
+{% endblock %}
+
+{% block page_header %}
+<header class="header cf" role="banner">
+    <div class="wrap">
+       <a href="http://www.consumerfinance.gov/" target="_blank">
+           <img class="logo" src="http://cfpb.github.io/img/logo_210.png"
+                alt="Consumer Financial Protection Bureau">
+       </a>
+       <h1><a class="home" href="/">Fair Lending HMDA Visualization Toolkit</a></h1>
+   </div>
+</header>
+{% endblock %}

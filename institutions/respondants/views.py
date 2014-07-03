@@ -1,14 +1,15 @@
 import re
 
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.template import RequestContext
+from django.template.loader import select_template
 from haystack.inputs import AutoQuery, Exact
 from haystack.query import SearchQuerySet
 from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from respondants.forms import InstitutionSearchForm
 from respondants.models import Institution
 
 
@@ -40,20 +41,10 @@ def respondant(request, respondant_id):
 def index(request):
     """  The main view. Display the institution search box here. """
 
-    if request.method == 'POST':
-        form = InstitutionSearchForm(request.POST)
-        if form.is_valid():
-            name_contains = form.cleaned_data['name_contains']
-            return HttpResponseRedirect(
-                '/institutions/search/?q=%s' % name_contains)
-    else:
-        form = InstitutionSearchForm()
-
-    return render(
-        request,
-        'respondants/index.html',
-        {'search_form': form}
-    )
+    context = RequestContext(request, {})
+    template = select_template(['respondants/custom-index.html',
+                                'respondants/index.html'])
+    return HttpResponse(template.render(context))
 
 
 class InstitutionSerializer(serializers.ModelSerializer):
@@ -65,9 +56,14 @@ class InstitutionSerializer(serializers.ModelSerializer):
 @api_view(['GET'])
 def search(request):
     query_str = request.GET.get('q', '').strip()
+    lender_id = request.GET.get('lender_id')
+
     query = SearchQuerySet().models(Institution).load_all()
+
     if re.match(r"\d{11}", query_str):
         query = query.filter(lender_id=Exact(query_str))
+    elif lender_id:
+        query = query.filter(lender_id=Exact(lender_id))
     elif query_str and request.GET.get('auto'):
         query = query.filter(text_auto=AutoQuery(query_str))
     elif query_str:

@@ -1,3 +1,33 @@
 input.tt-input, input.tt-hint {
   width: 200px;
 }
+
+#content .wrap {
+  width: 50%;
+  max-width: 800px;
+  margin-top: 5em;
+}
+
+#content h2 {
+  font-weight: bold;
+  font-size: large;
+}
+
+.search-field {
+  margin-bottom: 2em;
+}
+
+.search-field label {
+  display: block;
+  font-size: small;
+}
+
+.search-field input[type="text"] {
+  width: 18em;
+}
+
+.search-field input[type="submit"] {
+  margin-left: 2em;
+  padding-left: 1em;
+  padding-right: 1em;
+}
