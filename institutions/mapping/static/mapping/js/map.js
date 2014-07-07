@@ -154,9 +154,9 @@ var Mapusaurus = {
         var tract = Mapusaurus.dataStore.tract[geoid];
         if (_.has(tract, 'layer_minority')) {
             return (
-                (1 - tract['layer_minority']['non_hisp_white_only_perc']) *
+                (Mapusaurus.minorityPercent(tract['layer_minority']) *
                 100).toFixed() + '% "Minority"<br />(' +
-                $('#category-selector option:selected').text();
+                $('#category-selector option:selected').text() + ')');
         } else {
             return 'Loading...';
         }
