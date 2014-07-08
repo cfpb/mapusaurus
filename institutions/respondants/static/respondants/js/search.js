@@ -10,11 +10,20 @@ $(document).ready(function() {
             url: '/institutions/search/?auto=1&q=%QUERY',
             filter: function(resp) { return resp.institutions;}
         }
-    });
+    }),
+        searchNameBox = $('#search_name'),
+        showSearchLink = $(
+            '<a href="#">Need to search by institution name?</a>');
     search.initialize();
 
-    $('#search_name').typeahead(null, {
+    searchNameBox.typeahead(null, {
         displayKey: 'name',
         source: search.ttAdapter()
     });
+
+    showSearchLink.click(function() {
+        showSearchLink.hide();
+        searchNameBox.closest('.search-field').show();
+    });
+    searchNameBox.closest('.search-field').hide().after(showSearchLink);
 });
