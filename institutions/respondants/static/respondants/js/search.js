@@ -12,12 +12,14 @@ $(document).ready(function() {
         }
     }),
         searchNameBox = $('#search_name'),
-        showSearchLink = $(
-            '<a href="#">Need to search by institution name?</a>');
+        showSearchLink = $('<a class="reveal" href="#">' +
+                           'Need to search by institution name?</a>');
     search.initialize();
 
-    searchNameBox.typeahead(null, {
-        displayKey: 'name',
+    searchNameBox.typeahead({
+        highlight: true
+    }, {
+        displayKey: 'formatted_name',
         source: search.ttAdapter()
     });
 

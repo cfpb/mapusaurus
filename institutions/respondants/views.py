@@ -2,7 +2,7 @@ import re
 
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.template import RequestContext
+from django.template import defaultfilters, RequestContext
 from django.template.loader import select_template
 from haystack.inputs import AutoQuery, Exact
 from haystack.query import SearchQuerySet
@@ -49,6 +49,13 @@ def index(request):
 
 class InstitutionSerializer(serializers.ModelSerializer):
     """Used in RESTful endpoints"""
+    formatted_name = serializers.SerializerMethodField("format_name")
+
+    def format_name(self, institution):
+        formatted = defaultfilters.title(institution.name) + " ("
+        formatted += str(institution.agency_id) + institution.ffiec_id + ")"
+        return formatted
+
     class Meta:
         model = Institution
 
