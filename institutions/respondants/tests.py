@@ -94,8 +94,8 @@ class ViewTest(TestCase):
         self.assertTrue('Some Bank' in resp.content)
         self.assertRaises(ValueError, json.loads, resp.content)
 
-        resp = self.client.get(reverse('search'), {'q': '01234567899'})
-        self.assertTrue('01234567899' in str(SQS.filter.call_args))
+        resp = self.client.get(reverse('search'), {'q': '012345-7899'})
+        self.assertTrue('012345-7899' in str(SQS.filter.call_args))
         self.assertFalse('content' in str(SQS.filter.call_args))
         self.assertTrue('lender_id' in str(SQS.filter.call_args))
         self.assertTrue('Some Bank' in resp.content)
@@ -105,6 +105,22 @@ class ViewTest(TestCase):
         self.assertTrue('01234567899' in str(SQS.filter.call_args))
         self.assertFalse('content' in str(SQS.filter.call_args))
         self.assertTrue('lender_id' in str(SQS.filter.call_args))
+        self.assertTrue('Some Bank' in resp.content)
+        self.assertRaises(ValueError, json.loads, resp.content)
+
+        resp = self.client.get(reverse('search'),
+                               {'q': 'Some Bank (01234567-99)'})
+        self.assertTrue('01234567-99' in str(SQS.filter.call_args))
+        self.assertFalse('content' in str(SQS.filter.call_args))
+        self.assertTrue('lender_id' in str(SQS.filter.call_args))
+        self.assertTrue('Some Bank' in resp.content)
+        self.assertRaises(ValueError, json.loads, resp.content)
+
+        resp = self.client.get(reverse('search'),
+                               {'q': 'Some Bank (0123457-99)'})
+        self.assertTrue('0123457-99' in str(SQS.filter.call_args))
+        self.assertTrue('content' in str(SQS.filter.call_args))
+        self.assertFalse('lender_id' in str(SQS.filter.call_args))
         self.assertTrue('Some Bank' in resp.content)
         self.assertRaises(ValueError, json.loads, resp.content)
 

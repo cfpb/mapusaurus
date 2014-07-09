@@ -64,12 +64,17 @@ class InstitutionSerializer(serializers.ModelSerializer):
 def search(request):
     query_str = request.GET.get('q', '').strip()
     lender_id = request.GET.get('lender_id')
+    # Account for paren lender ids as we might generate elsewhere
+    if re.match(r".*\([0-9-]{11}\)$", query_str):
+        lparen_pos = query_str.rfind('(')
+        lender_id = query_str[lparen_pos + 1:-1]
+        query_str = query_str[:lparen_pos]
+    elif re.match(r"[0-9-]{11}", query_str):
+        lender_id = query_str
 
     query = SearchQuerySet().models(Institution).load_all()
 
-    if re.match(r"\d{11}", query_str):
-        query = query.filter(lender_id=Exact(query_str))
-    elif lender_id:
+    if lender_id:
         query = query.filter(lender_id=Exact(lender_id))
     elif query_str and request.GET.get('auto'):
         query = query.filter(text_auto=AutoQuery(query_str))
