@@ -1,14 +1,15 @@
 import re
 
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.template import defaultfilters, RequestContext
+from django.template.loader import select_template
 from haystack.inputs import AutoQuery, Exact
 from haystack.query import SearchQuerySet
 from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from respondants.forms import InstitutionSearchForm
 from respondants.models import Institution
 
 
@@ -40,24 +41,21 @@ def respondant(request, respondant_id):
 def index(request):
     """  The main view. Display the institution search box here. """
 
-    if request.method == 'POST':
-        form = InstitutionSearchForm(request.POST)
-        if form.is_valid():
-            name_contains = form.cleaned_data['name_contains']
-            return HttpResponseRedirect(
-                '/institutions/search/?q=%s' % name_contains)
-    else:
-        form = InstitutionSearchForm()
-
-    return render(
-        request,
-        'respondants/index.html',
-        {'search_form': form}
-    )
+    context = RequestContext(request, {})
+    template = select_template(['respondants/custom-index.html',
+                                'respondants/index.html'])
+    return HttpResponse(template.render(context))
 
 
 class InstitutionSerializer(serializers.ModelSerializer):
     """Used in RESTful endpoints"""
+    formatted_name = serializers.SerializerMethodField("format_name")
+
+    def format_name(self, institution):
+        formatted = defaultfilters.title(institution.name) + " ("
+        formatted += str(institution.agency_id) + institution.ffiec_id + ")"
+        return formatted
+
     class Meta:
         model = Institution
 
@@ -65,9 +63,19 @@ class InstitutionSerializer(serializers.ModelSerializer):
 @api_view(['GET'])
 def search(request):
     query_str = request.GET.get('q', '').strip()
+    lender_id = request.GET.get('lender_id')
+    # Account for paren lender ids as we might generate elsewhere
+    if re.match(r".*\([0-9-]{11}\)$", query_str):
+        lparen_pos = query_str.rfind('(')
+        lender_id = query_str[lparen_pos + 1:-1]
+        query_str = query_str[:lparen_pos]
+    elif re.match(r"[0-9-]{11}", query_str):
+        lender_id = query_str
+
     query = SearchQuerySet().models(Institution).load_all()
-    if re.match(r"\d{11}", query_str):
-        query = query.filter(lender_id=Exact(query_str))
+
+    if lender_id:
+        query = query.filter(lender_id=Exact(lender_id))
     elif query_str and request.GET.get('auto'):
         query = query.filter(text_auto=AutoQuery(query_str))
     elif query_str:
