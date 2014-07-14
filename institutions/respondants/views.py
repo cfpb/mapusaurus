@@ -84,7 +84,10 @@ def search(request):
         query = []
     query = query[:25]
 
-    results = map(lambda inst: inst.object, query)
+    results = []
+    for result in query:
+        result.object.num_loans = result.num_loans
+        results.append(result.object)
     if request.accepted_renderer.format != 'html':
         results = InstitutionSerializer(results, many=True).data
 

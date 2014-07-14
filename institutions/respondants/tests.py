@@ -1,10 +1,10 @@
 import json
 
 from django.core.urlresolvers import reverse
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from mock import Mock, patch
 
-from respondants import zipcode_utils
+from respondants import views, zipcode_utils
 from respondants.models import Institution, ZipcodeCityState
 from respondants.management.commands import load_reporter_panel
 from respondants.management.commands import load_transmittal
@@ -85,8 +85,8 @@ class ViewTest(TestCase):
         SQS = SQS.return_value.models.return_value.load_all.return_value
         result1, result2 = Mock(), Mock()
         SQS.filter.return_value = [result1, result2]
-        result1.object = {'name': 'Some Bank'}
-        result2.object = {'name': 'Bank & Loan'}
+        result1.object.name = 'Some Bank'
+        result2.object.name = 'Bank & Loan'
         resp = self.client.get(reverse('search'), {'q': 'Bank'})
         self.assertTrue('Bank' in str(SQS.filter.call_args))
         self.assertTrue('content' in str(SQS.filter.call_args))
@@ -99,7 +99,6 @@ class ViewTest(TestCase):
         SQS = SQS.return_value.models.return_value.load_all.return_value
         result = Mock()
         SQS.filter.return_value = [result]
-        result.object = Mock()
         result.object.name, result.object.id = 'Some Bank', 1234
         self.client.get(reverse('search'), {'q': 'Bank', 'auto': '1'})
         self.assertTrue('Bank' in str(SQS.filter.call_args))
@@ -111,7 +110,6 @@ class ViewTest(TestCase):
         SQS = SQS.return_value.models.return_value.load_all.return_value
         result = Mock()
         SQS.filter.return_value = [result]
-        result.object = Mock()
         result.object.name, result.object.id = 'Some Bank', 1234
 
         resp = self.client.get(reverse('search'), {'q': '01234567'})
@@ -163,3 +161,16 @@ class ViewTest(TestCase):
         self.assertEqual(1, len(resp['institutions']))
         inst = resp['institutions'][0]
         self.assertEqual('Some Bank', inst['name'])
+
+    @patch('respondants.views.SearchQuerySet')
+    def test_search_num_loans(self, SQS):
+        SQS = SQS.return_value.models.return_value.load_all.return_value
+        result = Mock()
+        SQS.filter.return_value = [result]
+        result.num_loans = 45
+        result.object = Institution(name='Some Bank')
+
+        request = RequestFactory().get('/', data={'q': 'Bank'})
+        results = views.search(request)
+        self.assertEqual(len(results.data['institutions']), 1)
+        self.assertEqual(45, results.data['institutions'][0].num_loans)
