@@ -12,12 +12,12 @@ class ZipcodeCityState(models.Model):
 
     class Meta:
         unique_together = ('zip_code', 'city')
-    
+
     @property
     def unique_name(self):
         return '%s, %s %s' % (self.city, self.state, self.zip_code)
 
-    def __unicode__(self):  
+    def __unicode__(self):
         return self.unique_name
 
 
@@ -30,7 +30,7 @@ class Agency(models.Model):
 
     objects = AgencyManager()
 
-    def __unicode__(self):  
+    def __unicode__(self):
         return self.acronym
 
 
@@ -50,7 +50,7 @@ class ParentInstitution(models.Model):
         help_text='Id on the National Information Center repository',
         null=True)
 
-    def __unicode__(self):  
+    def __unicode__(self):
         return self.name
 
 
@@ -93,5 +93,5 @@ class Institution(models.Model):
         unique_together = ('ffiec_id', 'agency')
         index_together = [['ffiec_id', 'agency', 'year']]
 
-    def __unicode__(self):  
+    def __unicode__(self):
         return self.name

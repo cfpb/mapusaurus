@@ -1,6 +1,6 @@
 import csv
-from django.core.management.base import BaseCommand, CommandError
-from respondants.models import Institution, ZipcodeCityState, Agency
+from django.core.management.base import BaseCommand
+from respondants.models import Institution, Agency
 from respondants.zipcode_utils import create_zipcode
 
 
