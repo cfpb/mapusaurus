@@ -1,9 +1,7 @@
 import re
 
-from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.template import defaultfilters, RequestContext
-from django.template.loader import select_template
+from django.template import defaultfilters
 from haystack.inputs import AutoQuery, Exact
 from haystack.query import SearchQuerySet
 from rest_framework import serializers
@@ -41,10 +39,7 @@ def respondant(request, respondant_id):
 def index(request):
     """  The main view. Display the institution search box here. """
 
-    context = RequestContext(request, {})
-    template = select_template(['respondants/custom-index.html',
-                                'respondants/index.html'])
-    return HttpResponse(template.render(context))
+    return render(request, 'respondants/index.html')
 
 
 class InstitutionSerializer(serializers.ModelSerializer):

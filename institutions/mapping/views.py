@@ -1,6 +1,4 @@
-from django.http import HttpResponse
-from django.template import RequestContext
-from django.template.loader import select_template
+from django.shortcuts import render
 
 from respondants.models import Institution
 
@@ -18,6 +16,4 @@ def home(request):
         if lender:
             context['lender'] = lender
 
-    context = RequestContext(request, context)
-    template = select_template(['custom-index.html', 'index.html'])
-    return HttpResponse(template.render(context))
+    return render(request, 'index.html', context)
