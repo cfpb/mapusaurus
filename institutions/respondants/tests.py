@@ -7,6 +7,7 @@ from mock import Mock, patch
 from respondants import zipcode_utils
 from respondants.models import Institution, ZipcodeCityState
 from respondants.management.commands import load_reporter_panel
+from respondants.management.commands import load_transmittal
 
 
 class ZipcodeUtilsTests(TestCase):
@@ -37,6 +38,31 @@ class ReporterPanelLoadingTests(TestCase):
         self.assertEqual('0000055547', reporter_row.respondant_id)
         self.assertEqual(1, reporter_row.agency_code)
         self.assertEqual('', reporter_row.parent_id)
+
+
+class LoadTransmittalTests(TestCase):
+    fixtures = ['agency']
+
+    @patch('__builtin__.open')
+    def test_handle(self, mock_open):
+        # Only care inside a "with"
+        mock_open = mock_open.return_value.__enter__.return_value
+        line = "2012\t0000055547\t1\tTAXIDHERE\tFIRST FAKE BK NA\t"
+        line += "1122 S 3RD ST\tTERRE HAUTE\tCA\t90210\t"
+        line += "FIRST FAKE CORPORATION\tONE ADDR\tTERRE HAUTE\tCA\t90210\t"
+        line += "FIRST FAKE BK NA\tTERRE HAUTE\tCA\t121212\t0\t3\t3657\tN"
+        mock_open.__iter__.return_value = [line]
+
+        cmd = load_transmittal.Command()
+        cmd.handle('somefile.txt')
+
+        query = Institution.objects.all()
+        self.assertEqual(query.count(), 1)
+        inst = query[0]
+        self.assertEqual(inst.name, 'FIRST FAKE BK NA')
+        self.assertEqual(inst.ffiec_id, '0000055547')
+        self.assertEqual(inst.agency_id, 1)
+        self.assertEqual(inst.assets, 121212)
 
 
 class ViewTest(TestCase):

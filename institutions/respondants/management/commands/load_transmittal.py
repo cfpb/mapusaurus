@@ -32,6 +32,7 @@ class Command(BaseCommand):
                     name=inst_line[4],
                     mailing_address=inst_line[5],
                     zip_code=zipcode_city,
+                    assets=int(inst_line[17]),
                 )
 
                 institutions.append(inst)
