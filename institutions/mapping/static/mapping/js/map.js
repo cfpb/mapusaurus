@@ -79,6 +79,10 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.minority.setStyle(
                 Mapusaurus[$('#style-selector').val()]);
         });
+        $('#category-selector').on('change', function() {
+            Mapusaurus.layers.tract.minority.geojsonLayer.setStyle(
+                Mapusaurus.minorityContinuousStyle);
+        });
     },
 
     /* Called after each tile of census tract geojson data loads */
@@ -155,8 +159,9 @@ var Mapusaurus = {
         var tract = Mapusaurus.dataStore.tract[geoid];
         if (_.has(tract, 'layer_minority')) {
             return (
-                (1 - tract['layer_minority']['non_hisp_white_only_perc']) *
-                100).toFixed() + '% "Minority"';
+                (Mapusaurus.minorityPercent(tract['layer_minority']) *
+                100).toFixed() + '% "Minority"<br />(' +
+                $('#category-selector option:selected').text() + ')');
         } else {
             return 'Loading...';
         }
@@ -347,15 +352,24 @@ var Mapusaurus = {
         } else if (tract['layer_minority']['total_pop'] === 0) {
             return Mapusaurus.noStyle;
         } else {
-            var minorityPercent = 1 - tract['layer_minority'][
-                                'non_hisp_white_only_perc'],
-                bucket = Mapusaurus.toBucket(minorityPercent),
+            var perc = Mapusaurus.minorityPercent(tract['layer_minority']),
+                bucket = Mapusaurus.toBucket(perc),
                 // convert given percentage to percents within bucket's bounds
-                bucketPercent = percentFn(minorityPercent, bucket);
+                bucketPercent = percentFn(perc, bucket);
             return $.extend({}, Mapusaurus.tractStyle, {
                 fillColor: Mapusaurus.colorFromPercent(bucketPercent,
                                                        bucket.colors)
             });
+        }
+    },
+
+    //  Using the selector, determine which statistic to display.
+    minorityPercent: function(tractData) {
+        var fieldName = $('#category-selector').val();
+        if (fieldName.substring(0, 4) === 'inv_') {
+            return 1 - tractData[fieldName.substr(4)];
+        } else {
+            return tractData[fieldName];
         }
     },
 
