@@ -11,9 +11,7 @@ $(document).ready(function() {
             filter: function(resp) { return resp.institutions;}
         }
     }),
-        searchNameBox = $('#search_name'),
-        showSearchLink = $('<a class="reveal" href="#">' +
-                           'Need to search by institution name?</a>');
+        searchNameBox = $('#search_name');
     search.initialize();
 
     searchNameBox.typeahead({
@@ -22,10 +20,4 @@ $(document).ready(function() {
         displayKey: 'formatted_name',
         source: search.ttAdapter()
     });
-
-    showSearchLink.click(function() {
-        showSearchLink.hide();
-        searchNameBox.closest('.search-field').show();
-    });
-    searchNameBox.closest('.search-field').hide().after(showSearchLink);
 });
