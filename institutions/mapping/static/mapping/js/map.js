@@ -59,6 +59,8 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.loanVolume.addTo(map);
             Mapusaurus.dataWithoutGeo.tract.loanVolume = {};
             Mapusaurus.statsLoaded.loanVolume = {};
+            $('#bubble-selector').removeClass('hidden').on('change',
+                Mapusaurus.redrawBubbles);
         }
         //  Census tracts get cleared whenever zooming in/out (analogous to
         //  other tile layers)
@@ -305,12 +307,31 @@ var Mapusaurus = {
         });
     },
 
+    //  Using the selector, determine which hmda statistic to display
+    hmdaStat: function(tractData) {
+        var fieldName = $('#bubble-selector').val(),
+            splitAt = fieldName.indexOf('_'),
+            scale = parseFloat(fieldName.substring(0, splitAt));
+        return scale * tractData[fieldName.substr(splitAt + 1)];
+    },
+
+    redrawBubbles: function() {
+        Mapusaurus.layers.tract.loanVolume.eachLayer(function(layer) {
+            var geoid = layer.geoid,
+                tractData = Mapusaurus.dataStore.tract[geoid],
+                stat = Mapusaurus.hmdaStat(tractData['layer_loanVolume']);
+            layer.setRadius(stat);
+        });
+    },
+
     /* Styles/extras for originations layer */
     makeBubble: function(geoProps) {
         var data = geoProps['layer_loanVolume'],
             circle = L.circle([geoProps.intptlat, geoProps.intptlon],
-                              100 * data['volume_per_100_households'],
+                              Mapusaurus.hmdaStat(data),
                               Mapusaurus.bubbleStyle);
+        //  We will use the geoid when redrawing
+        circle.geoid = geoProps.geoid;
         //  keep expected functionality with double clicking
         circle.on('dblclick', function(ev) {
             Mapusaurus.map.setZoomAround(
