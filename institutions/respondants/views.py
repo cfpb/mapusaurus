@@ -47,25 +47,31 @@ class InstitutionSerializer(serializers.ModelSerializer):
     formatted_name = serializers.SerializerMethodField("format_name")
 
     def format_name(self, institution):
-        formatted = defaultfilters.title(institution.name) + " ("
-        formatted += str(institution.agency_id) + institution.ffiec_id + ")"
+        formatted = defaultfilters.title(institution.name) + " (0"
+        formatted += str(institution.agency_id) + "-" + institution.ffiec_id
+        formatted += ")"
         return formatted
 
     class Meta:
         model = Institution
 
 
+SMASH_RE = re.compile(r"^(?P<agency>[0-9])(?P<respondent>[0-9-]{10})$")
+PREFIX_RE = re.compile(r"^0(?P<agency>[0-9])-(?P<respondent>[0-9-]{10})$")
+# Same format as we generate in the InstitutionSerializer
+PAREN_RE = re.compile(r"^.*\(0(?P<agency>[0-9])-(?P<respondent>[0-9-]{10})\)$")
+SUFFIX_RE = re.compile(r"^(?P<respondent>[0-9-]{10})-0(?P<agency>[0-9])$")
+LENDER_REGEXES = [SMASH_RE, PREFIX_RE, PAREN_RE, SUFFIX_RE]
+
+
 @api_view(['GET'])
 def search(request):
     query_str = request.GET.get('q', '').strip()
-    lender_id = request.GET.get('lender_id')
-    # Account for paren lender ids as we might generate elsewhere
-    if re.match(r".*\([0-9-]{11}\)$", query_str):
-        lparen_pos = query_str.rfind('(')
-        lender_id = query_str[lparen_pos + 1:-1]
-        query_str = query_str[:lparen_pos]
-    elif re.match(r"[0-9-]{11}", query_str):
-        lender_id = query_str
+    lender_id = False
+    for regex in LENDER_REGEXES:
+        match = regex.match(query_str)
+        if match:
+            lender_id = match.group('agency') + match.group('respondent')
 
     query = SearchQuerySet().models(Institution).load_all()
 
