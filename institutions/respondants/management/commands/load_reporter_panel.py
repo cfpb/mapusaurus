@@ -1,10 +1,10 @@
 import collections
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from respondants.models import Institution, ParentInstitution
 
-#Let's try out named tuples.
+# Let's try out named tuples.
 ReporterRow = collections.namedtuple(
     "ReporterRow",
     [
@@ -88,16 +88,17 @@ def get_parent(reporter):
     if len(parents) > 0:
         return parents[0]
     else:
-        #Use the RSSD ID to look for the parent. There's at least one case
-        #where the RSSD ID matches, but the FFIEC ID does not. Also, in cases
-        #where the RSSD ID matches, the state does not. We'll go based on
-        #RSSD ID - but that still indicates weirdness in the data.
+        # Use the RSSD ID to look for the parent. There's at least one case
+        # where the RSSD ID matches, but the FFIEC ID does not. Also, in cases
+        # where the RSSD ID matches, the state does not. We'll go based on
+        # RSSD ID - but that still indicates weirdness in the data.
         parents = Institution.objects.filter(
             year=reporter.year,
             rssd_id=reporter.parent_rssd_id)
 
         if len(parents) > 0:
             return parents[0]
+
 
 def create_top_holder(reporter):
     parent = ParentInstitution(

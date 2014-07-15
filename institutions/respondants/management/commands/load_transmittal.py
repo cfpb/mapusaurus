@@ -1,6 +1,6 @@
 import csv
-from django.core.management.base import BaseCommand, CommandError
-from respondants.models import Institution, ZipcodeCityState, Agency
+from django.core.management.base import BaseCommand
+from respondants.models import Institution, Agency
 from respondants.zipcode_utils import create_zipcode
 
 
@@ -32,6 +32,7 @@ class Command(BaseCommand):
                     name=inst_line[4],
                     mailing_address=inst_line[5],
                     zip_code=zipcode_city,
+                    assets=int(inst_line[17]),
                 )
 
                 institutions.append(inst)
