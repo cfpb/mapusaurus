@@ -1,16 +1,16 @@
             {% for res in institutions %}
                 <div style="margin-bottom: 2em">
                     <div class="row">
-                        <div class="col-md-8"><h4 style="margin-bottom: .5em"><a href="{% url 'home' %}?lender={{institution.agency_id}}{{institution.ffiec_id}}">{{res.name|title}}</a> &nbsp; <small>{{res.agency_id}}-{{res.ffiec_id}}</small></h4></div>
-                        <div class="col-md-4"><p class="text-right"><!--Depository Institution--></p></div>
+                        <div class="col-md-8"><h4 style="margin-bottom: .5em"><a href="{% url 'home' %}?lender={{institution.agency_id}}{{institution.ffiec_id}}">{{res.name|title}}</a> &nbsp; <small>0{{res.agency_id}}-{{res.ffiec_id}}</small></h4></div>
+                        <div class="col-md-4 text-right">{{res.year}} Assets: {{res.assets}}</div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">Headquarters: {{res.zip_code.city|title}}, {{res.zip_code.state|upper}} {{res.zip_code.zip_code}}</div>
-                        <div class="col-md-6 text-right">{{res.year}} Assets: {{res.assets}}</div>
+                        <div class="col-md-6 text-right">{{res.year}} LAR Count: {{res.assets}}</div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6"><button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#detail_{{res.id}}">Full Details</button></div>
-                        <div class="col-md-6 text-right">{{res.year}} LAR Count: {{res.assets}}</div>
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6 text-right"><button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#detail_{{res.id}}">Full Details</button></div>
                     </div>
                     
                     <div id="detail_{{res.id}}" class="collapse">
@@ -46,7 +46,7 @@
                             </tr>
                             <tr>
                                 <th style="text-align: right;">Agency-HMDA ID:</th>
-                                <td>{{res.agency_id}}-{{res.ffiec_id}}</td>
+                                <td>0{{res.agency_id}}-{{res.ffiec_id}}</td>
                             </tr>
                             <tr>
                                 <th style="text-align: right;">RSSD ID:</th>
