@@ -56,10 +56,13 @@ class InstitutionSerializer(serializers.ModelSerializer):
         model = Institution
 
 
+# 90123456789
 SMASH_RE = re.compile(r"^(?P<agency>[0-9])(?P<respondent>[0-9-]{10})$")
+# 09-0123456789
 PREFIX_RE = re.compile(r"^0(?P<agency>[0-9])-(?P<respondent>[0-9-]{10})$")
-# Same format as we generate in the InstitutionSerializer
+# Some Bank (09-0123456789) - same format as InstitutionSerializer
 PAREN_RE = re.compile(r"^.*\(0(?P<agency>[0-9])-(?P<respondent>[0-9-]{10})\)$")
+# 0123456789-09
 SUFFIX_RE = re.compile(r"^(?P<respondent>[0-9-]{10})-0(?P<agency>[0-9])$")
 LENDER_REGEXES = [SMASH_RE, PREFIX_RE, PAREN_RE, SUFFIX_RE]
 
