@@ -1,3 +1,54 @@
-input.tt-input, input.tt-hint {
-  width: 200px;
+#content .wrap {
+  width: 50%;
+  max-width: 800px;
+  margin-top: 5em;
+}
+
+#content h2 {
+  font-weight: bold;
+  font-size: large;
+}
+
+.search-field {
+  margin-bottom: 2em;
+}
+
+a.reveal {
+  font-size: small;
+}
+
+.search-field label, .search-field .example-hint {
+  display: block;
+  font-size: small;
+}
+
+.search-field input[type="text"] {
+  width: 18em;
+  padding: 0.25em 0.5em;
+}
+
+.search-field input[type="submit"] {
+  margin-left: 2em;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.search-field .example-hint {
+  color: #777;
+  font-style: italic;
+  margin-top: 0.5em;
+}
+
+.tt-suggestion {
+  text-transform: capitalize;
+  border-left: 1px solid #888;
+  border-right: 1px solid #888;
+  border-bottom: 1px solid #888;
+  padding: 0 0.5em;
+  background-color: #fff;
+  width: 18em;
+}
+
+.tt-suggestion p {
+  margin-bottom: 0.2em;
 }

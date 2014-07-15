@@ -10,11 +10,14 @@ $(document).ready(function() {
             url: '/institutions/search/?auto=1&q=%QUERY',
             filter: function(resp) { return resp.institutions;}
         }
-    });
+    }),
+        searchNameBox = $('#search_name');
     search.initialize();
 
-    $('#id_name_contains').typeahead(null, {
-        displayKey: 'name',
+    searchNameBox.typeahead({
+        highlight: true
+    }, {
+        displayKey: 'formatted_name',
         source: search.ttAdapter()
     });
 });

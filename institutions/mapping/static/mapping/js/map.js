@@ -1,5 +1,7 @@
 'use strict';
 
+/* We want to be able to trigger a callback whenever a JSON tile loads, so we
+ * create a custom GeoJSON tile layer */
 L.TileLayer.HookableGeoJSON = L.TileLayer.GeoJSON.extend({
     _tileLoaded: function() {
         //  "super"
@@ -18,7 +20,7 @@ var Mapusaurus = {
     layers: {tract: {minority: null}},
     //  Tracks layer data/stats
     dataStore: {tract: {}},
-    //  Tracks which tracts have been drawn
+    //  Tracks which tracts have been drawn. Gets cleared when zooming
     drawn: {},
     //  Stores stat data when the associated geos aren't loaded
     dataWithoutGeo: {tract: {minority: {}}},
@@ -42,16 +44,7 @@ var Mapusaurus = {
         Mapusaurus.addKey(map);
         Mapusaurus.layers.tract.minority = new L.TileLayer.HookableGeoJSON(
             '/shapes/tiles/tracts/{z}/{x}/{y}', {
-                afterTileLoaded: function(tile) {
-                    var geoids = _.map(tile.datum.features, function(feature) {
-                        return feature.properties.geoid;
-                    });
-
-                    Mapusaurus.updateDataWithoutGeos(geoids);
-                    Mapusaurus.fetchMissingStats(geoids);
-
-                    this.geojsonLayer.bringToBack();
-                }
+                afterTileLoaded: Mapusaurus.loadedCensusTile
             }, {
                 onEachFeature: Mapusaurus.eachTract,
                 style: Mapusaurus.minorityContinousStyle,
@@ -90,6 +83,18 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.minority.geojsonLayer.setStyle(
                 Mapusaurus.minorityContinuousStyle);
         });
+    },
+
+    /* Called after each tile of census tract geojson data loads */
+    loadedCensusTile: function(tile) {
+        var geoids = _.map(tile.datum.features, function(feature) {
+            return feature.properties.geoid;
+        });
+
+        Mapusaurus.updateDataWithoutGeos(geoids);
+        Mapusaurus.fetchMissingStats(geoids);
+
+        Mapusaurus.layers.tract.minority.geojsonLayer.bringToBack();
     },
 
     /* Indicates what the colors mean */
@@ -340,8 +345,8 @@ var Mapusaurus = {
     minorityStyle: function(feature, percentFn) {
         var geoid = feature.properties.geoid,
             tract = Mapusaurus.dataStore.tract[geoid];
-        //  If we haven't loaded the data yet or the tract has zero people,
-        //  don't draw it
+        // Different styles for when we are loading, the tract has zero pop, or
+        // we have percentages
         if (!_.has(tract, 'layer_minority')) {
             return Mapusaurus.loadingStyle;
         } else if (tract['layer_minority']['total_pop'] === 0) {

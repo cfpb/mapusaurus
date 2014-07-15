@@ -2,16 +2,32 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>Institution Search</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>Find an institution</title>
         <link rel="stylesheet" href="{% static 'respondants/css/search.css' %}" />
+        {% block custom_css %}{% endblock %}
     </head>
 
     <body>
-        <form action="/institutions/" method="POST">
-            {% csrf_token %}
-            {{search_form.as_p}}
-            <input type="submit" value="submit" />
-        </form>
+        {% block page_header %}{% endblock %}
+
+        <section id="content" class="content cf">
+            <main role="main">
+                <div class="wrap">
+                    <h2>Find an institution</h2>
+                    <form action="/institutions/search/" method="GET">
+                        <div class="search-field">
+                            <label for="lender_id">Search by Lender ID (<a
+                                target="_blank"
+                                href="http://www.ffiec.gov/nicpubweb/nicweb/SearchForm.aspx">Lender ID Lookup</a>)</label>
+                            <input type="text" id="search_name" name="q" />
+                            <input type="submit" value="Search" />
+                            <span class="example-hint">ex: 09-9992222111; 9992222111-09; First Federal Savings</span>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </section>
 
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>

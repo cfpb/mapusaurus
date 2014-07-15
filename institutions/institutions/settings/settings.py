@@ -42,13 +42,14 @@ INSTALLED_APPS = (
     'leaflet',
     'haystack',
     'rest_framework',
+    'overextends',
 
+    'cfpbstyle',
     'mapping',
     'respondants',
     'geo',
     'censusdata',
     'hmda',
-    'cfpbstyle',
     'batch',
 )
 
