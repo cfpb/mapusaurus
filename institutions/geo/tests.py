@@ -64,58 +64,19 @@ class ViewTest(TestCase):
         for tract in StateCensusTract.objects.all():
             tract.save()
 
-    def test_tracts(self):
-        resp = self.client.get(reverse('geo:tractsgeojson'),
-                               {'state_fips': '11', 'county_fips': '222'})
-        resp = json.loads(resp.content)
-        features = resp['features']
-        self.assertEqual(len(features), 4)
-
-        ids = map(lambda feature: feature['properties']['geoid'], features)
-        self.assertTrue('1122233300' in ids)
-        self.assertTrue('1122233400' in ids)
-        self.assertTrue('1122233500' in ids)
-        self.assertTrue('1122233600' in ids)
-
-    def test_tracts_page(self):
-        resp = self.client.get(reverse('geo:tractsgeojson'),
-                               {'state_fips': '11', 'county_fips': '222',
-                                'page_size': 2, 'page_num': 1})
-        resp = json.loads(resp.content)
-        features = resp['features']
-        self.assertEqual(len(features), 2)
-
-        ids = map(lambda feature: feature['properties']['geoid'], features)
-        self.assertTrue('1122233300' in ids)
-        self.assertTrue('1122233400' in ids)
-
-        resp = self.client.get(reverse('geo:tractsgeojson'),
-                               {'state_fips': '11', 'county_fips': '222',
-                                'page_size': 3, 'page_num': 2})
-        resp = json.loads(resp.content)
-        features = resp['features']
-        self.assertEqual(len(features), 1)
-
-        ids = map(lambda feature: feature['properties']['geoid'], features)
-        self.assertTrue('1122233600' in ids)
-
-        resp = self.client.get(reverse('geo:tractsgeojson'),
-                               {'state_fips': '11', 'county_fips': '222',
-                                'page_size': 5, 'page_num': 22})
-        resp = json.loads(resp.content)
-        features = resp['features']
-        self.assertEqual(len(features), 0)
-
-    def test_tracts_in_rect(self):
-        resp = self.client.get(reverse('geo:tracts_in_rect'),
-                               {'minlat': -10, 'minlon': -10,
-                                'maxlat': 10, 'maxlon': 10})
+    def test_tract_tiles(self):
+        # lat/lon roughly: 0 to 11
+        resp = self.client.get(reverse(
+            'geo:tract_tiles',
+            kwargs={'zoom': 5, 'xtile': 16, 'ytile': 15}))
         resp = json.loads(resp.content)
         self.assertEqual(len(resp['features']),
-                         StateCensusTract.objects.all().count())
+                         # Doesn't grab the negative tract
+                         StateCensusTract.objects.all().count() - 1)
 
-        resp = self.client.get(reverse('geo:tracts_in_rect'),
-                               {'minlat': -10, 'minlon': -10,
-                                'maxlat': -1, 'maxlon': -1})
+        # lat/lon roughly: -6 to -3
+        resp = self.client.get(reverse(
+            'geo:tract_tiles',
+            kwargs={'zoom': 7, 'xtile': 62, 'ytile': 65}))
         resp = json.loads(resp.content)
         self.assertEqual(len(resp['features']), 1)
