@@ -87,5 +87,5 @@ def search(request):
         results = InstitutionSerializer(results, many=True).data
 
     return Response(
-        {'institutions': results},
+        {'institutions': results, 'query_str': query_str,},
         template_name='respondants/search_results.html')

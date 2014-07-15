@@ -1,22 +1,153 @@
-<html>
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>You Searched for: {{ query_str }}</title>
+        {% block custom_css %}{% endblock %}
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//fast.fonts.net/cssapi/0a274127-32a9-474a-bbdb-f23f410e88c5.css">
+<link rel="stylesheet" href="{% static 'cfpbstyle/css/site.css' %}" />
+    </head>
+
     <body>
-    <h1> Search results</h1>
 
-    <h2>Lenders</h2>
+        <header class="header cf" role="banner">
+            <div class="wrap">
+               <a href="http://www.consumerfinance.gov/" target="_blank">
+                   <img class="logo" src="http://cfpb.github.io/img/logo_210.png"
+                        alt="Consumer Financial Protection Bureau">
+               </a>
+               <h1><a class="home" href="/">Fair Lending HMDA Visualization Toolkit</a></h1>
+           </div>
+        </header>
 
-    {% for res in institutions %}
-      <p> 
-        <a href="/institutions/{{res.id}}">{{res.name|title}}</a> <br />
-        {{res.zip_code.city|title}}, {{res.zip_code.state|upper}} <br />
-        HMDA ID: {{res.ffiec_id}}  <br />
-        RSSD ID: <a href="http://www.ffiec.gov/nicpubweb/nicweb/OrgHierarchySearchForm.aspx?parID_RSSD={{res.rssd_id}}&parDT_END=99991231">{{res.rssd_id}}</a>
-      </p>
-    {% endfor %}
+<div style="background-color: #f5f5f5; margin-bottom: 1em; padding: 8px 0">
+
+<div class="container"> 
+<form class="form-inline" role="form" method="get">
+    <label for="search" class="control-label">Search:</label>
+    <input type="text" class="form-control input-sm" style="width: 320px" id="q" name="q" placeholder="by respondent name or ID">
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+</form>
+</div>
+
+</div>
+        <div class="container">            
+            <div class="row">
+                <div class="col-md-3">
+                    <h4>Filter By:</h4>
+
+                    <!--
+                    <p><button type="button" class="btn btn-default">Institution</button></p>
+                    <p><button type="button" class="btn btn-default">Location</button></p>
+                    -->
+
+                    <div class="btn-group btn-block" style="margin-bottom: 1.375em">
+                          <button type="button" class="btn btn-default text-left btn-block dropdown-toggle" data-toggle="dropdown">
+                            Regulating Agency <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu btn-block" role="menu">
+                            <li><a href="#">CFPB</a></li>
+                            <li><a href="#">FDIC</a></li>
+                            <li><a href="#">FRS</a></li>
+                            <li><a href="#">HUD</a></li>
+                            <li><a href="#">NCUA</a></li>
+                            <li><a href="#">OCC</a></li>
+                          </ul>
+                    </div>
 
 
-    <hr />
-    <p>     
-        Institution data is from the 2012 HMDA Transmittal sheet. 
-    </p>
+
+                    <p><button type="button" class="btn btn-default text-left btn-block">Corporate Assets</button></p>
+
+                    <p><button type="button" class="btn btn-default text-left btn-block">Number of Applications</button></p>
+
+                    <p><button type="button" class="btn btn-default text-left btn-block">Institution Type</button></p>
+
+
+
+                </div>
+
+
+
+                <div class="col-md-9">
+
+                    
+
+                    <!-- NESTED COL -->
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>Search Results:</h4>
+                        </div><!-- ./col-md-8-->
+
+                        <div class="col-md-4 text-right">
+                                <p><a href="?q=">Start Over</a></p>
+                        </div><!-- ./col-md-4-->
+
+                    </div><!-- ./row -->
+
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="well well-sm">
+                            You searched for <span class="label label-default">&ldquo;{{ query_str }}&rdquo;</span>
+                            </div>
+                        </div><!-- ./col-md-12-->
+
+                    </div><!-- ./row -->
+
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <p><span style="color: #999">« Previous</span> | <strong>1 of 25</strong> of <strong>52</strong> | <a href="#">Next »</a></p>
+
+                        </div><!-- ./col-md-6-->
+
+                        <div class="col-md-6 text-right">
+
+                                    <div class="btn-group btn-sm">
+                                      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                        Sort by: Relevance <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu" role="menu">
+                                        <li><a href="#">Relevance</a></li>
+                                        <li><a href="#">Number of Applications</a></li>
+                                        <li><a href="#">Corporate Assets</a></li>
+                                      </ul>
+                                    </div>
+                        </div>
+
+                    </div><!-- ./row -->
+
+                    <hr>
+                    <div class="row">
+
+
+                        <div class="col-md-8">
+
+                            {% include 'respondants/search_results_details.html' %}
+
+
+                            <p>     
+                                Note: Institution data is from the 2012 HMDA Transmittal sheet. 
+                            </p>
+                        </div>
+                    </div>
+
+                </div><!-- ./col-md-9-->
+
+
+            </div>
+   
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     </body>
 </html>
