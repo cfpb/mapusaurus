@@ -113,5 +113,7 @@ REST_FRAMEWORK = {
     ],
 }
 
+SOUTH_TESTS_MIGRATE = False
+
 
 from institutions.settings.local_settings import *

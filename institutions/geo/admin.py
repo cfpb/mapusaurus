@@ -1,5 +1,5 @@
 from django.contrib.gis import admin
-from models import StateCensusTract
+from models import Geo
 
 # Register your models here.
-admin.site.register(StateCensusTract, admin.GeoModelAdmin)
+admin.site.register(Geo, admin.GeoModelAdmin)

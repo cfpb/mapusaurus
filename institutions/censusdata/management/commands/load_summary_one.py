@@ -46,11 +46,11 @@ class Command(BaseCommand):
         state = geoids_by_record.values()[0][:2]
         race, hispanic, stats = [], [], []
         skip_race = Census2010Race.objects.filter(
-            geoid__statefp=state).exists()
+            geoid__state=state).exists()
         skip_hisp = Census2010HispanicOrigin.objects.filter(
-            geoid__statefp=state).exists()
+            geoid__state=state).exists()
         skip_stats = Census2010RaceStats.objects.filter(
-            geoid__statefp=state).exists()
+            geoid__state=state).exists()
 
         if not skip_race or not skip_hisp or not skip_stats:
             for row in reader(datafile):
@@ -96,8 +96,8 @@ class Command(BaseCommand):
         file4_name = geofile_name[:-11] + "000042010.sf1"
         datafile = open(file4_name, 'r')
         sex, age = [], []
-        skip_sex = Census2010Sex.objects.filter(geoid__statefp=state).exists()
-        skip_age = Census2010Age.objects.filter(geoid__statefp=state).exists()
+        skip_sex = Census2010Sex.objects.filter(geoid__state=state).exists()
+        skip_age = Census2010Age.objects.filter(geoid__state=state).exists()
         if not skip_sex or not skip_age:
             for row in reader(datafile):
                 recordnum = row[4]
@@ -133,7 +133,7 @@ class Command(BaseCommand):
         datafile = open(file4_name, 'r')
         households = []
         skip_households = Census2010Households.objects.filter(
-            geoid__statefp=state).exists()
+            geoid__state=state).exists()
         if not skip_households:
             for row in reader(datafile):
                 recordnum = row[4]

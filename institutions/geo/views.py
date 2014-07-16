@@ -48,14 +48,12 @@ def tract_tile(request, zoom, xtile, ytile):
     query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
                       maxlon__gte=minlon, maxlon__lte=maxlon)
 
-    tracts = Geo.objects.filter(query).filter(geo_type=Geo.TRACT_TYPE)
-    tracts = [[tract.as_geojson()] for tract in tracts]
-    #tracts = tracts.values_list('geojson')
+    tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE).filter(query)
 
     # We already have the json strings per model pre-computed, so just place
     # them inside a static response
     response = '{"crs": {"type": "link", "properties": {"href": '
     response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
     response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
-    response = response % ', '.join(t[0] for t in tracts)
+    response = response % ', '.join(tract.as_geojson() for tract in tracts)
     return HttpResponse(response, content_type='application/json')

@@ -1,14 +1,14 @@
 from django.test import TestCase
 
 from censusdata.models import Census2010RaceStats
-from geo.models import StateCensusTract
+from geo.models import Geo
 
 
 class Census2010RaceStatsTest(TestCase):
     fixtures = ['dummy_tracts']
 
     def test_auto_populated(self):
-        tract = StateCensusTract.objects.get(pk=10001)
+        tract = Geo.objects.get(pk='1122233300')
         stats = Census2010RaceStats(
             geoid=tract, total_pop=20, hispanic=1, non_hisp_white_only=2,
             non_hisp_black_only=4, non_hisp_asian_only=5)

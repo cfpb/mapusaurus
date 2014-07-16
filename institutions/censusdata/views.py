@@ -12,7 +12,7 @@ def race_by_county(county_fips, state_fips):
     """ Get race summary statistics by county (specified by FIPS codes). """
 
     tract_data = Census2010RaceStats.objects.filter(
-        geoid__statefp=state_fips, geoid__countyfp=county_fips)
+        geoid__state=state_fips, geoid__county=county_fips)
     return tract_data
 
 

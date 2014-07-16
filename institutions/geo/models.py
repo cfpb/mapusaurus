@@ -27,6 +27,12 @@ class Geo(models.Model):
 
     objects = models.GeoManager()
 
+    class Meta:
+        index_together = [("geo_type", "minlat", "minlon"),
+                          ("geo_type", "minlat", "maxlon"),
+                          ("geo_type", "maxlat", "minlon"),
+                          ("geo_type", "maxlat", "maxlon")]
+
     def as_geojson(self):
         # geometry is a placeholder, as we'll be inserting a pre-serialized
         # json string
