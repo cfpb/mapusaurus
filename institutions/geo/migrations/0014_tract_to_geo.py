@@ -15,10 +15,12 @@ class Migration(DataMigration):
         for tract in orm.StateCensusTract.objects.all():
             # Don't use any constants as this is migration code
             geo = orm.Geo(geoid=tract.geoid, geo_type=3, name=tract.name,
-                          state=int(tract.statefp), county=int(tract.countyfp),
-                          tract=int(tract.tractce), geom=tract.geom,
+                          state=tract.statefp, county=tract.countyfp,
+                          tract=tract.tractce, geom=tract.geom,
                           minlat=tract.minlat, minlon=tract.minlon,
-                          maxlat=tract.maxlat, maxlon=tract.maxlon)
+                          maxlat=tract.maxlat, maxlon=tract.maxlon,
+                          centlat=float(tract.intptlat),
+                          centlon=float(tract.intptlon))
             batch.append(geo)
             if len(batch) == 1000:
                 orm.Geo.objects.bulk_create(batch)
@@ -33,7 +35,9 @@ class Migration(DataMigration):
     models = {
         u'geo.geo': {
             'Meta': {'object_name': 'Geo'},
-            'county': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),
+            'centlat': ('django.db.models.fields.FloatField', [], {}),
+            'centlon': ('django.db.models.fields.FloatField', [], {}),
+            'county': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
             'geo_type': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'geoid': ('django.db.models.fields.CharField', [], {'max_length': '20', 'primary_key': 'True'}),
             'geom': ('django.contrib.gis.db.models.fields.MultiPolygonField', [], {'srid': '4269'}),
@@ -42,8 +46,8 @@ class Migration(DataMigration):
             'minlat': ('django.db.models.fields.FloatField', [], {}),
             'minlon': ('django.db.models.fields.FloatField', [], {}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'state': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'tract': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'})
+            'state': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
+            'tract': ('django.db.models.fields.CharField', [], {'max_length': '6', 'null': 'True'})
         },
         u'geo.statecensustract': {
             'Meta': {'object_name': 'StateCensusTract', 'index_together': "[('statefp', 'countyfp'), ('minlat', 'minlon'), ('minlat', 'maxlon'), ('maxlat', 'minlon'), ('maxlat', 'maxlon')]"},

@@ -201,14 +201,13 @@ var Mapusaurus = {
             //  We only care about unseen stat data
             var missingData = _.filter(newTracts, function(geoid) {
                 var geo = Mapusaurus.dataStore.tract[geoid],
-                    stateCounty = geo.statefp +
-                                  geo.countyfp;
+                    stateCounty = geo.state + geo.county;
                 return !Mapusaurus.statsLoaded[layerName][stateCounty];
             });
             //  convert to state + county strings
             missingData = _.map(missingData, function(geoid) {
                 var geo = Mapusaurus.dataStore.tract[geoid];
-                return geo.statefp + geo.countyfp;
+                return geo.state + geo.county;
             });
             //  remove any duplicates; we end with what state/counties need to
             //  be retrieved

@@ -3,7 +3,7 @@ import math
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 
-from geo.models import StateCensusTract
+from geo.models import Geo
 
 
 def to_lat(zoom, ytile):
@@ -48,8 +48,9 @@ def tract_tile(request, zoom, xtile, ytile):
     query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
                       maxlon__gte=minlon, maxlon__lte=maxlon)
 
-    tracts = StateCensusTract.objects.filter(query).order_by('geoid')
-    tracts = tracts.values_list('geojson')
+    tracts = Geo.objects.filter(query).filter(geo_type=Geo.TRACT_TYPE)
+    tracts = [[tract.as_geojson()] for tract in tracts]
+    #tracts = tracts.values_list('geojson')
 
     # We already have the json strings per model pre-computed, so just place
     # them inside a static response

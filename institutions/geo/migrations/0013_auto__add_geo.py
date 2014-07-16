@@ -13,14 +13,16 @@ class Migration(SchemaMigration):
             ('geoid', self.gf('django.db.models.fields.CharField')(max_length=20, primary_key=True)),
             ('geo_type', self.gf('django.db.models.fields.PositiveIntegerField')()),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('state', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('county', self.gf('django.db.models.fields.PositiveIntegerField')(null=True)),
-            ('tract', self.gf('django.db.models.fields.PositiveIntegerField')(null=True)),
+            ('state', self.gf('django.db.models.fields.CharField')(max_length=2)),
+            ('county', self.gf('django.db.models.fields.CharField')(max_length=3, null=True)),
+            ('tract', self.gf('django.db.models.fields.CharField')(max_length=6, null=True)),
             ('geom', self.gf('django.contrib.gis.db.models.fields.MultiPolygonField')(srid=4269)),
             ('minlat', self.gf('django.db.models.fields.FloatField')()),
             ('maxlat', self.gf('django.db.models.fields.FloatField')()),
             ('minlon', self.gf('django.db.models.fields.FloatField')()),
             ('maxlon', self.gf('django.db.models.fields.FloatField')()),
+            ('centlat', self.gf('django.db.models.fields.FloatField')()),
+            ('centlon', self.gf('django.db.models.fields.FloatField')()),
         ))
         db.send_create_signal(u'geo', ['Geo'])
 
@@ -33,7 +35,9 @@ class Migration(SchemaMigration):
     models = {
         u'geo.geo': {
             'Meta': {'object_name': 'Geo'},
-            'county': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),
+            'centlat': ('django.db.models.fields.FloatField', [], {}),
+            'centlon': ('django.db.models.fields.FloatField', [], {}),
+            'county': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
             'geo_type': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'geoid': ('django.db.models.fields.CharField', [], {'max_length': '20', 'primary_key': 'True'}),
             'geom': ('django.contrib.gis.db.models.fields.MultiPolygonField', [], {'srid': '4269'}),
@@ -42,8 +46,8 @@ class Migration(SchemaMigration):
             'minlat': ('django.db.models.fields.FloatField', [], {}),
             'minlon': ('django.db.models.fields.FloatField', [], {}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'state': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'tract': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'})
+            'state': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
+            'tract': ('django.db.models.fields.CharField', [], {'max_length': '6', 'null': 'True'})
         },
         u'geo.statecensustract': {
             'Meta': {'object_name': 'StateCensusTract', 'index_together': "[('statefp', 'countyfp'), ('minlat', 'minlon'), ('minlat', 'maxlon'), ('maxlat', 'minlon'), ('maxlat', 'maxlon')]"},
