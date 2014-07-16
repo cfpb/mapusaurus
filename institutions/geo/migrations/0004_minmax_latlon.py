@@ -9,7 +9,7 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName".
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-        for tract in orm.StateCensusTract.objects.all():
+        for tract in orm.StateCensusTract.objects.iterator():
             # Can't use auto_fields since we are using south's ORM
             lons, lats = zip(*[pt for polygon in tract.geom.coords
                                for line in polygon

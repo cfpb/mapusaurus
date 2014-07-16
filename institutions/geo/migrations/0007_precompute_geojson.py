@@ -11,7 +11,7 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName".
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-        for geo in orm.StateCensusTract.objects.all():
+        for geo in orm.StateCensusTract.objects.iterator():
             geojson = {"type": "Feature", "geometry": "$_$"}
             geojson['properties'] = {
                 'statefp': geo.statefp,

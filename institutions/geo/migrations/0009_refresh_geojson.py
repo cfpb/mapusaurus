@@ -8,7 +8,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for geo in orm.StateCensusTract.objects.all():
+        for geo in orm.StateCensusTract.objects.iterator():
             geojson = {"type": "Feature", "geometry": "$_$"}
             geojson['properties'] = {
                 'statefp': geo.statefp,
@@ -35,7 +35,7 @@ class Migration(DataMigration):
 
     def backwards(self, orm):
         "Write your backwards methods here."
-        for geo in orm.StateCensusTract.objects.all():
+        for geo in orm.StateCensusTract.objects.iterator():
             geojson = {"type": "Feature", "geometry": "$_$"}
             geojson['properties'] = {
                 'statefp': geo.statefp,
