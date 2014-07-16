@@ -1,13 +1,14 @@
 import re
 
 from django.shortcuts import render, get_object_or_404
-from django.template import defaultfilters
+from django.http import HttpResponseRedirect
 from haystack.inputs import AutoQuery, Exact
 from haystack.query import SearchQuerySet
 from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from respondants.forms import InstitutionSearchForm
 from respondants.models import Institution
 
 
@@ -39,47 +40,34 @@ def respondant(request, respondant_id):
 def index(request):
     """  The main view. Display the institution search box here. """
 
-    return render(request, 'respondants/index.html')
+    if request.method == 'POST':
+        form = InstitutionSearchForm(request.POST)
+        if form.is_valid():
+            name_contains = form.cleaned_data['name_contains']
+            return HttpResponseRedirect(
+                '/institutions/search/?q=%s' % name_contains)
+    else:
+        form = InstitutionSearchForm()
+
+    return render(
+        request,
+        'respondants/index.html',
+        {'search_form': form}
+    )
 
 
 class InstitutionSerializer(serializers.ModelSerializer):
     """Used in RESTful endpoints"""
-    formatted_name = serializers.SerializerMethodField("format_name")
-
-    def format_name(self, institution):
-        formatted = defaultfilters.title(institution.name) + " (0"
-        formatted += str(institution.agency_id) + "-" + institution.ffiec_id
-        formatted += ")"
-        return formatted
-
     class Meta:
         model = Institution
-
-
-# 90123456789
-SMASH_RE = re.compile(r"^(?P<agency>[0-9])(?P<respondent>[0-9-]{10})$")
-# 09-0123456789
-PREFIX_RE = re.compile(r"^0(?P<agency>[0-9])-(?P<respondent>[0-9-]{10})$")
-# Some Bank (09-0123456789) - same format as InstitutionSerializer
-PAREN_RE = re.compile(r"^.*\(0(?P<agency>[0-9])-(?P<respondent>[0-9-]{10})\)$")
-# 0123456789-09
-SUFFIX_RE = re.compile(r"^(?P<respondent>[0-9-]{10})-0(?P<agency>[0-9])$")
-LENDER_REGEXES = [SMASH_RE, PREFIX_RE, PAREN_RE, SUFFIX_RE]
 
 
 @api_view(['GET'])
 def search(request):
     query_str = request.GET.get('q', '').strip()
-    lender_id = False
-    for regex in LENDER_REGEXES:
-        match = regex.match(query_str)
-        if match:
-            lender_id = match.group('agency') + match.group('respondent')
-
     query = SearchQuerySet().models(Institution).load_all()
-
-    if lender_id:
-        query = query.filter(lender_id=Exact(lender_id))
+    if re.match(r"\d{11}", query_str):
+        query = query.filter(lender_id=Exact(query_str))
     elif query_str and request.GET.get('auto'):
         query = query.filter(text_auto=AutoQuery(query_str))
     elif query_str:
@@ -88,13 +76,10 @@ def search(request):
         query = []
     query = query[:25]
 
-    results = []
-    for result in query:
-        result.object.num_loans = result.num_loans
-        results.append(result.object)
+    results = map(lambda inst: inst.object, query)
     if request.accepted_renderer.format != 'html':
         results = InstitutionSerializer(results, many=True).data
 
     return Response(
-        {'institutions': results, 'query_str': query_str,},
+        {'institutions': results},
         template_name='respondants/search_results.html')

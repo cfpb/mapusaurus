@@ -6,7 +6,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">Headquarters: {{res.zip_code.city|title}}, {{res.zip_code.state|upper}} {{res.zip_code.zip_code}}</div>
-                        <div class="col-md-6 text-right">{{res.year}} LAR Count: {{res.assets}}</div>
+                        <div class="col-md-6 text-right">{{res.year}} LAR Count: {{res.num_loans}}</div>
                     </div>
                     <div class="row">
                         <div class="col-md-6"></div>
@@ -30,7 +30,7 @@
                             </tr>
                             <tr>
                                 <th style="text-align: right;">Number of 2012 Applications:</th>
-                                <td>lar_count</td>
+                                <td>{{res.num_loans}}</td>
                             </tr>        
                             <tr>
                                 <th style="text-align: right;">Institution Type:</th>
