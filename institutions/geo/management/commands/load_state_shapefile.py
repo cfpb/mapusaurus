@@ -1,6 +1,9 @@
+import itertools
+
 from django.core.management.base import BaseCommand
-from django.contrib.gis.utils import LayerMapping
-from geo.models import StateCensusTract, censustract_mapping
+from django.contrib.gis.gdal import DataSource
+from django.contrib.gis.geos import MultiPolygon, Polygon
+from geo.models import Geo
 
 
 class Command(BaseCommand):
@@ -8,10 +11,29 @@ class Command(BaseCommand):
     help = "Load the State shapefile from Census"
 
     def load_data(self, shapefile_name):
-        lm = LayerMapping(
-            StateCensusTract, shapefile_name, censustract_mapping,
-            transform=True, encoding='iso-8859-1')
-        lm.save(strict=True, verbose=True)
+        ds = DataSource(shapefile_name)
+        layer = ds[0]
+        columns = [layer.get_fields(field_name) for field_name in
+                   ('GEOID', 'NAME', 'STATEFP', 'COUNTYFP', 'TRACTCE',
+                    'INTPTLAT', 'INTPTLON')]
+        columns.append(layer.get_geoms(True))
+        rows = itertools.izip(*columns)
+        batch = []
+        for geoid, name, state, county, tract, lat, lon, geom in rows:
+            # Convert everything into multi polygons
+            if isinstance(geom, Polygon):
+                geom = MultiPolygon(geom)
+            lons, lats = zip(*[pt for polygon in geom.coords
+                               for line in polygon for pt in line])
+            batch.append(Geo(
+                geoid=geoid, geo_type=Geo.TRACT_TYPE, name=name, state=state,
+                county=county, tract=tract, minlat=min(lats), maxlat=max(lats),
+                minlon=min(lons), maxlon=max(lons), centlat=float(lat),
+                centlon=float(lon), geom=geom))
+            if len(batch) == 1000:
+                Geo.objects.bulk_create(batch)
+                batch = []
+        Geo.objects.bulk_create(batch)      # last batch
 
     def handle(self, *args, **options):
         shapefile_name = args[0]
