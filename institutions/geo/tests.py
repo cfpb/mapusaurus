@@ -3,7 +3,7 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from .models import censustract_mapping, StateCensusTract
+from .models import censustract_mapping, StateCensusTract, Geo
 
 
 class StateCensusTractModelTest(TestCase):
@@ -61,7 +61,7 @@ class ViewTest(TestCase):
 
     def setUp(self):
         """To avoid hand-typing escaped JSON, just generate each here"""
-        for tract in StateCensusTract.objects.all():
+        for tract in Geo.objects.all():
             tract.save()
 
     def test_tract_tiles(self):
@@ -72,7 +72,7 @@ class ViewTest(TestCase):
         resp = json.loads(resp.content)
         self.assertEqual(len(resp['features']),
                          # Doesn't grab the negative tract
-                         StateCensusTract.objects.all().count() - 1)
+                         Geo.objects.all().count() - 1)
 
         # lat/lon roughly: -6 to -3
         resp = self.client.get(reverse(
