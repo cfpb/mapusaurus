@@ -30,9 +30,8 @@ var Mapusaurus = {
     //  Some style info
     bubbleStyle: {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
                   color: '#000'},
-    //  fillColor will be assigned when rendering
-    tractStyle: {stroke: true, fillOpacity: 0.7, weight: 2, color: '#babbbd',
-                 fill: true},
+    //  fillColor and color will be assigned when rendering
+    tractStyle: {stroke: false, fillOpacity: 0.7, weight: 2, fill: true},
     //  used when loading census tracts
     loadingStyle: {stroke: true, weight: 2, color: '#babbbd', fill: false},
     //  population-less tracts
@@ -96,7 +95,9 @@ var Mapusaurus = {
         Mapusaurus.updateDataWithoutGeos(geoids);
         Mapusaurus.fetchMissingStats(geoids);
 
-        Mapusaurus.layers.tract.minority.geojsonLayer.bringToBack();
+        if (Mapusaurus.map.hasLayer(Mapusaurus.layers.tract.minority)) {
+            Mapusaurus.layers.tract.minority.geojsonLayer.bringToBack();
+        }
     },
 
     /* Indicates what the colors mean */
