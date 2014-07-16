@@ -100,3 +100,25 @@ censustract_mapping = {
     'intptlon': 'INTPTLON',
     'geom': 'MULTIPOLYGON',
 }
+
+
+GEO_TYPES = [(1, 'State'), (2, 'County'), (3, 'Census Tract')]
+
+
+class Geo(models.Model):
+    geoid = models.CharField(max_length=20, primary_key=True)
+    geo_type = models.PositiveIntegerField(choices=GEO_TYPES)
+    name = models.CharField(max_length=50)
+
+    state = models.PositiveIntegerField()
+    county = models.PositiveIntegerField(null=True)
+    tract = models.PositiveIntegerField(null=True)
+
+    geom = models.MultiPolygonField(srid=4269)
+
+    minlat = models.FloatField()
+    maxlat = models.FloatField()
+    minlon = models.FloatField()
+    maxlon = models.FloatField()
+
+    objects = models.GeoManager()
