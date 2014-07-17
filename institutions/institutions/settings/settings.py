@@ -115,5 +115,20 @@ REST_FRAMEWORK = {
 
 SOUTH_TESTS_MIGRATE = False
 
+LONGTERM_CACHE_TIMEOUT = 60*60*24   # 1 day
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'long_term_geos': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/tmp/long_term_geos',
+        'TIMEOUT': LONGTERM_CACHE_TIMEOUT,
+        'OPTIONS': {
+            'MAX_ENTRIES': 100000
+        }
+    }
+}
 
 from institutions.settings.local_settings import *
