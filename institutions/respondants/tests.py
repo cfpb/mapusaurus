@@ -171,3 +171,22 @@ class ViewTest(TestCase):
         results = views.search(request)
         self.assertEqual(len(results.data['institutions']), 1)
         self.assertEqual(45, results.data['institutions'][0].num_loans)
+
+    @patch('respondants.views.SearchQuerySet')
+    def test_search_sort(self, SQS):
+        load_all = SQS.return_value.models.return_value.load_all.return_value
+
+        request = RequestFactory().get('/', data={'q': 'Bank'})
+        views.search(request)
+        self.assertFalse(load_all.order_by.called)
+
+        request = RequestFactory().get('/', data={'q': 'Bank',
+                                                  'sort': 'another-sort'})
+        views.search(request)
+        self.assertFalse(load_all.order_by.called)
+
+        for sort in ('assets', '-assets', 'num_loans', '-num_loans'):
+            request = RequestFactory().get('/', data={'q': 'Bank',
+                                                      'sort': sort})
+            views.search(request)
+            self.assertTrue(load_all.order_by.called)
