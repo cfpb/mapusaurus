@@ -41,9 +41,11 @@ var Mapusaurus = {
     //  population-less tracts
     noStyle: {stroke: false, fill: false},
     //  used when census tracts are visible
-    zoomedCountyStyle: {stroke: true, color: '#fff', weight: 4, fill: false},
+    zoomedCountyStyle: {stroke: true, color: '#fff', weight: 4, fill: false,
+                        opacity: 1.0},
     //  used when census tracts are not visible
-    biggerCountyStyle: {stroke: true, color: '#333', weight: 4, fill: false},
+    biggerCountyStyle: {stroke: true, color: '#333', weight: 4, fill: false,
+                        opacity: 1.0},
 
     initialize: function (map) {
         map.setView([41.88, -87.63], 12);
