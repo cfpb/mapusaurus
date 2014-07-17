@@ -78,6 +78,10 @@ def search(request):
 
     query = SearchQuerySet().models(Institution).load_all()
 
+    if request.GET.get('sort') in ('assets', '-assets', 'num_loans',
+                                   '-num_loans'):
+        query = query.order_by(request.GET.get('sort', 'score'))
+
     if lender_id:
         query = query.filter(lender_id=Exact(lender_id))
     elif query_str and request.GET.get('auto'):

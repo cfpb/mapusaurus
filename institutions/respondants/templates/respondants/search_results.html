@@ -106,9 +106,9 @@
                                         Sort by: Relevance <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu" role="menu">
-                                        <li><a href="#">Relevance</a></li>
-                                        <li><a href="#">Number of Applications</a></li>
-                                        <li><a href="#">Corporate Assets</a></li>
+                                        <li><a href="{% url 'respondants:search' %}?q={{ query_str }}">Relevance</a></li>
+                                        <li><a href="{% url 'respondants:search' %}?q={{ query_str }}&sort=-num_loans">Number of Applications</a></li>
+                                        <li><a href="{% url 'respondants:search' %}?q={{ query_str }}&sort=-assets">Corporate Assets</a></li>
                                       </ul>
                                     </div>
                         </div>
