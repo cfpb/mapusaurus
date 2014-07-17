@@ -103,7 +103,15 @@
 
                                     <div class="btn-group btn-sm">
                                       <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                        Sort by: Relevance <span class="caret"></span>
+                                        Sort by: 
+                                        {% if 'num_loans' in current_sort %}
+                                          Number of Applications
+                                        {% else %}{% if 'assets' in current_sort %}
+                                          Corporate Assets
+                                        {% else %}
+                                          Relevance
+                                        {% endif %}{% endif %}
+                                        <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu" role="menu">
                                         <li><a href="{% url 'respondants:search' %}?q={{ query_str }}">Relevance</a></li>

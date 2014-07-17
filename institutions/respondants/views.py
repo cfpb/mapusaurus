@@ -78,9 +78,11 @@ def search(request):
 
     query = SearchQuerySet().models(Institution).load_all()
 
-    if request.GET.get('sort') in ('assets', '-assets', 'num_loans',
-                                   '-num_loans'):
-        query = query.order_by(request.GET.get('sort', 'score'))
+    current_sort = request.GET.get('sort')
+    if current_sort in ('assets', '-assets', 'num_loans', '-num_loans'):
+        query = query.order_by(current_sort)
+    else:
+        current_sort = 'score'
 
     if lender_id:
         query = query.filter(lender_id=Exact(lender_id))
@@ -100,5 +102,6 @@ def search(request):
         results = InstitutionSerializer(results, many=True).data
 
     return Response(
-        {'institutions': results, 'query_str': query_str},
+        {'institutions': results, 'query_str': query_str,
+         'current_sort': current_sort},
         template_name='respondants/search_results.html')
