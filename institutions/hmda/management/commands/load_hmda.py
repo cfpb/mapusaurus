@@ -2,7 +2,7 @@ from csv import reader
 
 from django.core.management.base import BaseCommand, CommandError
 
-from geo.management.commands.load_state_shapefile import errors_in_2010
+from geo import errors
 from geo.models import Geo
 from hmda.models import HMDARecord
 
@@ -39,7 +39,7 @@ class Command(BaseCommand):
                     agency_code=row[2], loan_amount_000s=int(row[7]),
                     action_taken=row[9], statefp=row[11], countyfp=row[12])
                 censustract = row[11] + row[12] + row[13].replace('.', '')
-                record.geoid_id = errors_in_2010.get(censustract, censustract)
+                record.geoid_id = errors.in_2010.get(censustract, censustract)
                 record.auto_fields()
                 if (row[11] not in known_hmda and row[11] in geo_states
                         and 'NA' not in record.geoid_id):
