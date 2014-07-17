@@ -3,16 +3,9 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from geo.models import Geo
-
 
 class ViewTest(TestCase):
-    fixtures = ['many_tracts']
-
-    def setUp(self):
-        """To avoid hand-typing escaped JSON, just generate each here"""
-        for tract in Geo.objects.all():
-            tract.save()
+    fixtures = ['many_tracts', 'test_counties']
 
     def test_tract_tiles(self):
         # lat/lon roughly: 0 to 11
@@ -22,7 +15,7 @@ class ViewTest(TestCase):
         resp = json.loads(resp.content)
         self.assertEqual(len(resp['features']),
                          # Doesn't grab the negative tract
-                         Geo.objects.all().count() - 1)
+                         3)
 
         # lat/lon roughly: -6 to -3
         resp = self.client.get(reverse(
@@ -30,3 +23,31 @@ class ViewTest(TestCase):
             kwargs={'zoom': 7, 'xtile': 62, 'ytile': 65}))
         resp = json.loads(resp.content)
         self.assertEqual(len(resp['features']), 1)
+
+    def test_county_tiles(self):
+        # lat/lon roughly: 0 to 5
+        resp = self.client.get(reverse(
+            'geo:county_tiles',
+            kwargs={'zoom': 6, 'xtile': 32, 'ytile': 31}))
+        resp = json.loads(resp.content)
+        self.assertEqual(len(resp['features']), 1)
+        self.assertEqual(resp['features'][0]['properties']['name'],
+                         'Positive County')
+
+        # lat/lon roughly: -6 to -3
+        resp = self.client.get(reverse(
+            'geo:county_tiles',
+            kwargs={'zoom': 7, 'xtile': 62, 'ytile': 65}))
+        resp = json.loads(resp.content)
+        self.assertEqual(len(resp['features']), 1)
+        self.assertEqual(resp['features'][0]['properties']['name'],
+                         'Negative County')
+
+        # lat/lon roughly: -3.1 to -2.8; Testing that the centroid is checked
+        resp = self.client.get(reverse(
+            'geo:county_tiles',
+            kwargs={'zoom': 10, 'xtile': 503, 'ytile': 520}))
+        resp = json.loads(resp.content)
+        self.assertEqual(len(resp['features']), 1)
+        self.assertEqual(resp['features'][0]['properties']['name'],
+                         'Negative County')
