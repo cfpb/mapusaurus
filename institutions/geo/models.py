@@ -18,7 +18,8 @@ class Geo(models.Model):
     tract = models.CharField(max_length=6, null=True)
     csa = models.CharField(max_length=3, null=True,
                            help_text='Combined Statistical Area')
-    cbsa = models.CharField(max_length=5, null=True, help_text='TODO')
+    cbsa = models.CharField(max_length=5, null=True,
+                            help_text='Core Based Statistical Area')
 
     geom = models.MultiPolygonField(srid=4269)
 
