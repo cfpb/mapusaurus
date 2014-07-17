@@ -126,7 +126,7 @@ CACHES = {
         'LOCATION': '/tmp/long_term_geos',
         'TIMEOUT': LONGTERM_CACHE_TIMEOUT,
         'OPTIONS': {
-            'MAX_ENTRIES': 100000
+            'MAX_ENTRIES': 1000000
         }
     }
 }
