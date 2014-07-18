@@ -5,7 +5,7 @@ from django.test import RequestFactory, TestCase
 from mock import Mock, patch
 
 from respondants import views, zipcode_utils
-from respondants.models import Institution, ZipcodeCityState
+from respondants.models import Agency, Institution, ZipcodeCityState
 from respondants.management.commands import load_reporter_panel
 from respondants.management.commands import load_transmittal
 
@@ -68,6 +68,27 @@ class LoadTransmittalTests(TestCase):
 class ViewTest(TestCase):
     fixtures = ['agency']
 
+    def test_select_metro(self):
+        results = self.client.get(
+            reverse('respondants:select_metro',
+                    kwargs={'agency_id': '0', 'respondent': '0987654321'}))
+        self.assertEqual(404, results.status_code)
+
+        zipcode = ZipcodeCityState.objects.create(
+            zip_code=12345, city='City', state='IL')
+        inst = Institution.objects.create(
+            year=1234, ffiec_id='9879879870', agency=Agency.objects.get(pk=9),
+            tax_id='1111111111', name='Institution', mailing_address='mail',
+            zip_code=zipcode)
+
+        results = self.client.get(
+            reverse('respondants:select_metro',
+                    kwargs={'agency_id': '9', 'respondent': '9879879870'}))
+        self.assertEqual(200, results.status_code)
+
+        inst.delete()
+        zipcode.delete()
+
     @patch('respondants.views.SearchQuerySet')
     def test_search_empty(self, SQS):
         SQS = SQS.return_value.models.return_value.load_all.return_value
@@ -86,7 +107,11 @@ class ViewTest(TestCase):
         result1, result2 = Mock(), Mock()
         SQS.filter.return_value = [result1, result2]
         result1.object.name = 'Some Bank'
+        result1.object.agency_id = 1
+        result1.object.ffiec_id = '0123456789'
         result2.object.name = 'Bank & Loan'
+        result2.object.agency_id = 2
+        result2.object.ffiec_id = '1122334455'
         resp = self.client.get(reverse('respondants:search_results'),
                                {'q': 'Bank'})
         self.assertTrue('Bank' in str(SQS.filter.call_args))
@@ -101,6 +126,7 @@ class ViewTest(TestCase):
         result = Mock()
         SQS.filter.return_value = [result]
         result.object.name, result.object.id = 'Some Bank', 1234
+        result.object.agency_id, result.object.ffiec_id = 3, '3232434354'
         self.client.get(reverse('respondants:search_results'),
                         {'q': 'Bank', 'auto': '1'})
         self.assertTrue('Bank' in str(SQS.filter.call_args))
@@ -113,6 +139,7 @@ class ViewTest(TestCase):
         result = Mock()
         SQS.filter.return_value = [result]
         result.object.name, result.object.id = 'Some Bank', 1234
+        result.object.agency_id, result.object.ffiec_id = 3, '1234543210'
 
         resp = self.client.get(reverse('respondants:search_results'),
                                {'q': '01234567'})
