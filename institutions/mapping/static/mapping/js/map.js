@@ -168,14 +168,19 @@ var Mapusaurus = {
           return Mapusaurus.biggerMetroStyle;
       }
     },
-    /* As shapes come somewhat arbitrarily, we may need to resort them */
+    /* As there will be drawing order issues depending on tile order, shape
+     * order, etc., we may need to re-order their z-index */
     reZIndex: function() {
+        //  Put metros at the back
         Mapusaurus.layers.shapes.geojsonLayer.eachLayer(function(layer) {
           if (Mapusaurus.isMetro(layer.feature)) { layer.bringToBack(); }
         });
+        //  Then put county at the back (hence metros will be on top)
         Mapusaurus.layers.shapes.geojsonLayer.eachLayer(function(layer) {
           if (Mapusaurus.isCounty(layer.feature)) { layer.bringToBack(); }
         });
+        //  Finally put tracts at the back (so that tracts are behind counties
+        //  are behind metros)
         Mapusaurus.layers.shapes.geojsonLayer.eachLayer(function(layer) {
           if (Mapusaurus.isTract(layer.feature)) { layer.bringToBack(); }
         });
