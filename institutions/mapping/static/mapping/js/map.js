@@ -153,7 +153,7 @@ var Mapusaurus = {
       var zoomLevel = Mapusaurus.map.getZoom();
       if (Mapusaurus.isTract(feature)) {
           return Mapusaurus.minorityContinuousStyle(feature);
-      } else if (zoomLevel > 10) {
+      } else if (zoomLevel > 8) {
           if (Mapusaurus.isCounty(feature)) {
               return Mapusaurus.zoomedCountyStyle;
           } else if (Mapusaurus.isMetro(feature)) {

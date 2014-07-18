@@ -43,7 +43,7 @@ def tile(request, zoom, xtile, ytile):
     #   Safe, due to reges
     zoom, xtile, ytile = int(zoom), int(xtile), int(ytile)
     #   Remove census tracts and counties from high zoom levels
-    if zoom <= 10:
+    if zoom <= 8:
         geo_types = [t for t in geo_types if t not in (2, 3)]
     if zoom <= 6:
         geo_types = []

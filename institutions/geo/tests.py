@@ -65,14 +65,14 @@ class ViewTest(TestCase):
 
     def test_tile_limits(self):
         # Multiple zoom levels containing 0, 0
-        for z in range(1, 11):
+        for z in range(1, 9):
             x = 2**(z - 1)
             resp = self.client.get(
                 reverse('geo:tiles',
                         kwargs={'zoom': z, 'xtile': x, 'ytile': x}))
             resp = json.loads(resp.content)
             self.assertEqual(len(resp['features']), 0)
-        for z in range(11, 16):
+        for z in range(9, 16):
             x = 2**(z - 1)
             resp = self.client.get(
                 reverse('geo:tiles',
