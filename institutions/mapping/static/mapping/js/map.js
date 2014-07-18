@@ -139,6 +139,11 @@ var Mapusaurus = {
     },
     /* Set the style and interaction for each geojson shape */
     eachShapeTile: function(feature, layer) {
+        //  keep expected functionality with double clicking
+        layer.on('dblclick', function(ev) {
+            Mapusaurus.map.setZoomAround(ev.latlng,
+                                         Mapusaurus.map.getZoom() + 1);
+        });
         if (Mapusaurus.isTract(feature)) {
             Mapusaurus.eachTract(feature, layer);
             layer.setStyle(Mapusaurus.minorityContinuousStyle(feature));
@@ -205,11 +210,6 @@ var Mapusaurus = {
         if (!_.has(Mapusaurus.dataStore.tract, geoid)) {
             Mapusaurus.dataStore.tract[geoid] = feature.properties;
         }
-        //  keep expected functionality with double clicking
-        layer.on('dblclick', function(ev) {
-            Mapusaurus.map.setZoomAround(ev.latlng,
-                                         Mapusaurus.map.getZoom() + 1);
-        });
         //  hover bubble
         layer.on('mouseover mousemove', function(e){
             var marker = new L.Rrose({
