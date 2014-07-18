@@ -48,7 +48,10 @@ var Mapusaurus = {
                         opacity: 1.0},
 
     initialize: function (map) {
-        map.setView([41.88, -87.63], 12);
+        var mainEl = $('main'),
+            centLat = parseFloat(mainEl.data('cent-lat')) || 41.88,
+            centLon = parseFloat(mainEl.data('cent-lon')) || -87.63;
+        map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
         Mapusaurus.layers.tract = new L.TileLayer.HookableGeoJSON(
