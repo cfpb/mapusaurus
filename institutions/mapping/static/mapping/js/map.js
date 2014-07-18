@@ -119,7 +119,23 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.geojsonLayer.setStyle(
                 Mapusaurus.minorityContinuousStyle);
         });
+
+        L.control.search({
+            url: '/shapes/search/?auto=1&q={s}',
+            autoCollapse: true,
+            animateLocation: false,
+            circleLocation: false,
+            markerIcon: null,
+            filterJSON: function(rawjson) {
+                var results = {};
+                _.each(rawjson.geos, function(geo) {
+                    results[geo.name] = L.latLng(geo.centlat, geo.centlon);
+                });
+                return results;
+            },
+        }).addTo(map);
     },
+
 
     /* Called after each tile of county geojson data loads */
     loadCountyTile: function(tile) {

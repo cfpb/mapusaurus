@@ -4,6 +4,12 @@ from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.cache import cache_page
+from haystack.inputs import AutoQuery
+from haystack.query import SearchQuerySet
+from rest_framework import serializers
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
 
 from geo.models import Geo
 
@@ -71,3 +77,26 @@ def tract_tile(request, zoom, xtile, ytile):
 @cache_page(settings.LONGTERM_CACHE_TIMEOUT, cache='long_term_geos')
 def county_tile(request, zoom, xtile, ytile):
     return tile(Geo.COUNTY_TYPE, request, zoom, xtile, ytile)
+
+
+class GeoSerializer(serializers.ModelSerializer):
+    """Used in RESTful endpoints to serialize Geo objects"""
+    class Meta:
+        model = Geo
+        fields = ('geoid', 'geo_type', 'name', 'centlat', 'centlon')
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))     # until we need HTML
+def search(request):
+    query_str = request.GET.get('q', '').strip()
+    query = SearchQuerySet().models(Geo).load_all()
+    if request.GET.get('auto'):
+        query = query.filter(text_auto=AutoQuery(query_str))
+    else:
+        query = query.filter(content=AutoQuery(query_str))
+    query = query[:25]
+    results = [result.object for result in query]
+    results = GeoSerializer(results, many=True).data
+
+    return Response({'geos': results})

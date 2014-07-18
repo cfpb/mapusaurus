@@ -8,6 +8,7 @@
         {% leaflet_css %}
         <link rel="stylesheet" href="{% static 'mapping/css/map.css' %}" />
         <link rel="stylesheet" href="{% static 'mapping/lib/rrose/leaflet.rrose.css' %}" />
+        <link rel="stylesheet" href="{% static 'mapping/lib/leaflet-search/css/leaflet-search.css' %}" />
         {% block custom_css %}{% endblock %}
     </head>
     <body>
@@ -67,6 +68,8 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
         <script type="text/javascript" src="{% static 'mapping/lib/rrose/rrose-src.js' %}"></script>
         <script type="text/javascript" src="{% static 'mapping/lib/geojsontile/TileLayer.GeoJSON.js' %}"></script>
+        <script type="text/javascript" src="{% static 'mapping/lib/leaflet-search/js/leaflet-search.min.js' %}"></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script type="text/javascript" src="{% static 'mapping/js/map.js' %}"></script>
     </body>
 </html>
