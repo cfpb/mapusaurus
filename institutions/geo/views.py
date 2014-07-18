@@ -27,14 +27,26 @@ def to_lon(zoom, xtile):
     return xtile / n * 360.0 - 180.0
 
 
-def tile(geo_type, request, zoom, xtile, ytile):
-    """Based on
+@cache_page(settings.LONGTERM_CACHE_TIMEOUT, cache='long_term_geos')
+def tile(request, zoom, xtile, ytile):
+    """A geojson tile which will load the types of geos requested, defaulting
+    to county, tract, and metro.
+
+    Much of the conversion logic is based on
     http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_numbers_to_lon..2Flat.
     Return all tiles which are inside the requested tile square
     @todo: does it make sense to extend the bounds by a half/quarter in each
     direction?
     """
+    geo_types_str = request.GET.get('geo_types', '2,3,4').split(',')
+    geo_types = [int(s.strip()) for s in geo_types_str if s.strip().isdigit()]
+    #   Safe, due to reges
     zoom, xtile, ytile = int(zoom), int(xtile), int(ytile)
+    #   Remove census tracts and counties from high zoom levels
+    if zoom <= 10:
+        geo_types = [t for t in geo_types if t not in (2, 3)]
+    if zoom <= 6:
+        geo_types = []
 
     minlon, maxlon = to_lon(zoom, xtile), to_lon(zoom, xtile + 1)
     minlat, maxlat = to_lat(zoom, ytile + 1), to_lat(zoom, ytile)
@@ -58,7 +70,7 @@ def tile(geo_type, request, zoom, xtile, ytile):
     query = query | Q(centlat__gte=minlat, centlat__lte=maxlat,
                       centlon__gte=minlon, centlon__lte=maxlon)
 
-    shapes = Geo.objects.filter(geo_type=geo_type).filter(query)
+    shapes = Geo.objects.filter(geo_type__in=geo_types).filter(query)
 
     # We already have the json strings per model pre-computed, so just place
     # them inside a static response
@@ -69,18 +81,8 @@ def tile(geo_type, request, zoom, xtile, ytile):
     return HttpResponse(response, content_type='application/json')
 
 
-@cache_page(settings.LONGTERM_CACHE_TIMEOUT, cache='long_term_geos')
-def tract_tile(request, zoom, xtile, ytile):
-    return tile(Geo.TRACT_TYPE, request, zoom, xtile, ytile)
-
-
-@cache_page(settings.LONGTERM_CACHE_TIMEOUT, cache='long_term_geos')
-def county_tile(request, zoom, xtile, ytile):
-    return tile(Geo.COUNTY_TYPE, request, zoom, xtile, ytile)
-
-
 class GeoSerializer(serializers.ModelSerializer):
-    """Used in RESTful endpoints to serialize Geo objects"""
+    """Used in RESTful endpoints to serialize Geo objects; used in search"""
     class Meta:
         model = Geo
         fields = ('geoid', 'geo_type', 'name', 'centlat', 'centlon')

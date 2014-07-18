@@ -43,32 +43,27 @@ var Mapusaurus = {
     //  used when census tracts are visible
     zoomedCountyStyle: {stroke: true, color: '#fff', weight: 2, fill: false,
                         opacity: 1.0},
+    zoomedMetroStyle: {stroke: true, color: '#646464', weight: 4, fill: false,
+                       opacity: 1.0, dashArray: '20,10'},
     //  used when census tracts are not visible
-    biggerCountyStyle: {stroke: true, color: '#333', weight: 4, fill: false,
-                        opacity: 1.0},
+    biggerMetroStyle: {stroke: true, color: '#646464', weight: 4, fill: true,
+                       opacity: 1.0, dashArray: '20,10', fillColor: '#646464',
+                       fillOpacity: 0.5},
 
     initialize: function (map) {
         map.setView([41.88, -87.63], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
-        Mapusaurus.layers.tract = new L.TileLayer.HookableGeoJSON(
-            '/shapes/tiles/tracts/{z}/{x}/{y}', {
-                afterTileLoaded: Mapusaurus.loadedCensusTile
+        Mapusaurus.layers.shapes = new L.TileLayer.HookableGeoJSON(
+            '/shapes/tiles/{z}/{x}/{y}', {
+                afterTileLoaded: Mapusaurus.afterShapeTile
             }, {
-                onEachFeature: Mapusaurus.eachTract,
-                style: Mapusaurus.minorityContinousStyle,
                 // Don't redraw any tracts
-                filter: Mapusaurus.notDrawn
+                filter: Mapusaurus.notDrawn,
+                style: Mapusaurus.pickStyle,
+                onEachFeature: Mapusaurus.eachShapeTile
         });
-        Mapusaurus.layers.tract.addTo(map);
-        Mapusaurus.layers.county = new L.TileLayer.HookableGeoJSON(
-            '/shapes/tiles/counties/{z}/{x}/{y}', {
-                afterTileLoaded: Mapusaurus.loadCountyTile
-            }, {
-                style: Mapusaurus.countyStyle,
-                filter: Mapusaurus.notDrawn
-        });
-        Mapusaurus.layers.county.addTo(map);
+        Mapusaurus.layers.shapes.addTo(map);
 
         if (Mapusaurus.urlParam('lender')) {
             Mapusaurus.layers.loanVolume = L.layerGroup([]);
@@ -81,45 +76,14 @@ var Mapusaurus = {
         //  Census tracts get cleared whenever zooming in/out (analogous to
         //  other tile layers)
         map.on('zoomstart', function() { Mapusaurus.drawn = {}; });
-        //  Turn off the census tract layer if too zoomed out
-        map.on('zoomend', function() {
-            //  Census Tract level
-            var showTract,
-                showCounty,
-                zoomLevel = map.getZoom();
-            if (zoomLevel > 10) {
-                showTract = true;
-                showCounty = true;
-            } else if (zoomLevel > 6) {
-                showTract = false;
-                showCounty = true;
-            } else {
-                showTract = false;
-                showCounty = false;
-            }
-
-            if (showTract && !map.hasLayer(Mapusaurus.layers.tract)) {
-                Mapusaurus.layers.tract.addTo(map);
-            }
-            if (!showTract && map.hasLayer(Mapusaurus.layers.tract)) {
-                map.removeLayer(Mapusaurus.layers.tract);
-            }
-            if (showCounty && !map.hasLayer(Mapusaurus.layers.county)) {
-                Mapusaurus.layers.county.addTo(map);
-            }
-            if (!showCounty && map.hasLayer(Mapusaurus.layers.county)) {
-                map.removeLayer(Mapusaurus.layers.county);
-            }
-        });
-
         //  Selector to change bucket/continuous shading
         $('#style-selector').on('change', function() {
-            Mapusaurus.layers.tract.setStyle(
+            Mapusaurus.layers.shapes.geojsonLayer.setStyle(
                 Mapusaurus[$('#style-selector').val()]);
         });
         $('#category-selector').on('change', function() {
-            Mapusaurus.layers.tract.geojsonLayer.setStyle(
-                Mapusaurus.minorityContinuousStyle);
+            Mapusaurus.layers.shapes.geojsonLayer.setStyle(
+                Mapusaurus.pickStyle);
         });
 
         L.control.search({
@@ -139,36 +103,72 @@ var Mapusaurus = {
     },
 
 
-    /* Called after each tile of county geojson data loads */
-    loadCountyTile: function(tile) {
-        var features = [];
+    isCounty: function(feature) {
+        return feature.properties.geoType[0] === 2;
+    },
+    isTract: function(feature) {
+        return feature.properties.geoType[0] === 3;
+    },
+    isMetro: function(feature) {
+        return feature.properties.geoType[0] === 4;
+    },
+
+    /* Called after each tile of geojson shape data loads */
+    afterShapeTile: function(tile) {
+        var features = [],
+            tracts = [];
+
+        //  If data failed to load, this field won't be present
         if (tile.datum) {
             features = tile.datum.features;
         }
+
         _.each(features, function(feature) {
             Mapusaurus.drawn[feature.properties.geoid] = true;
         });
-    },
-    countyStyle: function() {
-        if (Mapusaurus.map.getZoom() > 10) {
-            return Mapusaurus.zoomedCountyStyle;
-        } else {
-            return Mapusaurus.biggerCountyStyle;
-        }
-    },
-
-    /* Called after each tile of census tract geojson data loads */
-    loadedCensusTile: function(tile) {
-        var geoids = _.map(tile.datum.features, function(feature) {
+        tracts = _.filter(features, Mapusaurus.isTract);
+        //  convert to geoids
+        tracts = _.map(tracts, function(feature) {
             return feature.properties.geoid;
         });
-
-        Mapusaurus.updateDataWithoutGeos(geoids);
-        Mapusaurus.fetchMissingStats(geoids);
-
-        if (Mapusaurus.map.hasLayer(Mapusaurus.layers.tract)) {
-            Mapusaurus.layers.tract.geojsonLayer.bringToBack();
+        if (tracts.length > 0) {
+            Mapusaurus.updateDataWithoutGeos(tracts);
+            Mapusaurus.fetchMissingStats(tracts);
         }
+        
+    },
+    /* Set the style and interaction for each geojson shape */
+    eachShapeTile: function(feature, layer) {
+        if (Mapusaurus.isTract(feature)) {
+            Mapusaurus.eachTract(feature, layer);
+            layer.setStyle(Mapusaurus.minorityContinuousStyle(feature));
+        }
+    },
+    pickStyle: function(feature) {
+      var zoomLevel = Mapusaurus.map.getZoom();
+      if (Mapusaurus.isTract(feature)) {
+          return Mapusaurus.minorityContinuousStyle(feature);
+      } else if (zoomLevel > 10) {
+          if (Mapusaurus.isCounty(feature)) {
+              return Mapusaurus.zoomedCountyStyle;
+          } else if (Mapusaurus.isMetro(feature)) {
+              return Mapusaurus.zoomedMetroStyle;
+          }
+      } else if (Mapusaurus.isMetro(feature)) {
+          return Mapusaurus.biggerMetroStyle;
+      }
+    },
+    /* As shapes come somewhat arbitrarily, we may need to resort them */
+    reZIndex: function() {
+        Mapusaurus.layers.shapes.geojsonLayer.eachLayer(function(layer) {
+          if (Mapusaurus.isMetro(layer.feature)) { layer.bringToBack(); }
+        });
+        Mapusaurus.layers.shapes.geojsonLayer.eachLayer(function(layer) {
+          if (Mapusaurus.isCounty(layer.feature)) { layer.bringToBack(); }
+        });
+        Mapusaurus.layers.shapes.geojsonLayer.eachLayer(function(layer) {
+          if (Mapusaurus.isTract(layer.feature)) { layer.bringToBack(); }
+        });
     },
 
 
@@ -225,7 +225,6 @@ var Mapusaurus = {
         layer.on('mouseout', function(){
             Mapusaurus.map.closePopup();
         });
-        layer.setStyle(Mapusaurus.minorityContinuousStyle(feature));
     },
 
     /* Depending on whether or not stats have been loaded, the hover text may
@@ -365,8 +364,8 @@ var Mapusaurus = {
             });
             switch(layerName) {
                 case 'minority':
-                    Mapusaurus.layers.tract.geojsonLayer.setStyle(
-                        Mapusaurus.minorityContinuousStyle);
+                    Mapusaurus.layers.shapes.geojsonLayer.setStyle(
+                        Mapusaurus.pickStyle);
                     break;
                 case 'loanVolume':
                     _.each(geoData, function(geo) {
@@ -377,6 +376,7 @@ var Mapusaurus = {
                     break;
             }
         });
+        Mapusaurus.reZIndex();
     },
 
     //  Using the selector, determine which hmda statistic to display
@@ -440,7 +440,7 @@ var Mapusaurus = {
             tract = Mapusaurus.dataStore.tract[geoid];
         // Different styles for when we are loading, the tract has zero pop, or
         // we have percentages
-        if (!_.has(tract, 'layer_minority')) {
+        if (!tract || !_.has(tract, 'layer_minority')) {
             return Mapusaurus.loadingStyle;
         } else if (tract['layer_minority']['total_pop'] === 0) {
             return Mapusaurus.noStyle;
