@@ -149,16 +149,21 @@ var Mapusaurus = {
             layer.setStyle(Mapusaurus.minorityContinuousStyle(feature));
         }
     },
+    /* As all "features" (shapes) come through a single source, we need to
+     * separate them to know what style to apply */
     pickStyle: function(feature) {
       var zoomLevel = Mapusaurus.map.getZoom();
       if (Mapusaurus.isTract(feature)) {
           return Mapusaurus.minorityContinuousStyle(feature);
+      //  Slightly different styles for metros at different zoom levels
       } else if (zoomLevel > 8) {
           if (Mapusaurus.isCounty(feature)) {
               return Mapusaurus.zoomedCountyStyle;
           } else if (Mapusaurus.isMetro(feature)) {
               return Mapusaurus.zoomedMetroStyle;
           }
+      //  Only metros should be present at zoom levels <= 8, but this is a
+      //  safety check
       } else if (Mapusaurus.isMetro(feature)) {
           return Mapusaurus.biggerMetroStyle;
       }
