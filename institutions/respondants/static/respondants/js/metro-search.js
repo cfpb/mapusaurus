@@ -11,7 +11,8 @@ $(document).ready(function() {
             filter: function(resp) { return resp.geos;}
         }
     }),
-        searchNameBox = $('#geoid');
+        searchNameBox = $('#geoid'),
+        msaField = $('#msa-field');
     search.initialize();
 
     searchNameBox.typeahead({
@@ -19,11 +20,14 @@ $(document).ready(function() {
     }, {
         displayKey: 'name',
         source: search.ttAdapter()
-    }).on('keydown', function() {
-        $('#msa-field').val('');
-        $('input[type=submit]').prop('disabled', true);
+    }).on('keyup', function() {
+        //  Not all key changes affect the selected name
+        if (searchNameBox.val() !== msaField.data('name')) {
+            msaField.val('');
+            $('input[type=submit]').prop('disabled', true);
+        }
     }).on('typeahead:selected', function(ev, suggestion) {
-        $('#msa-field').val(suggestion.geoid);
+        msaField.val(suggestion.geoid).data('name', suggestion.name);
         $('input[type=submit]').prop('disabled', false);
     });
 });

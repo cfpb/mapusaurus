@@ -42,12 +42,10 @@ def search_home(request):
 
 def select_metro(request, agency_id, respondent):
     """Once an institution is selected, search for a metro"""
-    query = Institution.objects.filter(ffiec_id=respondent,
-                                       agency_id=int(agency_id))
-    if not query.count():
-        raise Http404
+    institution = get_object_or_404(Institution, ffiec_id=respondent,
+                                    agency_id=int(agency_id))
     return render(request, 'respondants/metro_search.html', {
-        'institution': query[0]
+        'institution': institution
     })
 
 
