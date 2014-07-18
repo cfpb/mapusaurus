@@ -1,7 +1,6 @@
 import re
 
 from django.shortcuts import render, get_object_or_404
-from django.template import defaultfilters
 from haystack.inputs import AutoQuery, Exact
 from haystack.query import SearchQuerySet
 from rest_framework import serializers
@@ -36,21 +35,25 @@ def respondant(request, respondant_id):
     )
 
 
-def index(request):
-    """  The main view. Display the institution search box here. """
-
+def search_home(request):
+    """Search for an institution"""
     return render(request, 'respondants/index.html')
+
+
+def select_metro(request, agency_id, respondent):
+    """Once an institution is selected, search for a metro"""
+    query = Institution.objects.filter(ffiec_id=respondent,
+                                       agency_id=int(agency_id))
+    if not query.count():
+        raise Http404
+    return render(request, 'respondants/metro_search.html', {
+        'institution': query[0]
+    })
 
 
 class InstitutionSerializer(serializers.ModelSerializer):
     """Used in RESTful endpoints"""
-    formatted_name = serializers.SerializerMethodField("format_name")
-
-    def format_name(self, institution):
-        formatted = defaultfilters.title(institution.name) + " (0"
-        formatted += str(institution.agency_id) + "-" + institution.ffiec_id
-        formatted += ")"
-        return formatted
+    formatted_name = serializers.CharField(source="formatted_name")
 
     class Meta:
         model = Institution
@@ -68,7 +71,7 @@ LENDER_REGEXES = [SMASH_RE, PREFIX_RE, PAREN_RE, SUFFIX_RE]
 
 
 @api_view(['GET'])
-def search(request):
+def search_results(request):
     query_str = request.GET.get('q', '').strip()
     lender_id = False
     for regex in LENDER_REGEXES:
