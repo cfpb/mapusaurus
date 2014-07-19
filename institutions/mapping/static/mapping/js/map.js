@@ -43,7 +43,7 @@ var Mapusaurus = {
     //  used when census tracts are visible
     zoomedCountyStyle: {stroke: true, color: '#fff', weight: 2, fill: false,
                         opacity: 1.0},
-    zoomedMetroStyle: {stroke: true, color: '#646464', weight: 4, fill: false,
+    zoomedMetroStyle: {stroke: true, color: '#646464', weight: 2, fill: false,
                        opacity: 1.0, dashArray: '20,10'},
     //  used when census tracts are not visible
     biggerMetroStyle: {stroke: true, color: '#646464', weight: 4, fill: true,
@@ -163,15 +163,19 @@ var Mapusaurus = {
     /* As all "features" (shapes) come through a single source, we need to
      * separate them to know what style to apply */
     pickStyle: function(feature) {
-      var zoomLevel = Mapusaurus.map.getZoom();
+      var zoomLevel = Mapusaurus.map.getZoom(),
+          // the width of county/metro outlines increases with zoom
+          weightAtThisZoom = Math.min(zoomLevel - 7, 5);
       if (Mapusaurus.isTract(feature)) {
           return Mapusaurus.minorityContinuousStyle(feature);
       //  Slightly different styles for metros at different zoom levels
       } else if (zoomLevel > 8) {
           if (Mapusaurus.isCounty(feature)) {
-              return Mapusaurus.zoomedCountyStyle;
+              return $.extend({}, Mapusaurus.zoomedCountyStyle,
+                              {weight: weightAtThisZoom});
           } else if (Mapusaurus.isMetro(feature)) {
-              return Mapusaurus.zoomedMetroStyle;
+              return $.extend({}, Mapusaurus.zoomedMetroStyle,
+                              {weight: weightAtThisZoom});
           }
       //  Only metros should be present at zoom levels <= 8, but this is a
       //  safety check
