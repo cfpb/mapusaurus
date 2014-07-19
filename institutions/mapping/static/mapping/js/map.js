@@ -54,7 +54,7 @@ var Mapusaurus = {
         var mainEl = $('main'),
             centLat = parseFloat(mainEl.data('cent-lat')) || 41.88,
             centLon = parseFloat(mainEl.data('cent-lon')) || -87.63,
-            $enforceBoundsEl = $('#enforce-bounds-selector');
+            $enforceBoundsEl = $('#enforce-bounds');
         map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
@@ -90,8 +90,14 @@ var Mapusaurus = {
                 Mapusaurus.pickStyle);
         });
 
-        $enforceBoundsEl.on('change', function() {
-            Mapusaurus[$enforceBoundsEl.val()]();
+        $enforceBoundsEl.on('click', function() {
+            if ($enforceBoundsEl.data('locked')) {
+                $enforceBoundsEl.data('locked', false).text('Unlocked');
+                Mapusaurus.disableBounds();
+            } else {
+                $enforceBoundsEl.data('locked', true).text('Locked');
+                Mapusaurus.enforceBounds();
+            }
         });
         if ($enforceBoundsEl.length > 0) {
             Mapusaurus.enforceBounds();
@@ -541,11 +547,11 @@ var Mapusaurus = {
      * an MSA is selected (lest the triggering selector would not be present)
      * */
     enforceBounds: function() {
-        var selectEl = $('#enforce-bounds-selector'),
-            minLat = parseFloat(selectEl.data('min-lat')),
-            maxLat = parseFloat(selectEl.data('max-lat')),
-            minLon = parseFloat(selectEl.data('min-lon')),
-            maxLon = parseFloat(selectEl.data('max-lon'));
+        var enforceEl = $('#enforce-bounds'),
+            minLat = parseFloat(enforceEl.data('min-lat')),
+            maxLat = parseFloat(enforceEl.data('max-lat')),
+            minLon = parseFloat(enforceEl.data('min-lon')),
+            maxLon = parseFloat(enforceEl.data('max-lon'));
         //  Assumes northwest quadrisphere
         Mapusaurus.map.setMaxBounds([[minLat, minLon], [maxLat, maxLon]]);
     },

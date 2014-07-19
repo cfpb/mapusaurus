@@ -14,6 +14,29 @@
     <body>
         {% block page_header %}{% endblock %}
 
+        {% if lender or metro %}
+        <section id="map-header">
+            <div class="wrap">
+                {% if lender %}
+                <div>
+                  <span class="lender-name">{{ lender.name }}:</span>
+                  <span class="map-type">2012 Applications and Originations by
+                      Census Tract</span>
+                </div>
+                {% endif %}
+                {% if metro %}
+                <div>MSA: {{ metro.name }}
+                     [<a href="javascript://" id="enforce-bounds"
+                         data-locked="true"
+                         data-min-lat="{{metro.minlat}}"
+                         data-max-lat="{{metro.maxlat}}"
+                         data-min-lon="{{metro.minlon}}"
+                         data-max-lon="{{metro.maxlon}}">Locked</a>]</div>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+
         <section id="content" class="content cf">
             {% if metro %}
             <main role="main" 
@@ -48,18 +71,6 @@
                 <option value="9_volume" selected>Absolute Number of Loans</option>
                 <option value="100_volume_per_100_households">Normalized per Households</option>
             </select>
-            {% if metro %}
-            <select id="enforce-bounds-selector"
-                  data-min-lat="{{metro.minlat}}"
-                  data-max-lat="{{metro.maxlat}}"
-                  data-min-lon="{{metro.minlon}}"
-                  data-max-lon="{{metro.maxlon}}">
-                <option value="enforceBounds" selected>Limit Map to
-                {{ metro.name }}</option>
-                <option value="disableBounds">Do Not Limit Map to
-                {{ metro.name }}</option>
-            </select>
-            {% endif %}
         </section>
 
         {% if lender %}

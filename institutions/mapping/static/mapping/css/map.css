@@ -81,3 +81,19 @@
 #lender-info td {
   padding-bottom: 0.25em;
 }
+
+/* Map header */
+#map-header {
+  background-color: #d0e5ca;
+  border-bottom: 4px solid #2cb34a;
+  padding: 0.5em 0;
+}
+#map-header .map-type {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#map-header a {
+  color: #f00;
+  border-bottom: none;
+  text-transform: uppercase;
+}
