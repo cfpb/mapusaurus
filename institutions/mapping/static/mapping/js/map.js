@@ -129,7 +129,7 @@ var Mapusaurus = {
         $enforceBoundsEl.on('change', function() {
             Mapusaurus[$enforceBoundsEl.val()]();
         });
-        if ($enforceBoundsEl) {
+        if ($enforceBoundsEl.length > 0) {
             Mapusaurus.enforceBounds();
         }
 
