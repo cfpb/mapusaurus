@@ -50,7 +50,8 @@ var Mapusaurus = {
     initialize: function (map) {
         var mainEl = $('main'),
             centLat = parseFloat(mainEl.data('cent-lat')) || 41.88,
-            centLon = parseFloat(mainEl.data('cent-lon')) || -87.63;
+            centLon = parseFloat(mainEl.data('cent-lon')) || -87.63,
+            $enforceBoundsEl = $('#enforce-bounds-selector');
         map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
@@ -124,10 +125,11 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.geojsonLayer.setStyle(
                 Mapusaurus.minorityContinuousStyle);
         });
-        $('#enforce-bounds-selector').on('change', function() {
-            Mapusaurus[$('#enforce-bounds-selector').val()]();
+
+        $enforceBoundsEl.on('change', function() {
+            Mapusaurus[$enforceBoundsEl.val()]();
         });
-        if ($('#enforce-bounds-selector')) {
+        if ($enforceBoundsEl) {
             Mapusaurus.enforceBounds();
         }
 
