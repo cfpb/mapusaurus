@@ -124,6 +124,12 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.geojsonLayer.setStyle(
                 Mapusaurus.minorityContinuousStyle);
         });
+        $('#enforce-bounds-selector').on('change', function() {
+            Mapusaurus[$('#enforce-bounds-selector').val()]();
+        });
+        if ($('#enforce-bounds-selector')) {
+            Mapusaurus.enforceBounds();
+        }
 
         L.control.search({
             url: '/shapes/search/?auto=1&q={s}',
@@ -529,5 +535,22 @@ var Mapusaurus = {
         return 'rgb(' + (c.lowR + diffR).toFixed() + ', ' +
                (c.lowG + diffG).toFixed() + ', ' +
                (c.lowB + diffB).toFixed() + ')';
+    },
+
+    /* Called when user selects to enforce the boundaries of an MSA. Assumes
+     * an MSA is selected (lest the triggering selector would not be present)
+     * */
+    enforceBounds: function() {
+        var selectEl = $('#enforce-bounds-selector'),
+            minLat = parseFloat(selectEl.data('min-lat')),
+            maxLat = parseFloat(selectEl.data('max-lat')),
+            minLon = parseFloat(selectEl.data('min-lon')),
+            maxLon = parseFloat(selectEl.data('max-lon'));
+        //  Assumes northwest quadrisphere
+        Mapusaurus.map.setMaxBounds([[minLat, minLon], [maxLat, maxLon]]);
+    },
+    /* Reverse of above */
+    disableBounds: function() {
+        Mapusaurus.map.setMaxBounds(null);
     }
 };

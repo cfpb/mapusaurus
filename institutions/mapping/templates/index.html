@@ -16,7 +16,9 @@
 
         <section id="content" class="content cf">
             {% if metro %}
-            <main role="main" data-cent-lat="{{metro.centlat}}" data-cent-lon="{{metro.centlon}}">
+            <main role="main" 
+                  data-cent-lat="{{metro.centlat}}"
+                  data-cent-lon="{{metro.centlon}}">
             {% else %}
             <main role="main">
             {% endif %}
@@ -46,6 +48,18 @@
                 <option value="9_volume" selected>Absolute Number of Loans</option>
                 <option value="100_volume_per_100_households">Normalized per Households</option>
             </select>
+            {% if metro %}
+            <select id="enforce-bounds-selector"
+                  data-min-lat="{{metro.minlat}}"
+                  data-max-lat="{{metro.maxlat}}"
+                  data-min-lon="{{metro.minlon}}"
+                  data-max-lon="{{metro.maxlon}}">
+                <option value="enforceBounds" selected>Limit Map to
+                {{ metro.name }}</option>
+                <option value="disableBounds">Do Not Limit Map to
+                {{ metro.name }}</option>
+            </select>
+            {% endif %}
         </section>
 
         {% if lender %}
