@@ -7,6 +7,7 @@ from mock import Mock, patch
 
 from geo.management.commands.load_geos_from import Command as LoadGeos
 from geo.management.commands.precache_geos import Command as Precache
+from geo.management.commands.set_tract_csa_cbsa import Command as SetTractCBSA
 from geo.models import Geo
 from censusdata.models import Census2010Sex
 
@@ -132,6 +133,47 @@ class PrecacheTest(TestCase):
         Precache.urls['geo:tiles'] = range(3, 6)
         Precache().handle()
         self.assertEqual(22, client.return_value.get.call_count)
+
+
+class SetTractCBSATest(TestCase):
+    def setUp(self):
+        generic_geo = {
+            'minlat': -1, 'maxlat': 1, 'minlon': -1, 'maxlon': 1, 'centlat': 0,
+            'centlon': 0, 'name': 'Generic Geo', 'geom': MultiPolygon(
+                Polygon(((0, 0), (0, 2), (-1, 2), (0, 0))),
+                Polygon(((-4, -2), (-6, -1), (-2, -2), (-4, -2))))
+        }
+        self.county1 = Geo.objects.create(
+            geoid='11222', geo_type=Geo.COUNTY_TYPE, state='11', county='222',
+            csa='987', **generic_geo)
+        self.county2 = Geo.objects.create(
+            geoid='11223', geo_type=Geo.COUNTY_TYPE, state='11', county='223',
+            cbsa='88776', **generic_geo)
+        self.metro = Geo.objects.create(
+            geoid='88776', geo_type=Geo.METRO_TYPE, cbsa='88776',
+            **generic_geo)
+        self.tract1 = Geo.objects.create(
+            geoid='1122233333', geo_type=Geo.TRACT_TYPE, state='11',
+            county='222', tract='33333', **generic_geo)
+        self.tract2 = Geo.objects.create(
+            geoid='1122333333', geo_type=Geo.TRACT_TYPE, state='11',
+            county='223', tract='33333', **generic_geo)
+
+    def tearDown(self):
+        self.county1.delete()
+        self.county2.delete()
+        self.tract1.delete()
+        self.tract2.delete()
+        self.metro.delete()
+
+    def test_set_fields(self):
+        SetTractCBSA().handle()
+        tract1 = Geo.objects.filter(geoid='1122233333').get()
+        tract2 = Geo.objects.filter(geoid='1122333333').get()
+        self.assertEqual('987', tract1.csa)
+        self.assertEqual(None, tract1.cbsa)
+        self.assertEqual(None, tract2.csa)
+        self.assertEqual('88776', tract2.cbsa)
 
 
 class LoadGeosFromTest(TestCase):
