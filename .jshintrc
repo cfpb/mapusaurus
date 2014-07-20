@@ -23,6 +23,7 @@
     "_": true,
     "require": true,
     "define": true,
-    "Bloodhound": true
+    "Bloodhound": true,
+    "canvg": true
   }
 }

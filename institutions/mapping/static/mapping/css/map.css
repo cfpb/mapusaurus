@@ -51,6 +51,10 @@
   margin-top: 10px;
   font-size: large;
 }
+a.screenshot {
+  font-family: 'CFPB Minicons';
+  font-size: 16px;
+}
 
 #percentage-container .left {
   display: inline-block;

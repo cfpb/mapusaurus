@@ -70,6 +70,7 @@ var Mapusaurus = {
         map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
+        Mapusaurus.addScreenshotButton(map);
         Mapusaurus.layers.shapes = new L.TileLayer.HookableGeoJSON(
             '/shapes/tiles/{z}/{x}/{y}', {
                 afterTileLoaded: Mapusaurus.afterShapeTile
@@ -237,6 +238,22 @@ var Mapusaurus = {
             return L.DomUtil.get('key');
         };
         key.addTo(map);
+    },
+
+    /* Generated button for taking a screenshot */
+    addScreenshotButton: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-bar'),
+            buttonEl = L.DomUtil.create('a', 'screenshot', container),
+            buttonCtrl = L.control({position: 'topleft'});
+        buttonEl.href = '#';
+        buttonEl.innerHTML = '\ue414';
+        L.DomEvent.addListener(buttonEl, 'click', function(ev) {
+            L.DomEvent.stopPropagation(ev);
+            L.DomEvent.preventDefault(ev);
+            Mapusaurus.takeScreenshot();
+        });
+        buttonCtrl.onAdd = function() { return container; };
+        buttonCtrl.addTo(map);
     },
 
     /* Naive url parameter parser */
@@ -626,6 +643,6 @@ var Mapusaurus = {
         canvg(offscreen, svgEl.outerHTML, {ignoreDimensions: true,
                                            offsetY: offset.y,
                                            offsetX: offset.x});
-        console.log(offscreen.toDataURL());
+        window.open(offscreen.toDataURL(), '_blank');
     }
 };
