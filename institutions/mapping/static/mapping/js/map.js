@@ -638,14 +638,15 @@ var Mapusaurus = {
         var offscreen = document.createElement('canvas'),
             svgEl = $('svg')[0],
             $map = $('#map'),
-            offset = Mapusaurus.map.containerPointToLayerPoint([0, 0]);
+            offset = Mapusaurus.map.containerPointToLayerPoint([0, 0]),
+            serializer = new XMLSerializer();
         offscreen.width = $map.width();
         offscreen.height = $map.height();
         offset.x = svgEl.viewBox.baseVal.x - offset.x;
         offset.y = svgEl.viewBox.baseVal.y - offset.y;
-        canvg(offscreen, svgEl.outerHTML, {ignoreDimensions: true,
-                                           offsetY: offset.y,
-                                           offsetX: offset.x});
+        canvg(offscreen, serializer.serializeToString(svgEl), {
+            ignoreDimensions: true, offsetY: offset.y, offsetX: offset.x
+        });
         window.open(offscreen.toDataURL(), '_blank');
     }
 };
