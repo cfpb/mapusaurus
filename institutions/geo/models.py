@@ -5,9 +5,11 @@ from django.contrib.gis.db import models
 
 class Geo(models.Model):
     STATE_TYPE, COUNTY_TYPE, TRACT_TYPE, METRO_TYPE, MICRO_TYPE = range(1, 6)
+    METDIV_TYPE, = range(6, 7)
     TYPES = [(STATE_TYPE, 'State'), (COUNTY_TYPE, 'County'),
              (TRACT_TYPE, 'Census Tract'), (METRO_TYPE, 'Metropolitan'),
-             (MICRO_TYPE, 'Micropolitan')]
+             (MICRO_TYPE, 'Micropolitan'),
+             (METDIV_TYPE, 'Metropolitan Division')]
 
     geoid = models.CharField(max_length=20, primary_key=True)
     geo_type = models.PositiveIntegerField(choices=TYPES)
@@ -20,6 +22,8 @@ class Geo(models.Model):
                            help_text='Combined Statistical Area')
     cbsa = models.CharField(max_length=5, null=True,
                             help_text='Core Based Statistical Area')
+    metdiv = models.CharField(max_length=5, null=True,
+                              help_text='Metro Division')
 
     geom = models.MultiPolygonField(srid=4269)
 
