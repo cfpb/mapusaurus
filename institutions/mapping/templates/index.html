@@ -29,9 +29,11 @@
                 {% endif %}
                 {% if lender %}
                 <div>
-                  <span class="lender-name">{{ lender.name }}:</span>
-                  <span class="map-type">2012 Applications and Originations by
-                      Census Tract</span>
+                    <span class="lender-name">{{ lender.name }}:</span>
+                    <span class="map-type">2012 Applications and Originations
+                        by Census Tract</span>
+                    [<a target="_blank"
+                        href="{{ download_url }}">Download Data</a>]
                 </div>
                 {% endif %}
                 {% if metro %}
