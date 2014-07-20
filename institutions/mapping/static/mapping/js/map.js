@@ -636,17 +636,43 @@ var Mapusaurus = {
      * are grabbing the right viewport */
     takeScreenshot: function() {
         var offscreen = document.createElement('canvas'),
+            ctx = offscreen.getContext('2d'),
             svgEl = $('svg')[0],
             $map = $('#map'),
+            $tiles = $(Mapusaurus.map.getPanes().tilePane).find('img'),
             offset = Mapusaurus.map.containerPointToLayerPoint([0, 0]),
-            serializer = new XMLSerializer();
+            serializer = new XMLSerializer(),
+            tilesToDraw = $tiles.length;
         offscreen.width = $map.width();
         offscreen.height = $map.height();
         offset.x = svgEl.viewBox.baseVal.x - offset.x;
         offset.y = svgEl.viewBox.baseVal.y - offset.y;
-        canvg(offscreen, serializer.serializeToString(svgEl), {
-            ignoreDimensions: true, offsetY: offset.y, offsetX: offset.x
+        /* Some gymnastics are needed to get around crossOrigin tainting.
+         * Leaflet does not load images with the crossOrigin attribute, so we
+         * load each image and draw them to the offscreen canvas. Once all
+         * images are loaded, draw the svg and open it in another tab */
+        $tiles.each(function(idx, tile) {
+            var pos = $(tile).position(),
+                img = new Image();
+            img.setAttribute('crossOrigin', 'anonymous');
+            img.onload = function () {
+                ctx.drawImage(img, pos.left, pos.top);
+                tilesToDraw--;
+                if (tilesToDraw === 0) {
+                    canvg(offscreen, serializer.serializeToString(svgEl), {
+                        ignoreDimensions: true, offsetY: offset.y,
+                        offsetX: offset.x, ignoreClear: true});
+                    window.open(offscreen.toDataURL(), '_blank');
+                }
+            };
+            img.src = tile.src;
         });
-        window.open(offscreen.toDataURL(), '_blank');
+        //  No image tiles for whatever reason
+        if (tilesToDraw === 0) {
+            canvg(offscreen, serializer.serializeToString(svgEl), {
+                ignoreDimensions: true, offsetY: offset.y,
+                offsetX: offset.x, ignoreClear: true});
+            window.open(offscreen.toDataURL(), '_blank');
+        }
     }
 };
