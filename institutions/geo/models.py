@@ -50,6 +50,7 @@ class Geo(models.Model):
             'state': self.state,
             'county': self.county,
             'tract': self.tract,
+            'cbsa': self.cbsa,
             'minlat': self.minlat,
             'maxlat': self.maxlat,
             'minlon': self.minlon,
