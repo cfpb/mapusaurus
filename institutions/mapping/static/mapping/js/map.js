@@ -631,6 +631,9 @@ var Mapusaurus = {
         Mapusaurus.redrawBubbles();
     },
 
+    /* Uses canvg to draw the svg map onto a canvas, which can then be opened
+     * in a separate window. Some offset addition is requires to make sure we
+     * are grabbing the right viewport */
     takeScreenshot: function() {
         var offscreen = document.createElement('canvas'),
             svgEl = $('svg')[0],
