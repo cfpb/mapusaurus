@@ -612,5 +612,20 @@ var Mapusaurus = {
         Mapusaurus.layers.shapes.geojsonLayer.setStyle(
             Mapusaurus.pickStyle);
         Mapusaurus.redrawBubbles();
+    },
+
+    takeScreenshot: function() {
+        var offscreen = document.createElement('canvas'),
+            svgEl = $('svg')[0],
+            $map = $('#map'),
+            offset = Mapusaurus.map.containerPointToLayerPoint([0, 0]);
+        offscreen.width = $map.width();
+        offscreen.height = $map.height();
+        offset.x = svgEl.viewBox.baseVal.x - offset.x;
+        offset.y = svgEl.viewBox.baseVal.y - offset.y;
+        canvg(offscreen, svgEl.outerHTML, {ignoreDimensions: true,
+                                           offsetY: offset.y,
+                                           offsetX: offset.x});
+        console.log(offscreen.toDataURL());
     }
 };
