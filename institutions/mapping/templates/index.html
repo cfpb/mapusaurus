@@ -17,6 +17,16 @@
         {% if lender or metro %}
         <section id="map-header">
             <div class="wrap">
+                {% if metro %}
+                <div id="lock-map-container">
+                    <label for="enforce-bounds" class="locked">Limit to MSA</label>
+                    <input type="checkbox" id="enforce-bounds" checked="checked"
+                         data-min-lat="{{metro.minlat}}"
+                         data-max-lat="{{metro.maxlat}}"
+                         data-min-lon="{{metro.minlon}}"
+                         data-max-lon="{{metro.maxlon}}" />
+                </div>
+                {% endif %}
                 {% if lender %}
                 <div>
                   <span class="lender-name">{{ lender.name }}:</span>
@@ -25,13 +35,7 @@
                 </div>
                 {% endif %}
                 {% if metro %}
-                <div>MSA: {{ metro.name }}
-                     [<a href="javascript://" id="enforce-bounds"
-                         data-locked="true"
-                         data-min-lat="{{metro.minlat}}"
-                         data-max-lat="{{metro.maxlat}}"
-                         data-min-lon="{{metro.minlon}}"
-                         data-max-lon="{{metro.maxlon}}">Locked</a>]</div>
+                <div>MSA: {{ metro.name }}</div>
                 {% endif %}
             </div>
         </section>

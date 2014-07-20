@@ -101,13 +101,13 @@ var Mapusaurus = {
                 Mapusaurus.pickStyle);
         });
 
-        $enforceBoundsEl.on('click', function() {
-            if ($enforceBoundsEl.data('locked')) {
-                $enforceBoundsEl.data('locked', false).text('Unlocked');
-                Mapusaurus.disableBounds();
-            } else {
-                $enforceBoundsEl.data('locked', true).text('Locked');
+        $enforceBoundsEl.on('change', function() {
+            if ($enforceBoundsEl[0].checked) {
+                $enforceBoundsEl.prev().addClass('locked');
                 Mapusaurus.enforceBounds();
+            } else {
+                $enforceBoundsEl.prev().removeClass('locked');
+                Mapusaurus.disableBounds();
             }
         });
         if ($enforceBoundsEl.length > 0) {
