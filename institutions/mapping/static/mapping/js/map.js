@@ -637,17 +637,21 @@ var Mapusaurus = {
         /* Some gymnastics are needed to get around crossOrigin tainting.
          * Leaflet does not load images with the crossOrigin attribute, so we
          * load each image and draw them to the offscreen canvas. Used
-         * deferred so we can wait for all the images to load. */
-        allImages = $tiles.map(function(idx, tile) {
-            var img = new Image(),
-                deferred = $.Deferred();
-            img.setAttribute('crossOrigin', 'anonymous');
-            img.onload = function () {
-                deferred.resolve({tile: tile, img: img});
-            };
-            img.src = tile.src;
-            return deferred.promise();
-        });
+         * deferred so we can wait for all the images to load. Note that this
+         * technique does not work in IE 8/9, but we check this via the
+         * XDomainRequest guard. Todo: try to implement it via ajax */
+        if (window.XDomainRequest === undefined) {
+            allImages = $tiles.map(function(idx, tile) {
+                var img = new Image(),
+                    deferred = $.Deferred();
+                img.setAttribute('crossOrigin', 'anonymous');
+                img.onload = function () {
+                    deferred.resolve({tile: tile, img: img});
+                };
+                img.src = tile.src;
+                return deferred.promise();
+            });
+        }
         /* Finally, draw all the tiles, then the SVG, then the key */
         $.when.apply(null, allImages).then(function() {
             var $ssPlaceholder = $('#screenshot-placeholder'),
@@ -673,13 +677,15 @@ var Mapusaurus = {
                 vex.dialog.alert({
                     message: ('<h2>Export Map</h2>' +
                               '<p>' + replacementText + '</p>' + 
-                              '<img src="' + offscreen.toDataURL() + '" />')
+                              '<img width="400" height="150" src="' +
+                              offscreen.toDataURL() + '" />')
                 });
             //  Did not close popup; edit it in place
             } else {
                 $ssPlaceholder.text(replacementText);
-                $('<img />').attr('src', offscreen.toDataURL()).appendTo(
-                    $ssPlaceholder.parent());
+                $('<img width="400" height="150" />').attr(
+                    'src',
+                    offscreen.toDataURL()).appendTo($ssPlaceholder.parent());
             }
         });
     }
@@ -706,9 +712,7 @@ $(document).ready(function() {
         ev.preventDefault();
         vex.dialog.alert({
             message: ('<h2>Export Map</h2>' +
-                      '<p id="screenshot-placeholder">Map exporting is not ' +
-                      'supported in this release. To capture this map, use ' +
-                      'the Print Screen key on your computer.</p>')
+                      '<p id="screenshot-placeholder">Loading map...</p>')
         });
         Mapusaurus.takeScreenshot();
     });
