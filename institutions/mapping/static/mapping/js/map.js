@@ -692,22 +692,6 @@ var Mapusaurus = {
 };
 
 $(document).ready(function() {
-    var downloadData = $('#download-data');
-    downloadData.click(function(ev) {
-        ev.preventDefault();
-        vex.dialog.confirm({
-            message: ('<h2>Export Data</h2>' +
-                      '<p>You are being redirected to the public HMDA ' +
-                      'Explorer tools on www.consumerfinance.gov</p>' +
-                      '<p>From there, you can preview and download the ' +
-                      'HMDA LAR set for this MSA.</p>'),
-            callback: function(redirect) {
-                if (redirect) {
-                    window.open(downloadData.attr('href'));
-                }
-            }
-        });
-    });
     $('#take-screenshot').click(function(ev) {
         ev.preventDefault();
         vex.dialog.alert({

@@ -1,11 +1,9 @@
+from urllib import urlencode
+
 from django.shortcuts import render
 
 from geo.models import Geo
 from respondants.models import Institution
-
-
-DOWNLOAD_URL = "http://www.consumerfinance.gov/hmda/explore#!/as_of_year=2012"
-DOWNLOAD_URL += "&respondent_id=%s&agency_code=%s"
 
 
 def home(request):
@@ -40,19 +38,21 @@ def make_download_url(lender, metro):
     lender's records, or to just those relevant for an MSA. MSA's are broken
     into divisions in that tool, so make sure the query uses the proper ids"""
     if lender:
-        download_url = DOWNLOAD_URL % (lender.ffiec_id,
-                                       str(lender.agency_id))
+        where = 'as_of_year=2012 AND agency_code=%d AND respondent_id="%s"'
+        where = where % (lender.agency_id, lender.ffiec_id)
         if metro:
             divisions = [div.metdiv for div in
                          Geo.objects.filter(
                              geo_type=Geo.METDIV_TYPE, cbsa=metro.geoid
                          ).order_by('geoid')]
-            # convert into msamd-1, msamd-2, etc. key-value strings
-            divisions = ['msamd-' + str(idx + 1) + '=' + div
-                         for idx, div in enumerate(divisions)]
             if divisions:
-                download_url += '&' + '&'.join(divisions)
+                where += ' AND msamd IN ("' + '","'.join(divisions) + '")'
             else:   # no divisions, so just use the MSA
-                download_url += '&msamd-1=' + metro.geoid
+                where += ' AND msamd="' + metro.geoid + '"'
 
-        return download_url
+        query = urlencode({
+            '$where': where,
+            '$limit': 0
+        })
+        base_url = 'https://api.consumerfinance.gov/data/hmda/slice/'
+        return base_url + 'hmda_lar.csv?' + query
