@@ -660,8 +660,8 @@ $(document).ready(function() {
             message: ('HMDA Explorer is an interface for filtering, ' +
                       'slicing, previewing, and downloading HMDA data. By ' +
                       'continuing, you will see the HMDA Explorer ' +
-                      'configured to match the data shown on this map, but ' +
-                      'can alter the parameters to fit your needs.'),
+                      'configured to match the data shown on this map. You ' +
+                      'can further alter the parameters to fit your needs.'),
             callback: function(redirect) {
                 if (redirect) {
                     window.open(downloadData.attr('href'));
