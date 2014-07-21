@@ -1,5 +1,7 @@
 'use strict';
 
+vex.defaultOptions.className = 'vex-theme-os';
+
 /* We want to be able to trigger a callback whenever a JSON tile loads, so we
  * create a custom GeoJSON tile layer */
 L.TileLayer.HookableGeoJSON = L.TileLayer.GeoJSON.extend({
@@ -649,3 +651,22 @@ var Mapusaurus = {
         window.open(offscreen.toDataURL(), '_blank');
     }
 };
+
+$(document).ready(function() {
+    var downloadData = $('#download-data');
+    downloadData.click(function(ev) {
+        ev.preventDefault();
+        vex.dialog.confirm({
+            message: ('HMDA Explorer is an interface for filtering, ' +
+                      'slicing, previewing, and downloading HMDA data. By ' +
+                      'continuing, you will see the HMDA Explorer ' +
+                      'configured to match the data shown on this map, but ' +
+                      'can alter the parameters to fit your needs.'),
+            callback: function(redirect) {
+                if (redirect) {
+                    window.open(downloadData.attr('href'));
+                }
+            }
+        });
+    });
+});
