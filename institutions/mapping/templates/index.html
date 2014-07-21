@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="{% static 'mapping/lib/leaflet-search/css/leaflet-search.css' %}" />
         <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex.css' %}" />
         <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex-theme-plain.css' %}" />
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
         {% block custom_css %}{% endblock %}
     </head>
     <body>
@@ -80,10 +81,15 @@
             </select>
         </section>
 
-        {% if lender %}
-        <section id="lender-info">
+        <section id="lower-right-icons">
+            <a id="take-screenshot"><i class="fa fa-camera"></i></a>
+            {% if download_url %}
             <a target="_blank" id="download-data"
                 href="{{ download_url }}" ></a>
+            {% endif %}
+        </section>
+        {% if lender %}
+        <section id="lender-info">
             <h2>{{ lender.name}}</h2>
             <span class="lender-id">{{ lender.ffiec_id }} ({{ lender.agency.acronym }})</span>
             <table>

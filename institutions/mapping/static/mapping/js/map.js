@@ -72,7 +72,6 @@ var Mapusaurus = {
         map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
-        Mapusaurus.addScreenshotButton(map);
         Mapusaurus.layers.shapes = new L.TileLayer.HookableGeoJSON(
             '/shapes/tiles/{z}/{x}/{y}', {
                 afterTileLoaded: Mapusaurus.afterShapeTile
@@ -240,22 +239,6 @@ var Mapusaurus = {
             return L.DomUtil.get('key');
         };
         key.addTo(map);
-    },
-
-    /* Generated button for taking a screenshot */
-    addScreenshotButton: function(map) {
-        var container = L.DomUtil.create('div', 'leaflet-bar'),
-            buttonEl = L.DomUtil.create('a', 'screenshot', container),
-            buttonCtrl = L.control({position: 'topleft'});
-        buttonEl.href = '#';
-        buttonEl.innerHTML = '\ue414';
-        L.DomEvent.addListener(buttonEl, 'click', function(ev) {
-            L.DomEvent.stopPropagation(ev);
-            L.DomEvent.preventDefault(ev);
-            Mapusaurus.takeScreenshot();
-        });
-        buttonCtrl.onAdd = function() { return container; };
-        buttonCtrl.addTo(map);
     },
 
     /* Naive url parameter parser */
@@ -667,6 +650,8 @@ var Mapusaurus = {
         });
         /* Finally, draw all the tiles, then the SVG, then the key */
         $.when.apply(null, allImages).then(function() {
+            var $ssPlaceholder = $('#screenshot-placeholder'),
+                replacementText = 'Right-click and select Save Image As...';
             //  draw each tile
             _.each(arguments, function(tileXImg) {
                 var pos = $(tileXImg.tile).position();
@@ -682,7 +667,20 @@ var Mapusaurus = {
                          keyXOffset + 20, 100);
             ctx.fillText($('#bubble-selector:visible option:selected').text(),
                          keyXOffset + 20, 120);
-            window.open(offscreen.toDataURL(), '_blank');
+
+            //  Closed the popup before we could edit it
+            if ($ssPlaceholder.length === 0) {
+                vex.dialog.alert({
+                    message: ('<h2>Export Map</h2>' +
+                              '<p>' + replacementText + '</p>' + 
+                              '<img src="' + offscreen.toDataURL() + '" />')
+                });
+            //  Did not close popup; edit it in place
+            } else {
+                $ssPlaceholder.text(replacementText);
+                $('<img />').attr('src', offscreen.toDataURL()).appendTo(
+                    $ssPlaceholder.parent());
+            }
         });
     }
 };
@@ -703,5 +701,15 @@ $(document).ready(function() {
                 }
             }
         });
+    });
+    $('#take-screenshot').click(function(ev) {
+        ev.preventDefault();
+        vex.dialog.alert({
+            message: ('<h2>Export Map</h2>' +
+                      '<p id="screenshot-placeholder">Map exporting is not ' +
+                      'supported in this release. To capture this map, use ' +
+                      'the Print Screen key on your computer.</p>')
+        });
+        Mapusaurus.takeScreenshot();
     });
 });
