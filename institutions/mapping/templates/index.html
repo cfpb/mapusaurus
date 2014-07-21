@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="{% static 'mapping/lib/rrose/leaflet.rrose.css' %}" />
         <link rel="stylesheet" href="{% static 'mapping/lib/leaflet-search/css/leaflet-search.css' %}" />
         <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex.css' %}" />
-        <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex-theme-os.css' %}" />
+        <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex-theme-plain.css' %}" />
         {% block custom_css %}{% endblock %}
     </head>
     <body>
@@ -34,8 +34,6 @@
                     <span class="lender-name">{{ lender.name }}:</span>
                     <span class="map-type">2012 Applications and Originations
                         by Census Tract</span>
-                    [<a target="_blank" id="download-data"
-                        href="{{ download_url }}">HMDA Data Preview &amp; Download</a>]
                 </div>
                 {% endif %}
                 {% if metro %}
@@ -84,6 +82,8 @@
 
         {% if lender %}
         <section id="lender-info">
+            <a target="_blank" id="download-data"
+                href="{{ download_url }}" ></a>
             <h2>{{ lender.name}}</h2>
             <span class="lender-id">{{ lender.ffiec_id }} ({{ lender.agency.acronym }})</span>
             <table>

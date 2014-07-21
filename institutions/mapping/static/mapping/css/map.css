@@ -72,9 +72,11 @@ a.screenshot {
 }
 
 
+/* Map Footer */
 #lender-info {
   margin-top: 0.5em;
   margin-left: 5em;
+  margin-right: 5em;
   font-family: "Avenir Next W01", Arial, sans-serif;
 }
 #lender-info h2 {
@@ -92,6 +94,20 @@ a.screenshot {
 }
 #lender-info td {
   padding-bottom: 0.25em;
+}
+#download-data {
+  font-size: 24px;
+  float: right;
+  border-bottom: 0;
+  color: #000;
+}
+#download-data:before {
+  font-family: 'CFPB Minicons';
+  content: '\e610';
+}
+.vex-dialog-message h2 {
+  font-weight: bold;
+  font-size: larger;
 }
 
 /* Map header */

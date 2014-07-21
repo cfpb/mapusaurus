@@ -1,6 +1,6 @@
 'use strict';
 
-vex.defaultOptions.className = 'vex-theme-os';
+vex.defaultOptions.className = 'vex-theme-plain';
 
 /* We want to be able to trigger a callback whenever a JSON tile loads, so we
  * create a custom GeoJSON tile layer */
@@ -657,11 +657,11 @@ $(document).ready(function() {
     downloadData.click(function(ev) {
         ev.preventDefault();
         vex.dialog.confirm({
-            message: ('HMDA Explorer is an interface for filtering, ' +
-                      'slicing, previewing, and downloading HMDA data. By ' +
-                      'continuing, you will see the HMDA Explorer ' +
-                      'configured to match the data shown on this map. You ' +
-                      'can further alter the parameters to fit your needs.'),
+            message: ('<h2>Export Data</h2>' +
+                      '<p>You are being redirected to the public HMDA ' +
+                      'Explorer tools on www.consumerfinance.gov</p>' +
+                      '<p>From there, you can preview and download the ' +
+                      'HMDA LAR set for this MSA.</p>'),
             callback: function(redirect) {
                 if (redirect) {
                     window.open(downloadData.attr('href'));
