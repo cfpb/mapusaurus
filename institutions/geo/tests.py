@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import MultiPolygon, Polygon
 from django.test import TestCase
 from mock import Mock, patch
+from geojson import geojson
 
 from geo.management.commands.load_geos_from import Command as LoadGeos
 from geo.management.commands.precache_geos import Command as Precache
@@ -42,8 +43,8 @@ class ViewTest(TestCase):
             data={'geo_types': '2'})
         resp = json.loads(resp.content)
         self.assertEqual(len(resp['features']), 1)
-        self.assertEqual(resp['features'][0]['properties']['name'],
-                         'Positive County')
+        self.assertEqual(resp['features'][0]['properties']['geoid'],
+                         '11222')
 
         # lat/lon roughly: -4 to -3.8
         resp = self.client.get(reverse(
@@ -52,8 +53,8 @@ class ViewTest(TestCase):
             data={'geo_types': '2'})
         resp = json.loads(resp.content)
         self.assertEqual(len(resp['features']), 1)
-        self.assertEqual(resp['features'][0]['properties']['name'],
-                         'Negative County')
+        self.assertEqual(resp['features'][0]['properties']['geoid'],
+                         '11223')
 
         # lat/lon roughly: -3.1 to -2.9; Testing that the centroid is checked
         resp = self.client.get(reverse(
@@ -62,8 +63,8 @@ class ViewTest(TestCase):
             data={'geo_types': '2'})
         resp = json.loads(resp.content)
         self.assertEqual(len(resp['features']), 1)
-        self.assertEqual(resp['features'][0]['properties']['name'],
-                         'Negative County')
+        self.assertEqual(resp['features'][0]['properties']['geoid'],
+                         '11223')
 
     def test_tile_limits(self):
         # Multiple zoom levels containing 0, 0
@@ -81,6 +82,26 @@ class ViewTest(TestCase):
                         kwargs={'zoom': z, 'xtile': x, 'ytile': x}))
             resp = json.loads(resp.content)
             self.assertEqual(len(resp['features']), 3)
+
+    def test_topo_conversion(self):
+        resp = self.client.get(
+            reverse('geo:tiles', kwargs={'zoom': 9, 'xtile': 2**8,
+                                         'ytile': 2**8}))
+        geo_str = resp.content
+        geo_dict = json.loads(geo_str)
+        del geo_dict['crs']     # ignored noise
+        self.assertEqual(len(geo_dict['features']), 3)
+
+        resp = self.client.get(
+            reverse('geo:topotiles', kwargs={'zoom': 9, 'xtile': 2**8,
+                                             'ytile': 2**8}))
+        topo_str = resp.content
+        topo_dict = json.loads(topo_str)
+        self.assertEqual(topo_dict['type'], 'Topology')
+
+        self.assertTrue(len(topo_str) < len(geo_str))
+        topo_geo_dict = geojson(topo_dict)
+        self.assertEqual(geo_dict, topo_geo_dict)
 
     @patch('geo.views.SearchQuerySet')
     def test_search_name(self, SQS):
