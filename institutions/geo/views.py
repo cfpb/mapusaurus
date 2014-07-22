@@ -19,7 +19,7 @@ def to_lon(zoom, xtile):
     return xtile / n * 360.0 - 180.0
 
 
-def tract_tile(request, zoom, xtile, ytile):
+def tile(geo_type, request, zoom, xtile, ytile):
     """Based on
     http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_numbers_to_lon..2Flat.
     Return all tiles which are inside the requested tile square
@@ -38,7 +38,7 @@ def tract_tile(request, zoom, xtile, ytile):
         return HttpResponseBadRequest(
             "Bad or missing: one of minlat, maxlat, minlon, maxlon")
 
-    # check that any of the four points are inside the boundary
+    # check that any of the four points or center are inside the boundary
     query = Q(minlat__gte=minlat, minlat__lte=maxlat,
               minlon__gte=minlon, minlon__lte=maxlon)
     query = query | Q(minlat__gte=minlat, minlat__lte=maxlat,
@@ -47,13 +47,23 @@ def tract_tile(request, zoom, xtile, ytile):
                       minlon__gte=minlon, minlon__lte=maxlon)
     query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
                       maxlon__gte=minlon, maxlon__lte=maxlon)
+    query = query | Q(centlat__gte=minlat, centlat__lte=maxlat,
+                      centlon__gte=minlon, centlon__lte=maxlon)
 
-    tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE).filter(query)
+    shapes = Geo.objects.filter(geo_type=geo_type).filter(query)
 
     # We already have the json strings per model pre-computed, so just place
     # them inside a static response
     response = '{"crs": {"type": "link", "properties": {"href": '
     response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
     response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
-    response = response % ', '.join(tract.as_geojson() for tract in tracts)
+    response = response % ', '.join(shape.as_geojson() for shape in shapes)
     return HttpResponse(response, content_type='application/json')
+
+
+def tract_tile(request, zoom, xtile, ytile):
+    return tile(Geo.TRACT_TYPE, request, zoom, xtile, ytile)
+
+
+def county_tile(request, zoom, xtile, ytile):
+    return tile(Geo.COUNTY_TYPE, request, zoom, xtile, ytile)

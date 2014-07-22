@@ -14,8 +14,8 @@
       "minlon": 0,
       "maxlat": 1,
       "maxlon": 1,
-      "centlat": 0.0,
-      "centlon": 0.0
+      "centlat": 0.5,
+      "centlon": 0.5
     }
   },
   {
@@ -33,8 +33,8 @@
       "minlon": 0,
       "maxlat": 1,
       "maxlon": 1,
-      "centlat": 0.0,
-      "centlon": 0.0
+      "centlat": 0.5,
+      "centlon": 0.5
     }
   },
   {
@@ -52,8 +52,8 @@
       "minlon": 0,
       "maxlat": 1,
       "maxlon": 1,
-      "centlat": 0.0,
-      "centlon": 0.0
+      "centlat": 0.5,
+      "centlon": 0.5
     }
   },
   {
@@ -71,8 +71,8 @@
       "minlon": -5,
       "maxlat": -4,
       "maxlon": -4,
-      "centlat": 0.0,
-      "centlon": 0.0
+      "centlat": -4.5,
+      "centlon": -4.5
     }
   }
 ]
