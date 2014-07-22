@@ -13,7 +13,7 @@ class Command(BaseCommand):
     help = "Precache census tract and county shape tiles"
 
     urls = {
-        'geo:tiles': range(9, 13),
+        'geo:topotiles': range(9, 13),
     }
     #   Roughly the bounds of the continental US
     min_lat = -125
