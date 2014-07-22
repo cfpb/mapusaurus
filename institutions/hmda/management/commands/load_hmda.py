@@ -3,7 +3,7 @@ from csv import reader
 from django.core.management.base import BaseCommand, CommandError
 
 from geo.management.commands.load_state_shapefile import errors_in_2010
-from geo.models import StateCensusTract
+from geo.models import Geo
 from hmda.models import HMDARecord
 
 
@@ -16,8 +16,8 @@ class Command(BaseCommand):
             raise CommandError("Needs a first argument, " + Command.args)
 
         geo_states = set(
-            row['statefp'] for row in
-            StateCensusTract.objects.values('statefp').distinct())
+            row['state'] for row in
+            Geo.objects.values('state').distinct())
         self.stdout.write("Filtering by states "
                           + ", ".join(list(sorted(geo_states))))
         known_hmda = set(

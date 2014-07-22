@@ -75,16 +75,18 @@ Here are some separate instructions for running the geo application.
     python manage.py migrate geo
 ```
 
-Currently this works with Census Tract files. You can download those here: 
+Currently, we load census tract and county files. You can download them here:
 
 ```
 ftp://ftp2.census.gov/geo/tiger/TIGER2013/TRACT/
+ftp://ftp2.census.gov/geo/tiger/TIGER2013/COUNTY/
 ```
 
 This is how you load the data:
 
 ```
     python manage.py load_state_shapefile /vagrant/data/CENSUS/tract/17/tl_2013_17_tract.shp
+    python manage.py load_county_shapefile /path/to/tl_2013_us_county.shp
 ```
 
 

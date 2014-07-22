@@ -60,7 +60,7 @@ class HMDARecord(models.Model):
                    + "the state code."))
 
     lender = models.CharField(max_length=11, db_index=True)
-    geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
+    geoid = models.ForeignKey('geo.Geo', to_field='geoid',
                               db_index=True)
 
     class Meta:

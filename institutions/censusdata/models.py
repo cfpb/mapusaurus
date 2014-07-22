@@ -6,8 +6,7 @@ from django.db import models
 
 class Census2010Race(models.Model):
     """Race population fields, pulled from Summary1, file 3"""
-    geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              primary_key=True)
+    geoid = models.OneToOneField('geo.Geo', primary_key=True)
 
     total_pop = models.IntegerField()
     white_alone = models.IntegerField()
@@ -21,8 +20,7 @@ class Census2010Race(models.Model):
 
 class Census2010HispanicOrigin(models.Model):
     """Hispanic/Latino population fields, pulled from Summary1, file 3"""
-    geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              primary_key=True)
+    geoid = models.OneToOneField('geo.Geo', primary_key=True)
 
     total_pop = models.IntegerField()
     non_hispanic = models.IntegerField()
@@ -31,8 +29,7 @@ class Census2010HispanicOrigin(models.Model):
 
 class Census2010Sex(models.Model):
     """Sex/Gender population fields, pulled from Summary1, file 4"""
-    geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              primary_key=True)
+    geoid = models.OneToOneField('geo.Geo', primary_key=True)
 
     total_pop = models.IntegerField()
     male = models.IntegerField()
@@ -42,8 +39,7 @@ class Census2010Sex(models.Model):
 class Census2010Age(models.Model):
     """Population grouped by age, pulled from Summary1, file 4. We use the
     exact breakdown as in the census"""
-    geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              primary_key=True)
+    geoid = models.OneToOneField('geo.Geo', primary_key=True)
 
     total_pop = models.IntegerField()
     under_five = models.IntegerField()
@@ -75,8 +71,7 @@ class Census2010RaceStats(models.Model):
     """These fields and calculated fields give a slightly more nuanced view of
     the above data, particularly segmenting out minority groups by race and
     hispanic/latino"""
-    geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              primary_key=True)
+    geoid = models.OneToOneField('geo.Geo', primary_key=True)
 
     total_pop = models.IntegerField()
     hispanic = models.IntegerField()
@@ -111,8 +106,7 @@ class Census2010RaceStats(models.Model):
 
 class Census2010Households(models.Model):
     """Number of households per census tract, pulled from Summary1, file 5"""
-    geoid = models.ForeignKey('geo.StateCensusTract', to_field='geoid',
-                              primary_key=True)
+    geoid = models.OneToOneField('geo.Geo', primary_key=True)
 
     total = models.IntegerField(
         help_text="Total number of households in census tract. P0180001")
