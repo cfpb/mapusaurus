@@ -2,15 +2,26 @@
 
 vex.defaultOptions.className = 'vex-theme-plain';
 
-/* We want to be able to trigger a callback whenever a JSON tile loads, so we
- * create a custom GeoJSON tile layer */
-L.TileLayer.HookableGeoJSON = L.TileLayer.GeoJSON.extend({
-    _tileLoaded: function() {
-        //  "super"
-        L.TileLayer.GeoJSON.prototype._tileLoaded.apply(this, arguments);
-
-        if (this.options.afterTileLoaded) {
-            this.options.afterTileLoaded.apply(this, arguments);
+/* The GeoJSON tile layer is excellent, but makes assumptions that we don't
+ * want (like refreshing whenever zooming, and that a single logic layer is
+ * encoded in the ajaxed data). We instead extend a simpler primitive, and
+ * insert hooks where needed. */
+L.TileLayer.GeoJSONData = L.TileLayer.Ajax.extend({
+    addTileData: function (features, tilePoint) {
+        if (this.options.filter) {
+            features = _.filter(features, this.options.filter);
+        }
+        if (this.options.perGeo) {
+            _.each(features, this.options.perGeo);
+        }
+        if (this.options.postTileLoaded) {
+            this.options.postTileLoaded(features, tilePoint);
+        }
+    },
+    _tileLoaded: function (tile, tilePoint) {
+        L.TileLayer.Ajax.prototype._tileLoaded.apply(this, arguments);
+        if (tile.datum !== null && tile.datum.features !== null) {
+            this.addTileData(tile.datum.features, tilePoint);
         }
     }
 });
@@ -28,7 +39,7 @@ var Mapusaurus = {
         outsideBubbles: []
     },
     //  Leaflet layers
-    layers: {tract: null, county: null},
+    layers: {tract: null, county: null, metro: null},
     //  Tracks layer data/stats
     dataStore: {tract: {}},
     //  Tracks which tracts have been drawn. Gets cleared when zooming
@@ -72,16 +83,26 @@ var Mapusaurus = {
         map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
-        Mapusaurus.layers.shapes = new L.TileLayer.HookableGeoJSON(
-            '/shapes/tiles/{z}/{x}/{y}', {
-                afterTileLoaded: Mapusaurus.afterShapeTile
-            }, {
-                // Don't redraw any tracts
-                filter: Mapusaurus.notDrawn,
-                style: Mapusaurus.pickStyle,
-                onEachFeature: Mapusaurus.eachShapeTile
-        });
-        Mapusaurus.layers.shapes.addTo(map);
+        //  We don't need to hold on to this layer as it is feeding others
+        new L.TileLayer.GeoJSONData('/shapes/tiles/{z}/{x}/{y}', {
+            //  don't redraw shapes
+            filter: Mapusaurus.notDrawn,
+            perGeo: Mapusaurus.handleGeo,
+            postTileLoaded: Mapusaurus.afterShapeTile
+
+        }).addTo(map);
+        Mapusaurus.layers.tract = new L.GeoJSON(null, {
+            style: Mapusaurus.minorityContinuousStyle,
+            onEachFeature: Mapusaurus.eachTract});
+        Mapusaurus.layers.tract.addTo(map);
+        Mapusaurus.layers.county = new L.GeoJSON(null, {
+            style: Mapusaurus.zoomedCountyStyle,
+            onEachFeature: Mapusaurus.dblclickToZoom});
+        Mapusaurus.layers.county.addTo(map);
+        Mapusaurus.layers.metro = new L.GeoJSON(null, {
+            style: Mapusaurus.zoomedMetroStyle,
+            onEachFeature: Mapusaurus.dblclickToZoom});
+        Mapusaurus.layers.metro.addTo(map);
 
         if (Mapusaurus.urlParam('lender')) {
             Mapusaurus.layers.loanVolume = L.layerGroup([]);
@@ -91,17 +112,13 @@ var Mapusaurus = {
             $('#bubble-selector').removeClass('hidden').on('change',
                 Mapusaurus.redrawBubbles);
         }
-        //  Census tracts get cleared whenever zooming in/out (analogous to
-        //  other tile layers)
-        map.on('zoomstart', function() { Mapusaurus.drawn = {}; });
         //  Selector to change bucket/continuous shading
         $('#style-selector').on('change', function() {
-            Mapusaurus.layers.shapes.geojsonLayer.setStyle(
+            Mapusaurus.layers.tract.setStyle(
                 Mapusaurus[$('#style-selector').val()]);
         });
         $('#category-selector').on('change', function() {
-            Mapusaurus.layers.shapes.geojsonLayer.setStyle(
-                Mapusaurus.pickStyle);
+            Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
         });
 
         $enforceBoundsEl.on('change', function() {
@@ -146,19 +163,8 @@ var Mapusaurus = {
     },
 
     /* Called after each tile of geojson shape data loads */
-    afterShapeTile: function(tile) {
-        var features = [],
-            tracts = [];
-
-        //  If data failed to load, this field won't be present
-        if (tile.datum) {
-            features = tile.datum.features;
-        }
-
-        _.each(features, function(feature) {
-            Mapusaurus.drawn[feature.properties.geoid] = true;
-        });
-        tracts = _.filter(features, Mapusaurus.isTract);
+    afterShapeTile: function(features) {
+        var tracts = _.filter(features, Mapusaurus.isTract);
         //  convert to geoids
         tracts = _.map(tracts, function(feature) {
             return feature.properties.geoid;
@@ -169,16 +175,12 @@ var Mapusaurus = {
         }
         
     },
-    /* Set the style and interaction for each geojson shape */
-    eachShapeTile: function(feature, layer) {
-        //  keep expected functionality with double clicking
+    /* Keep expected functionality with double clicking */
+    dblclickToZoom: function(feature, layer) {
         layer.on('dblclick', function(ev) {
             Mapusaurus.map.setZoomAround(ev.latlng,
                                          Mapusaurus.map.getZoom() + 1);
         });
-        if (Mapusaurus.isTract(feature)) {
-            Mapusaurus.eachTract(feature, layer);
-        }
     },
     /* As all "features" (shapes) come through a single source, we need to
      * separate them to know what style to apply */
@@ -217,18 +219,12 @@ var Mapusaurus = {
      * order, etc., we may need to re-order their z-index */
     reZIndex: function() {
         //  Put metros at the back
-        Mapusaurus.layers.shapes.geojsonLayer.eachLayer(function(layer) {
-          if (Mapusaurus.isMetro(layer.feature)) { layer.bringToBack(); }
-        });
+        Mapusaurus.layers.metro.bringToBack();
         //  Then put county at the back (hence metros will be on top)
-        Mapusaurus.layers.shapes.geojsonLayer.eachLayer(function(layer) {
-          if (Mapusaurus.isCounty(layer.feature)) { layer.bringToBack(); }
-        });
+        Mapusaurus.layers.county.bringToBack();
         //  Finally put tracts at the back (so that tracts are behind counties
         //  are behind metros)
-        Mapusaurus.layers.shapes.geojsonLayer.eachLayer(function(layer) {
-          if (Mapusaurus.isTract(layer.feature)) { layer.bringToBack(); }
-        });
+        Mapusaurus.layers.tract.bringToBack();
     },
 
 
@@ -261,6 +257,7 @@ var Mapusaurus = {
      * tile layer. Adds interactions */
     eachTract: function(feature, layer) {
         var geoid = feature.properties.geoid;
+        Mapusaurus.dblclickToZoom(feature, layer);
         Mapusaurus.drawn[geoid] = true;
         if (!_.has(Mapusaurus.dataStore.tract, geoid)) {
             Mapusaurus.dataStore.tract[geoid] = feature.properties;
@@ -419,8 +416,7 @@ var Mapusaurus = {
             });
             switch(layerName) {
                 case 'minority':
-                    Mapusaurus.layers.shapes.geojsonLayer.setStyle(
-                        Mapusaurus.pickStyle);
+                    Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
                     break;
                 case 'loanVolume':
                     _.each(geoData, function(geo) {
@@ -603,17 +599,27 @@ var Mapusaurus = {
         //  Assumes northwest quadrisphere
         Mapusaurus.map.setMaxBounds([[minLat, minLon], [maxLat, maxLon]]);
         Mapusaurus.lockState.locked = true;
-        Mapusaurus.layers.shapes.geojsonLayer.setStyle(
-            Mapusaurus.pickStyle);
+        Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
         Mapusaurus.redrawBubbles();
     },
     /* Reverse of above */
     disableBounds: function() {
         Mapusaurus.map.setMaxBounds(null);
         Mapusaurus.lockState.locked = false;
-        Mapusaurus.layers.shapes.geojsonLayer.setStyle(
-            Mapusaurus.pickStyle);
+        Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
         Mapusaurus.redrawBubbles();
+    },
+    /* Separate the stream of geos coming from the ajax layer; add the shapes
+     * to their appropriate layer */
+    handleGeo: function(geo) {
+        Mapusaurus.drawn[geo.properties.geoid] = true;
+        if (Mapusaurus.isTract(geo)) {
+            Mapusaurus.layers.tract.addData(geo);
+        } else if (Mapusaurus.isCounty(geo)) {
+            Mapusaurus.layers.county.addData(geo);
+        } else if (Mapusaurus.isMetro(geo)) {
+            Mapusaurus.layers.metro.addData(geo);
+        }
     },
 
     /* Uses canvg to draw the svg map onto a canvas, which can then be opened
