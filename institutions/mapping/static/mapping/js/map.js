@@ -435,12 +435,17 @@ var Mapusaurus = {
         Mapusaurus.reZIndex();
     },
 
-    //  Using the selector, determine which hmda statistic to display
+    /* Using the selector, determine which hmda statistic to display. Our goal
+     * is to increase the area of the circle, but the metric we have is
+     * radius, so do the proper algebra */
     hmdaStat: function(tractData) {
-        var fieldName = $('#bubble-selector').val(),
-            splitAt = fieldName.indexOf('_'),
-            scale = parseFloat(fieldName.substring(0, splitAt));
-        return scale * tractData[fieldName.substr(splitAt + 1)];
+        var $selected = $('#bubble-selector option:selected'),
+            fieldName = $selected.val(),
+            scale = $selected.data('scale'),
+            area = scale * tractData[fieldName];
+        //  As Pi is just a constant scalar, we can ignore it in this
+        //  calculation: a = pi*r*r   or r = sqrt(a/pi)
+        return Math.sqrt(area);
     },
 
     /* Makes sure that all bubbles are shown/hidden as needed and have the
