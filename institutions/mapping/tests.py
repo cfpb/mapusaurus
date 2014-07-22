@@ -23,16 +23,16 @@ class ViewTest(TestCase):
         self.zip_code.delete()
 
     def test_home(self):
-        resp = self.client.get(reverse('home'))
+        resp = self.client.get(reverse('map'))
         self.assertFalse('lender-info' in resp.content)
-        resp = self.client.get(reverse('home'), {'some': 'thing'})
+        resp = self.client.get(reverse('map'), {'some': 'thing'})
         self.assertFalse('lender-info' in resp.content)
-        resp = self.client.get(reverse('home'), {'lender': 'thing'})
+        resp = self.client.get(reverse('map'), {'lender': 'thing'})
         self.assertFalse('lender-info' in resp.content)
-        resp = self.client.get(reverse('home'), {'lender': '123456789'})
+        resp = self.client.get(reverse('map'), {'lender': '123456789'})
         self.assertFalse('lender-info' in resp.content)
 
-        resp = self.client.get(reverse('home'), {'lender': '122-333'})
+        resp = self.client.get(reverse('map'), {'lender': '122-333'})
         self.assertTrue('lender-info' in resp.content)
         self.assertTrue('Some Bank' in resp.content)
         self.assertTrue('123 Avenue St.' in resp.content)
@@ -47,7 +47,7 @@ class ViewTest(TestCase):
             geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
             centlon=67.6767)
-        resp = self.client.get(reverse('home'), {'metro': '12121'})
+        resp = self.client.get(reverse('map'), {'metro': '12121'})
         self.assertTrue('45.4545' in resp.content)
         self.assertTrue('67.6767' in resp.content)
         self.assertTrue('0.11' in resp.content)
