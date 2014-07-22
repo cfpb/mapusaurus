@@ -21,6 +21,9 @@ L.TileLayer.GeoJSONData = L.TileLayer.Ajax.extend({
     _tileLoaded: function (tile, tilePoint) {
         L.TileLayer.Ajax.prototype._tileLoaded.apply(this, arguments);
         if (tile.datum !== null && tile.datum.features !== null) {
+            if (this.options.initialTransform) {
+                tile.datum = this.options.initialTransform(tile.datum);
+            }
             this.addTileData(tile.datum.features, tilePoint);
         }
     }
@@ -84,10 +87,11 @@ var Mapusaurus = {
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
         //  We don't need to hold on to this layer as it is feeding others
-        new L.TileLayer.GeoJSONData('/shapes/tiles/{z}/{x}/{y}', {
+        new L.TileLayer.GeoJSONData('/shapes/topotiles/{z}/{x}/{y}', {
             //  don't redraw shapes
             filter: Mapusaurus.notDrawn,
             perGeo: Mapusaurus.handleGeo,
+            initialTransform: Mapusaurus.extractTopo,
             postTileLoaded: Mapusaurus.afterShapeTile
 
         }).addTo(map);
@@ -151,15 +155,23 @@ var Mapusaurus = {
         }).addTo(map);
     },
 
+    /* check if a tile is encoded w/ topojson. If so, convert it to geojson */
+    extractTopo: function(tile) {
+        if (tile.type === 'Topology') {
+            return topojson.feature(tile, tile.objects.name);
+        } else {
+            return tile;
+        }
+    },
 
     isCounty: function(feature) {
-        return feature.properties.geoType[0] === 2;
+        return feature.properties.geoType === 2;
     },
     isTract: function(feature) {
-        return feature.properties.geoType[0] === 3;
+        return feature.properties.geoType === 3;
     },
     isMetro: function(feature) {
-        return feature.properties.geoType[0] === 4;
+        return feature.properties.geoType === 4;
     },
 
     /* Called after each tile of geojson shape data loads */

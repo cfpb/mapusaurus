@@ -44,26 +44,18 @@ class Geo(models.Model):
                           ("geo_type", "centlat", "centlon")]
 
     def as_geojson(self):
-        # geometry is a placeholder, as we'll be inserting a pre-serialized
-        # json string
-        geojson = {"type": "Feature", "geometry": "$_$"}
-        geojson['properties'] = {
-            'geoid': self.geoid,
-            'geoType': Geo.TYPES[self.geo_type - 1],    # 1-indexed
-            'name': self.name,
-            'state': self.state,
-            'county': self.county,
-            'tract': self.tract,
-            'cbsa': self.cbsa,
-            'minlat': self.minlat,
-            'maxlat': self.maxlat,
-            'minlon': self.minlon,
-            'maxlon': self.maxlon,
-            'centlat': self.centlat,
-            'centlon': self.centlon
-        }
+        """Convert this model into a geojson string"""
+        geojson = {'type': 'Feature',
+                   'geometry': '$_$',   # placeholder
+                   'properties': {
+                       'geoid': self.geoid,
+                       'geoType': self.geo_type,
+                       'state': self.state,
+                       'county': self.county,
+                       'cbsa': self.cbsa,
+                       'centlat': self.centlat,
+                       'centlon': self.centlon}}
         geojson = json.dumps(geojson)
-        geojson = geojson.replace(
+        return geojson.replace(
             '"$_$"',
             self.geom.simplify(preserve_topology=True).geojson)
-        return geojson
