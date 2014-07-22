@@ -27,5 +27,10 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
             select={"num_loans": "SELECT COUNT(*) " + subquery_tail},
             where=["SELECT COUNT(*) > 0 " + subquery_tail])
 
+    def read_queryset(self, using=None):
+        """A more efficient query than the index query -- makes use of select
+        related and does not include the num_loans calculation."""
+        return self.get_model().objects.select_related('zip_code', 'agency')
+
     def prepare_lender_id(self, institution):
         return str(institution.agency_id) + institution.ffiec_id
