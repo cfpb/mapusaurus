@@ -12,7 +12,7 @@ class Migration(DataMigration):
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
         batch = []
-        for tract in orm.StateCensusTract.objects.all():
+        for tract in orm.StateCensusTract.objects.iterator():
             # Don't use any constants as this is migration code
             geo = orm.Geo(geoid=tract.geoid, geo_type=3, name=tract.name,
                           state=tract.statefp, county=tract.countyfp,
