@@ -15,7 +15,7 @@ L.TileLayer.GeoJSONData = L.TileLayer.Ajax.extend({
             _.each(features, this.options.perGeo);
         }
         if (this.options.postTileLoaded) {
-            this.options.postTileLoaded(features, tilePoint);
+            this.options.postTileLoaded(features, tilePoint, this._tilesToLoad);
         }
     },
     _tileLoaded: function (tile, tilePoint) {
@@ -45,6 +45,9 @@ var Mapusaurus = {
     layers: {tract: null, county: null, metro: null},
     //  Tracks layer data/stats
     dataStore: {tract: {}},
+    //  We don't immediately fetch statistical data when we know that we need
+    //  it. This buffers the requests until enough have been logged
+    toBatchLoad: [],
     //  Tracks which tracts have been drawn. Gets cleared when zooming
     drawn: {},
     notDrawn: function(feature) {
@@ -174,17 +177,16 @@ var Mapusaurus = {
         return feature.properties.geoType === 4;
     },
 
-    /* Called after each tile of geojson shape data loads */
-    afterShapeTile: function(features) {
+    /* Called after each tile of geojson shape data loads. The tilesToLoad
+     * parameter indicates how many additional shape tiles remain */
+    afterShapeTile: function(features, tilePoint, tilesToLoad) {
         var tracts = _.filter(features, Mapusaurus.isTract);
         //  convert to geoids
         tracts = _.map(tracts, function(feature) {
             return feature.properties.geoid;
         });
-        if (tracts.length > 0) {
-            Mapusaurus.updateDataWithoutGeos(tracts);
-            Mapusaurus.fetchMissingStats(tracts);
-        }
+        Mapusaurus.updateDataWithoutGeos(tracts);
+        Mapusaurus.fetchMissingStats(tracts, /* force */ tilesToLoad === 0);
         
     },
     /* Keep expected functionality with double clicking */
@@ -329,8 +331,10 @@ var Mapusaurus = {
         Mapusaurus.draw(toDraw);
     },
 
-    /* We have geos without their associated stats - kick off the load */
-    fetchMissingStats: function(newTracts) {
+    /* We have geos without their associated stats. Only make the HTTP call
+     * after enough data has accumulated (or force === true, which occurs if
+     * there are no additional data tiles to load) */
+    fetchMissingStats: function(newTracts, force) {
         //  This is a list of triples: [[layer name, state, county]]
         var missingStats = [];
         _.each(_.keys(Mapusaurus.statsLoaded), function(layerName) {
@@ -358,8 +362,13 @@ var Mapusaurus = {
                 Mapusaurus.statsLoaded[layerName][stateCounty] = 'loading';
             });
         });
-        if (missingStats.length > 0) {
-            Mapusaurus.batchLoadStats(missingStats);
+        Mapusaurus.toBatchLoad.push(missingStats);
+        if (force || Mapusaurus.toBatchLoad.length === 10) {
+            missingStats = _.flatten(Mapusaurus.toBatchLoad, true);
+            Mapusaurus.toBatchLoad = [];
+            if (missingStats.length > 0) {
+                Mapusaurus.batchLoadStats(missingStats);
+            }
         }
     },
 
