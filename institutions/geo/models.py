@@ -12,7 +12,7 @@ class Geo(models.Model):
              (METDIV_TYPE, 'Metropolitan Division')]
 
     geoid = models.CharField(max_length=20, primary_key=True)
-    geo_type = models.PositiveIntegerField(choices=TYPES)
+    geo_type = models.PositiveIntegerField(choices=TYPES, db_index=True)
     name = models.CharField(max_length=50)
 
     state = models.CharField(max_length=2, null=True)
@@ -41,7 +41,8 @@ class Geo(models.Model):
                           ("geo_type", "minlat", "maxlon"),
                           ("geo_type", "maxlat", "minlon"),
                           ("geo_type", "maxlat", "maxlon"),
-                          ("geo_type", "centlat", "centlon")]
+                          ("geo_type", "centlat", "centlon"),
+                          ("geo_type", "cbsa")]
 
     def as_geojson(self):
         """Convert this model into a geojson string"""

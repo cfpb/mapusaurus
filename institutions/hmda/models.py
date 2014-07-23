@@ -66,7 +66,8 @@ class HMDARecord(models.Model):
     class Meta:
         index_together = [("statefp", "countyfp"),
                           ("statefp", "countyfp", "lender"),
-                          ("statefp", "countyfp", "action_taken", "lender")]
+                          ("statefp", "countyfp", "action_taken", "lender"),
+                          ("geoid", "lender")]
 
     def auto_fields(self):
         self.lender = self.agency_code + self.respondent_id
