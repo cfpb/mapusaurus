@@ -1,7 +1,9 @@
 import math
 
+from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.views.decorators.cache import cache_page
 
 from geo.models import Geo
 
@@ -61,9 +63,11 @@ def tile(geo_type, request, zoom, xtile, ytile):
     return HttpResponse(response, content_type='application/json')
 
 
+@cache_page(settings.LONGTERM_CACHE_TIMEOUT, cache='long_term_geos')
 def tract_tile(request, zoom, xtile, ytile):
     return tile(Geo.TRACT_TYPE, request, zoom, xtile, ytile)
 
 
+@cache_page(settings.LONGTERM_CACHE_TIMEOUT, cache='long_term_geos')
 def county_tile(request, zoom, xtile, ytile):
     return tile(Geo.COUNTY_TYPE, request, zoom, xtile, ytile)
