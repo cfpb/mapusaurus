@@ -102,8 +102,10 @@ class ViewTest(TestCase):
                                          geoid='11111111', **tract_params)
         city_tract2 = Geo.objects.create(name='City Tract 2', cbsa='99999',
                                          geoid='11111112', **tract_params)
+        # also create a tract with no loans
         city_tract3 = Geo.objects.create(name='City Tract 3', cbsa='99999',
                                          geoid='11111113', **tract_params)
+
         non_city_tract1 = Geo.objects.create(name='Non-City Tract 4',
                                              geoid='11111114', **tract_params)
         non_city_tract2 = Geo.objects.create(name='Non-City Tract 5',
@@ -119,31 +121,28 @@ class ViewTest(TestCase):
         hmdas = []
         hmdas.append(HMDARecord.objects.create(
             geoid=city_tract1, **hmda_params))
-        for i in range(3):
+        for i in range(5):
             hmdas.append(HMDARecord.objects.create(
                 geoid=city_tract2, **hmda_params))
-        for i in range(6):
-            hmdas.append(HMDARecord.objects.create(
-                geoid=city_tract3, **hmda_params))
-        for i in range(8):
+        for i in range(11):
             hmdas.append(HMDARecord.objects.create(
                 geoid=non_city_tract1, **hmda_params))
-        for i in range(17):
+        for i in range(8):
             hmdas.append(HMDARecord.objects.create(
                 geoid=non_city_tract2, **hmda_params))
 
-        # 1 in tract 1, 3 in tract 2, 6 in tract 3; avg:5, med:3
-        self.assertEqual(3, calculate_median_loans(self.respondent, metro))
-        # 1 in tract 1, 3 in 2, 6 in 3, 8 in 4, 17 in 5; avg:7, med:6
-        self.assertEqual(6, calculate_median_loans(self.respondent, None))
+        # 1 in tract 1, 5 in 2, 0 in 3;                     avg: 2, med: 1
+        self.assertEqual(1, calculate_median_loans(self.respondent, metro))
+        # 1 in tract 1, 5 in 2, 0 in 3, 11 in 4, 8 in 5;    avg: 6, med: 5
+        self.assertEqual(5, calculate_median_loans(self.respondent, None))
 
         hmda_params['respondent_id'] = 'other'
         # these should not affect the results, since they are another lender
         for i in range(3):
             hmdas.append(HMDARecord.objects.create(
                 geoid=city_tract2, **hmda_params))
-        self.assertEqual(3, calculate_median_loans(self.respondent, metro))
-        self.assertEqual(6, calculate_median_loans(self.respondent, None))
+        self.assertEqual(1, calculate_median_loans(self.respondent, metro))
+        self.assertEqual(5, calculate_median_loans(self.respondent, None))
 
         for hmda in hmdas:
             hmda.delete()

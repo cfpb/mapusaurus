@@ -71,13 +71,27 @@ def calculate_median_loans(lender, metro):
     metro if present. The ORM makes these aggregations ugly, so we use raw
     SQL."""
     if lender:
+        # First, count how many relevant tracts are present
+        query = Geo.objects.filter(geo_type=Geo.TRACT_TYPE)
+        if metro:
+            query = query.filter(cbsa=metro.geoid)
+        num_tracts = query.count()
+
+        # Next, count how many tracts this lender operates in
+        lender_str = str(lender.agency_id) + lender.ffiec_id
+        query = query.filter(hmdarecord__lender=lender_str)
+        num_servicing = query.distinct('geoid').count()
+
+        cursor = connection.cursor()
+        # Finally, aggregate the # of loans per tract. This query will *not*
+        # include zeros
         query = """
             SELECT COUNT(hmda_hmdarecord.id) AS loan_count
             FROM geo_geo LEFT JOIN hmda_hmdarecord ON (geoid=geoid_id)
             WHERE geo_type = %s
             AND lender = %s
         """
-        params = [Geo.TRACT_TYPE, str(lender.agency_id) + lender.ffiec_id]
+        params = [Geo.TRACT_TYPE, lender_str]
         if metro:
             query = query + "AND cbsa = %s\n"
             params.append(metro.geoid)
@@ -87,17 +101,9 @@ def calculate_median_loans(lender, metro):
             LIMIT 1
             OFFSET %s
         """
-
-        # First count how many tracts are present
-        count_query = Geo.objects.filter(geo_type=Geo.TRACT_TYPE)
-        if metro:
-            count_query = count_query.filter(cbsa=metro.geoid)
-        count = count_query.count()
-        params.append(count // 2)   # median
-
-        # Then find the median loan amount
-        if count:
-            cursor = connection.cursor()
-            cursor.execute(query, params)
-            median = cursor.fetchone()[0]
-            return median
+        params.append((num_tracts // 2)     # median
+                      - (num_tracts - num_servicing))   # account for zeros
+        cursor.execute(query, params)
+        result = cursor.fetchone()
+        if result:
+            return result[0]
