@@ -102,14 +102,16 @@ class ViewTest(TestCase):
                                          geoid='11111111', **tract_params)
         city_tract2 = Geo.objects.create(name='City Tract 2', cbsa='99999',
                                          geoid='11111112', **tract_params)
-        # also create a tract with no loans
         city_tract3 = Geo.objects.create(name='City Tract 3', cbsa='99999',
                                          geoid='11111113', **tract_params)
+        # also create a tract with no loans
+        city_tract4 = Geo.objects.create(name='City Tract 4', cbsa='99999',
+                                         geoid='11111114', **tract_params)
 
-        non_city_tract1 = Geo.objects.create(name='Non-City Tract 4',
-                                             geoid='11111114', **tract_params)
-        non_city_tract2 = Geo.objects.create(name='Non-City Tract 5',
+        non_city_tract1 = Geo.objects.create(name='Non-City Tract 5',
                                              geoid='11111115', **tract_params)
+        non_city_tract2 = Geo.objects.create(name='Non-City Tract 6',
+                                             geoid='11111116', **tract_params)
         del tract_params['geo_type']
         metro = Geo(name='City', geoid='99999', geo_type=Geo.METRO_TYPE,
                     **tract_params)
@@ -121,34 +123,38 @@ class ViewTest(TestCase):
         hmdas = []
         hmdas.append(HMDARecord.objects.create(
             geoid=city_tract1, **hmda_params))
-        for i in range(5):
+        for i in range(3):
             hmdas.append(HMDARecord.objects.create(
                 geoid=city_tract2, **hmda_params))
-        for i in range(11):
+        for i in range(8):
+            hmdas.append(HMDARecord.objects.create(
+                geoid=city_tract3, **hmda_params))
+        for i in range(7):
             hmdas.append(HMDARecord.objects.create(
                 geoid=non_city_tract1, **hmda_params))
-        for i in range(8):
+        for i in range(11):
             hmdas.append(HMDARecord.objects.create(
                 geoid=non_city_tract2, **hmda_params))
 
-        # 1 in tract 1, 5 in 2, 0 in 3;                     avg: 2, med: 1
-        self.assertEqual(1, calculate_median_loans(self.respondent, metro))
-        # 1 in tract 1, 5 in 2, 0 in 3, 11 in 4, 8 in 5;    avg: 6, med: 5
-        self.assertEqual(5, calculate_median_loans(self.respondent, None))
+        # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4;             avg: 4, med: 3
+        self.assertEqual(3, calculate_median_loans(self.respondent, metro))
+        # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4; 7 in 5, 16 in 6; avg:6, med:7
+        self.assertEqual(7, calculate_median_loans(self.respondent, None))
 
         hmda_params['respondent_id'] = 'other'
         # these should not affect the results, since they are another lender
         for i in range(3):
             hmdas.append(HMDARecord.objects.create(
                 geoid=city_tract2, **hmda_params))
-        self.assertEqual(1, calculate_median_loans(self.respondent, metro))
-        self.assertEqual(5, calculate_median_loans(self.respondent, None))
+        self.assertEqual(3, calculate_median_loans(self.respondent, metro))
+        self.assertEqual(7, calculate_median_loans(self.respondent, None))
 
         for hmda in hmdas:
             hmda.delete()
         city_tract1.delete()
         city_tract2.delete()
         city_tract3.delete()
+        city_tract4.delete()
         non_city_tract1.delete()
         non_city_tract2.delete()
         metro.delete()

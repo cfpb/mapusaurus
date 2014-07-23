@@ -71,19 +71,16 @@ def calculate_median_loans(lender, metro):
     metro if present. The ORM makes these aggregations ugly, so we use raw
     SQL."""
     if lender:
-        # First, count how many relevant tracts are present
-        query = Geo.objects.filter(geo_type=Geo.TRACT_TYPE)
+        lender_str = str(lender.agency_id) + lender.ffiec_id
+        # First, count how many tracts this lender operates in
+        query = Geo.objects.filter(
+            geo_type=Geo.TRACT_TYPE, hmdarecord__lender=lender_str)
         if metro:
             query = query.filter(cbsa=metro.geoid)
-        num_tracts = query.count()
-
-        # Next, count how many tracts this lender operates in
-        lender_str = str(lender.agency_id) + lender.ffiec_id
-        query = query.filter(hmdarecord__lender=lender_str)
-        num_servicing = query.distinct('geoid').count()
+        num_tracts = query.distinct('geoid').count()
 
         cursor = connection.cursor()
-        # Finally, aggregate the # of loans per tract. This query will *not*
+        # Next, aggregate the # of loans per tract. This query will *not*
         # include zeros
         query = """
             SELECT COUNT(hmda_hmdarecord.id) AS loan_count
@@ -101,8 +98,7 @@ def calculate_median_loans(lender, metro):
             LIMIT 1
             OFFSET %s
         """
-        params.append((num_tracts // 2)     # median
-                      - (num_tracts - num_servicing))   # account for zeros
+        params.append(num_tracts // 2)     # median
         cursor.execute(query, params)
         result = cursor.fetchone()
         if result:
