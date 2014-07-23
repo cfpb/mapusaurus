@@ -35,15 +35,15 @@ var Mapusaurus = {
     bubbleStyle: {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
                   color: '#000'},
     //  fillColor and color will be assigned when rendering
-    tractStyle: {stroke: false, fillOpacity: 0.7, weight: 2, fill: true},
+    tractStyle: {stroke: false, fillOpacity: 0.7, weight: 2, fill: true, smoothFactor: 0.1},
     //  used when loading census tracts
-    loadingStyle: {stroke: true, weight: 2, color: '#babbbd', fill: false},
+    loadingStyle: {stroke: true, weight: 2, color: '#babbbd', fill: false, smoothFactor: 0.1},
     //  population-less tracts
     noStyle: {stroke: false, fill: false},
     //  used when census tracts are visible
-    zoomedCountyStyle: {stoke: true, color: '#fff', weight: 4, fill: false},
+    zoomedCountyStyle: {stroke: true, color: '#fff', weight: 4, fill: false},
     //  used when census tracts are not visible
-    biggerCountyStyle: {stoke: true, color: '#333', weight: 4, fill: false},
+    biggerCountyStyle: {stroke: true, color: '#333', weight: 4, fill: false},
 
     initialize: function (map) {
         map.setView([41.88, -87.63], 12);
