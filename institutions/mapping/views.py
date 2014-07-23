@@ -91,5 +91,4 @@ def calculate_median_loans(lender, metro):
         if count:
             cursor.execute(query + "LIMIT 1 OFFSET %d" % (count // 2), params)
             median = cursor.fetchone()[0]
-            print median
             return median
