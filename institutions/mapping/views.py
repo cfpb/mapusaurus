@@ -77,7 +77,7 @@ def calculate_median_loans(lender, metro):
             geo_type=Geo.TRACT_TYPE, hmdarecord__lender=lender_str)
         if metro:
             query = query.filter(cbsa=metro.geoid)
-        num_tracts = query.distinct('geoid').count()
+        num_tracts = query.values('geoid').distinct('geoid').count()
 
         cursor = connection.cursor()
         # Next, aggregate the # of loans per tract. This query will *not*
