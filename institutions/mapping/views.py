@@ -1,5 +1,6 @@
 from urllib import urlencode
 
+from django.db import connection
 from django.shortcuts import render
 
 from geo.models import Geo
@@ -29,6 +30,11 @@ def home(request):
             context['metro'] = metro
 
     context['download_url'] = make_download_url(lender, metro)
+    context['median_loans'] = calculate_median_loans(lender, metro) or 0
+    if context['median_loans']:
+        context['scaled_median_loans'] = 50000 / context['median_loans']
+    else:
+        context['scaled_median_loans'] = 0
 
     return render(request, 'index.html', context)
 
@@ -56,3 +62,34 @@ def make_download_url(lender, metro):
         })
         base_url = 'https://api.consumerfinance.gov/data/hmda/slice/'
         return base_url + 'hmda_lar.csv?' + query
+
+
+def calculate_median_loans(lender, metro):
+    """For a given lender, find the median loans per census tract. Limit to
+    metro if present. The ORM makes these aggregations ugly, so we use raw
+    SQL."""
+    if lender:
+        query = """
+            SELECT COUNT(hmda_hmdarecord.id) AS loan_count
+            FROM geo_geo LEFT JOIN hmda_hmdarecord ON (geoid=geoid_id)
+            WHERE geo_type = %s
+            AND lender = %s
+        """
+        params = [Geo.TRACT_TYPE, str(lender.agency_id) + lender.ffiec_id]
+        if metro:
+            query = query + "AND cbsa = %s\n"
+            params.append(metro.geoid)
+        query += """
+            GROUP BY geo_geo.geoid
+            ORDER BY loan_count
+        """
+
+        cursor = connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM (" + query + ") AS count", params)
+        count = cursor.fetchone()[0]
+
+        if count:
+            cursor.execute(query + "LIMIT 1 OFFSET %d" % (count // 2), params)
+            median = cursor.fetchone()[0]
+            print median
+            return median
