@@ -32,6 +32,8 @@ def home(request):
     context['download_url'] = make_download_url(lender, metro)
     context['median_loans'] = calculate_median_loans(lender, metro) or 0
     if context['median_loans']:
+        # 50000 is an arbitrary constant; should be altered if we want to
+        # change how big the median circle size is
         context['scaled_median_loans'] = 50000 / context['median_loans']
     else:
         context['scaled_median_loans'] = 0
@@ -82,13 +84,20 @@ def calculate_median_loans(lender, metro):
         query += """
             GROUP BY geo_geo.geoid
             ORDER BY loan_count
+            LIMIT 1
+            OFFSET %s
         """
 
-        cursor = connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM (" + query + ") AS count", params)
-        count = cursor.fetchone()[0]
+        # First count how many tracts are present
+        count_query = Geo.objects.filter(geo_type=Geo.TRACT_TYPE)
+        if metro:
+            count_query = count_query.filter(cbsa=metro.geoid)
+        count = count_query.count()
+        params.append(count // 2)   # median
 
+        # Then find the median loan amount
         if count:
-            cursor.execute(query + "LIMIT 1 OFFSET %d" % (count // 2), params)
+            cursor = connection.cursor()
+            cursor.execute(query, params)
             median = cursor.fetchone()[0]
             return median

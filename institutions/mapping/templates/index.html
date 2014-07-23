@@ -79,7 +79,7 @@
                 <option value="volume" data-scale="{{ scaled_median_loans }}"
                         selected>Absolute Number of Loans</option>
                 <option value="volume_per_100_households"
-                        data-scale="{{ scaled_median_loans }}0"
+                data-scale="{{ scaled_median_loans }}0" {% comment %}Zero is intentional; effectively scaling by 10 {% endcomment %}
                         >Normalized per Households</option>
             </select>
         </section>
