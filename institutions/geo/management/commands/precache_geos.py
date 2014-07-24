@@ -1,15 +1,17 @@
+import urllib
+
 from django.core import urlresolvers
 from django.core.management.base import BaseCommand
-from django.test import Client
 
 from geo.views import to_lat, to_lon
 
 
 class Command(BaseCommand):
-    """Precache all of the geojson tiles in the continental US. Optionally,
-    split the workload across multiple process, e.g. by calling with 0 5, 1 5,
-    2 5, 3 5, 4 5 separately"""
-    args = "<identifier> <out-of>"
+    """Precache all of the geojson tiles in the continental US. First argument
+    indicates host, defaulting to 'http://localhost'. Optionally, split the
+    workload across multiple process, e.g. by calling with host 0 5, host 1 5,
+    host 2 5, host 3 5, host 4 5 separately"""
+    args = "<host> <identifier> <out-of>"
     help = "Precache census tract and county shape tiles"
 
     urls = {
@@ -33,12 +35,18 @@ class Command(BaseCommand):
                 url = urlresolvers.reverse(
                     url_name, kwargs={'zoom': zoom, 'xtile': xtile,
                                       'ytile': ytile})
-                Client().get(url)
+                handle = urllib.urlopen(self.host + url)
+                handle.read()     # actually read the content
 
     def handle(self, *args, **options):
         """Main entry point"""
-        if len(args) >= 2:
-            identifier, max_processes = map(int, args[:2])
+        if len(args) >= 1:
+            self.host = args[0]
+        else:
+            self.host = 'http://localhost'
+
+        if len(args) >= 3:
+            identifier, max_processes = map(int, args[1:3])
         else:
             identifier, max_processes = 0, 1
 
