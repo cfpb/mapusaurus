@@ -1,0 +1,25 @@
+[
+  {
+    "model": "respondants.zipcodecitystate",
+    "pk": 11111,
+    "fields": {
+      "zip_code": "11111",
+      "city": "Somewhere",
+      "state": "NE"
+    }
+  },
+  {
+    "model": "respondants.institution",
+    "pk": 1234567,
+    "fields": {
+      "year": 1970,
+      "ffiec_id": "22-333",
+      "agency": 1,
+      "tax_id": "taxtax",
+      "name": "Some Bank",
+      "mailing_address": "123 Avenue St.",
+      "zip_code": 11111,
+      "rssd_id": "Other ID"
+    }
+  }
+]
