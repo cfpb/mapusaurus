@@ -1,5 +1,6 @@
 import re
 
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from haystack.inputs import AutoQuery, Exact
 from haystack.query import SearchQuerySet
@@ -38,7 +39,9 @@ def respondant(request, agency_id, respondent):
 
 def search_home(request):
     """Search for an institution"""
-    return render(request, 'respondants/search_home.html')
+    return render(request, 'respondants/search_home.html', {
+        'contact_us_email': settings.CONTACT_US_EMAIL
+    })
 
 
 def select_metro(request, agency_id, respondent):
