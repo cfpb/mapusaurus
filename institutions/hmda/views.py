@@ -41,10 +41,10 @@ def loan_originations(request_dict):
     ignores year for the moment."""
 
     counties = request_dict.get('county', [])
-    lender = request_dict.get('lender', '')
+    lender = request_dict.get('lender', [])
 
     if counties and all(len(c) == 5 for c in counties) and lender:
-        query = originations_by_county(counties, lender)
+        query = originations_by_county(counties, lender[0])
         data = {}
         for row in query:
             data[row['geoid']] = {
@@ -56,7 +56,7 @@ def loan_originations(request_dict):
         return data
     else:
         return HttpResponseBadRequest(
-            "Missing one of state_fips, county_fips, lender")
+            "Missing one of county or lender")
 
 
 def loan_originations_http(request):

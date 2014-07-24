@@ -376,48 +376,37 @@ var Mapusaurus = {
      * endpoint/layer we care about, the data it needs (state, county, etc.),
      * and then we need to process the result. */
     batchLoadStats: function(missingStats) {
-        var byEndpoint = {},
-            requests = [];
+        var endpoints = [],
+            counties = [],
+            params;
         _.each(missingStats, function(pair) {
-            var endpoint = pair[0],
-                county = pair[1];
-            if (!_.has(byEndpoint, endpoint)) {
-                byEndpoint[endpoint] = [];
-            }
-            byEndpoint[endpoint].push(county);
+            endpoints.push(pair[0]);
+            counties.push(pair[1]);
         });
-        requests = _.map(_.keys(byEndpoint), function(endpoint) {
-            var params = {'county': byEndpoint[endpoint]};
-            if (Mapusaurus.urlParam('lender')) {
-                params['lender'] = Mapusaurus.urlParam('lender');
-            }
-            return {endpoint: endpoint, params: params};
-        });
-
+        endpoints = _.uniq(endpoints);
+        counties = _.uniq(counties);
+        params = {'endpoint': endpoints, 'county': counties};
+        if (Mapusaurus.urlParam('lender')) {
+            params['lender'] = Mapusaurus.urlParam('lender');
+        }
         $.ajax({
-            type: 'POST',
-            url: '/batch',
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify({requests: requests}),
-            success: Mapusaurus.makeBatchSuccessFn(requests)
+            url: '/batch', data: params, traditional: true,
+            success: Mapusaurus.makeBatchSuccessFn(endpoints, counties)
         });
     },
 
     /*  As the success function for making a batch request relies on the
      *  requests made, this returns a closure to handle the results of a batch
      *  load */
-    makeBatchSuccessFn: function(requests) {
+    makeBatchSuccessFn: function(endpoints, counties) {
         return function(data) {
             var toDraw = {};
             _.each(_.keys(Mapusaurus.statsLoaded), function(layerName) {
                 toDraw[layerName] = [];
             });
-            _.each(requests, function(request, idx) {
-                var layerName = request['endpoint'],
-                    llName = 'layer_' + layerName,
-                    response = data['responses'][idx],
-                    stateCounty = request.params['state_fips'] +
-                                  request.params['county_fips'];
+            _.each(endpoints, function(layerName) {
+                var llName = 'layer_' + layerName,
+                    response = data[layerName];
                 _.each(_.keys(response), function(geoid) {
                     var geo = Mapusaurus.dataStore.tract[geoid];
                     //  Have not loaded the geo data yet
@@ -430,7 +419,9 @@ var Mapusaurus = {
                         toDraw[layerName].push(geoid);
                     }
                 });
-                Mapusaurus.statsLoaded[layerName][stateCounty] = true;
+                _.each(counties, function(county) {
+                    Mapusaurus.statsLoaded[layerName][county] = true;
+                });
             });
             Mapusaurus.draw(toDraw);
         };
@@ -736,15 +727,15 @@ function setMapHeight() {
     /* Set the map div to the height of the browser window minus the header. */
     var viewportHeight = $(window).height();
     //console.log("viewportHeight: " + viewportHeight);
-    var warningBannerHeight = $("#warning-banner").outerHeight();
+    var warningBannerHeight = $('#warning-banner').outerHeight();
     //console.log("warningBannerHeight: " + warningBannerHeight);
-    var headerHeight = $("#header").outerHeight();
+    var headerHeight = $('#header').outerHeight();
     //console.log("headerHeight: " + headerHeight);
-    var mapHeaderHeight = $("#map-header").outerHeight();
+    var mapHeaderHeight = $('#map-header').outerHeight();
     //console.log("mapHeaderHeight: " + mapHeaderHeight);
     var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
     //console.log("mapHeight: " + mapHeight);
-    $('#map').css("height", mapHeight);
+    $('#map').css('height', mapHeight);
 }
 
 $(document).ready(function() {
