@@ -337,7 +337,7 @@ var Mapusaurus = {
      * after enough data has accumulated (or force === true, which occurs if
      * there are no additional data tiles to load) */
     fetchMissingStats: function(newTracts, force) {
-        //  This is a list of triples: [[layer name, state-county]]
+        //  This is a list of pairs: [[layer name, state-county]]
         var missingStats = [];
         _.each(_.keys(Mapusaurus.statsLoaded), function(layerName) {
             //  We only care about unseen stat data
