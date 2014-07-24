@@ -9,7 +9,7 @@ from hmda.management.commands.calculate_loan_stats import (
 from respondants.models import Institution
 
 
-def home(request):
+def map(request):
     """Display the map. If lender info is present, provide it to the
     template"""
     lender = request.GET.get('lender', '')
@@ -40,7 +40,7 @@ def home(request):
     else:
         context['scaled_median_loans'] = 0
 
-    return render(request, 'index.html', context)
+    return render(request, 'map.html', context)
 
 
 def make_download_url(lender, metro):

@@ -101,6 +101,13 @@ class ViewTest(TestCase):
 
         self.assertTrue(len(topo_str) < len(geo_str))
         topo_geo_dict = geojson(topo_dict)
+        self.assertEqual(len(geo_dict['features']),
+                         len(topo_geo_dict['features']))
+        geo_dict['features'] = sorted(geo_dict['features'],
+                                      key=lambda f: f['properties']['geoid'])
+        topo_geo_dict['features'] = sorted(
+            topo_geo_dict['features'], key=lambda f: f['properties']['geoid'])
+        self.assertEqual(len(geo_dict['features']),  3)
         self.assertEqual(geo_dict, topo_geo_dict)
 
     @patch('geo.views.SearchQuerySet')
@@ -143,17 +150,19 @@ class PrecacheTest(TestCase):
     def tearDown(self):
         Precache.urls = self.original_urls
 
-    @patch('geo.management.commands.precache_geos.Client')
+    @patch('geo.management.commands.precache_geos.urllib')
     def test_handle_with_args(self, client):
         Precache.urls['geo:topotiles'] = range(3, 6)
-        Precache().handle('3', '5')
-        self.assertEqual(7, client.return_value.get.call_count)
+        Precache().handle('http://example.com', '3', '5')
+        self.assertEqual(7, client.urlopen.call_count)
+        self.assertTrue('http://example.com' in client.urlopen.call_args[0][0])
 
-    @patch('geo.management.commands.precache_geos.Client')
+    @patch('geo.management.commands.precache_geos.urllib')
     def test_handle_no_args(self, client):
         Precache.urls['geo:topotiles'] = range(3, 6)
         Precache().handle()
-        self.assertEqual(22, client.return_value.get.call_count)
+        self.assertEqual(22, client.urlopen.call_count)
+        self.assertTrue('http://localhost' in client.urlopen.call_args[0][0])
 
 
 class SetTractCBSATest(TestCase):

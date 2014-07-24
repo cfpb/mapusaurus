@@ -2,6 +2,7 @@
 
 vex.defaultOptions.className = 'vex-theme-plain';
 
+
 /* The GeoJSON tile layer is excellent, but makes assumptions that we don't
  * want (like refreshing whenever zooming, and that a single logic layer is
  * encoded in the ajaxed data). We instead extend a simpler primitive, and
@@ -15,7 +16,7 @@ L.TileLayer.GeoJSONData = L.TileLayer.Ajax.extend({
             _.each(features, this.options.perGeo);
         }
         if (this.options.postTileLoaded) {
-            this.options.postTileLoaded(features, tilePoint);
+            this.options.postTileLoaded(features, tilePoint, this._tilesToLoad);
         }
     },
     _tileLoaded: function (tile, tilePoint) {
@@ -45,6 +46,9 @@ var Mapusaurus = {
     layers: {tract: null, county: null, metro: null},
     //  Tracks layer data/stats
     dataStore: {tract: {}},
+    //  We don't immediately fetch statistical data when we know that we need
+    //  it. This buffers the requests until enough have been logged
+    toBatchLoad: [],
     //  Tracks which tracts have been drawn. Gets cleared when zooming
     drawn: {},
     notDrawn: function(feature) {
@@ -79,7 +83,7 @@ var Mapusaurus = {
                        fillOpacity: 0.5},
 
     initialize: function (map) {
-        var mainEl = $('main'),
+        var mainEl = $('#map-container'),
             centLat = parseFloat(mainEl.data('cent-lat')) || 41.88,
             centLon = parseFloat(mainEl.data('cent-lon')) || -87.63,
             $enforceBoundsEl = $('#enforce-bounds');
@@ -174,17 +178,16 @@ var Mapusaurus = {
         return feature.properties.geoType === 4;
     },
 
-    /* Called after each tile of geojson shape data loads */
-    afterShapeTile: function(features) {
+    /* Called after each tile of geojson shape data loads. The tilesToLoad
+     * parameter indicates how many additional shape tiles remain */
+    afterShapeTile: function(features, tilePoint, tilesToLoad) {
         var tracts = _.filter(features, Mapusaurus.isTract);
         //  convert to geoids
         tracts = _.map(tracts, function(feature) {
             return feature.properties.geoid;
         });
-        if (tracts.length > 0) {
-            Mapusaurus.updateDataWithoutGeos(tracts);
-            Mapusaurus.fetchMissingStats(tracts);
-        }
+        Mapusaurus.updateDataWithoutGeos(tracts);
+        Mapusaurus.fetchMissingStats(tracts, /* force */ tilesToLoad === 0);
         
     },
     /* Keep expected functionality with double clicking */
@@ -329,8 +332,10 @@ var Mapusaurus = {
         Mapusaurus.draw(toDraw);
     },
 
-    /* We have geos without their associated stats - kick off the load */
-    fetchMissingStats: function(newTracts) {
+    /* We have geos without their associated stats. Only make the HTTP call
+     * after enough data has accumulated (or force === true, which occurs if
+     * there are no additional data tiles to load) */
+    fetchMissingStats: function(newTracts, force) {
         //  This is a list of triples: [[layer name, state, county]]
         var missingStats = [];
         _.each(_.keys(Mapusaurus.statsLoaded), function(layerName) {
@@ -358,8 +363,13 @@ var Mapusaurus = {
                 Mapusaurus.statsLoaded[layerName][stateCounty] = 'loading';
             });
         });
-        if (missingStats.length > 0) {
-            Mapusaurus.batchLoadStats(missingStats);
+        Mapusaurus.toBatchLoad.push(missingStats);
+        if (force || Mapusaurus.toBatchLoad.length === 10) {
+            missingStats = _.flatten(Mapusaurus.toBatchLoad, true);
+            Mapusaurus.toBatchLoad = [];
+            if (missingStats.length > 0) {
+                Mapusaurus.batchLoadStats(missingStats);
+            }
         }
     },
 
@@ -714,7 +724,30 @@ var Mapusaurus = {
     }
 };
 
+function setMapHeight() {
+    /* Set the map div to the height of the browser window minus the header. */
+    var viewportHeight = $(window).height();
+    //console.log("viewportHeight: " + viewportHeight);
+    var warningBannerHeight = $("#warning-banner").outerHeight();
+    //console.log("warningBannerHeight: " + warningBannerHeight);
+    var headerHeight = $("#header").outerHeight();
+    //console.log("headerHeight: " + headerHeight);
+    var mapHeaderHeight = $("#map-header").outerHeight();
+    //console.log("mapHeaderHeight: " + mapHeaderHeight);
+    var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
+    //console.log("mapHeight: " + mapHeight);
+    $('#map').css("height", mapHeight);
+}
+
 $(document).ready(function() {
+
+    setMapHeight();
+
+    $( window ).resize(function() {
+        setMapHeight();
+    });
+
+
     $('#take-screenshot').click(function(ev) {
         ev.preventDefault();
         vex.dialog.alert({

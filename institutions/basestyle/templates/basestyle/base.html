@@ -11,13 +11,8 @@
         {% block head_styles %}{% endblock %}
         {% block head_scripts %}{% endblock %}
     </head>
-
     <body>
-
-    {% include "common/predecisional_banner.html" %}
-
         {% block body %}{% endblock %}
-
         <script src="{% static 'basestyle/js/vendor.min.js' %}"></script>
         <script src="{% static 'basestyle/js/mapusaurus.min.js' %}"></script>
         {% block foot_scripts %}{% endblock %}
