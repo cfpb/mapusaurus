@@ -101,6 +101,8 @@ class ViewTest(TestCase):
 
         self.assertTrue(len(topo_str) < len(geo_str))
         topo_geo_dict = geojson(topo_dict)
+        print geo_dict
+        print topo_geo_dict
         self.assertEqual(geo_dict, topo_geo_dict)
 
     @patch('geo.views.SearchQuerySet')
