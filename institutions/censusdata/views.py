@@ -1,7 +1,7 @@
 from django.http import HttpResponseBadRequest
 
 from .models import Census2010RaceStats
-from batch.conversions import use_GET_in, state_county_filter
+from batch.utils import use_GET_in, state_county_filter
 
 
 def race_summary(request_dict):

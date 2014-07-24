@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.http import HttpResponseBadRequest
 
-from batch.conversions import use_GET_in, state_county_filter
+from batch.utils import use_GET_in, state_county_filter
 from hmda.models import HMDARecord
 
 

@@ -6,7 +6,7 @@ from django.test import TestCase
 from mock import Mock, patch
 
 from batch import views
-from batch.conversions import use_GET_in
+from batch.utils import use_GET_in
 
 
 class ConversionTest(TestCase):
