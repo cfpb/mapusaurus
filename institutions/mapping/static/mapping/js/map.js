@@ -336,7 +336,7 @@ var Mapusaurus = {
      * after enough data has accumulated (or force === true, which occurs if
      * there are no additional data tiles to load) */
     fetchMissingStats: function(newTracts, force) {
-        //  This is a list of triples: [[layer name, state, county]]
+        //  This is a list of triples: [[layer name, state-county]]
         var missingStats = [];
         _.each(_.keys(Mapusaurus.statsLoaded), function(layerName) {
             //  We only care about unseen stat data
@@ -357,8 +357,7 @@ var Mapusaurus = {
             //  Keep track of what we will be loading
             _.each(missingData, function(stateCounty) {
                 //  Add to the list of data to load
-                missingStats.push([layerName, stateCounty.substr(0, 2),
-                                   stateCounty.substr(2)]);
+                missingStats.push([layerName, stateCounty]);
                 //  Signify that we are loading it...
                 Mapusaurus.statsLoaded[layerName][stateCounty] = 'loading';
             });
@@ -377,13 +376,22 @@ var Mapusaurus = {
      * endpoint/layer we care about, the data it needs (state, county, etc.),
      * and then we need to process the result. */
     batchLoadStats: function(missingStats) {
-        var requests = _.map(missingStats, function(triple) {
-            var params = {'state_fips': triple[1],
-                          'county_fips': triple[2]};
+        var byEndpoint = {},
+            requests = [];
+        _.each(missingStats, function(pair) {
+            var endpoint = pair[0],
+                county = pair[1];
+            if (!_.has(byEndpoint, endpoint)) {
+                byEndpoint[endpoint] = [];
+            }
+            byEndpoint[endpoint].push(county);
+        });
+        requests = _.map(_.keys(byEndpoint), function(endpoint) {
+            var params = {'county': byEndpoint[endpoint]};
             if (Mapusaurus.urlParam('lender')) {
                 params['lender'] = Mapusaurus.urlParam('lender');
             }
-            return {endpoint: triple[0], params: params};
+            return {endpoint: endpoint, params: params};
         });
 
         $.ajax({

@@ -26,7 +26,7 @@ BATCH_SCHEMA = {
                     'endpoint': {'type': 'string'},
                     'params': {
                         'type': 'object',
-                        'additionalProperties': {'type': 'string'}
+                        'additionalProperties': {'type': ['string', 'array']}
                     }
                 }
             }

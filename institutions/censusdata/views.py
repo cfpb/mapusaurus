@@ -1,5 +1,6 @@
 import json
 
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 import numpy as np
@@ -8,22 +9,31 @@ from .models import Census2010RaceStats
 from batch.conversions import use_GET_in
 
 
-def race_by_county(county_fips, state_fips):
+def race_by_county(counties):
     """ Get race summary statistics by county (specified by FIPS codes). """
+    by_state = {}
+    for county in counties:
+        state, county = county[:2], county[2:]
+        by_state[state] = by_state.get(state, []) + [county]
 
-    tract_data = Census2010RaceStats.objects.filter(
-        geoid__state=state_fips, geoid__county=county_fips)
-    return tract_data
+    query = None
+    for state, counties in by_state.iteritems():
+        subquery = Q(geoid__state=state, geoid__county__in=counties)
+        if query:
+            query = query | subquery
+        else:
+            query = subquery
+
+    return Census2010RaceStats.objects.filter(query)
 
 
 def race_summary(request_dict):
     """Race summary statistics"""
-    county_fips = request_dict.get('county_fips', '')
-    state_fips = request_dict.get('state_fips', '')
+    counties = request_dict.get('county', [])
 
-    if county_fips and state_fips:
+    if counties and all(len(county) == 5 for county in counties):
         data = {}
-        for stats in race_by_county(county_fips, state_fips):
+        for stats in race_by_county(counties):
             data[stats.geoid_id] = {
                 'total_pop': stats.total_pop,
                 'hispanic': stats.hispanic,
@@ -37,7 +47,7 @@ def race_summary(request_dict):
             }
         return data
     else:
-        return HttpResponseBadRequest("Missing one of state_fips, county_fips")
+        return HttpResponseBadRequest("Missing county or county is not len 5")
 
 
 def race_summary_http(request):

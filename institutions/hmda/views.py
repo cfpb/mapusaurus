@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import HttpResponseBadRequest
 
 from batch.conversions import use_GET_in
@@ -14,21 +14,37 @@ def volume_per_100_households(volume, num_households):
         return 0
 
 
+def originations_by_county(counties, lender):
+    by_state = {}
+    for county in counties:
+        state, county = county[:2], county[2:]
+        by_state[state] = by_state.get(state, []) + [county]
+
+    query = None
+    for state, counties in by_state.iteritems():
+        subquery = Q(geoid__state=state, geoid__county__in=counties)
+        if query:
+            query = query | subquery
+        else:
+            query = subquery
+
+    # actions 7-8 are preapprovals to ignore
+    return HMDARecord.objects.filter(
+        lender=lender, action_taken__lte=6
+        ).filter(query).values(
+        'geoid', 'geoid__census2010households__total'
+        ).annotate(volume=Count('geoid'))
+
+
 def loan_originations(request_dict):
     """Get loan originations for a given lender, county combination. This
     ignores year for the moment."""
 
-    state_fips = request_dict.get('state_fips', '')
-    county_fips = request_dict.get('county_fips', '')
+    counties = request_dict.get('county', [])
     lender = request_dict.get('lender', '')
 
-    if state_fips and county_fips and lender:
-        records = HMDARecord.objects.filter(
-            countyfp=county_fips, lender=lender, statefp=state_fips,
-            action_taken__lte=6)    # actions 7-8 are preapprovals to ignore
-        query = records.values(
-            'geoid', 'geoid__census2010households__total'
-        ).annotate(volume=Count('geoid'))
+    if counties and all(len(c) == 5 for c in counties) and lender:
+        query = originations_by_county(counties, lender)
         data = {}
         for row in query:
             data[row['geoid']] = {
