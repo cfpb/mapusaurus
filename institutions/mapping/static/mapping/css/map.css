@@ -34,7 +34,8 @@
 #minority-key {
   width: 100%;
   margin-top: 5px;
-  background: linear-gradient(to right, #ffffd9, #c6eab2 50%, #0e90c2 80%, #1d5caa);
+  background-image: url(choropleth-key.svg);
+  /*background: linear-gradient(to right, #ffffd9, #c6eab2 50%, #0e90c2 80%, #1d5caa);*/
 }
 
 #key select {
