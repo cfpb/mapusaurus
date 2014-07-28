@@ -1,10 +1,13 @@
 import json
 
 from django.core.urlresolvers import reverse
+from django.contrib.gis.geos import MultiPolygon, Polygon
 from django.test import TestCase
 from mock import patch
 
+from geo.management.commands.load_geos_from import Command as LoadGeos
 from geo.management.commands.precache_geos import Command as Precache
+from geo.models import Geo
 
 
 class ViewTest(TestCase):
@@ -86,3 +89,83 @@ class PrecacheTest(TestCase):
         self.assertEqual(22, len(tract_calls))
         county_calls = set(filter(lambda s: 'counties' in s, args))
         self.assertEqual(6, len(county_calls))
+
+
+class LoadGeosFromTest(TestCase):
+    def test_census_tract(self):
+        row = ('1122233333', 'Tract 33333', '11', '222', '33333', '-45',
+               '45', Polygon(((0, 0), (0, 2), (-1, 2), (0, 0))))
+        field_names = ('GEOID', 'NAME', 'STATEFP', 'COUNTYFP', 'TRACTCE',
+                       'INTPTLAT', 'INTPTLON')
+        command = LoadGeos()
+        geo = command.process_row(row, field_names)
+
+        self.assertEqual('1122233333', geo.geoid)
+        self.assertEqual(Geo.TRACT_TYPE, geo.geo_type)
+        self.assertEqual('Tract 33333', geo.name)
+        self.assertEqual('11', geo.state)
+        self.assertEqual('222', geo.county)
+        self.assertEqual('33333', geo.tract)
+        self.assertEqual(None, geo.csa)
+        self.assertEqual(None, geo.cbsa)
+        self.assertEqual((-1, 0), (geo.minlon, geo.maxlon))
+        self.assertEqual((0, 2), (geo.minlat, geo.maxlat))
+        self.assertEqual(-45, geo.centlat)
+        self.assertEqual(45, geo.centlon)
+
+    def test_county(self):
+        poly1 = Polygon(((0, 0), (0, 2), (-1, 2), (0, 0)))
+        poly2 = Polygon(((-4, -2), (-6, -1), (-2, -2), (-4, -2)))
+        row = ('11222', 'Some County', '11', '222', '-45', '45',
+               MultiPolygon(poly1, poly2))
+        field_names = ('GEOID', 'NAME', 'STATEFP', 'COUNTYFP', 'INTPTLAT',
+                       'INTPTLON')
+        command = LoadGeos()
+        geo = command.process_row(row, field_names)
+
+        self.assertEqual('11222', geo.geoid)
+        self.assertEqual(Geo.COUNTY_TYPE, geo.geo_type)
+        self.assertEqual('Some County', geo.name)
+        self.assertEqual('11', geo.state)
+        self.assertEqual('222', geo.county)
+        self.assertEqual(None, geo.tract)
+        self.assertEqual(None, geo.csa)
+        self.assertEqual(None, geo.cbsa)
+        self.assertEqual((-6, 0), (geo.minlon, geo.maxlon))
+        self.assertEqual((-2, 2), (geo.minlat, geo.maxlat))
+        self.assertEqual(-45, geo.centlat)
+        self.assertEqual(45, geo.centlon)
+
+    def test_metro(self):
+        row = ('12345', 'Big City', '090', '12345', 'M1', '-45', '45',
+               Polygon(((0, 0), (0, 2), (-1, 2), (0, 0))))
+        field_names = ('GEOID', 'NAME', 'CSAFP', 'CBSAFP', 'LSAD', 'INTPTLAT',
+                       'INTPTLON')
+        command = LoadGeos()
+        geo = command.process_row(row, field_names)
+
+        self.assertEqual('12345', geo.geoid)
+        self.assertEqual(Geo.METRO_TYPE, geo.geo_type)
+        self.assertEqual('Big City', geo.name)
+        self.assertEqual(None, geo.state)
+        self.assertEqual(None, geo.county)
+        self.assertEqual(None, geo.tract)
+        self.assertEqual('090', geo.csa)
+        self.assertEqual('12345', geo.cbsa)
+
+    def test_micro(self):
+        row = ('12345', 'Small Town', '', '12345', 'M2', '-45', '45',
+               Polygon(((0, 0), (0, 2), (-1, 2), (0, 0))))
+        field_names = ('GEOID', 'NAME', 'CSAFP', 'CBSAFP', 'LSAD', 'INTPTLAT',
+                       'INTPTLON')
+        command = LoadGeos()
+        geo = command.process_row(row, field_names)
+
+        self.assertEqual('12345', geo.geoid)
+        self.assertEqual(Geo.MICRO_TYPE, geo.geo_type)
+        self.assertEqual('Small Town', geo.name)
+        self.assertEqual(None, geo.state)
+        self.assertEqual(None, geo.county)
+        self.assertEqual(None, geo.tract)
+        self.assertEqual(None, geo.csa)
+        self.assertEqual('12345', geo.cbsa)

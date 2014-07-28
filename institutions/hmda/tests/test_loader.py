@@ -31,9 +31,9 @@ class LoadHmdaTest(TestCase):
 
         HMDARecord.objects.all().delete()
 
-    @patch.dict('hmda.management.commands.load_hmda.errors_in_2010',
-                {'1122233300': '9988877766'})
-    def test_handle_errors_dict(self):
+    @patch('hmda.management.commands.load_hmda.errors')
+    def test_handle_errors_dict(self, errors):
+        errors.in_2010 = {'1122233300': '9988877766'}
         command = Command()
         command.stdout = Mock()
         command.handle(os.path.join("hmda", "tests", "mock_2014.csv"))

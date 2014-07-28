@@ -36,13 +36,12 @@ class LoadSummaryDataTest(TestCase):
         self.assertEqual(positional_args[2]['0007159'], '11001000100')
         self.assertEqual(positional_args[2]['0007211'], '11001000902')
 
-    @patch.dict(
-        'censusdata.management.commands.load_summary_one.errors_in_2010',
-        {'11001000100': '22002000200', '11001000902': None})
+    @patch('censusdata.management.commands.load_summary_one.errors')
     @patch.object(Command, 'handle_filefive')
     @patch.object(Command, 'handle_filefour')
     @patch.object(Command, 'handle_filethree')
-    def test_handle_errors_dict(self, hf3, hf4, hf5):
+    def test_handle_errors_dict(self, hf3, hf4, hf5, errors):
+        errors.in_2010 = {'11001000100': '22002000200', '11001000902': None}
         # Create Mock GEO file
         shutil.copyfile(os.path.join("censusdata", "tests", "mock_geo.txt"),
                         os.path.join(self.tempdir, "ZZgeo2010.sf1"))

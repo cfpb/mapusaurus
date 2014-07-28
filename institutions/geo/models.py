@@ -4,17 +4,22 @@ from django.contrib.gis.db import models
 
 
 class Geo(models.Model):
-    STATE_TYPE, COUNTY_TYPE, TRACT_TYPE = range(1, 4)
+    STATE_TYPE, COUNTY_TYPE, TRACT_TYPE, METRO_TYPE, MICRO_TYPE = range(1, 6)
     TYPES = [(STATE_TYPE, 'State'), (COUNTY_TYPE, 'County'),
-             (TRACT_TYPE, 'Census Tract')]
+             (TRACT_TYPE, 'Census Tract'), (METRO_TYPE, 'Metropolitan'),
+             (MICRO_TYPE, 'Micropolitan')]
 
     geoid = models.CharField(max_length=20, primary_key=True)
     geo_type = models.PositiveIntegerField(choices=TYPES)
     name = models.CharField(max_length=50)
 
-    state = models.CharField(max_length=2)
+    state = models.CharField(max_length=2, null=True)
     county = models.CharField(max_length=3, null=True)
     tract = models.CharField(max_length=6, null=True)
+    csa = models.CharField(max_length=3, null=True,
+                           help_text='Combined Statistical Area')
+    cbsa = models.CharField(max_length=5, null=True,
+                            help_text='Core Based Statistical Area')
 
     geom = models.MultiPolygonField(srid=4269)
 
