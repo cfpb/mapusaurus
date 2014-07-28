@@ -29,7 +29,7 @@
 </div>
         <div class="container">            
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3 hidden">
                     <h4>Filter By:</h4>
 
                     <!--
@@ -103,12 +103,20 @@
 
                                     <div class="btn-group btn-sm">
                                       <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                        Sort by: Relevance <span class="caret"></span>
+                                        Sort by: 
+                                        {% if 'num_loans' in current_sort %}
+                                          Number of Applications
+                                        {% else %}{% if 'assets' in current_sort %}
+                                          Corporate Assets
+                                        {% else %}
+                                          Relevance
+                                        {% endif %}{% endif %}
+                                        <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu" role="menu">
-                                        <li><a href="#">Relevance</a></li>
-                                        <li><a href="#">Number of Applications</a></li>
-                                        <li><a href="#">Corporate Assets</a></li>
+                                        <li><a href="{% url 'respondants:search' %}?q={{ query_str }}">Relevance</a></li>
+                                        <li><a href="{% url 'respondants:search' %}?q={{ query_str }}&sort=-num_loans">Number of Applications</a></li>
+                                        <li><a href="{% url 'respondants:search' %}?q={{ query_str }}&sort=-assets">Corporate Assets</a></li>
                                       </ul>
                                     </div>
                         </div>
