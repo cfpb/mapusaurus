@@ -3,7 +3,7 @@ import json
 from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import MultiPolygon, Polygon
 from django.test import TestCase
-from mock import patch
+from mock import Mock, patch
 
 from geo.management.commands.load_geos_from import Command as LoadGeos
 from geo.management.commands.precache_geos import Command as Precache
@@ -57,6 +57,38 @@ class ViewTest(TestCase):
         self.assertEqual(len(resp['features']), 1)
         self.assertEqual(resp['features'][0]['properties']['name'],
                          'Negative County')
+
+    @patch('geo.views.SearchQuerySet')
+    def test_search_name(self, SQS):
+        SQS = SQS.return_value.models.return_value.load_all.return_value
+        result = Mock()
+        result.object.geoid = '11111'
+        result.object.geo_type = 1
+        result.object.name = 'MSA 1'
+        result.object.centlat = 45
+        result.object.centlon = 52
+        SQS.filter.return_value = [result]
+        resp = self.client.get(reverse('geo:search'), {'q': 'Chicago'})
+        self.assertTrue('Chicago' in str(SQS.filter.call_args))
+        self.assertTrue('content' in str(SQS.filter.call_args))
+        self.assertFalse('text_auto' in str(SQS.filter.call_args))
+        resp = json.loads(resp.content)
+        self.assertEqual(1, len(resp['geos']))
+        geo = resp['geos'][0]
+        self.assertEqual('11111', geo['geoid'])
+        self.assertEqual('MSA 1', geo['name'])
+        self.assertEqual(1, geo['geo_type'])
+        self.assertEqual(45, geo['centlat'])
+        self.assertEqual(52, geo['centlon'])
+
+    @patch('geo.views.SearchQuerySet')
+    def test_search_autocomplete(self, SQS):
+        SQS = SQS.return_value.models.return_value.load_all.return_value
+        SQS.filter.return_value = [Mock()]
+        self.client.get(reverse('geo:search'), {'q': 'Chicago', 'auto': '1'})
+        self.assertTrue('Chicago' in str(SQS.filter.call_args))
+        self.assertFalse('content' in str(SQS.filter.call_args))
+        self.assertTrue('text_auto' in str(SQS.filter.call_args))
 
 
 class PrecacheTest(TestCase):
