@@ -3,13 +3,13 @@
 
         <div class="expandable">
             <div class="expandable_header">
-                <span class="expandable_header-left">
+                <div class="expandable_header-left">
                     <h4>
                         <a href="{% url 'home' %}?lender={{res.agency_id}}{{res.ffiec_id}}">{{res.name|title}}</a> &nbsp; 
                         <small>0{{res.agency_id}}-{{res.ffiec_id}}</small>
                     </h4>
-                </span>
-                <span class="expandable_header-right">
+                </div>
+                <div class="expandable_header-right">
                     <a class="expandable_target" href="#expandable-{{res.id}}">
                         <span class="expandable_cue-open">
                             Full Details
@@ -18,7 +18,7 @@
                             Hide Details
                         </span>
                     </a>
-                </span>
+                </div>
             </div>
             <div class="expandable_content" id="expandable-{{res.id}}">
                 <table>

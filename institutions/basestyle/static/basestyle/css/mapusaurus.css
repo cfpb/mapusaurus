@@ -13186,6 +13186,14 @@ html {
   zoom: 1;
   behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
 }
+.warning-banner {
+  background-color: #f6d9d3;
+  color: #9c301b;
+  padding: 4px 0;
+}
+.warning-banner p {
+  text-align: center;
+}
 /* Media Queries
    ========================================================================== */
 /* Mobile portrait (320px) */
@@ -13431,11 +13439,16 @@ html {
   clear: both;
 }
 .main-content .toc li {
-  font-family: "Avenir Next Demi", "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
   font-size: 1.125em;
   display: block;
   float: left;
   position: relative;
+}
+.lt-ie9 .main-content .toc li {
+  font-weight: normal !important;
 }
 .main-content .toc li a {
   text-decoration: none;
