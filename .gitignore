@@ -62,3 +62,9 @@ local_settings.py
 ehthumbs.db
 Thumbs.db
 ~*
+
+
+# Front End
+frontend/node_modules
+frontend/bower_components
+frontend/dist

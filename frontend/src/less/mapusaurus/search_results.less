@@ -1,0 +1,156 @@
+.search-results-form {
+    background-color: @gray-20;
+    padding: 4px 0;
+
+    .search-results-form__content {
+        .grid_column(12);
+        label {
+            display: inline-block;
+        }
+
+        input {
+            width: 320px;
+        }
+    }
+
+}
+
+
+.search-results {
+
+    .search-results-heading {
+
+        border-bottom: 1px solid @gray-20;
+        margin-bottom: 2em;
+
+        .search-results-heading__title {
+            .grid_column(12);
+        }
+
+        .search-results-heading__start-over {
+            .grid_column(12);
+
+        }
+
+        .search-results-heading__num-results {
+            .grid_column(12);
+        }
+
+        .search-results-heading__sort {
+            .grid_column(12);
+            label {
+                display: inline-block;
+            }
+        }
+
+    }
+
+    .search-result-record {
+        margin-bottom: 2em;
+
+        .expandable {
+            margin-bottom: 0; /* over-rides default */
+        }
+
+        h4 {
+            margin-bottom: .5em
+        }
+        
+        dl {
+            font-size: (@base-font-size-px - 2);
+            margin-left: 0; /* over-ride user agent stylesheet */
+        }
+
+        dt, dd {
+            display: inline-block;
+        }
+
+        dd {
+            margin-left: 4px;
+            margin-right: 24px;
+        }
+
+        table {
+            th {
+                .webfont-medium();
+                text-align: right;
+                padding-right: 8px;
+            }
+        }
+
+        .search-result-record__left-col {
+            .grid_column(12);
+        }
+
+        .search-result-record__right-col {
+            .grid_column(12);
+        }
+
+    }
+
+    .pagination {
+        margin-bottom: 2em;
+    }
+
+}
+
+
+@media only screen and (min-width: 37.5em) {
+
+    .search-results {
+
+        .search-results-heading {
+
+            .search-results-heading__title {
+                .grid_column(6);
+                border-left-width: 0;
+            }
+
+            .search-results-heading__start-over {
+                .grid_column(6);
+                border-right-width: 0;
+                p {
+                    float: right;
+                }
+            }
+
+            .search-results-heading__num-results {
+                .grid_column(6);
+                border-left-width: 0;
+            }
+
+            .search-results-heading__sort {
+                .grid_column(6);
+                border-right-width: 0;
+                label {
+                    float: right;
+                }
+            }
+
+        }
+
+
+        .search-result-record {
+
+            .search-result-record__left-col {
+                .grid_column(6);
+                border-left-width: 0; /* nested col hack (cf-grid does not support nested cols?) */
+            }
+
+            .search-result-record__right-col {
+                .grid_column(6);
+                border-right-width: 0;
+                dl {
+                    float: right;
+                }
+                dd {
+                    margin-right: 0;
+                }
+
+            }
+
+        }
+
+    }
+
+}
