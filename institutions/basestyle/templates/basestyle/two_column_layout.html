@@ -1,0 +1,29 @@
+{% extends "basestyle/base.html" %}
+
+{% block body %}
+
+    {% include "basestyle/common/header.html" %}
+
+    {% block content_header %}{% endblock %}
+
+    <div class="wrap">
+
+        <aside id="sidebar" class="sidebar" role="complementary">
+
+            {% block sidebar %}{% endblock %}
+
+        </aside>
+
+        <main class="main-content" role="main">
+
+            {% block main_content %}{% endblock %}
+
+        </main>
+
+    </div><!-- ./wrap -->
+
+{% endblock %}
+
+{% block footer_content %}{% endblock %}
+
+{% include "basestyle/common/footer.html" %}

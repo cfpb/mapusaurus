@@ -1,0 +1,25 @@
+<nav class="pagination">
+    <a class="btn pagination_prev" href="#pagination_content">
+        <span class="btn-icon-left cf-icon cf-icon-left"></span>
+        Previous
+    </a>
+    <a class="btn pagination_next" href="#pagination_content">
+        Next
+        <span class="btn-icon-right cf-icon cf-icon-right"></span>
+    </a>
+    <form class="pagination_form" action="index.html#pagination_content">
+        <label class="pagination_label" for="pagination_current-page">Page</label>
+        <input
+            class="pagination_current-page"
+            id="pagination_current-page"
+            name="pagination_current-page"
+            type="number" min="1" max="149"
+            value="5">
+        <span class="pagination_label">of&nbsp;5</span>
+        <button class="btn btn-link pagination_submit"
+                id="pagination_submit"
+                type="submit">
+                Go
+        </button>
+    </form>
+</nav>
