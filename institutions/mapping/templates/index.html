@@ -15,7 +15,11 @@
         {% block page_header %}{% endblock %}
 
         <section id="content" class="content cf">
+            {% if metro %}
+            <main role="main" data-cent-lat="{{metro.centlat}}" data-cent-lon="{{metro.centlon}}">
+            {% else %}
             <main role="main">
+            {% endif %}
                 {% leaflet_map "map" callback="Mapusaurus.initialize"%}
             </main>
         </section>

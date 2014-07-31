@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
+from geo.models import Geo
 from respondants.models import Agency, Institution, ZipcodeCityState
 
 
@@ -38,3 +39,13 @@ class ViewTest(TestCase):
         self.assertTrue('11111' in resp.content)
         self.assertTrue('Somewhere' in resp.content)
         self.assertTrue('NE' in resp.content)
+
+    def test_center(self):
+        metro = Geo.objects.create(
+            geoid='12121', geo_type=Geo.METRO_TYPE, name='Met',
+            geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0, minlon=0,
+            maxlat=1, maxlon=1, centlat=45.4545, centlon=67.6767)
+        resp = self.client.get(reverse('home'), {'metro': '12121'})
+        self.assertTrue('45.4545' in resp.content)
+        self.assertTrue('67.6767' in resp.content)
+        metro.delete()

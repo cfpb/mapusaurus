@@ -1,7 +1,7 @@
             {% for res in institutions %}
                 <div style="margin-bottom: 2em">
                     <div class="row">
-                        <div class="col-md-8"><h4 style="margin-bottom: .5em"><a href="{% url 'home' %}?lender={{res.agency_id}}{{res.ffiec_id}}">{{res.name|title}}</a> &nbsp; <small>0{{res.agency_id}}-{{res.ffiec_id}}</small></h4></div>
+                        <div class="col-md-8"><h4 style="margin-bottom: .5em"><a href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">{{res.name|title}}</a> &nbsp; <small>0{{res.agency_id}}-{{res.ffiec_id}}</small></h4></div>
                         <div class="col-md-4 text-right">{{res.year}} Assets: {{res.assets}}</div>
                     </div>
                     <div class="row">
