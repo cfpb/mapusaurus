@@ -1,4 +1,4 @@
-import re
+import re, pprint
 
 from django.shortcuts import render, get_object_or_404
 from haystack.inputs import AutoQuery, Exact
@@ -93,7 +93,27 @@ def search_results(request):
         query = query.filter(content=AutoQuery(query_str))
     else:
         query = []
-    query = query[:25]
+
+    num_results = request.GET.get('num_results')
+    if not num_results:
+        num_results = 25
+    else:
+        num_results = int(num_results)
+
+    page = request.GET.get('page')
+    if not page:
+        page = 1
+    else:
+        page = int(page)
+
+    if page > 1:
+        start_results = num_results * page - num_results
+        end_results = num_results * page
+    else:
+        start_results = 0
+        end_results = num_results
+
+    query = query[start_results:end_results]
 
     results = []
     for result in query:
