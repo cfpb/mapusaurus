@@ -131,6 +131,7 @@ def search_results(request):
         {'institutions': results, 'query_str': query_str,
          'num_results': num_results, 'start_results': start_results,
          'end_results': end_results,
-         'next_page': page, 'total_results': total_results,
+         'next_page': page + 1, 'prev_page': page - 1,
+         'total_results': total_results,
          'current_sort': current_sort},
         template_name='respondants/search_results.html')
