@@ -113,6 +113,7 @@ def search_results(request):
         start_results = 0
         end_results = num_results
 
+    total_results = len(query)
     query = query[start_results:end_results]
 
     results = []
@@ -122,7 +123,14 @@ def search_results(request):
     if request.accepted_renderer.format != 'html':
         results = InstitutionSerializer(results, many=True).data
 
+    # to adjust for template
+    if start_results == 0:
+        start_results = 1
+
     return Response(
         {'institutions': results, 'query_str': query_str,
+         'num_results': num_results, 'start_results': start_results,
+         'end_results': end_results,
+         'next_page': page, 'total_results': total_results,
          'current_sort': current_sort},
         template_name='respondants/search_results.html')
