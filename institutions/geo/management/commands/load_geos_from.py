@@ -1,8 +1,9 @@
 import itertools
 
-from django.core.management.base import BaseCommand
+from django.conf import settings
 from django.contrib.gis.gdal import DataSource
 from django.contrib.gis.geos import MultiPolygon, Polygon
+from django.core.management.base import BaseCommand
 from geo.models import Geo
 
 
@@ -22,7 +23,8 @@ class Command(BaseCommand):
             return Geo.MICRO_TYPE
 
     def process_row(self, row, field_names):
-        """Runs for every shape in the shape file. Returns the parsed object"""
+        """Runs for every shape in the shape file. Returns a kw-dict which
+        will be passed to Geo"""
         row_dict = dict((field_name, row[idx])
                         for idx, field_name in enumerate(field_names))
         geom = row[-1]
@@ -34,20 +36,39 @@ class Command(BaseCommand):
                            for line in polygon for pt in line])
 
         # Use ".get('field') or None" to convert empty strings into Nones
-        return Geo(
-            geoid=row_dict['GEOID'], geo_type=self.geo_type(row_dict),
-            name=row_dict['NAME'], state=row_dict.get('STATEFP') or None,
-            county=row_dict.get('COUNTYFP') or None,
-            tract=row_dict.get('TRACTCE') or None,
-            csa=row_dict.get('CSAFP') or None,
-            cbsa=row_dict.get('CBSAFP') or None,
-            minlat=min(lats), maxlat=max(lats), minlon=min(lons),
-            maxlon=max(lons),
-            centlat=float(row_dict['INTPTLAT']),
-            centlon=float(row_dict['INTPTLON']),
-            geom=geom)
+        return {
+            'geoid': row_dict['GEOID'], 'geo_type': self.geo_type(row_dict),
+            'name': row_dict['NAME'], 'state': row_dict.get('STATEFP') or None,
+            'county': row_dict.get('COUNTYFP') or None,
+            'tract': row_dict.get('TRACTCE') or None,
+            'csa': row_dict.get('CSAFP') or None,
+            'cbsa': row_dict.get('CBSAFP') or None,
+            'minlat': min(lats), 'maxlat': max(lats), 'minlon': min(lons),
+            'maxlon': max(lons),
+            'centlat': float(row_dict['INTPTLAT']),
+            'centlon': float(row_dict['INTPTLON']),
+            'geom': geom}
+
+    def save_batch(self, batch):
+        """We don't want to break any FKs, so we will only update geos if they
+        already exist"""
+        existing = set()
+        for geoid_list in Geo.objects.values_list('geoid').filter(
+                geoid__in=[kws['geoid'] for kws in batch]).iterator():
+            existing.add(geoid_list[0])
+
+        bulk_create = []
+        for kws in batch:
+            if kws['geoid'] in existing:
+                Geo.objects.filter(geoid=kws['geoid']).update(**kws)
+            else:
+                bulk_create.append(Geo(**kws))
+        if bulk_create:
+            Geo.objects.bulk_create(bulk_create)
 
     def handle(self, *args, **options):
+        old_debug = settings.DEBUG
+        settings.DEBUG = False
         shapefile_name = args[0]
         ds = DataSource(shapefile_name, encoding='iso-8859-1')
         layer = ds[0]
@@ -60,6 +81,7 @@ class Command(BaseCommand):
             if len(batch) == 100:
                 batch_count += 1
                 self.stdout.write('Saving batch %d' % batch_count)
-                Geo.objects.bulk_create(batch)
+                self.save_batch(batch)
                 batch = []
-        Geo.objects.bulk_create(batch)      # last batch
+        self.save_batch(batch)  # last batch
+        settings.DEBUG = old_debug
