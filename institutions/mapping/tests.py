@@ -42,10 +42,16 @@ class ViewTest(TestCase):
 
     def test_center(self):
         metro = Geo.objects.create(
-            geoid='12121', geo_type=Geo.METRO_TYPE, name='Met',
-            geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0, minlon=0,
-            maxlat=1, maxlon=1, centlat=45.4545, centlon=67.6767)
+            geoid='12121', geo_type=Geo.METRO_TYPE, name='MetMetMet',
+            geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
+            minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
+            centlon=67.6767)
         resp = self.client.get(reverse('home'), {'metro': '12121'})
         self.assertTrue('45.4545' in resp.content)
         self.assertTrue('67.6767' in resp.content)
+        self.assertTrue('0.11' in resp.content)
+        self.assertTrue('0.22' in resp.content)
+        self.assertTrue('1.33' in resp.content)
+        self.assertTrue('1.44' in resp.content)
+        self.assertTrue('MetMetMet' in resp.content)
         metro.delete()

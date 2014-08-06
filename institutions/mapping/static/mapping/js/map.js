@@ -53,7 +53,8 @@ var Mapusaurus = {
     initialize: function (map) {
         var mainEl = $('main'),
             centLat = parseFloat(mainEl.data('cent-lat')) || 41.88,
-            centLon = parseFloat(mainEl.data('cent-lon')) || -87.63;
+            centLon = parseFloat(mainEl.data('cent-lon')) || -87.63,
+            $enforceBoundsEl = $('#enforce-bounds-selector');
         map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
@@ -88,6 +89,13 @@ var Mapusaurus = {
             Mapusaurus.layers.shapes.geojsonLayer.setStyle(
                 Mapusaurus.pickStyle);
         });
+
+        $enforceBoundsEl.on('change', function() {
+            Mapusaurus[$enforceBoundsEl.val()]();
+        });
+        if ($enforceBoundsEl.length > 0) {
+            Mapusaurus.enforceBounds();
+        }
 
         L.control.search({
             url: '/shapes/search/?auto=1&q={s}',
@@ -484,36 +492,24 @@ var Mapusaurus = {
             span: 0.5,
             lowerBound: 0,
             colors: {
-                lowR: 255,
-                lowG: 255,
-                lowB: 217,
-                highR: 198,
-                highG: 234,
-                highB: 178
+                lowR: 107,
+                lowG: 40,
+                lowB: 10,
+                highR: 250,
+                highG: 186,
+                highB: 106
             }
         },
         {
-            span: 0.3,
+            span: 0.5,
             lowerBound: 0.5,
             colors: {
-                lowR: 198,
-                lowG: 234,
-                lowB: 178,
-                highR: 14,
-                highG: 144,
-                highB: 194
-            }
-        },
-        {
-            span: 0.2,
-            lowerBound: 0.8,
-            colors: {
-                lowR: 14,
-                lowG: 144,
-                lowB: 194,
-                highR: 29,
-                highG: 92,
-                highB: 170
+                lowR: 124,
+                lowG: 198,
+                lowB: 186,
+                highR: 12,
+                highG: 48,
+                highB: 97
             }
         }
     ],
@@ -539,5 +535,22 @@ var Mapusaurus = {
         return 'rgb(' + (c.lowR + diffR).toFixed() + ', ' +
                (c.lowG + diffG).toFixed() + ', ' +
                (c.lowB + diffB).toFixed() + ')';
+    },
+
+    /* Called when user selects to enforce the boundaries of an MSA. Assumes
+     * an MSA is selected (lest the triggering selector would not be present)
+     * */
+    enforceBounds: function() {
+        var selectEl = $('#enforce-bounds-selector'),
+            minLat = parseFloat(selectEl.data('min-lat')),
+            maxLat = parseFloat(selectEl.data('max-lat')),
+            minLon = parseFloat(selectEl.data('min-lon')),
+            maxLon = parseFloat(selectEl.data('max-lon'));
+        //  Assumes northwest quadrisphere
+        Mapusaurus.map.setMaxBounds([[minLat, minLon], [maxLat, maxLon]]);
+    },
+    /* Reverse of above */
+    disableBounds: function() {
+        Mapusaurus.map.setMaxBounds(null);
     }
 };
