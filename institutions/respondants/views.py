@@ -113,6 +113,10 @@ def search_results(request):
         start_results = 0
         end_results = num_results
 
+    sort = request.GET.get('sort')
+    if not sort:
+        sort = 'relevance'
+
     total_results = len(query)
     query = query[start_results:end_results]
 
@@ -130,8 +134,8 @@ def search_results(request):
     return Response(
         {'institutions': results, 'query_str': query_str,
          'num_results': num_results, 'start_results': start_results,
-         'end_results': end_results,
+         'end_results': end_results, 'sort': sort,
          'next_page': page + 1, 'prev_page': page - 1,
-         'total_results': total_results,
+         'page_num': page, 'total_results': total_results,
          'current_sort': current_sort},
         template_name='respondants/search_results.html')

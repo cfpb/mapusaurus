@@ -95,11 +95,23 @@
                     <div class="row">
                         <div class="col-md-6">
 
-                            <p>{% if prev_page %}<a href="/institutions/search/?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}">« Previous</a>{% else %}« Previous{% endif %} | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | <a href="/institutions/search/?q={{query_str}}&page={{next_page}}&num_results={{num_results}}">Next »</a></p>
+                            <p>{% if prev_page %}<a href="{% url 'respondants:search_results' %}/?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">« Previous</a>{% else %}« Previous{% endif %} | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | <a href="{% url 'respondants:search_results' %}/?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">Next »</a></p>
 
                         </div><!-- ./col-md-6-->
 
                         <div class="col-md-6 text-right">
+                                    <div class="btn-group btn-sm">
+                                      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                        Number of Results: {{num_results}}
+                                        <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu" role="menu">
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=10&sort={{sort}}">10</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=25&sort={{sort}}">25</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=50&sort={{sort}}">50</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=100&sort={{sort}}">100</a></li>
+                                      </ul>
+                                    </div>
 
                                     <div class="btn-group btn-sm">
                                       <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -114,9 +126,9 @@
                                         <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu" role="menu">
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}">Relevance</a></li>
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&sort=-num_loans">Number of Applications</a></li>
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&sort=-assets">Corporate Assets</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&page={{page_num}}&num_results={{num_results}}">Relevance</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&sort=-num_loans&page={{page_num}}&num_results={{num_results}}">Number of Applications</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&sort=-assets&page={{page_num}}&num_results={{num_results}}">Corporate Assets</a></li>
                                       </ul>
                                     </div>
                         </div>
