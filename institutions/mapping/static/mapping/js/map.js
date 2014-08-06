@@ -40,12 +40,13 @@ var Mapusaurus = {
     statsLoaded: {minority: {}},
 
     //  Some style info
-    bubbleStyle: {fillColor: '#fff', fillOpacity: 0.9, weight: 2,
-                  color: '#000'},
+    bubbleStyle: {stroke: false, fillOpacity: 0.9, weight: 2},
     //  fillColor and color will be assigned when rendering
-    tractStyle: {stroke: false, fillOpacity: 0.7, weight: 2, fill: true, smoothFactor: 0.1},
+    tractStyle: {stroke: false, fillOpacity: 0.4, weight: 2, fill: true,
+                 smoothFactor: 0.1},
     //  used when loading census tracts
-    loadingStyle: {stroke: true, weight: 2, color: '#babbbd', fill: false, smoothFactor: 0.1},
+    loadingStyle: {stroke: true, weight: 2, color: '#babbbd', fill: false,
+                   smoothFactor: 0.1},
     //  used when displayed outside metro area
     outsideStyle: {stroke: false, fillOpacity: 0.9, fill: true,
                    smoothFactor: 0.1, fillColor: '#eee'},
@@ -179,7 +180,8 @@ var Mapusaurus = {
             feature.properties.cbsa !== Mapusaurus.lockState.geoid) {
             return Mapusaurus.outsideStyle;
         } else if (Mapusaurus.isTract(feature)) {
-            return Mapusaurus.minorityContinuousStyle(feature);
+            return Mapusaurus.minorityContinuousStyle(
+                feature.properties, Mapusaurus.tractStyle);
         //  Slightly different styles for metros at different zoom levels
         } else if (zoomLevel > 8) {
             if (Mapusaurus.isCounty(feature)) {
@@ -451,9 +453,10 @@ var Mapusaurus = {
     /* Styles/extras for originations layer */
     makeBubble: function(geoProps) {
         var data = geoProps['layer_loanVolume'],
+            style = Mapusaurus.minorityContinuousStyle(
+                geoProps, Mapusaurus.bubbleStyle),
             circle = L.circle([geoProps.centlat, geoProps.centlon],
-                              Mapusaurus.hmdaStat(data),
-                              Mapusaurus.bubbleStyle);
+                              Mapusaurus.hmdaStat(data), style);
         //  We will use the geoid when redrawing
         circle.geoid = geoProps.geoid;
         //  keep expected functionality with double clicking
@@ -474,21 +477,23 @@ var Mapusaurus = {
     },
 
     //  Used to determine color within a gradient
-    minorityContinuousStyle: function(feature) {
+    minorityContinuousStyle: function(geoProps, baseStyle) {
         return Mapusaurus.minorityStyle(
-            feature, 
+            geoProps, 
             function(minorityPercent, bucket) {
                 return (minorityPercent - bucket.lowerBound) / bucket.span;
-            }
+            },
+            baseStyle
         );
     },
     //  Determines colors via distinct buckets
-    minorityBucketedStyle: function(feature) {
-        return Mapusaurus.minorityStyle(feature, function() { return 0.5; });
+    minorityBucketedStyle: function(geoProps, baseStyle) {
+        return Mapusaurus.minorityStyle(geoProps, function() { return 0.5; },
+                                        baseStyle);
     },
     //  Shared function for minority styling; called by the two previous fns
-    minorityStyle: function(feature, percentFn) {
-        var geoid = feature.properties.geoid,
+    minorityStyle: function(geoProps, percentFn, baseStyle) {
+        var geoid = geoProps.geoid,
             tract = Mapusaurus.dataStore.tract[geoid];
         // Different styles for when we are loading, the tract has zero pop, or
         // we have percentages
@@ -501,7 +506,7 @@ var Mapusaurus = {
                 bucket = Mapusaurus.toBucket(perc),
                 // convert given percentage to percents within bucket's bounds
                 bucketPercent = percentFn(perc, bucket);
-            return $.extend({}, Mapusaurus.tractStyle, {
+            return $.extend({}, baseStyle, {
                 fillColor: Mapusaurus.colorFromPercent(bucketPercent,
                                                        bucket.colors)
             });
