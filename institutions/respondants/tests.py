@@ -238,6 +238,12 @@ class ViewTest(TestCase):
         self.assertEqual(results.data['next_page'], 4)
         self.assertEqual(results.data['prev_page'], 2)
 
+        request = RequestFactory().get('/', data={'q': 'Bank',
+                                                  'page': 'str'})
+        results = views.search_results(request)
+        self.assertEqual(results.data['page_num'], 1)
+
+
     @patch('respondants.views.SearchQuerySet')
     def test_search_num_results(self, SQS):
         request = RequestFactory().get('/', data={'q': 'Bank'})

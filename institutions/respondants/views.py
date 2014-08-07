@@ -99,11 +99,10 @@ def search_results(request):
     except ValueError:
         num_results = 25
 
-    page = request.GET.get('page')
-    if not page:
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
         page = 1
-    else:
-        page = int(page)
 
     if page > 1:
         start_results = num_results * page - num_results
