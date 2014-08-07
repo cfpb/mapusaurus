@@ -1,19 +1,19 @@
-{% extends "basestyle/two_column_layout.html" %}
+{% extends "basestyle/one_column_layout.html" %}
 
 {% block title %}Search Results for: &ldquo;{{ query_str }}&rdquo; - CFPB HMDA Mapping App{% endblock %}
 
 
 
-{% block content_header %}
+{% block header_content %}
 
-    <form role="form" method="get" action="{% url 'respondants:search_results' %}">
+    <form id="search-results-form" role="form" method="get" action="{% url 'respondants:search_results' %}">
 
     {% include "respondants/partial/search_results_form.html" %}
 
 {% endblock %}
 
 
-{% block sidebar %}
+{% block sidebar_content %}
 
     {% include "respondants/partial/search_results_sidebar.html" %}
 

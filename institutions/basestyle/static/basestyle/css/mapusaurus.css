@@ -13119,6 +13119,12 @@ svg:not(:root) {
    CFPB Design Manual
    @font-face Declarations
    ========================================================================== */
+/*
+@sans-serif: "Avenir Next", "AvenirNextLTW01-Regular", Arial, sans-serif;
+@sans-serif-medium: "Avenir Next Medium", "AvenirNextLTW01-Medium", Arial, sans-serif;
+@sans-serif-demi: "Avenir Next Demi", "AvenirNextLTW01-Demi", Arial, sans-serif;
+@sans-serif-italic: "Avenir Next Italic", "AvenirNextLTW01-Italic", Arial, sans-serif;
+*/
 /* ==========================================================================
    CFPB Design Manual
    MAIN CSS FILE
@@ -13126,7 +13132,9 @@ svg:not(:root) {
 body,
 html {
   margin: 0;
-  font-family: "Avenir Next", Arial, sans-serif;
+  font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
+  font-style: normal;
+  font-weight: normal;
   line-height: 1.375;
   color: #101820;
   /* CFPB black */
@@ -13137,7 +13145,47 @@ html {
   overflow-wrap: break-word;
   /* New CSS3 syntax supported by Chrome */
 }
-/* Layout */
+body em,
+html em,
+body i,
+html i {
+  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
+  font-style: italic;
+  font-weight: normal;
+}
+.lt-ie9 body em,
+.lt-ie9 html em,
+.lt-ie9 body i,
+.lt-ie9 html i {
+  font-style: normal !important;
+}
+body strong,
+html strong,
+body b,
+html b {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 body strong,
+.lt-ie9 html strong,
+.lt-ie9 body b,
+.lt-ie9 html b {
+  font-weight: normal !important;
+}
+/* MISC Stuff, temporarily here */
+.warning-banner {
+  background-color: #f6d9d3;
+  color: #9c301b;
+  padding: 4px 0;
+}
+.warning-banner p {
+  text-align: center;
+}
+/* ==========================================================================
+   CFPB Design Manual
+   LAYOUT CSS FILE
+   ========================================================================== */
 .wrap {
   max-width: 1170px;
   padding: 0 15px;
@@ -13146,7 +13194,7 @@ html {
   clear: both;
 }
 /* Mobile first means all content boxes are full width */
-.sidebar {
+.sidebar-content {
   display: inline-block;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -13157,10 +13205,10 @@ html {
   vertical-align: top;
   width: 100%;
 }
-.ie .sidebar {
+.ie .sidebar-content {
   margin-right: -0.26em;
 }
-.lt-ie8 .sidebar {
+.lt-ie8 .sidebar-content {
   display: inline;
   margin-right: 0;
   zoom: 1;
@@ -13186,21 +13234,13 @@ html {
   zoom: 1;
   behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
 }
-.warning-banner {
-  background-color: #f6d9d3;
-  color: #9c301b;
-  padding: 4px 0;
-}
-.warning-banner p {
-  text-align: center;
-}
 /* Media Queries
    ========================================================================== */
 /* Mobile portrait (320px) */
 /* Mobile landscape (480px) */
 /* Small tablet (600px) */
 @media only screen and (min-width: 37.5em) {
-  .sidebar {
+  .sidebar-content {
     display: inline-block;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -13213,16 +13253,20 @@ html {
     padding-bottom: 2em;
     padding-top: 2em;
   }
-  .ie .sidebar {
+  .ie .sidebar-content {
     margin-right: -0.26em;
   }
-  .lt-ie8 .sidebar {
+  .lt-ie8 .sidebar-content {
     display: inline;
     margin-right: 0;
     zoom: 1;
     behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
   }
   .main-content {
+    padding-bottom: 2em;
+    padding-top: 2em;
+  }
+  .main-content__two-column {
     display: inline-block;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -13232,41 +13276,16 @@ html {
     margin-right: -0.25em;
     vertical-align: top;
     width: 75%;
-    padding-bottom: 2em;
-    padding-top: 2em;
   }
-  .ie .main-content {
+  .ie .main-content__two-column {
     margin-right: -0.26em;
   }
-  .lt-ie8 .main-content {
+  .lt-ie8 .main-content__two-column {
     display: inline;
     margin-right: 0;
     zoom: 1;
     behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
   }
-  /*
-
-    h1 {
-      margin-bottom: .882em;
-    }
-    h3 {
-      margin-bottom: .682em;
-    }
-    h4 {
-      margin-bottom: .833em;
-    }
-    h5 {
-      margin-bottom: 1.071em;
-    }
-    h6 {
-      margin-bottom: 1.25em;
-    }
-
-    p,
-    ul li {
-      max-width: 35em;
-    }
-*/
 }
 /* Tablet/netbook (768px) */
 /* Landscape tablet/netbook/laptop (1024px) */
@@ -13395,7 +13414,7 @@ html {
   }
 
   p {
-    font-family: @serif;    
+    .webfont-regular();    
   }
   */
   /* cross-browser HR styling. See:
@@ -13409,8 +13428,30 @@ html {
    ========================================================================== */
 }
 .main-content .lead-in {
-  font-family: "Avenir Next", "AvenirNextLTW01-Regular", Arial, sans-serif;
+  font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
+  font-style: normal;
+  font-weight: normal;
   font-size: 1.125em;
+}
+.main-content .lead-in em,
+.main-content .lead-in i {
+  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
+  font-style: italic;
+  font-weight: normal;
+}
+.lt-ie9 .main-content .lead-in em,
+.lt-ie9 .main-content .lead-in i {
+  font-style: normal !important;
+}
+.main-content .lead-in strong,
+.main-content .lead-in b {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 .main-content .lead-in strong,
+.lt-ie9 .main-content .lead-in b {
+  font-weight: normal !important;
 }
 .main-content hr {
   display: block;
@@ -13474,8 +13515,12 @@ html {
   margin: 0 1.375em;
 }
 .main-content dt {
-  font-family: "Avenir Next Demi", "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-weight: 600;
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 .main-content dt {
+  font-weight: normal !important;
 }
 /* ==========================================================================
    CFPB Design Manual
