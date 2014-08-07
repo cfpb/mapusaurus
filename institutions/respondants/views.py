@@ -94,11 +94,10 @@ def search_results(request):
     else:
         query = []
 
-    num_results = request.GET.get('num_results')
-    if not num_results:
+    try:
+        num_results = int(request.GET.get('num_results', '25'))
+    except ValueError:
         num_results = 25
-    else:
-        num_results = int(num_results)
 
     page = request.GET.get('page')
     if not page:

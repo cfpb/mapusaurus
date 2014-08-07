@@ -250,6 +250,11 @@ class ViewTest(TestCase):
         results = views.search_results(request)
         self.assertEqual(results.data['num_results'], 10)
 
+        request = RequestFactory().get('/', data={'q': 'Bank',
+                                                  'num_results': 'str'})
+        results = views.search_results(request)
+        self.assertEqual(results.data['num_results'], 25)
+
 
 class InstitutionIndexTests(TestCase):
     fixtures = ['agency', 'many_tracts']
