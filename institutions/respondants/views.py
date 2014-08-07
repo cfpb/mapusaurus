@@ -112,9 +112,7 @@ def search_results(request):
         start_results = 0
         end_results = num_results
 
-    sort = request.GET.get('sort')
-    if not sort:
-        sort = 'relevance'
+    sort = request.GET.get('sort', 'relevance')
 
     total_results = len(query)
     query = query[start_results:end_results]
