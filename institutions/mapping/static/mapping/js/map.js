@@ -53,10 +53,10 @@ var Mapusaurus = {
     //  population-less tracts
     noStyle: {stroke: false, fill: false},
     //  used when census tracts are visible
-    zoomedCountyStyle: {stroke: true, color: '#fff', weight: 2, fill: false,
+    zoomedCountyStyle: {stroke: true, color: '#fff', weight: 0.5, fill: false,
                         opacity: 1.0},
-    zoomedMetroStyle: {stroke: true, color: '#646464', weight: 4, fill: false,
-                       opacity: 1.0, dashArray: '20,10'},
+    zoomedMetroStyle: {stroke: true, color: '#fff', weight: 2, fill: false,
+                       opacity: 1.0},
     //  used when census tracts are not visible
     biggerMetroStyle: {stroke: true, color: '#646464', weight: 4, fill: true,
                        opacity: 1.0, dashArray: '20,10', fillColor: '#646464',
@@ -181,7 +181,11 @@ var Mapusaurus = {
     /* As all "features" (shapes) come through a single source, we need to
      * separate them to know what style to apply */
     pickStyle: function(feature) {
-        var zoomLevel = Mapusaurus.map.getZoom();
+        var zoomLevel = Mapusaurus.map.getZoom(),
+            //  increase the width of boundaries as we zoom in -- to a cap
+            zoomForWeight = Math.min(5, zoomLevel - 9),
+            //  this will be calculated differently for different shapes
+            weightAtThisZoom;
         if (Mapusaurus.isTract(feature) && Mapusaurus.lockState.locked &&
             feature.properties.cbsa !== Mapusaurus.lockState.geoid) {
             return Mapusaurus.outsideStyle;
@@ -191,9 +195,15 @@ var Mapusaurus = {
         //  Slightly different styles for metros at different zoom levels
         } else if (zoomLevel > 8) {
             if (Mapusaurus.isCounty(feature)) {
-                return Mapusaurus.zoomedCountyStyle;
+                weightAtThisZoom = Mapusaurus.zoomedCountyStyle.weight +
+                                   zoomForWeight * 0.5;
+                return $.extend({}, Mapusaurus.zoomedCountyStyle,
+                                {weight: weightAtThisZoom});
             } else if (Mapusaurus.isMetro(feature)) {
-                return Mapusaurus.zoomedMetroStyle;
+                weightAtThisZoom = Mapusaurus.zoomedMetroStyle.weight +
+                                   zoomForWeight * 1;
+                return $.extend({}, Mapusaurus.zoomedMetroStyle,
+                                {weight: weightAtThisZoom});
             }
         //  Only metros should be present at zoom levels <= 8, but this is a
         //  safety check
