@@ -2,14 +2,10 @@
     <div id="search-results-form" class="search-results-form">
         <div class="wrap">
             <div class="search-results-form__content">
-
-                <form role="form" method="get">
-                    <label for="q">Search: 
-                        <input type="text" id="q" name="q" placeholder="by respondent name or ID">
-                    </label> 
-                    <button type="submit" class="btn active">Search</button>
-                </form>
-
+                <label for="q">Search: 
+                    <input type="text" id="q" name="q" placeholder="by respondent name or ID" value="{{ query_str }}">
+                </label> 
+                <button type="submit" class="btn active">Search</button>
             </div>
         </div>
     </div>

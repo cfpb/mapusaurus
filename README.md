@@ -94,6 +94,16 @@ This is how you load the data:
     python manage.py load_geos_from /path/to/tl_2013_us_cbsa.shp
 ```
 
+These import scripts are set up to update geos in place -- no need to delete
+records manually.
+
+Once census tracts and counties are loaded, run the following command to
+associate census tracts with their CBSAs.
+
+```
+    python manage.py set_tract_csa_cbsa
+```
+
 
 ## Census Data
 

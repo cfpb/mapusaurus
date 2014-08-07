@@ -18,14 +18,14 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
     def index_queryset(self, using=None):
         """To account for the somewhat complicated count query, we need to add
         an "extra" annotation"""
-        return self.get_model().objects.extra(select={
-            "num_loans": """
-                SELECT COUNT(*)
-                FROM hmda_hmdarecord
-                WHERE hmda_hmdarecord.lender
-                        = CAST(respondants_institution.agency_id AS VARCHAR(1))
-                          || respondants_institution.ffiec_id
-            """})
+        subquery_tail = """
+            FROM hmda_hmdarecord
+            WHERE hmda_hmdarecord.lender
+                    = CAST(respondants_institution.agency_id AS VARCHAR(1))
+                      || respondants_institution.ffiec_id"""
+        return self.get_model().objects.extra(
+            select={"num_loans": "SELECT COUNT(*) " + subquery_tail},
+            where=["SELECT COUNT(*) > 0 " + subquery_tail])
 
     def prepare_lender_id(self, institution):
         return str(institution.agency_id) + institution.ffiec_id

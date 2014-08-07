@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -98,6 +99,8 @@ LEAFLET_CONFIG = {
     'RESET_VIEW': False,
     'TILES': 'http://tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg',
     'SCALE': 'imperial',
+    'MIN_ZOOM': 9,
+    'MAX_ZOOM': 15
 }
 
 HAYSTACK_CONNECTIONS = {
@@ -130,5 +133,8 @@ CACHES = {
         }
     }
 }
+
+if 'test' in sys.argv:
+    CACHES['long_term_geos']['BACKEND'] = 'django.core.cache.backends.dummy.DummyCache'
 
 from institutions.settings.local_settings import *

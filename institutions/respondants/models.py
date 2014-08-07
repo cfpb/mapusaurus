@@ -1,5 +1,7 @@
 from django.db import models
+from django.template import defaultfilters
 from localflavor.us.models import USStateField
+
 from respondants.managers import AgencyManager
 
 
@@ -88,6 +90,11 @@ class Institution(models.Model):
         related_name='descendants',
         null=True,
         help_text='The company at the top of the ownership chain.')
+
+    def formatted_name(self):
+        formatted = defaultfilters.title(self.name) + " (0"
+        formatted += str(self.agency_id) + "-" + self.ffiec_id + ")"
+        return formatted
 
     class Meta:
         unique_together = ('ffiec_id', 'agency')

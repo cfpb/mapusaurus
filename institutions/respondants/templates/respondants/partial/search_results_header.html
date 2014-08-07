@@ -9,18 +9,17 @@
   </div>
 
   <div class="search-results-heading__num-results">
-    <p>Displaying results 1 of 25 of 52</p>
+    <p>Displaying results x of x of xx</p>
   </div>
 
   <div class="search-results-heading__sort">
     <label>Sort by:
-      <select id="sort_results">
-        <option value="relevance" selected>Relevance</option>
-        <option value="applications">Number of Applications</option>
-        <option value="assets">Corporate Assets</option>
+      <select id="sort" name="sort" onchange="this.form.submit()">
+        <option value="-score" {% if 'score' in current_sort %}selected{% endif %}>Relevance</option>
+        <option value="-num_loans" {% if 'num_loans' in current_sort %}selected{% endif %}>Number of Applications</option>
+        <option value="-assets" {% if 'assets' in current_sort %}selected{% endif %}>Corporate Assets</option>
       </select>
     </label>
   </div>
 
 </div><!-- ./search-results-heading -->
-

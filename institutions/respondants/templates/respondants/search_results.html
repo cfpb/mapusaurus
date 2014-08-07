@@ -2,17 +2,23 @@
 
 {% block title %}Search Results for: &ldquo;{{ query_str }}&rdquo; - CFPB HMDA Mapping App{% endblock %}
 
+
+
 {% block content_header %}
+
+    <form role="form" method="get" action="{% url 'respondants:search_results' %}">
 
     {% include "respondants/partial/search_results_form.html" %}
 
 {% endblock %}
+
 
 {% block sidebar %}
 
     {% include "respondants/partial/search_results_sidebar.html" %}
 
 {% endblock %}
+
 
 {% block main_content %}
 
@@ -30,5 +36,12 @@
         </p>
 
     </div>
+
+{% endblock %}
+
+
+{% block footer_content %}
+
+    </form>
 
 {% endblock %}

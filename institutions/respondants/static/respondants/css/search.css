@@ -9,6 +9,10 @@
   font-size: large;
 }
 
+#content .institution-name {
+  font-weight: bold;
+}
+
 .search-field {
   margin-bottom: 2em;
 }
@@ -37,6 +41,10 @@ a.reveal {
   color: #777;
   font-style: italic;
   margin-top: 0.5em;
+}
+
+input[disabled] {
+  color: #aaa;
 }
 
 .tt-suggestion {

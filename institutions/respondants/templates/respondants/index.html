@@ -15,7 +15,7 @@
             <main role="main">
                 <div class="wrap">
                     <h2>Find an institution</h2>
-                    <form action="/institutions/search/" method="GET">
+                    <form action="{% url 'respondants:search_results' %}" method="GET">
                         <div class="search-field">
                             <label for="lender_id">Search by name or Lender ID (<a
                                 target="_blank"
