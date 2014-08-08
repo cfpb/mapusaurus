@@ -95,7 +95,7 @@
                     <div class="row">
                         <div class="col-md-6">
 
-                            <p>{% if prev_page %}<a href="{% url 'respondants:search_results' %}/?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">« Previous</a>{% else %}« Previous{% endif %} | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | <a href="{% url 'respondants:search_results' %}/?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">Next »</a></p>
+                            <p>{% if prev_page %}<a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">« Previous</a>{% else %}« Previous{% endif %} | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | {% if page_num < total_pages %} <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">Next »</a>{% else %}Next »{% endif %}</p>
 
                         </div><!-- ./col-md-6-->
 

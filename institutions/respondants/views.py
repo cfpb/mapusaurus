@@ -114,7 +114,15 @@ def search_results(request):
     sort = request.GET.get('sort', 'relevance')
 
     total_results = len(query)
+    total_pages = total_results / num_results
     query = query[start_results:end_results]
+
+    if total_results < num_results or page is total_pages:
+        next_page = 0
+        end_results = total_results
+    else:
+        next_page = page + 1
+    prev_page = page - 1 
 
     results = []
     for result in query:
@@ -131,7 +139,7 @@ def search_results(request):
         {'institutions': results, 'query_str': query_str,
          'num_results': num_results, 'start_results': start_results,
          'end_results': end_results, 'sort': sort,
-         'next_page': page + 1, 'prev_page': page - 1,
          'page_num': page, 'total_results': total_results,
-         'current_sort': current_sort},
+         'next_page': next_page, 'prev_page': prev_page,
+         'total_pages': total_pages, 'current_sort': current_sort},
         template_name='respondants/search_results.html')
