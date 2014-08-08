@@ -53,10 +53,10 @@ var Mapusaurus = {
     //  population-less tracts
     noStyle: {stroke: false, fill: false},
     //  used when census tracts are visible
-    zoomedCountyStyle: {stroke: true, color: '#fff', weight: 2, fill: false,
+    zoomedCountyStyle: {stroke: true, color: '#fff', weight: 0.5, fill: false,
                         opacity: 1.0},
-    zoomedMetroStyle: {stroke: true, color: '#646464', weight: 4, fill: false,
-                       opacity: 1.0, dashArray: '20,10'},
+    zoomedMetroStyle: {stroke: true, color: '#fff', weight: 2, fill: false,
+                       opacity: 1.0},
     //  used when census tracts are not visible
     biggerMetroStyle: {stroke: true, color: '#646464', weight: 4, fill: true,
                        opacity: 1.0, dashArray: '20,10', fillColor: '#646464',
@@ -66,7 +66,7 @@ var Mapusaurus = {
         var mainEl = $('main'),
             centLat = parseFloat(mainEl.data('cent-lat')) || 41.88,
             centLon = parseFloat(mainEl.data('cent-lon')) || -87.63,
-            $enforceBoundsEl = $('#enforce-bounds-selector');
+            $enforceBoundsEl = $('#enforce-bounds');
         map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
@@ -103,7 +103,13 @@ var Mapusaurus = {
         });
 
         $enforceBoundsEl.on('change', function() {
-            Mapusaurus[$enforceBoundsEl.val()]();
+            if ($enforceBoundsEl[0].checked) {
+                $enforceBoundsEl.prev().addClass('locked');
+                Mapusaurus.enforceBounds();
+            } else {
+                $enforceBoundsEl.prev().removeClass('locked');
+                Mapusaurus.disableBounds();
+            }
         });
         if ($enforceBoundsEl.length > 0) {
             Mapusaurus.lockState.geoid = mainEl.data('geoid').toString();
@@ -175,7 +181,11 @@ var Mapusaurus = {
     /* As all "features" (shapes) come through a single source, we need to
      * separate them to know what style to apply */
     pickStyle: function(feature) {
-        var zoomLevel = Mapusaurus.map.getZoom();
+        var zoomLevel = Mapusaurus.map.getZoom(),
+            //  increase the width of boundaries as we zoom in -- to a cap
+            zoomForWeight = Math.min(5, zoomLevel - 9),
+            //  this will be calculated differently for different shapes
+            weightAtThisZoom;
         if (Mapusaurus.isTract(feature) && Mapusaurus.lockState.locked &&
             feature.properties.cbsa !== Mapusaurus.lockState.geoid) {
             return Mapusaurus.outsideStyle;
@@ -185,9 +195,15 @@ var Mapusaurus = {
         //  Slightly different styles for metros at different zoom levels
         } else if (zoomLevel > 8) {
             if (Mapusaurus.isCounty(feature)) {
-                return Mapusaurus.zoomedCountyStyle;
+                weightAtThisZoom = Mapusaurus.zoomedCountyStyle.weight +
+                                   zoomForWeight * 0.5;
+                return $.extend({}, Mapusaurus.zoomedCountyStyle,
+                                {weight: weightAtThisZoom});
             } else if (Mapusaurus.isMetro(feature)) {
-                return Mapusaurus.zoomedMetroStyle;
+                weightAtThisZoom = Mapusaurus.zoomedMetroStyle.weight +
+                                   zoomForWeight * 1;
+                return $.extend({}, Mapusaurus.zoomedMetroStyle,
+                                {weight: weightAtThisZoom});
             }
         //  Only metros should be present at zoom levels <= 8, but this is a
         //  safety check
@@ -577,11 +593,11 @@ var Mapusaurus = {
      * an MSA is selected (lest the triggering selector would not be present)
      * */
     enforceBounds: function() {
-        var selectEl = $('#enforce-bounds-selector'),
-            minLat = parseFloat(selectEl.data('min-lat')),
-            maxLat = parseFloat(selectEl.data('max-lat')),
-            minLon = parseFloat(selectEl.data('min-lon')),
-            maxLon = parseFloat(selectEl.data('max-lon'));
+        var enforceEl = $('#enforce-bounds'),
+            minLat = parseFloat(enforceEl.data('min-lat')),
+            maxLat = parseFloat(enforceEl.data('max-lat')),
+            minLon = parseFloat(enforceEl.data('min-lon')),
+            maxLon = parseFloat(enforceEl.data('max-lon'));
         //  Assumes northwest quadrisphere
         Mapusaurus.map.setMaxBounds([[minLat, minLon], [maxLat, maxLon]]);
         Mapusaurus.lockState.locked = true;
