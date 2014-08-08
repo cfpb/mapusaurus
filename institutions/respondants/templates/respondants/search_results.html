@@ -92,6 +92,7 @@
 
                     </div><!-- ./row -->
 
+                {% if total_results > 0 %}
                     <div class="row">
                         <div class="col-md-6">
 
@@ -134,23 +135,25 @@
                         </div>
 
                     </div><!-- ./row -->
+                    <hr/>
+                {% endif %}
 
-                    <hr>
                     <div class="row">
 
-
                         <div class="col-md-8">
-
-
-{% for key, value in institutions.items %}
-    <ul>
-        <li>{{key}}<ul>
-            
-            <li>{{value}}</li>
-            
-        </ul>
-    </ul>
-    {% endfor %}
+                            {% if total_results == 0 %}
+                                <p>No results.</p>
+                            {% else %}
+                                {% for key, value in institutions.items %}
+                                    <ul>
+                                        <li>{{key}}<ul>
+                                            
+                                            <li>{{value}}</li>
+                                            
+                                        </ul>
+                                    </ul>
+                                {% endfor %}
+                            {% endif %}
 
 
                             {% include 'respondants/search_results_details.html' %}
