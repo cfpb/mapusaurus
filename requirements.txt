@@ -4,7 +4,7 @@ requests
 south
 django-localflavor
 django-geojson
-django-haystack
+django-haystack==2.1.0
 django-overextends
 djangorestframework
 git+https://github.com/makinacorpus/django-leaflet.git#egg=django-leaflet

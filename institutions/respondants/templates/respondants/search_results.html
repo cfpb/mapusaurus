@@ -92,14 +92,27 @@
 
                     </div><!-- ./row -->
 
+                {% if total_results > 0 %}
                     <div class="row">
                         <div class="col-md-6">
 
-                            <p><span style="color: #999">« Previous</span> | <strong>1 of 25</strong> of <strong>52</strong> | <a href="#">Next »</a></p>
+                            <p>{% if prev_page %}<a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">« Previous</a>{% else %}« Previous{% endif %} | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | {% if page_num < total_pages %} <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">Next »</a>{% else %}Next »{% endif %}</p>
 
                         </div><!-- ./col-md-6-->
 
                         <div class="col-md-6 text-right">
+                                    <div class="btn-group btn-sm">
+                                      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                        Number of Results: {{num_results}}
+                                        <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu" role="menu">
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=10&sort={{sort}}">10</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=25&sort={{sort}}">25</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=50&sort={{sort}}">50</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=100&sort={{sort}}">100</a></li>
+                                      </ul>
+                                    </div>
 
                                     <div class="btn-group btn-sm">
                                       <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -114,31 +127,33 @@
                                         <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu" role="menu">
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}">Relevance</a></li>
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&sort=-num_loans">Number of Applications</a></li>
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&sort=-assets">Corporate Assets</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&page={{page_num}}&num_results={{num_results}}">Relevance</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&sort=-num_loans&page={{page_num}}&num_results={{num_results}}">Number of Applications</a></li>
+                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&sort=-assets&page={{page_num}}&num_results={{num_results}}">Corporate Assets</a></li>
                                       </ul>
                                     </div>
                         </div>
 
                     </div><!-- ./row -->
+                    <hr/>
+                {% endif %}
 
-                    <hr>
                     <div class="row">
 
-
                         <div class="col-md-8">
-
-
-{% for key, value in institutions.items %}
-    <ul>
-        <li>{{key}}<ul>
-            
-            <li>{{value}}</li>
-            
-        </ul>
-    </ul>
-    {% endfor %}
+                            {% if total_results == 0 %}
+                                <p>No results.</p>
+                            {% else %}
+                                {% for key, value in institutions.items %}
+                                    <ul>
+                                        <li>{{key}}<ul>
+                                            
+                                            <li>{{value}}</li>
+                                            
+                                        </ul>
+                                    </ul>
+                                {% endfor %}
+                            {% endif %}
 
 
                             {% include 'respondants/search_results_details.html' %}

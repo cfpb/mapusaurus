@@ -224,6 +224,43 @@ class ViewTest(TestCase):
             views.search_results(request)
             self.assertTrue(load_all.order_by.called)
 
+    @patch('respondants.views.SearchQuerySet')
+    def test_search_pagination(self, SQS):
+        request = RequestFactory().get('/', data={'q': 'Bank'})
+        results = views.search_results(request)
+        # page number should default to 1
+        self.assertEqual(results.data['page_num'], 1)
+
+        request = RequestFactory().get('/', data={'q': 'Bank',
+                                                  'page': 3})
+        results = views.search_results(request)
+        self.assertEqual(results.data['page_num'], 3)
+        self.assertEqual(results.data['next_page'], 0)
+        self.assertEqual(results.data['prev_page'], 2)
+
+        request = RequestFactory().get('/', data={'q': 'Bank',
+                                                  'page': 'str'})
+        results = views.search_results(request)
+        self.assertEqual(results.data['page_num'], 1)
+
+
+    @patch('respondants.views.SearchQuerySet')
+    def test_search_num_results(self, SQS):
+        request = RequestFactory().get('/', data={'q': 'Bank'})
+        results = views.search_results(request)
+        # number of results should default to 25
+        self.assertEqual(results.data['num_results'], 25)
+
+        request = RequestFactory().get('/', data={'q': 'Bank',
+                                                  'num_results': 10})
+        results = views.search_results(request)
+        self.assertEqual(results.data['num_results'], 10)
+
+        request = RequestFactory().get('/', data={'q': 'Bank',
+                                                  'num_results': 'str'})
+        results = views.search_results(request)
+        self.assertEqual(results.data['num_results'], 25)
+
 
 class InstitutionIndexTests(TestCase):
     fixtures = ['agency', 'many_tracts']
