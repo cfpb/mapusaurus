@@ -48,8 +48,7 @@ var Mapusaurus = {
     loadingStyle: {stroke: true, weight: 2, color: '#babbbd', fill: false,
                    smoothFactor: 0.1},
     //  used when displayed outside metro area
-    outsideStyle: {stroke: false, fillOpacity: 0.9, fill: true,
-                   smoothFactor: 0.1, fillColor: '#eee'},
+    outsideStyle: {stroke: false, fill: false},
     //  population-less tracts
     noStyle: {stroke: false, fill: false},
     //  used when census tracts are visible
