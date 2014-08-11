@@ -13,6 +13,7 @@ L.TileLayer.HookableGeoJSON = L.TileLayer.GeoJSON.extend({
     }
 });
 
+
 var Mapusaurus = {
     //  Leaflet map
     map: null,
@@ -635,17 +636,51 @@ var Mapusaurus = {
      * are grabbing the right viewport */
     takeScreenshot: function() {
         var offscreen = document.createElement('canvas'),
+            ctx = offscreen.getContext('2d'),
             svgEl = $('svg')[0],
             $map = $('#map'),
+            $tiles = $(Mapusaurus.map.getPanes().tilePane).find('img'),
             offset = Mapusaurus.map.containerPointToLayerPoint([0, 0]),
-            serializer = new XMLSerializer();
+            serializer = new XMLSerializer(),
+            allImages = [],
+            keyImage = $('#key-image'),
+            keyXOffset = $map.width() - keyImage[0].width - 10;
         offscreen.width = $map.width();
         offscreen.height = $map.height();
         offset.x = svgEl.viewBox.baseVal.x - offset.x;
         offset.y = svgEl.viewBox.baseVal.y - offset.y;
-        canvg(offscreen, serializer.serializeToString(svgEl), {
-            ignoreDimensions: true, offsetY: offset.y, offsetX: offset.x
+        /* Some gymnastics are needed to get around crossOrigin tainting.
+         * Leaflet does not load images with the crossOrigin attribute, so we
+         * load each image and draw them to the offscreen canvas. Used
+         * deferred so we can wait for all the images to load. */
+        allImages = $tiles.map(function(idx, tile) {
+            var img = new Image(),
+                deferred = $.Deferred();
+            img.setAttribute('crossOrigin', 'anonymous');
+            img.onload = function () {
+                deferred.resolve({tile: tile, img: img});
+            };
+            img.src = tile.src;
+            return deferred.promise();
         });
-        window.open(offscreen.toDataURL(), '_blank');
+        /* Finally, draw all the tiles, then the SVG, then the key */
+        $.when.apply(null, allImages).then(function() {
+            //  draw each tile
+            _.each(arguments, function(tileXImg) {
+                var pos = $(tileXImg.tile).position();
+                ctx.drawImage(tileXImg.img, pos.left, pos.top);
+            });
+            //  svg
+            canvg(offscreen, serializer.serializeToString(svgEl), {
+                  ignoreDimensions: true, offsetY: offset.y,
+                  offsetX: offset.x, ignoreClear: true});
+            //  key
+            ctx.drawImage(keyImage[0], keyXOffset, 10);
+            ctx.fillText($('#category-selector option:selected').text(),
+                         keyXOffset + 20, 100);
+            ctx.fillText($('#bubble-selector:visible option:selected').text(),
+                         keyXOffset + 20, 120);
+            window.open(offscreen.toDataURL(), '_blank');
+        });
     }
 };
