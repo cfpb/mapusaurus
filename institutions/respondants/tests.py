@@ -235,7 +235,7 @@ class ViewTest(TestCase):
                                                   'page': 3})
         results = views.search_results(request)
         self.assertEqual(results.data['page_num'], 3)
-        self.assertEqual(results.data['next_page'], 4)
+        self.assertEqual(results.data['next_page'], 0)
         self.assertEqual(results.data['prev_page'], 2)
 
         request = RequestFactory().get('/', data={'q': 'Bank',
