@@ -70,6 +70,7 @@ var Mapusaurus = {
         map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
+        Mapusaurus.addScreenshotButton(map);
         Mapusaurus.layers.shapes = new L.TileLayer.HookableGeoJSON(
             '/shapes/tiles/{z}/{x}/{y}', {
                 afterTileLoaded: Mapusaurus.afterShapeTile
@@ -237,6 +238,22 @@ var Mapusaurus = {
             return L.DomUtil.get('key');
         };
         key.addTo(map);
+    },
+
+    /* Generated button for taking a screenshot */
+    addScreenshotButton: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-bar'),
+            buttonEl = L.DomUtil.create('a', 'screenshot', container),
+            buttonCtrl = L.control({position: 'topleft'});
+        buttonEl.href = '#';
+        buttonEl.innerHTML = '\ue414';
+        L.DomEvent.addListener(buttonEl, 'click', function(ev) {
+            L.DomEvent.stopPropagation(ev);
+            L.DomEvent.preventDefault(ev);
+            Mapusaurus.takeScreenshot();
+        });
+        buttonCtrl.onAdd = function() { return container; };
+        buttonCtrl.addTo(map);
     },
 
     /* Naive url parameter parser */
@@ -612,5 +629,24 @@ var Mapusaurus = {
         Mapusaurus.layers.shapes.geojsonLayer.setStyle(
             Mapusaurus.pickStyle);
         Mapusaurus.redrawBubbles();
+    },
+
+    /* Uses canvg to draw the svg map onto a canvas, which can then be opened
+     * in a separate window. Some offset addition is requires to make sure we
+     * are grabbing the right viewport */
+    takeScreenshot: function() {
+        var offscreen = document.createElement('canvas'),
+            svgEl = $('svg')[0],
+            $map = $('#map'),
+            offset = Mapusaurus.map.containerPointToLayerPoint([0, 0]),
+            serializer = new XMLSerializer();
+        offscreen.width = $map.width();
+        offscreen.height = $map.height();
+        offset.x = svgEl.viewBox.baseVal.x - offset.x;
+        offset.y = svgEl.viewBox.baseVal.y - offset.y;
+        canvg(offscreen, serializer.serializeToString(svgEl), {
+            ignoreDimensions: true, offsetY: offset.y, offsetX: offset.x
+        });
+        window.open(offscreen.toDataURL(), '_blank');
     }
 };
