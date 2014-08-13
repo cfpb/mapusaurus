@@ -24,6 +24,7 @@
     "require": true,
     "define": true,
     "Bloodhound": true,
-    "canvg": true
+    "canvg": true,
+    "vex": true
   }
 }
