@@ -51,10 +51,6 @@
   margin-top: 10px;
   font-size: large;
 }
-a.screenshot {
-  font-family: 'CFPB Minicons';
-  font-size: 16px;
-}
 
 #percentage-container .left {
   display: inline-block;
@@ -73,7 +69,7 @@ a.screenshot {
 
 
 /* Map Footer */
-#lender-info {
+#lender-info, #lower-right-icons {
   margin-top: 0.5em;
   margin-left: 5em;
   margin-right: 5em;
@@ -95,11 +91,19 @@ a.screenshot {
 #lender-info td {
   padding-bottom: 0.25em;
 }
-#download-data {
-  font-size: 24px;
+#lower-right-icons {
   float: right;
+}
+#download-data {
   border-bottom: 0;
   color: #000;
+  font-size: 24px;
+}
+#take-screenshot {
+  border-bottom: 0;
+  color: #000;
+  font-size: 18px;
+  margin-right: 1em;
 }
 #download-data:before {
   font-family: 'CFPB Minicons';
