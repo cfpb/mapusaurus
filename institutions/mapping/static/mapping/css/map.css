@@ -51,10 +51,6 @@
   margin-top: 10px;
   font-size: large;
 }
-a.screenshot {
-  font-family: 'CFPB Minicons';
-  font-size: 16px;
-}
 
 #percentage-container .left {
   display: inline-block;
@@ -72,9 +68,11 @@ a.screenshot {
 }
 
 
-#lender-info {
+/* Map Footer */
+#lender-info, #lower-right-icons {
   margin-top: 0.5em;
   margin-left: 5em;
+  margin-right: 5em;
   font-family: "Avenir Next W01", Arial, sans-serif;
 }
 #lender-info h2 {
@@ -92,6 +90,28 @@ a.screenshot {
 }
 #lender-info td {
   padding-bottom: 0.25em;
+}
+#lower-right-icons {
+  float: right;
+}
+#download-data {
+  border-bottom: 0;
+  color: #000;
+  font-size: 24px;
+}
+#take-screenshot {
+  border-bottom: 0;
+  color: #000;
+  font-size: 18px;
+  margin-right: 1em;
+}
+#download-data:before {
+  font-family: 'CFPB Minicons';
+  content: '\e610';
+}
+.vex-dialog-message h2 {
+  font-weight: bold;
+  font-size: larger;
 }
 
 /* Map header */

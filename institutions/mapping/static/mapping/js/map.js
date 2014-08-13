@@ -1,5 +1,7 @@
 'use strict';
 
+vex.defaultOptions.className = 'vex-theme-plain';
+
 /* We want to be able to trigger a callback whenever a JSON tile loads, so we
  * create a custom GeoJSON tile layer */
 L.TileLayer.HookableGeoJSON = L.TileLayer.GeoJSON.extend({
@@ -12,6 +14,7 @@ L.TileLayer.HookableGeoJSON = L.TileLayer.GeoJSON.extend({
         }
     }
 });
+
 
 var Mapusaurus = {
     //  Leaflet map
@@ -69,7 +72,6 @@ var Mapusaurus = {
         map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
-        Mapusaurus.addScreenshotButton(map);
         Mapusaurus.layers.shapes = new L.TileLayer.HookableGeoJSON(
             '/shapes/tiles/{z}/{x}/{y}', {
                 afterTileLoaded: Mapusaurus.afterShapeTile
@@ -237,22 +239,6 @@ var Mapusaurus = {
             return L.DomUtil.get('key');
         };
         key.addTo(map);
-    },
-
-    /* Generated button for taking a screenshot */
-    addScreenshotButton: function(map) {
-        var container = L.DomUtil.create('div', 'leaflet-bar'),
-            buttonEl = L.DomUtil.create('a', 'screenshot', container),
-            buttonCtrl = L.control({position: 'topleft'});
-        buttonEl.href = '#';
-        buttonEl.innerHTML = '\ue414';
-        L.DomEvent.addListener(buttonEl, 'click', function(ev) {
-            L.DomEvent.stopPropagation(ev);
-            L.DomEvent.preventDefault(ev);
-            Mapusaurus.takeScreenshot();
-        });
-        buttonCtrl.onAdd = function() { return container; };
-        buttonCtrl.addTo(map);
     },
 
     /* Naive url parameter parser */
@@ -635,17 +621,99 @@ var Mapusaurus = {
      * are grabbing the right viewport */
     takeScreenshot: function() {
         var offscreen = document.createElement('canvas'),
+            ctx = offscreen.getContext('2d'),
             svgEl = $('svg')[0],
             $map = $('#map'),
+            $tiles = $(Mapusaurus.map.getPanes().tilePane).find('img'),
             offset = Mapusaurus.map.containerPointToLayerPoint([0, 0]),
-            serializer = new XMLSerializer();
+            serializer = new XMLSerializer(),
+            allImages = [],
+            keyImage = $('#key-image'),
+            keyXOffset = $map.width() - keyImage[0].width - 10;
         offscreen.width = $map.width();
         offscreen.height = $map.height();
         offset.x = svgEl.viewBox.baseVal.x - offset.x;
         offset.y = svgEl.viewBox.baseVal.y - offset.y;
-        canvg(offscreen, serializer.serializeToString(svgEl), {
-            ignoreDimensions: true, offsetY: offset.y, offsetX: offset.x
+        /* Some gymnastics are needed to get around crossOrigin tainting.
+         * Leaflet does not load images with the crossOrigin attribute, so we
+         * load each image and draw them to the offscreen canvas. Used
+         * deferred so we can wait for all the images to load. Note that this
+         * technique does not work in IE 8/9, but we check this via the
+         * XDomainRequest guard. Todo: try to implement it via ajax */
+        if (window.XDomainRequest === undefined) {
+            allImages = $tiles.map(function(idx, tile) {
+                var img = new Image(),
+                    deferred = $.Deferred();
+                img.setAttribute('crossOrigin', 'anonymous');
+                img.onload = function () {
+                    deferred.resolve({tile: tile, img: img});
+                };
+                img.src = tile.src;
+                return deferred.promise();
+            });
+        }
+        /* Finally, draw all the tiles, then the SVG, then the key */
+        $.when.apply(null, allImages).then(function() {
+            var $ssPlaceholder = $('#screenshot-placeholder'),
+                replacementText = 'Right-click and select Save Image As...';
+            //  draw each tile
+            _.each(arguments, function(tileXImg) {
+                var pos = $(tileXImg.tile).position();
+                ctx.drawImage(tileXImg.img, pos.left, pos.top);
+            });
+            //  svg
+            canvg(offscreen, serializer.serializeToString(svgEl), {
+                  ignoreDimensions: true, offsetY: offset.y,
+                  offsetX: offset.x, ignoreClear: true});
+            //  key
+            ctx.drawImage(keyImage[0], keyXOffset, 10);
+            ctx.fillText($('#category-selector option:selected').text(),
+                         keyXOffset + 20, 100);
+            ctx.fillText($('#bubble-selector:visible option:selected').text(),
+                         keyXOffset + 20, 120);
+
+            //  Closed the popup before we could edit it
+            if ($ssPlaceholder.length === 0) {
+                vex.dialog.alert({
+                    message: ('<h2>Export Map</h2>' +
+                              '<p>' + replacementText + '</p>' + 
+                              '<img width="400" height="150" src="' +
+                              offscreen.toDataURL() + '" />')
+                });
+            //  Did not close popup; edit it in place
+            } else {
+                $ssPlaceholder.text(replacementText);
+                $('<img width="400" height="150" />').attr(
+                    'src',
+                    offscreen.toDataURL()).appendTo($ssPlaceholder.parent());
+            }
         });
-        window.open(offscreen.toDataURL(), '_blank');
     }
 };
+
+$(document).ready(function() {
+    var downloadData = $('#download-data');
+    downloadData.click(function(ev) {
+        ev.preventDefault();
+        vex.dialog.confirm({
+            message: ('<h2>Export Data</h2>' +
+                      '<p>You are being redirected to the public HMDA ' +
+                      'Explorer tools on www.consumerfinance.gov</p>' +
+                      '<p>From there, you can preview and download the ' +
+                      'HMDA LAR set for this MSA.</p>'),
+            callback: function(redirect) {
+                if (redirect) {
+                    window.open(downloadData.attr('href'));
+                }
+            }
+        });
+    });
+    $('#take-screenshot').click(function(ev) {
+        ev.preventDefault();
+        vex.dialog.alert({
+            message: ('<h2>Export Map</h2>' +
+                      '<p id="screenshot-placeholder">Loading map...</p>')
+        });
+        Mapusaurus.takeScreenshot();
+    });
+});
