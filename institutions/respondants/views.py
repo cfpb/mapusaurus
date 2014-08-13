@@ -137,7 +137,7 @@ def search_results(request):
 
     return Response(
         {'institutions': results, 'query_str': query_str,
-         'num_results': num_results, 'start_results': start_results,
+         'num_results': num_results, 'start_results': start_results + 1,
          'end_results': end_results, 'sort': sort,
          'page_num': page, 'total_results': total_results,
          'next_page': next_page, 'prev_page': prev_page,
