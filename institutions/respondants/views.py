@@ -134,10 +134,12 @@ def search_results(request):
     # to adjust for template
     if start_results == 0:
         start_results = 1
+    else:
+        start_results = start_results + 1
 
     return Response(
         {'institutions': results, 'query_str': query_str,
-         'num_results': num_results, 'start_results': start_results + 1,
+         'num_results': num_results, 'start_results': start_results,
          'end_results': end_results, 'sort': sort,
          'page_num': page, 'total_results': total_results,
          'next_page': next_page, 'prev_page': prev_page,
