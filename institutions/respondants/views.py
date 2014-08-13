@@ -132,10 +132,7 @@ def search_results(request):
         results = InstitutionSerializer(results, many=True).data
 
     # to adjust for template
-    if start_results == 0:
-        start_results = 1
-    else:
-        start_results = start_results + 1
+    start_results++
 
     return Response(
         {'institutions': results, 'query_str': query_str,
