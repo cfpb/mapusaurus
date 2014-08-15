@@ -93,7 +93,36 @@ def search_results(request):
         query = query.filter(content=AutoQuery(query_str))
     else:
         query = []
-    query = query[:25]
+
+    try:
+        num_results = int(request.GET.get('num_results', '25'))
+    except ValueError:
+        num_results = 25
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    if page > 1:
+        start_results = num_results * page - num_results
+        end_results = num_results * page
+    else:
+        start_results = 0
+        end_results = num_results
+
+    sort = request.GET.get('sort', 'relevance')
+
+    total_results = len(query)
+    total_pages = total_results / num_results
+    query = query[start_results:end_results]
+
+    if total_results < num_results or page is total_pages:
+        next_page = 0
+        end_results = total_results
+    else:
+        next_page = page + 1
+    prev_page = page - 1 
 
     results = []
     for result in query:
@@ -102,7 +131,14 @@ def search_results(request):
     if request.accepted_renderer.format != 'html':
         results = InstitutionSerializer(results, many=True).data
 
+    # to adjust for template
+    start_results = start_results + 1
+
     return Response(
         {'institutions': results, 'query_str': query_str,
-         'current_sort': current_sort},
+         'num_results': num_results, 'start_results': start_results,
+         'end_results': end_results, 'sort': sort,
+         'page_num': page, 'total_results': total_results,
+         'next_page': next_page, 'prev_page': prev_page,
+         'total_pages': total_pages, 'current_sort': current_sort},
         template_name='respondants/search_results.html')

@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'CFPB Minicons';
+  src: url('../font/cf-icons.eot');
+  src: url('../font/cf-icons.eot?#iefix') format('embedded-opentype'), url('../font/cf-icons.woff') format('woff'), url('../font/cf-icons.ttf') format('truetype'), url('../font/cf-icons.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .hidden {
   display: block;
 }
@@ -60,9 +68,11 @@
 }
 
 
-#lender-info {
+/* Map Footer */
+#lender-info, #lower-right-icons {
   margin-top: 0.5em;
   margin-left: 5em;
+  margin-right: 5em;
   font-family: "Avenir Next W01", Arial, sans-serif;
 }
 #lender-info h2 {
@@ -80,4 +90,68 @@
 }
 #lender-info td {
   padding-bottom: 0.25em;
+}
+#lower-right-icons {
+  float: right;
+}
+#download-data {
+  border-bottom: 0;
+  color: #000;
+  font-size: 24px;
+}
+#take-screenshot {
+  border-bottom: 0;
+  color: #000;
+  font-size: 18px;
+  margin-right: 1em;
+}
+#download-data:before {
+  font-family: 'CFPB Minicons';
+  content: '\e610';
+}
+.vex-dialog-message h2 {
+  font-weight: bold;
+  font-size: larger;
+}
+
+/* Map header */
+#map-header {
+  background-color: #d0e5ca;
+  border-bottom: 4px solid #2cb34a;
+  padding: 0.5em 0;
+  min-height: 4em;
+}
+#map-header .map-type {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#map-header a {
+  color: #f00;
+  border-bottom: none;
+  text-transform: uppercase;
+}
+#lock-map-container {
+  float: right;
+  margin-top: 0.5em;
+}
+#lock-map-container label {
+  padding-right: 10px;
+  line-height: 30px;
+  vertical-align: top;
+}
+
+#lock-map-container label:after {
+  font-family: 'CFPB Minicons';
+  content: "\e635  \e632";
+  font-size: 30px;
+  margin-left: 10px;
+}
+#lock-map-container label.locked:after {
+  font-family: 'CFPB Minicons';
+  content: "\e634  \e633";
+  font-size: 30px;
+  margin-left: 10px;
+}
+#lock-map-container input {
+  display: none;
 }

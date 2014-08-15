@@ -26,7 +26,11 @@
 
         {% include "respondants/partial/search_results_header.html" %}
 
-        {% include 'respondants/partial/search_results_details.html' %}
+        {% if total_results == 0 %}
+            <p>No results.</p>
+        {% else %}
+            {% include 'respondants/partial/search_results_details.html' %}
+        {% endif %}
 
         {% include 'respondants/partial/search_results_pagination.html' %}
 

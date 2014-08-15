@@ -105,7 +105,9 @@ LEAFLET_CONFIG = {
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'mapusaurus',
     },
 }
 
@@ -118,7 +120,7 @@ REST_FRAMEWORK = {
 
 SOUTH_TESTS_MIGRATE = False
 
-LONGTERM_CACHE_TIMEOUT = 60*60*24   # 1 day
+LONGTERM_CACHE_TIMEOUT = 60*60*24*30   # 30 days
 
 CACHES = {
     'default': {

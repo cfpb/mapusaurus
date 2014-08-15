@@ -1,5 +1,7 @@
 'use strict';
 
+vex.defaultOptions.className = 'vex-theme-plain';
+
 /* We want to be able to trigger a callback whenever a JSON tile loads, so we
  * create a custom GeoJSON tile layer */
 L.TileLayer.HookableGeoJSON = L.TileLayer.GeoJSON.extend({
@@ -12,6 +14,7 @@ L.TileLayer.HookableGeoJSON = L.TileLayer.GeoJSON.extend({
         }
     }
 });
+
 
 var Mapusaurus = {
     //  Leaflet map
@@ -48,15 +51,14 @@ var Mapusaurus = {
     loadingStyle: {stroke: true, weight: 2, color: '#babbbd', fill: false,
                    smoothFactor: 0.1},
     //  used when displayed outside metro area
-    outsideStyle: {stroke: false, fillOpacity: 0.9, fill: true,
-                   smoothFactor: 0.1, fillColor: '#eee'},
+    outsideStyle: {stroke: false, fill: false},
     //  population-less tracts
     noStyle: {stroke: false, fill: false},
     //  used when census tracts are visible
-    zoomedCountyStyle: {stroke: true, color: '#fff', weight: 2, fill: false,
+    zoomedCountyStyle: {stroke: true, color: '#fff', weight: 0.5, fill: false,
                         opacity: 1.0},
-    zoomedMetroStyle: {stroke: true, color: '#646464', weight: 4, fill: false,
-                       opacity: 1.0, dashArray: '20,10'},
+    zoomedMetroStyle: {stroke: true, color: '#fff', weight: 2, fill: false,
+                       opacity: 1.0},
     //  used when census tracts are not visible
     biggerMetroStyle: {stroke: true, color: '#646464', weight: 4, fill: true,
                        opacity: 1.0, dashArray: '20,10', fillColor: '#646464',
@@ -66,7 +68,7 @@ var Mapusaurus = {
         var mainEl = $('main'),
             centLat = parseFloat(mainEl.data('cent-lat')) || 41.88,
             centLon = parseFloat(mainEl.data('cent-lon')) || -87.63,
-            $enforceBoundsEl = $('#enforce-bounds-selector');
+            $enforceBoundsEl = $('#enforce-bounds');
         map.setView([centLat, centLon], 12);
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
@@ -103,7 +105,13 @@ var Mapusaurus = {
         });
 
         $enforceBoundsEl.on('change', function() {
-            Mapusaurus[$enforceBoundsEl.val()]();
+            if ($enforceBoundsEl[0].checked) {
+                $enforceBoundsEl.prev().addClass('locked');
+                Mapusaurus.enforceBounds();
+            } else {
+                $enforceBoundsEl.prev().removeClass('locked');
+                Mapusaurus.disableBounds();
+            }
         });
         if ($enforceBoundsEl.length > 0) {
             Mapusaurus.lockState.geoid = mainEl.data('geoid').toString();
@@ -175,7 +183,11 @@ var Mapusaurus = {
     /* As all "features" (shapes) come through a single source, we need to
      * separate them to know what style to apply */
     pickStyle: function(feature) {
-        var zoomLevel = Mapusaurus.map.getZoom();
+        var zoomLevel = Mapusaurus.map.getZoom(),
+            //  increase the width of boundaries as we zoom in -- to a cap
+            zoomForWeight = Math.min(5, zoomLevel - 9),
+            //  this will be calculated differently for different shapes
+            weightAtThisZoom;
         if (Mapusaurus.isTract(feature) && Mapusaurus.lockState.locked &&
             feature.properties.cbsa !== Mapusaurus.lockState.geoid) {
             return Mapusaurus.outsideStyle;
@@ -185,9 +197,15 @@ var Mapusaurus = {
         //  Slightly different styles for metros at different zoom levels
         } else if (zoomLevel > 8) {
             if (Mapusaurus.isCounty(feature)) {
-                return Mapusaurus.zoomedCountyStyle;
+                weightAtThisZoom = Mapusaurus.zoomedCountyStyle.weight +
+                                   zoomForWeight * 0.5;
+                return $.extend({}, Mapusaurus.zoomedCountyStyle,
+                                {weight: weightAtThisZoom});
             } else if (Mapusaurus.isMetro(feature)) {
-                return Mapusaurus.zoomedMetroStyle;
+                weightAtThisZoom = Mapusaurus.zoomedMetroStyle.weight +
+                                   zoomForWeight * 1;
+                return $.extend({}, Mapusaurus.zoomedMetroStyle,
+                                {weight: weightAtThisZoom});
             }
         //  Only metros should be present at zoom levels <= 8, but this is a
         //  safety check
@@ -577,11 +595,11 @@ var Mapusaurus = {
      * an MSA is selected (lest the triggering selector would not be present)
      * */
     enforceBounds: function() {
-        var selectEl = $('#enforce-bounds-selector'),
-            minLat = parseFloat(selectEl.data('min-lat')),
-            maxLat = parseFloat(selectEl.data('max-lat')),
-            minLon = parseFloat(selectEl.data('min-lon')),
-            maxLon = parseFloat(selectEl.data('max-lon'));
+        var enforceEl = $('#enforce-bounds'),
+            minLat = parseFloat(enforceEl.data('min-lat')),
+            maxLat = parseFloat(enforceEl.data('max-lat')),
+            minLon = parseFloat(enforceEl.data('min-lon')),
+            maxLon = parseFloat(enforceEl.data('max-lon'));
         //  Assumes northwest quadrisphere
         Mapusaurus.map.setMaxBounds([[minLat, minLon], [maxLat, maxLon]]);
         Mapusaurus.lockState.locked = true;
@@ -596,5 +614,106 @@ var Mapusaurus = {
         Mapusaurus.layers.shapes.geojsonLayer.setStyle(
             Mapusaurus.pickStyle);
         Mapusaurus.redrawBubbles();
+    },
+
+    /* Uses canvg to draw the svg map onto a canvas, which can then be opened
+     * in a separate window. Some offset addition is requires to make sure we
+     * are grabbing the right viewport */
+    takeScreenshot: function() {
+        var offscreen = document.createElement('canvas'),
+            ctx = offscreen.getContext('2d'),
+            svgEl = $('svg')[0],
+            $map = $('#map'),
+            $tiles = $(Mapusaurus.map.getPanes().tilePane).find('img'),
+            offset = Mapusaurus.map.containerPointToLayerPoint([0, 0]),
+            serializer = new XMLSerializer(),
+            allImages = [],
+            keyImage = $('#key-image'),
+            keyXOffset = $map.width() - keyImage[0].width - 10;
+        offscreen.width = $map.width();
+        offscreen.height = $map.height();
+        offset.x = svgEl.viewBox.baseVal.x - offset.x;
+        offset.y = svgEl.viewBox.baseVal.y - offset.y;
+        /* Some gymnastics are needed to get around crossOrigin tainting.
+         * Leaflet does not load images with the crossOrigin attribute, so we
+         * load each image and draw them to the offscreen canvas. Used
+         * deferred so we can wait for all the images to load. Note that this
+         * technique does not work in IE 8/9, but we check this via the
+         * XDomainRequest guard. Todo: try to implement it via ajax */
+        if (window.XDomainRequest === undefined) {
+            allImages = $tiles.map(function(idx, tile) {
+                var img = new Image(),
+                    deferred = $.Deferred();
+                img.setAttribute('crossOrigin', 'anonymous');
+                img.onload = function () {
+                    deferred.resolve({tile: tile, img: img});
+                };
+                img.src = tile.src;
+                return deferred.promise();
+            });
+        }
+        /* Finally, draw all the tiles, then the SVG, then the key */
+        $.when.apply(null, allImages).then(function() {
+            var $ssPlaceholder = $('#screenshot-placeholder'),
+                replacementText = 'Right-click and select Save Image As...';
+            //  draw each tile
+            _.each(arguments, function(tileXImg) {
+                var pos = $(tileXImg.tile).position();
+                ctx.drawImage(tileXImg.img, pos.left, pos.top);
+            });
+            //  svg
+            canvg(offscreen, serializer.serializeToString(svgEl), {
+                  ignoreDimensions: true, offsetY: offset.y,
+                  offsetX: offset.x, ignoreClear: true});
+            //  key
+            ctx.drawImage(keyImage[0], keyXOffset, 10);
+            ctx.fillText($('#category-selector option:selected').text(),
+                         keyXOffset + 20, 100);
+            ctx.fillText($('#bubble-selector:visible option:selected').text(),
+                         keyXOffset + 20, 120);
+
+            //  Closed the popup before we could edit it
+            if ($ssPlaceholder.length === 0) {
+                vex.dialog.alert({
+                    message: ('<h2>Export Map</h2>' +
+                              '<p>' + replacementText + '</p>' + 
+                              '<img width="400" height="150" src="' +
+                              offscreen.toDataURL() + '" />')
+                });
+            //  Did not close popup; edit it in place
+            } else {
+                $ssPlaceholder.text(replacementText);
+                $('<img width="400" height="150" />').attr(
+                    'src',
+                    offscreen.toDataURL()).appendTo($ssPlaceholder.parent());
+            }
+        });
     }
 };
+
+$(document).ready(function() {
+    var downloadData = $('#download-data');
+    downloadData.click(function(ev) {
+        ev.preventDefault();
+        vex.dialog.confirm({
+            message: ('<h2>Export Data</h2>' +
+                      '<p>You are being redirected to the public HMDA ' +
+                      'Explorer tools on www.consumerfinance.gov</p>' +
+                      '<p>From there, you can preview and download the ' +
+                      'HMDA LAR set for this MSA.</p>'),
+            callback: function(redirect) {
+                if (redirect) {
+                    window.open(downloadData.attr('href'));
+                }
+            }
+        });
+    });
+    $('#take-screenshot').click(function(ev) {
+        ev.preventDefault();
+        vex.dialog.alert({
+            message: ('<h2>Export Map</h2>' +
+                      '<p id="screenshot-placeholder">Loading map...</p>')
+        });
+        Mapusaurus.takeScreenshot();
+    });
+});

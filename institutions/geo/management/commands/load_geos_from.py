@@ -21,6 +21,8 @@ class Command(BaseCommand):
             return Geo.METRO_TYPE
         if row_dict.get('LSAD') == 'M2':
             return Geo.MICRO_TYPE
+        if row_dict.get('LSAD') == 'M3':
+            return Geo.METDIV_TYPE
 
     def process_row(self, row, field_names):
         """Runs for every shape in the shape file. Returns a kw-dict which
@@ -43,6 +45,7 @@ class Command(BaseCommand):
             'tract': row_dict.get('TRACTCE') or None,
             'csa': row_dict.get('CSAFP') or None,
             'cbsa': row_dict.get('CBSAFP') or None,
+            'metdiv': row_dict.get('METDIVFP') or None,
             'minlat': min(lats), 'maxlat': max(lats), 'minlon': min(lons),
             'maxlon': max(lons),
             'centlat': float(row_dict['INTPTLAT']),

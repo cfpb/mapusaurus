@@ -75,13 +75,14 @@ Here are some separate instructions for running the geo application.
     python manage.py migrate geo
 ```
 
-Currently, we load census tract, county, and CBSA files. You can download them 
-from the census' FTP site:
+Currently, we load census tract, county, CBSA, and metropolitan division files.
+You can download them from the census' FTP site:
 
 ```
 ftp://ftp2.census.gov/geo/tiger/TIGER2013/TRACT/
 ftp://ftp2.census.gov/geo/tiger/TIGER2013/COUNTY/
 ftp://ftp2.census.gov/geo/tiger/TIGER2013/CBSA/
+ftp://ftp2.census.gov/geo/tiger/TIGER2013/METDIV/
 ```
 
 This is how you load the data:
@@ -92,6 +93,7 @@ This is how you load the data:
     python manage.py load_geos_from /path/to/tl_2013_17_tract.shp
     python manage.py load_geos_from /path/to/tl_2013_us_county.shp
     python manage.py load_geos_from /path/to/tl_2013_us_cbsa.shp
+    python manage.py load_geos_from /path/to/tl_2013_us_metdiv.shp
 ```
 
 These import scripts are set up to update geos in place -- no need to delete
