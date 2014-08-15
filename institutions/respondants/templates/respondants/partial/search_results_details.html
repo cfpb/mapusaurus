@@ -5,7 +5,7 @@
             <div class="expandable_header">
                 <div class="expandable_header-left">
                     <h4>
-                        <a href="{% url 'home' %}?lender={{res.agency_id}}{{res.ffiec_id}}">{{res.name|title}}</a> &nbsp; 
+                        <a href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">{{res.name|title}}</a> &nbsp; 
                         <small>0{{res.agency_id}}-{{res.ffiec_id}}</small>
                     </h4>
                 </div>

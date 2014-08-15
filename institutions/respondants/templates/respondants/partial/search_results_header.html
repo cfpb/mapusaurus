@@ -11,7 +11,18 @@
   {% if total_results != 0 %}
 
   <div class="search-results-heading__num-results">
-    <p>Displaying results x of x of {{num_results}}</p>
+    <p>{% if prev_page %}
+        <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">« Previous</a>
+      {% else %}
+        « Previous
+      {% endif %}
+       | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | 
+       {% if page_num < total_pages %}
+        <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">Next »</a>
+      {% else %}
+        Next »
+      {% endif %}
+    </p>
   </div>
 
   <div class="search-results-heading__sort">
@@ -24,7 +35,7 @@
     </label>
   </div>
 
-  <input type="hidden" value="{{page_num}}">
+  <input type="hidden" id="page" name="page" value="{{page_num}}">
 
   <div class="search-results-heading__num-results">
     <label>Display:
