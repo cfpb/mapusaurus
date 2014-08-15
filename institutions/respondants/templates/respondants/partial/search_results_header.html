@@ -8,8 +8,10 @@
     <p><a href="?q=">Start Over</a></p>
   </div>
 
+  {% if total_results != 0 %}
+
   <div class="search-results-heading__num-results">
-    <p>Displaying results x of x of xx</p>
+    <p>Displaying results x of x of {{num_results}}</p>
   </div>
 
   <div class="search-results-heading__sort">
@@ -21,5 +23,20 @@
       </select>
     </label>
   </div>
+
+  <input type="hidden" value="{{page_num}}">
+
+  <div class="search-results-heading__num-results">
+    <label>Display:
+      <select id="num_results" name="num_results" onchange="this.form.submit()">
+        <option value="10" {% if num_results = 10 %}selected{% endif %}>10</option>
+        <option value="25" {% if num_results = 25 %}selected{% endif %}>25</option>
+        <option value="50" {% if num_results = 50 %}selected{% endif %}>50</option>
+        <option value="100" {% if num_results = 100 %}selected{% endif %}>100</option>
+      </select>
+    </label>
+  </div>
+
+ {% endif %}
 
 </div><!-- ./search-results-heading -->
