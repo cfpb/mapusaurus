@@ -1,28 +1,35 @@
-<!--
+
 <nav class="pagination">
-    <a class="btn pagination_prev" href="#pagination_content">
+    <a class="btn pagination_prev" href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">
         <span class="btn-icon-left cf-icon cf-icon-left"></span>
         Previous
     </a>
-    <a class="btn pagination_next" href="#pagination_content">
+
+
+    <div class="pagination_form">
+        &nbsp;
+    </div>
+
+
+    <a class="btn pagination_next" href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">
         Next
         <span class="btn-icon-right cf-icon cf-icon-right"></span>
-    </a>
-    <form class="pagination_form" action="index.html#pagination_content">
-        <label class="pagination_label" for="pagination_current-page">Page</label>
-        <input
-            class="pagination_current-page"
-            id="pagination_current-page"
-            name="pagination_current-page"
-            type="number" min="1" max="149"
-            value="5">
-        <span class="pagination_label">of&nbsp;5</span>
-        <button class="btn btn-link pagination_submit"
-                id="pagination_submit"
-                type="submit">
-                Go
-        </button>
-    </form>
+    </a>  
 </nav>
+
+
+
+<!--
+{% if prev_page %}
+        <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">« Previous</a>
+      {% else %}
+        « Previous
+      {% endif %}
+       | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | 
+       {% if page_num < total_pages %}
+        <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">Next »</a>
+      {% else %}
+        Next »
+      {% endif %}
 
 -->
