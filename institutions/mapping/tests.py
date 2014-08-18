@@ -1,3 +1,5 @@
+from urllib import unquote
+
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
@@ -70,7 +72,7 @@ class ViewTest(TestCase):
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
             centlon=67.6767)
         url = make_download_url(self.respondent, metro)
-        self.assertTrue('msamd-1=12121' in url)
+        self.assertTrue('msamd="12121"' in unquote(url))
 
         div1 = Geo.objects.create(
             geoid='123123', geo_type=Geo.METDIV_TYPE, name='MetMetMet',
@@ -84,8 +86,7 @@ class ViewTest(TestCase):
             centlon=67.6767, cbsa='12121', metdiv='78787')
         url = make_download_url(self.respondent, metro)
         self.assertFalse('12121' in url)
-        self.assertTrue('msamd-1=98989' in url)
-        self.assertTrue('msamd-2=78787' in url)
+        self.assertTrue('msamd+IN+("98989","78787")' in unquote(url))
 
         div1.delete()
         div2.delete()

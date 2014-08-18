@@ -105,10 +105,6 @@
   font-size: 18px;
   margin-right: 1em;
 }
-#download-data:before {
-  font-family: 'CFPB Minicons';
-  content: '\e610';
-}
 .vex-dialog-message h2 {
   font-weight: bold;
   font-size: larger;
