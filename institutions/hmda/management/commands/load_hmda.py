@@ -17,7 +17,8 @@ class Command(BaseCommand):
 
         geo_states = set(
             row['state'] for row in
-            Geo.objects.values('state').distinct())
+            Geo.objects.filter(geo_type=Geo.TRACT_TYPE).values('state').distinct()
+        )
         self.stdout.write("Filtering by states "
                           + ", ".join(list(sorted(geo_states))))
         known_hmda = set(
