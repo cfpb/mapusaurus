@@ -37,7 +37,7 @@ def respondant(request, respondant_id):
 
 def search_home(request):
     """Search for an institution"""
-    return render(request, 'respondants/index.html')
+    return render(request, 'respondants/search_home.html')
 
 
 def select_metro(request, agency_id, respondent):
