@@ -1,7 +1,7 @@
 <div class="search-results-heading">
 
   <div class="search-results-heading__title">
-    <h1>You Searched for &ldquo;{{ query_str }}&rdquo;</h1>
+    <h1>You Searched for: &ldquo;{{ query_str }}&rdquo;</h1>
   </div>
 
   <div class="search-results-heading__start-over">
@@ -11,33 +11,12 @@
   {% if total_results != 0 %}
 
   <div class="search-results-heading__num-results">
-    <p>{% if prev_page %}
-        <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">« Previous</a>
-      {% else %}
-        « Previous
-      {% endif %}
-       | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | 
-       {% if page_num < total_pages %}
-        <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">Next »</a>
-      {% else %}
-        Next »
-      {% endif %}
-    </p>
-  </div>
-
-  <div class="search-results-heading__sort">
-    <label>Sort by:
-      <select id="sort" name="sort" onchange="this.form.submit()">
-        <option value="-score" {% if 'score' in current_sort %}selected{% endif %}>Relevance</option>
-        <option value="-num_loans" {% if 'num_loans' in current_sort %}selected{% endif %}>Number of Applications</option>
-        <option value="-assets" {% if 'assets' in current_sort %}selected{% endif %}>Corporate Assets</option>
-      </select>
-    </label>
+    <p>Result(s) <strong>{{start_results}} to {{end_results}}</strong> of <strong>{{total_results}}</strong></p>
   </div>
 
   <input type="hidden" id="page" name="page" value="{{page_num}}">
 
-  <div class="search-results-heading__num-results">
+  <div class="search-results-heading__num-results-control">
     <label>Display:
       <select id="num_results" name="num_results" onchange="this.form.submit()">
         <option value="10" {% if num_results = 10 %}selected{% endif %}>10</option>
@@ -47,6 +26,17 @@
       </select>
     </label>
   </div>
+
+  <div class="search-results-heading__sort-control">
+    <label>Sort by:
+      <select id="sort" name="sort" onchange="this.form.submit()">
+        <option value="-score" {% if 'score' in current_sort %}selected{% endif %}>Relevance</option>
+        <option value="-num_loans" {% if 'num_loans' in current_sort %}selected{% endif %}>Number of Applications</option>
+        <option value="-assets" {% if 'assets' in current_sort %}selected{% endif %}>Corporate Assets</option>
+      </select>
+    </label>
+  </div>
+
 
  {% endif %}
 

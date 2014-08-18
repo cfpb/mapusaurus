@@ -4,12 +4,12 @@
 {% block title %}Find an Lender (HMDA respondent){% endblock %}
 
 {% block head_styles %}
-    <link rel="stylesheet" href="{% static 'respondants/css/search.css' %}" />
+
 {% endblock %}
 
 
 {% block main_content %}
-    <div>
+    <div class="search-home">
         <h2>Find a lender</h2>
         <form action="{% url 'respondants:search_results' %}" method="GET">
             <div class="search-field">

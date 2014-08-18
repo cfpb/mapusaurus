@@ -1,7 +1,7 @@
 {% extends "basestyle/one_column_layout.html" %}
+{% load staticfiles %}
 
 {% block title %}Search Results for: &ldquo;{{ query_str }}&rdquo; - CFPB HMDA Mapping App{% endblock %}
-
 
 
 {% block header_content %}
@@ -47,5 +47,12 @@
 {% block footer_content %}
 
     </form>
+
+{% endblock %}
+
+{% block foot_scripts %}
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="{% static 'respondants/js/search.js' %}"></script>
 
 {% endblock %}
