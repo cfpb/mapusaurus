@@ -1,3 +1,5 @@
+from urllib import unquote
+
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
@@ -23,16 +25,16 @@ class ViewTest(TestCase):
         self.zip_code.delete()
 
     def test_home(self):
-        resp = self.client.get(reverse('home'))
+        resp = self.client.get(reverse('map'))
         self.assertFalse('lender-info' in resp.content)
-        resp = self.client.get(reverse('home'), {'some': 'thing'})
+        resp = self.client.get(reverse('map'), {'some': 'thing'})
         self.assertFalse('lender-info' in resp.content)
-        resp = self.client.get(reverse('home'), {'lender': 'thing'})
+        resp = self.client.get(reverse('map'), {'lender': 'thing'})
         self.assertFalse('lender-info' in resp.content)
-        resp = self.client.get(reverse('home'), {'lender': '123456789'})
+        resp = self.client.get(reverse('map'), {'lender': '123456789'})
         self.assertFalse('lender-info' in resp.content)
 
-        resp = self.client.get(reverse('home'), {'lender': '122-333'})
+        resp = self.client.get(reverse('map'), {'lender': '122-333'})
         self.assertTrue('lender-info' in resp.content)
         self.assertTrue('Some Bank' in resp.content)
         self.assertTrue('123 Avenue St.' in resp.content)
@@ -47,7 +49,7 @@ class ViewTest(TestCase):
             geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
             centlon=67.6767)
-        resp = self.client.get(reverse('home'), {'metro': '12121'})
+        resp = self.client.get(reverse('map'), {'metro': '12121'})
         self.assertTrue('45.4545' in resp.content)
         self.assertTrue('67.6767' in resp.content)
         self.assertTrue('0.11' in resp.content)
@@ -70,7 +72,7 @@ class ViewTest(TestCase):
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
             centlon=67.6767)
         url = make_download_url(self.respondent, metro)
-        self.assertTrue('msamd-1=12121' in url)
+        self.assertTrue('msamd="12121"' in unquote(url))
 
         div1 = Geo.objects.create(
             geoid='123123', geo_type=Geo.METDIV_TYPE, name='MetMetMet',
@@ -84,8 +86,7 @@ class ViewTest(TestCase):
             centlon=67.6767, cbsa='12121', metdiv='78787')
         url = make_download_url(self.respondent, metro)
         self.assertFalse('12121' in url)
-        self.assertTrue('msamd-1=98989' in url)
-        self.assertTrue('msamd-2=78787' in url)
+        self.assertTrue('msamd+IN+("98989","78787")' in unquote(url))
 
         div1.delete()
         div2.delete()

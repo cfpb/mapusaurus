@@ -19,7 +19,7 @@
                       class="institution-name">{{institution.formatted_name}}</span></p>
                     <p>To create an interactive map of their lending patterns,
                     select an MSA to view:</p>
-                    <form action="{% url 'home' %}" method="GET">
+                    <form action="{% url 'map' %}" method="GET">
                         <div class="search-field">
                             <label for="geoid">Select an MSA</label>
                             <input type="text" id="geoid" />
