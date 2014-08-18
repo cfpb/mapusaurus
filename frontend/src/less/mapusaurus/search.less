@@ -1,85 +1,80 @@
+
+/* Shrink the default button sizes by a few pixels */
 @btn-font-size: 12px;
 @btn-v-padding: 7px;
 
 .search-home {
-    display: table; 
-    margin: 0 auto 320px auto;
+    //display: table; 
+    //margin: 0 auto 320px auto;
 
-    .institution-name {
-      font-weight: bold;
+    margin-bottom: 320px;
+    .search-field {
+        input[type="text"] {
+            width: 24em;
+            padding: 0.25em 0.5em;
+        }
     }
 
-    .search-field {
-      margin-bottom: 2em;
+}
+
+.search-field {
+    
+    label {
+        display: inline-block;
+    }
+
+    input[disabled] {
+      color: @gray-20;
+    }
+
+    input[type="text"] {
+        width: 24em;
+        padding: 0.25em 0.5em;
+    }
+
+    /*
+    .institution-name {
+      font-weight: bold;
     }
 
     a.reveal {
       font-size: small;
     }
 
-    .search-field label, .search-field .example-hint {
-      display: block;
-      font-size: small;
+    */
+
+    .search-name-label,
+    .example-hint {
+        display: block;
+        font-size: small;
     }
 
-    .search-field input[type="text"] {
-      width: 18em;
-      padding: 0.25em 0.5em;
-    }
-
-    .search-field input[type="submit"] {
-      margin-left: 2em;
-      padding-left: 1em;
-      padding-right: 1em;
-    }
-
-    .search-field .example-hint {
-      color: #777;
-      font-style: italic;
-      margin-top: 0.5em;
-    }
-
-    input[disabled] {
-      color: #aaa;
+    .example-hint {
+        color: @gray-50;
+        font-style: italic;
+        margin-top: 6px;
     }
 
     .tt-suggestion {
-      text-transform: capitalize;
-      border-left: 1px solid #888;
-      border-right: 1px solid #888;
-      border-bottom: 1px solid #888;
-      padding: 0 0.5em;
-      background-color: #fff;
-      width: 18em;
+        text-transform: capitalize;
+        border-left: 1px solid @gray-50;
+        border-right: 1px solid @gray-50;
+        border-bottom: 1px solid @gray-50;
+        padding: 0 4px;
+        background-color: @gray-5;
+        width: 24em; /* same width as search input */
     }
 
     .tt-suggestion p {
-      margin-bottom: 0.2em;
+        margin-bottom: 8px;
     }
 
 }
 
 
-
-
-
-
-
 .search-results-form {
     background-color: @gray-20;
     padding: 4px 0;
-
-    .search-results-form__content {
-        .grid_column(12);
-        label {
-            display: inline-block;
-        }
-
-        input {
-            width: 320px;
-        }
-    }
-
 }
 
 
@@ -170,6 +165,11 @@
 
 
 @media only screen and (min-width: 37.5em) {
+    
+    .search-home {
+        .grid_column(6);
+        .grid_push(3);
+    }
 
     .search-results {
 
