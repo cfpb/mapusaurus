@@ -243,7 +243,6 @@ class ViewTest(TestCase):
         results = views.search_results(request)
         self.assertEqual(results.data['page_num'], 1)
 
-
     @patch('respondants.views.SearchQuerySet')
     def test_search_num_results(self, SQS):
         request = RequestFactory().get('/', data={'q': 'Bank'})
@@ -265,22 +264,29 @@ class ViewTest(TestCase):
 class InstitutionIndexTests(TestCase):
     fixtures = ['agency', 'many_tracts']
 
-    def test_queryset_num_loans(self):
-        zipcode = ZipcodeCityState.objects.create(
+    def setUp(self):
+        self.zipcode = ZipcodeCityState.objects.create(
             zip_code=12345, city='City', state='IL')
-        inst1 = Institution.objects.create(
+        self.inst1 = Institution.objects.create(
             year=1234, ffiec_id='9876543210', agency=Agency.objects.get(pk=9),
             tax_id='1111111111', name='Institution', mailing_address='mail',
-            zip_code=zipcode)
-        inst2 = Institution.objects.create(
+            zip_code=self.zipcode)
+        self.inst2 = Institution.objects.create(
             year=1234, ffiec_id='0123456789', agency=Agency.objects.get(pk=9),
             tax_id='2222222222', name='Institution', mailing_address='mail',
-            zip_code=zipcode)
-        hmda = HMDARecord.objects.create(
+            zip_code=self.zipcode)
+        self.hmda = HMDARecord.objects.create(
             as_of_year=2005, respondent_id='9876543210', agency_code='9',
             loan_amount_000s=100, action_taken=4, statefp='00',
             countyfp='000', lender='998765433210', geoid=Geo.objects.all()[0])
 
+    def tearDown(self):
+        self.hmda.delete()
+        self.inst2.delete()
+        self.inst1.delete()
+        self.zipcode.delete()
+
+    def test_queryset_num_loans(self):
         found1, found2 = False, False
         index = InstitutionIndex()
         for obj in index.index_queryset():
@@ -292,7 +298,10 @@ class InstitutionIndexTests(TestCase):
         self.assertTrue(found1)
         self.assertFalse(found2)
 
-        hmda.delete()
-        inst2.delete()
-        inst1.delete()
-        zipcode.delete()
+    def test_queryset_read(self):
+        found = False
+        index = InstitutionIndex()
+        for obj in index.read_queryset():
+            found = True
+            self.assertFalse(hasattr(obj, 'num_loans'))
+        self.assertTrue(found)
