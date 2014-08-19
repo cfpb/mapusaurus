@@ -1,7 +1,7 @@
 {% extends "basestyle/one_column_layout.html" %}
 {% load staticfiles %}
 
-{% block title %}Search Results for: &ldquo;{{ query_str }}&rdquo; - CFPB HMDA Mapping App{% endblock %}
+{% block title %}Search Results for: &ldquo;{{ query_str }}&rdquo;{% endblock %}
 
 
 {% block header_content %}
@@ -27,7 +27,7 @@
         {% include "respondants/partial/search_results_header.html" %}
 
         {% if total_results == 0 %}
-            <h3>No results found.</h4>
+            <h3>No results found.</h3>
         {% else %}
             {% include 'respondants/partial/search_results_details.html' %}
         {% endif %}

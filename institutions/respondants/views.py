@@ -10,8 +10,9 @@ from rest_framework.response import Response
 from respondants.models import Institution
 
 
-def respondant(request, respondant_id):
-    respondant = get_object_or_404(Institution, pk=respondant_id)
+def respondant(request, agency_id, respondent):
+    respondant = get_object_or_404(Institution, ffiec_id=respondent,
+                                    agency_id=int(agency_id))
     context = {'respondant': respondant}
 
     parents = [respondant]
@@ -30,7 +31,7 @@ def respondant(request, respondant_id):
 
     return render(
         request,
-        'respondants/respondant.html',
+        'respondants/respondant_profile.html',
         context
     )
 
