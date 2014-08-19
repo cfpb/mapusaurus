@@ -1,7 +1,8 @@
 {
   "name": "mapusaurus",
   "dependencies": {
-    "cf-buttons": "git://github.com/cfpb/cf-buttons.git#1.1.0",
+    "cf-core": "https://github.com/cfpb/cf-core",
+    "cf-buttons": "git://github.com/cfpb/cf-buttons.git",
     "cf-colors": "git://github.com/cfpb/cf-colors.git",
     "cf-expandables": "git://github.com/cfpb/cf-expandables.git",
     "cf-forms": "git://github.com/cfpb/cf-forms.git",
