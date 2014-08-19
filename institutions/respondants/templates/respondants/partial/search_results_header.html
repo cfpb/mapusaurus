@@ -1,0 +1,43 @@
+<div class="search-results-heading">
+
+  <div class="search-results-heading__title">
+    <h1>You Searched for: &ldquo;{{ query_str }}&rdquo;</h1>
+  </div>
+
+  <div class="search-results-heading__start-over">
+    <p><a href="?q=">Start Over</a></p>
+  </div>
+
+  {% if total_results != 0 %}
+
+  <div class="search-results-heading__num-results">
+    <p>Result(s) <strong>{{start_results}} to {{end_results}}</strong> of <strong>{{total_results}}</strong></p>
+  </div>
+
+  <input type="hidden" id="page" name="page" value="{{page_num}}">
+
+  <div class="search-results-heading__num-results-control">
+    <label>Display:
+      <select id="num_results" name="num_results" onchange="this.form.submit()">
+        <option value="10" {% if num_results = 10 %}selected{% endif %}>10</option>
+        <option value="25" {% if num_results = 25 %}selected{% endif %}>25</option>
+        <option value="50" {% if num_results = 50 %}selected{% endif %}>50</option>
+        <option value="100" {% if num_results = 100 %}selected{% endif %}>100</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="search-results-heading__sort-control">
+    <label>Sort by:
+      <select id="sort" name="sort" onchange="this.form.submit()">
+        <option value="-score" {% if 'score' in current_sort %}selected{% endif %}>Relevance</option>
+        <option value="-num_loans" {% if 'num_loans' in current_sort %}selected{% endif %}>Number of Applications</option>
+        <option value="-assets" {% if 'assets' in current_sort %}selected{% endif %}>Corporate Assets</option>
+      </select>
+    </label>
+  </div>
+
+
+ {% endif %}
+
+</div><!-- ./search-results-heading -->

@@ -20,4 +20,5 @@ $(document).ready(function() {
         displayKey: 'formatted_name',
         source: search.ttAdapter()
     });
+
 });

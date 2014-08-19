@@ -1,0 +1,78 @@
+/* ==========================================================================
+   CFPB Design Manual
+   LAYOUT CSS FILE
+   ========================================================================== */
+
+.wrap {
+  .grid_wrapper();
+}
+
+/* Mobile first means all content boxes are full width */
+
+.sidebar-content {
+  .grid_column(12);
+}
+
+.main-content {
+  .grid_column(12);
+}
+
+
+
+
+
+/* Media Queries
+   ========================================================================== */
+
+/* Mobile portrait (320px) */
+@media only screen and (min-width: 20em) {
+
+}
+
+/* Mobile landscape (480px) */
+@media only screen and (min-width: 30em) {
+
+}
+
+/* Small tablet (600px) */
+@media only screen and (min-width: 37.5em) {
+
+  .sidebar-content {
+    .grid_column(3);
+    padding-bottom: 2em;
+    padding-top: 2em;
+  }
+
+  .main-content {
+    padding-bottom: 2em;
+    padding-top: 2em;
+  }
+
+  .main-content__two-column {
+    .grid_column(9);
+  }
+
+
+}
+
+
+
+/* Tablet/netbook (768px) */
+@media only screen and (min-width: 48em) {
+
+}
+
+/* Landscape tablet/netbook/laptop (1024px) */
+@media only screen and (min-width: 64em) {
+
+}
+
+/* Desktop (1280px) */
+@media only screen and (min-width: 80em) {
+
+}
+
+/* Widescreen (1600px) */
+@media only screen and (min-width: 100em) {
+
+}

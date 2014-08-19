@@ -1,179 +1,58 @@
+{% extends "basestyle/one_column_layout.html" %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html lang="en">
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <title>You Searched for: {{ query_str }}</title>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        {% block custom_css %}{% endblock %}
-    </head>
-
-    <body>
-
-        {% block page_header %}{% endblock %}
-
-<div style="background-color: #f5f5f5; margin-bottom: 1em; padding: 8px 0">
-
-<div class="container"> 
-<form class="form-inline" role="form" method="get">
-    <label for="q" class="control-label">Search:</label>
-    <input type="text" class="form-control input-sm" style="width: 320px" id="q" name="q" placeholder="by respondent name or ID">
-    <button type="submit" class="btn btn-primary btn-sm">Search</button>
-</form>
-</div>
-
-</div>
-        <div class="container">            
-            <div class="row">
-                <div class="col-md-3 hidden">
-                    <h4>Filter By:</h4>
-
-                    <!--
-                    <p><button type="button" class="btn btn-default">Institution</button></p>
-                    <p><button type="button" class="btn btn-default">Location</button></p>
-                    -->
-
-                    <div class="btn-group btn-block" style="margin-bottom: 1.375em">
-                          <button type="button" class="btn btn-default text-left btn-block dropdown-toggle" data-toggle="dropdown">
-                            Regulating Agency <span class="caret"></span>
-                          </button>
-                          <ul class="dropdown-menu btn-block" role="menu">
-                            <li><a href="#">CFPB</a></li>
-                            <li><a href="#">FDIC</a></li>
-                            <li><a href="#">FRS</a></li>
-                            <li><a href="#">HUD</a></li>
-                            <li><a href="#">NCUA</a></li>
-                            <li><a href="#">OCC</a></li>
-                          </ul>
-                    </div>
+{% block title %}Search Results for: &ldquo;{{ query_str }}&rdquo;{% endblock %}
 
 
+{% block header_content %}
 
-                    <p><button type="button" class="btn btn-default text-left btn-block">Corporate Assets</button></p>
+    <form id="search-results-form" role="form" method="get" action="{% url 'respondants:search_results' %}">
 
-                    <p><button type="button" class="btn btn-default text-left btn-block">Number of Applications</button></p>
+    {% include "respondants/partial/search_results_form.html" %}
 
-                    <p><button type="button" class="btn btn-default text-left btn-block">Institution Type</button></p>
-
-
-
-                </div>
+{% endblock %}
 
 
+{% block sidebar_content %}
 
-                <div class="col-md-9">
+    {% include "respondants/partial/search_results_sidebar.html" %}
 
-                    
-
-                    <!-- NESTED COL -->
-
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h4>Search Results:</h4>
-                        </div><!-- ./col-md-8-->
-
-                        <div class="col-md-4 text-right">
-                                <p><a href="?q=">Start Over</a></p>
-                        </div><!-- ./col-md-4-->
-
-                    </div><!-- ./row -->
-
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            <div class="well well-sm">
-                            You searched for <span class="label label-default">&ldquo;{{ query_str }}&rdquo;</span>
-                            </div>
-                        </div><!-- ./col-md-12-->
-
-                    </div><!-- ./row -->
-
-                {% if total_results > 0 %}
-                    <div class="row">
-                        <div class="col-md-6">
-
-                            <p>{% if prev_page %}<a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">« Previous</a>{% else %}« Previous{% endif %} | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | {% if page_num < total_pages %} <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">Next »</a>{% else %}Next »{% endif %}</p>
-
-                        </div><!-- ./col-md-6-->
-
-                        <div class="col-md-6 text-right">
-                                    <div class="btn-group btn-sm">
-                                      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                        Number of Results: {{num_results}}
-                                        <span class="caret"></span>
-                                      </button>
-                                      <ul class="dropdown-menu" role="menu">
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=10&sort={{sort}}">10</a></li>
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=25&sort={{sort}}">25</a></li>
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=50&sort={{sort}}">50</a></li>
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{page_num}}&num_results=100&sort={{sort}}">100</a></li>
-                                      </ul>
-                                    </div>
-
-                                    <div class="btn-group btn-sm">
-                                      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                        Sort by: 
-                                        {% if 'num_loans' in current_sort %}
-                                          Number of Applications
-                                        {% else %}{% if 'assets' in current_sort %}
-                                          Corporate Assets
-                                        {% else %}
-                                          Relevance
-                                        {% endif %}{% endif %}
-                                        <span class="caret"></span>
-                                      </button>
-                                      <ul class="dropdown-menu" role="menu">
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&page={{page_num}}&num_results={{num_results}}">Relevance</a></li>
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&sort=-num_loans&page={{page_num}}&num_results={{num_results}}">Number of Applications</a></li>
-                                        <li><a href="{% url 'respondants:search_results' %}?q={{ query_str }}&sort=-assets&page={{page_num}}&num_results={{num_results}}">Corporate Assets</a></li>
-                                      </ul>
-                                    </div>
-                        </div>
-
-                    </div><!-- ./row -->
-                    <hr/>
-                {% endif %}
-
-                    <div class="row">
-
-                        <div class="col-md-8">
-                            {% if total_results == 0 %}
-                                <p>No results.</p>
-                            {% else %}
-                                {% for key, value in institutions.items %}
-                                    <ul>
-                                        <li>{{key}}<ul>
-                                            
-                                            <li>{{value}}</li>
-                                            
-                                        </ul>
-                                    </ul>
-                                {% endfor %}
-                            {% endif %}
+{% endblock %}
 
 
-                            {% include 'respondants/search_results_details.html' %}
+{% block main_content %}
+
+    <div id="search-results" class="search-results">
+
+        {% include "respondants/partial/search_results_header.html" %}
+
+        {% if total_results == 0 %}
+            <h3>No results found.</h3>
+        {% else %}
+            {% include 'respondants/partial/search_results_details.html' %}
+        {% endif %}
+
+        {% include 'respondants/partial/search_results_pagination.html' %}
+
+        <p>     
+            Notes: Institution data is from the 2012 HMDA Transmittal sheet. <br>
+            Assets are as of December 31 of the preceding calendar year.
+        </p>
+
+    </div>
+
+{% endblock %}
 
 
-                            <p>     
-                                Notes: Institution data is from the 2012 HMDA Transmittal sheet. <br>
-                                Assets are as of December 31 of the preceding calendar year.
-                            </p>
-                        </div>
-                    </div>
+{% block footer_content %}
 
-                </div><!-- ./col-md-9-->
+    </form>
 
+{% endblock %}
 
-            </div>
-   
-        </div>
+{% block foot_scripts %}
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    </body>
-</html>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="{% static 'respondants/js/search.js' %}"></script>
+
+{% endblock %}

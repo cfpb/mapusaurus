@@ -1,0 +1,35 @@
+
+<nav class="pagination">
+    <a class="btn pagination_prev" href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{prev_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">
+        <span class="btn-icon-left cf-icon cf-icon-left"></span>
+        Previous
+    </a>
+
+
+    <div class="pagination_form">
+        &nbsp;
+    </div>
+
+
+    <a class="btn pagination_next" href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{next_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">
+        Next
+        <span class="btn-icon-right cf-icon cf-icon-right"></span>
+    </a>  
+</nav>
+
+
+
+<!--
+{% if prev_page %}
+        <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">« Previous</a>
+      {% else %}
+        « Previous
+      {% endif %}
+       | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | 
+       {% if page_num < total_pages %}
+        <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">Next »</a>
+      {% else %}
+        Next »
+      {% endif %}
+
+-->

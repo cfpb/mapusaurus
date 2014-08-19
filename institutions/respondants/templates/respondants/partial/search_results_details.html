@@ -1,0 +1,98 @@
+{% for res in institutions %}
+    <article class="search-result-record">
+
+        <div class="expandable">
+            <div class="expandable_header">
+                <div class="expandable_header-left">
+                    <h4>
+                        <a href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">{{res.name|title}}</a> &nbsp; 
+                        <small>0{{res.agency_id}}-{{res.ffiec_id}}</small>
+                    </h4>
+                </div>
+                <div class="expandable_header-right">
+                    <a class="expandable_target" href="#expandable-{{res.id}}">
+                        <span class="expandable_cue-open">
+                            Full Details
+                        </span>
+                        <span class="expandable_cue-close">
+                            Hide Details
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="expandable_content" id="expandable-{{res.id}}">
+                <table>
+                    <tr>
+                        <th>Name:</th>
+                        <td>{{res.name|title}}</td>
+                    </tr>
+                    <tr>
+                        <th>Year:</th>
+                        <td>{{res.year}}</td>
+                    </tr>
+                    <tr>
+                        <th>Assets:</th>
+                        <td>{{res.assets}} (thousands of USD)</td>
+                    </tr>
+                    <tr>
+                        <th>Number of 2012 Applications:</th>
+                        <td>{{res.num_loans}}</td>
+                    </tr>
+                    <!--      
+                    <tr>
+                        <th>Institution Type:</th>
+                        <td>Depository Institution / Non DI</td>
+                    </tr>
+                    -->
+                    <tr>
+                        <th>Regulating Agency:</th>
+                        <td>{{res.agency.full_name}}</td>
+                    </tr>
+                    <tr>
+                        <th>Headquarters City &amp; State:</th>
+                        <td>{{res.zip_code.city|title}}, {{res.zip_code.state|upper}}</td>
+                    </tr>
+                    <tr>
+                        <th>Agency-HMDA ID:</th>
+                        <td>0{{res.agency_id}}-{{res.ffiec_id}}</td>
+                    </tr>
+                    <tr>
+                        <th>RSSD ID:</th>
+                        <td>{{res.rssd_id}}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>
+                            <a href="http://www.ffiec.gov/nicpubweb/nicweb/OrgHierarchySearchForm.aspx?parID_RSSD={{res.rssd_id}}&amp;parDT_END=99991231" target="new">NIC data <span class="glyphicon glyphicon-new-window"></span></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>
+                            <a href="{% url 'respondants:respondant_profile' res.agency_id res.ffiec_id %}">HMDA Panel and Transmittal Sheet (TS) data</a>
+                        </td>
+                    </tr>                            
+                </table>
+            </div><!-- ./expandable_content -->
+        </div><!-- ./expandable -->
+
+        <div class="search-result-record__left-col">
+            <dl>
+                <dt>{{res.year}} Assets:</dt>
+                <dd>{{res.assets}}</dd>
+
+                <dt>{{res.year}} LAR Count:</dt>
+                <dd>{{res.num_loans}}</dd>
+            </dl>
+        </div>
+
+        <div class="search-result-record__right-col">
+            <dl>
+                <dt>Headquarters:</dt>
+                <dd>{{res.zip_code.city|title}}, {{res.zip_code.state|upper}} {{res.zip_code.zip_code}}</dd>
+            </dl>
+        </div>
+
+
+    </article>
+{% endfor %}

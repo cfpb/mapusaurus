@@ -1,0 +1,37 @@
+/* ==========================================================================
+   CFPB Design Manual
+   MAIN CSS FILE
+   ========================================================================== */
+
+body, html {
+
+    margin: 0;
+    .webfont-regular();
+    line-height: 1.375;
+    color: @black; /* CFPB black */
+
+    /* Improve default text rendering, handling of kerning pairs and ligatures */
+    font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    word-wrap: break-word;
+    overflow-wrap: break-word; /* New CSS3 syntax supported by Chrome */
+}
+
+
+
+/* MISC Stuff, temporarily here */
+
+
+.warning-banner {
+  //background-color: @redorange-20;
+  //color: @dark-redorange;
+  background-color: @gray-20;
+  color: @gray-80;
+  padding: 4px 0;
+
+  p {
+    text-align: center;
+    font-size: 12px;
+  }
+
+}

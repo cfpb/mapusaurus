@@ -1,40 +1,41 @@
-{% load staticfiles %}
-<!DOCTYPE HTML>
-<html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <title>Select a location</title>
-        <link rel="stylesheet" href="{% static 'respondants/css/search.css' %}" />
-        {% block custom_css %}{% endblock %}
-    </head>
+{% extends "basestyle/one_column_layout.html" %}
+{% load static %}
 
-    <body>
-        {% block page_header %}{% endblock %}
+{% block title %}Select a metropolitan statisical area (MSA) for {{institution.formatted_name}}{% endblock %}
 
-        <section id="content" class="content cf">
-            <main role="main">
-                <div class="wrap">
-                    <h2>Select a location</h2>
-                    <p>You have selected: <span
-                      class="institution-name">{{institution.formatted_name}}</span></p>
-                    <p>To create an interactive map of their lending patterns,
-                    select an MSA to view:</p>
-                    <form action="{% url 'map' %}" method="GET">
-                        <div class="search-field">
-                            <label for="geoid">Select an MSA</label>
-                            <input type="text" id="geoid" />
-                            <input type="hidden" name="lender" value="{{institution.agency_id}}{{institution.ffiec_id}}" />
-                            <input type="hidden" id="msa-field" name="metro" />
-                            <input type="submit" value="Select" disabled />
-                        </div>
-                    </form>
-                </div>
-            </main>
-        </section>
+{% block head_styles %}
 
-        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
-        <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
-    </body>
-</html>
+{% endblock %}
 
+
+{% block main_content %}
+
+    <h1>Select a metropolitan statisical area (MSA)</h1>
+
+    <h4>Lender: <span class="institution-name">{{institution.formatted_name}}</span></h4>
+
+    <p>&nbsp;</p>
+
+    <div class="search-home">
+
+        <form action="{% url 'map' %}" method="GET">
+            <div class="search-field">
+                <label for="geoid">To view an interactive map of {{institution.name}}<br> home mortgage applications, search and select a city:</label>
+                <input type="text" id="geoid">
+                <input type="hidden" name="lender" value="{{institution.agency_id}}{{institution.ffiec_id}}">
+                <input type="hidden" id="msa-field" name="metro">
+                <button type="submit" id="metro-search__submit" class="btn btn__disabled" disabled>View map</button>
+            </div>
+        </form>
+
+    </div>
+
+{% endblock %}
+
+
+{% block foot_scripts %}
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
+
+{% endblock %}

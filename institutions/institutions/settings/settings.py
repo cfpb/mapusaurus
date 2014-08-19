@@ -45,7 +45,7 @@ INSTALLED_APPS = (
     'haystack',
     'rest_framework',
     'overextends',
-
+    'basestyle',
     'cfpbstyle',
     'mapping',
     'respondants',

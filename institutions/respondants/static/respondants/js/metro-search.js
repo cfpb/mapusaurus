@@ -32,7 +32,7 @@ $(document).ready(function() {
         })
         .on('typeahead:selected', function(ev, suggestion) {
             msaField.val(suggestion.geoid).data('name', suggestion.name);
-            $('input[type=submit]').prop('disabled', false);
+            $('#metro-search__submit').prop('disabled', false).removeClass('btn__disabled');
         });
 });
 
