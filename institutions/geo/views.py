@@ -1,3 +1,4 @@
+import json
 import math
 
 from django.conf import settings
@@ -10,6 +11,7 @@ from rest_framework import serializers
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from topojson import topojson
 
 from geo.models import Geo
 
@@ -29,6 +31,21 @@ def to_lon(zoom, xtile):
 
 @cache_page(settings.LONGTERM_CACHE_TIMEOUT, cache='long_term_geos')
 def tile(request, zoom, xtile, ytile):
+    """Get geojson data with no transform"""
+    return HttpResponse(geojson(request, zoom, xtile, ytile),
+                        content_type='application/json')
+
+
+@cache_page(settings.LONGTERM_CACHE_TIMEOUT, cache='long_term_geos')
+def topotile(request, zoom, xtile, ytile):
+    """Convert geojson into topojson"""
+    topo_dict = topojson(json.loads(geojson(request, zoom, xtile, ytile)),
+                         None)
+    return HttpResponse(json.dumps(topo_dict),
+                        content_type='application/json')
+
+
+def geojson(request, zoom, xtile, ytile):
     """A geojson tile which will load the types of geos requested, defaulting
     to county, tract, and metro.
 
@@ -77,8 +94,7 @@ def tile(request, zoom, xtile, ytile):
     response = '{"crs": {"type": "link", "properties": {"href": '
     response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
     response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
-    response = response % ', '.join(shape.as_geojson() for shape in shapes)
-    return HttpResponse(response, content_type='application/json')
+    return response % ', '.join(shape.as_geojson() for shape in shapes)
 
 
 class GeoSerializer(serializers.ModelSerializer):
