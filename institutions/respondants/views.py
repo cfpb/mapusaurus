@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from respondants.models import Institution
 
 
+
 def respondant(request, agency_id, respondent):
     respondant = get_object_or_404(Institution, ffiec_id=respondent,
                                     agency_id=int(agency_id))
@@ -95,16 +96,19 @@ def search_results(request):
     else:
         query = []
 
+    #number of results per page
     try:
         num_results = int(request.GET.get('num_results', '25'))
     except ValueError:
         num_results = 25
 
+    #page number
     try:
         page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
+    #start and end results
     if page > 1:
         start_results = num_results * page - num_results
         end_results = num_results * page
@@ -115,14 +119,23 @@ def search_results(request):
     sort = request.GET.get('sort', 'relevance')
 
     total_results = len(query)
-    total_pages = total_results / num_results
+    
+    # total number of pages
+    if  total_results <= num_results:
+        total_pages = 1
+    else:
+        total_pages = total_results / num_results
+
     query = query[start_results:end_results]
 
+    #next page
     if total_results < num_results or page is total_pages:
         next_page = 0
         end_results = total_results
     else:
         next_page = page + 1
+
+    #previous page
     prev_page = page - 1 
 
     results = []

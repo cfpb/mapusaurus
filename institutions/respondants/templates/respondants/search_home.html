@@ -9,8 +9,19 @@
 
 
 {% block main_content %}
+
+        
+
+        <p>Welcome to the Fair Lending HMDA Visualization Toolkit! This is a beta version.</p>
+
+        <p>Currently, this tool can only show originations and applications from a given lender in a selected MSA in the 2012 HMDA data.<br> Additional functionality will be coming soon.</p>
+
+        <p>&nbsp;</p>
+
     <div class="search-home">
+
         <h2>Find a lender</h2>
+
         <form action="{% url 'respondants:search_results' %}" method="GET">
             <div class="search-field">
                 <label for="search_name" class="search-name-label">Search by lender name or lender ID
@@ -21,6 +32,7 @@
                 <span class="example-hint">ex: 09-9992222111; 9992222111-09; First Federal Savings</span>
             </div>
         </form>
+        
     </div>
 
 {% endblock %}
