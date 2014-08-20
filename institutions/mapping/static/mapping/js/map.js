@@ -59,7 +59,7 @@ var Mapusaurus = {
     //  Some style info
     bubbleStyle: {stroke: false, fillOpacity: 0.9, weight: 2},
     //  fillColor and color will be assigned when rendering
-    tractStyle: {stroke: false, fillOpacity: 0.4, weight: 2, fill: true,
+    tractStyle: {stroke: false, fillOpacity: 0.25, weight: 2, fill: true,
                  smoothFactor: 0.1},
     //  used when loading census tracts
     loadingStyle: {stroke: true, weight: 2, color: '#babbbd', fill: false,
