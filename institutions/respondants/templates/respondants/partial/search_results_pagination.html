@@ -1,35 +1,59 @@
 
-<nav class="pagination">
-    <a class="btn pagination_prev" href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{prev_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">
-        <span class="btn-icon-left cf-icon cf-icon-left"></span>
-        Previous
-    </a>
+{% if total_results != 0 %}
 
+  <nav class="pagination">
 
-    <div class="pagination_form">
-        &nbsp;
-    </div>
+    {% if prev_page > 0 %}
 
+      <a class="btn pagination_prev" href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{prev_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">
+          <span class="btn-icon-left cf-icon cf-icon-left"></span>
+          Previous
+      </a>
 
-    <a class="btn pagination_next" href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{next_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">
-        Next
-        <span class="btn-icon-right cf-icon cf-icon-right"></span>
-    </a>  
-</nav>
+    {% else %}
 
+      <span class="btn btn__disabled pagination_prev">
+          <span class="btn-icon-left btn__disabled cf-icon cf-icon-left"></span>
+          Previous
+      </span>
 
+    {% endif %}
 
-<!--
-{% if prev_page %}
-        <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{prev_page}}&num_results={{num_results}}&sort={{sort}}">« Previous</a>
-      {% else %}
-        « Previous
-      {% endif %}
-       | <strong>{{start_results}} to  {{end_results}}</strong> of <strong>{{total_results}}</strong> | 
-       {% if page_num < total_pages %}
-        <a href="{% url 'respondants:search_results' %}?q={{query_str}}&page={{next_page}}&num_results={{num_results}}&sort={{sort}}">Next »</a>
-      {% else %}
-        Next »
-      {% endif %}
+      <div class="pagination_form">
+          &nbsp;
+      </div>
 
--->
+    {% if page_num < total_pages %}
+
+      <a class="btn pagination_next" href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{next_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">
+          Next
+          <span class="btn-icon-right cf-icon cf-icon-right"></span>
+      </a> 
+
+    {% else %}
+
+      <span class="btn btn__disabled pagination_next">
+          <span class="btn-icon-right cf-icon cf-icon-right"></span>
+          Next
+      </span>
+
+    {% endif %}
+
+  </nav>
+
+{% endif %}
+
+{% comment %}
+Pages:<br>
+page_num: {{page_num}}<br>
+prev_page: {{prev_page}}<br>
+next_page: {{next_page}}<br>
+total_pages: {{total_pages}}<br>
+<br>
+Results:<br>
+num_results (per page): {{num_results}}<br>
+start_results: {{start_results}}<br>
+end_results: {{end_results}}<br>
+total_results: {{total_results}}<br>
+
+{% endcomment %}
