@@ -124,8 +124,7 @@ def search_results(request):
     if  total_results <= num_results:
         total_pages = 1
     else:
-        total_pages = (total_results / num_results) + 1
-
+        total_pages = total_results / num_results
 
     query = query[start_results:end_results]
 
