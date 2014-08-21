@@ -4,7 +4,8 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from geo.models import Geo
-from mapping.views import make_download_url
+from hmda.models import HMDARecord
+from mapping.views import calculate_median_loans, make_download_url
 from respondants.models import Agency, Institution, ZipcodeCityState
 
 
@@ -90,4 +91,70 @@ class ViewTest(TestCase):
 
         div1.delete()
         div2.delete()
+        metro.delete()
+
+    def test_calculate_median_loans(self):
+        tract_params = {
+            'geo_type': Geo.TRACT_TYPE, 'minlat': 0.11, 'minlon': 0.22,
+            'maxlat': 1.33, 'maxlon': 1.44, 'centlat': 45.4545,
+            'centlon': 67.67, 'geom': "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))"}
+        city_tract1 = Geo.objects.create(name='City Tract 1', cbsa='99999',
+                                         geoid='11111111', **tract_params)
+        city_tract2 = Geo.objects.create(name='City Tract 2', cbsa='99999',
+                                         geoid='11111112', **tract_params)
+        city_tract3 = Geo.objects.create(name='City Tract 3', cbsa='99999',
+                                         geoid='11111113', **tract_params)
+        # also create a tract with no loans
+        city_tract4 = Geo.objects.create(name='City Tract 4', cbsa='99999',
+                                         geoid='11111114', **tract_params)
+
+        non_city_tract1 = Geo.objects.create(name='Non-City Tract 5',
+                                             geoid='11111115', **tract_params)
+        non_city_tract2 = Geo.objects.create(name='Non-City Tract 6',
+                                             geoid='11111116', **tract_params)
+        del tract_params['geo_type']
+        metro = Geo(name='City', geoid='99999', geo_type=Geo.METRO_TYPE,
+                    **tract_params)
+        hmda_params = {
+            'as_of_year': 2010, 'respondent_id': self.respondent.ffiec_id,
+            'agency_code': str(self.respondent.agency_id),
+            'loan_amount_000s': 100, 'action_taken': 1, 'statefp': '11',
+            'countyfp': '111'}
+        hmdas = []
+        hmdas.append(HMDARecord.objects.create(
+            geoid=city_tract1, **hmda_params))
+        for i in range(3):
+            hmdas.append(HMDARecord.objects.create(
+                geoid=city_tract2, **hmda_params))
+        for i in range(8):
+            hmdas.append(HMDARecord.objects.create(
+                geoid=city_tract3, **hmda_params))
+        for i in range(7):
+            hmdas.append(HMDARecord.objects.create(
+                geoid=non_city_tract1, **hmda_params))
+        for i in range(11):
+            hmdas.append(HMDARecord.objects.create(
+                geoid=non_city_tract2, **hmda_params))
+
+        # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4;             avg: 4, med: 3
+        self.assertEqual(3, calculate_median_loans(self.respondent, metro))
+        # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4; 7 in 5, 16 in 6; avg:6, med:7
+        self.assertEqual(7, calculate_median_loans(self.respondent, None))
+
+        hmda_params['respondent_id'] = 'other'
+        # these should not affect the results, since they are another lender
+        for i in range(3):
+            hmdas.append(HMDARecord.objects.create(
+                geoid=city_tract2, **hmda_params))
+        self.assertEqual(3, calculate_median_loans(self.respondent, metro))
+        self.assertEqual(7, calculate_median_loans(self.respondent, None))
+
+        for hmda in hmdas:
+            hmda.delete()
+        city_tract1.delete()
+        city_tract2.delete()
+        city_tract3.delete()
+        city_tract4.delete()
+        non_city_tract1.delete()
+        non_city_tract2.delete()
         metro.delete()
