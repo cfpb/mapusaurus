@@ -16,10 +16,10 @@ class Command(BaseCommand):
         'geo:topotiles': range(9, 13),
     }
     #   Roughly the bounds of the continental US
-    min_lat = -125
-    max_lat = -66
-    min_lon = 26
-    max_lon = 49
+    min_lon = -125
+    max_lon = -66
+    min_lat = 26
+    max_lat = 49
 
     def per_zoom_level(self, url_name, zoom, identifier, max_procs):
         """Iterates through x and y tiles, hitting the ones we care about"""

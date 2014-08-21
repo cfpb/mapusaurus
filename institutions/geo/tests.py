@@ -147,7 +147,7 @@ class PrecacheTest(TestCase):
     def test_handle_with_args(self, client):
         Precache.urls['geo:topotiles'] = range(3, 6)
         Precache().handle('3', '5')
-        self.assertEqual(3, client.return_value.get.call_count)
+        self.assertEqual(7, client.return_value.get.call_count)
 
     @patch('geo.management.commands.precache_geos.Client')
     def test_handle_no_args(self, client):
