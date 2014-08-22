@@ -1,0 +1,31 @@
+{% extends "basestyle/base.html" %}
+
+{% block body %}
+<div class="map-container">
+
+        {% include "common/predecisional_banner.html" %}
+
+	    {% include "basestyle/common/header_map.html" %}
+
+	    {% block header_content %}{% endblock %}
+
+	    <div class="map-wrapper">
+
+	        <aside id="map-aside" class="map-aside" role="complementary">
+
+	            {% block sidebar_content %}{% endblock %}
+
+	        </aside>
+
+	        <main id="map-main" class="map-main" role="main">
+
+	            {% block main_content %}{% endblock %}
+
+	        </main>
+
+	    </div><!-- ./wrap -->
+
+	    {% block footer_content %}{% endblock %}
+
+</div>
+{% endblock %}

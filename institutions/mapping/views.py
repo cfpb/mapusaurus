@@ -6,7 +6,7 @@ from geo.models import Geo
 from respondants.models import Institution
 
 
-def home(request):
+def map(request):
     """Display the map. If lender info is present, provide it to the
     template"""
     lender = request.GET.get('lender', '')
@@ -30,7 +30,7 @@ def home(request):
 
     context['download_url'] = make_download_url(lender, metro)
 
-    return render(request, 'index.html', context)
+    return render(request, 'map.html', context)
 
 
 def make_download_url(lender, metro):
