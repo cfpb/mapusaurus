@@ -1,0 +1,1 @@
+DATABASES = {'default': {'HOST':'127.0.0.1','ENGINE': 'django.contrib.gis.db.backends.postgis', 'NAME': 'fairlending', 'USER': 'fairlending', 'PASSWORD': 'fairlending'}}
