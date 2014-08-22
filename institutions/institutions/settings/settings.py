@@ -72,10 +72,7 @@ ROOT_URLCONF = 'institutions.urls'
 WSGI_APPLICATION = 'institutions.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-DATABASES = {'default': {'ENGINE': '', 'NAME': '', 'USER': '', 'PASSWORD': ''}}
-
+ 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
