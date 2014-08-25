@@ -6,7 +6,7 @@
             <dt>Regulating Agency:</dt>
                 <dd>{{ lender.agency.acronym }}</dd>
             <dt>Lender ID:</dt>
-                <dd>{{ lender.ffiec_id }}-{{ lender.agency.id }}</dd>
+                <dd>0{{ lender.agency_id }}-{{ lender.ffiec_id }}</dd>
             <!--<dt>RSSID ID:</dt>
                 <dd>{{ lender.rss_id }}</dd>-->
             <dt>Address:</dt>
@@ -14,7 +14,7 @@
                     {{lender.zip_code.city}}, {{lender.zip_code.state}}
                     {{lender.zip_code.zip_code }}
                 </dd>
-            <dt>HMDA Data Year:</dt>
+            <dt>HMDA Year:</dt>
                 <dd>{{ lender.year }}</dd>
         </dl>
     </div>
