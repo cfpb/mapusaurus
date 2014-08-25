@@ -61,40 +61,4 @@
         <script type="text/javascript" src="{% static 'mapping/js/map.js' %}"></script>
         <img id="key-image" class="hidden" src="{% static 'mapping/images/key-image.png' %}" />
 
-
-<script>
-
-'use strict';
-
-function setMapHeight() {
-    /* Set the map div to the height of the browser window. */
-
-    var viewportHeight = $(window).height();
-    //console.log("viewportHeight: " + viewportHeight);
-
-    var warningBannerHeight = $("#warning-banner").height();
-    //console.log("warningBannerHeight: " + warningBannerHeight);
-
-    var headerHeight = $("#header").height();
-    //console.log("headerHeight: " + headerHeight);
-
-    var mapHeaderHeight = $("#map-main-header").height();
-    console.log("mapHeaderHeight: " + mapHeaderHeight);
-
-    var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
-
-    mapHeight = mapHeight - 17; // we are getting an extra 16px from padding on various divs that .height does not return -Dan
-    //console.log("mapHeight: " + mapHeight);
-
-    $('#map').css("height", mapHeight);
-}
-
-setMapHeight();
-
-$( window ).resize(function() {
-  setMapHeight();
-});
-
-</script>
-
 {% endblock %}

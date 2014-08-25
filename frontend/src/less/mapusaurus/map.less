@@ -82,11 +82,13 @@ html, body {
     .grid_nested-col-group();
   } 
 
-  .map_header__map-title,
-  .map-header__lock-msa {
-    .grid_column(1,2);
+  .map_header__map-title {
+    .grid_column(8);
   }
 
+  .map-header__lock-msa {
+    .grid_column(4);
+  }
 
 } //end media query
 
@@ -128,6 +130,13 @@ html, body {
     .webfont-demi();
     margin-bottom: .875em;
   }
+
+  h4 {
+    font-size: .75em;
+    .webfont-demi();
+    //margin-bottom: 8px;
+  }
+
   p,
   dt,
   dd {

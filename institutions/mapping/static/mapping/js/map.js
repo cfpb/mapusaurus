@@ -27,6 +27,36 @@ L.TileLayer.GeoJSONData = L.TileLayer.Ajax.extend({
 });
 
 
+function setMapHeight() {
+    /* Set the map div to the height of the browser window minus the header. */
+
+    var viewportHeight = $(window).height();
+    //console.log("viewportHeight: " + viewportHeight);
+
+    var warningBannerHeight = $("#warning-banner").outerHeight();
+    //console.log("warningBannerHeight: " + warningBannerHeight);
+
+    var headerHeight = $("#header").outerHeight();
+    //console.log("headerHeight: " + headerHeight);
+
+    var mapHeaderHeight = $("#map-header").outerHeight();
+    //console.log("mapHeaderHeight: " + mapHeaderHeight);
+
+    var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
+
+    //mapHeight = mapHeight - 17; // we are getting an extra 16px from padding on various divs that .height does not return -Dan
+    //console.log("mapHeight: " + mapHeight);
+
+    $('#map').css("height", mapHeight);
+}
+
+setMapHeight();
+
+$( window ).resize(function() {
+  setMapHeight();
+});
+
+
 var Mapusaurus = {
     //  Leaflet map
     map: null,
