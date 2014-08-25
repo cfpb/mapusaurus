@@ -29,18 +29,14 @@ html, body {
 
 /* Mobile first means all content boxes are full width */
 
-.map-aside {
-  .grid_column(12);
-  border-width: 0;
-}
-
+.map-header,
+.map-aside-header,
+.map-aside,
 .map-main {
   .grid_column(12);
   border-width: 0; // over-ride cf-grid
-  //margin-bottom: -99999px; // trick from: https://blog.credera.com/technology-insights/full-height-column-layout-with-bootstrap/
-  //padding-bottom: 99999px;
-}
 
+}
 
 #map {
 
@@ -63,26 +59,98 @@ html, body {
 /* Small tablet (600px) */
 @media only screen and (min-width: 37.5em) {
 
-  .map-aside {
+  .map-aside,
+  .map-aside-header {
     .grid_column(2);
     border-width: 0;
+    box-sizing: border-box;
+
   }
 
-  .map-main {
+  .map-main,
+  .map-header {
     .grid_column(10);
     border-width: 0;
-    border-left: 5px solid #666;
-    //margin-bottom: -99999px; // trick from: https://blog.credera.com/technology-insights/full-height-column-layout-with-bootstrap/
-    //padding-bottom: 99999px;
+    box-sizing: border-box; 
+  }
+  
+  .map-header {
+    
   }
 
+  .map-header__wrapper {
+    .grid_nested-col-group();
+  } 
+
+  .map_header__map-title,
+  .map-header__lock-msa {
+    .grid_column(1,2);
+  }
+
+
+} //end media query
+
+.map-header,
+.map-aside-header,
+.map-aside {
+  background-color: @gray-20;
 }
 
+.map-header,
+.map-aside-header {
+  height: 34px;
+}
 
+.map-header {
+    border-left: 2px solid @gray-50;
+    border-bottom: 1px solid @gray-50;
+    padding: 4px 8px;
+    
+}
 
+.map-aside-header {
+    border-bottom: 1px solid @gray-50;
+}
 
+.map-main {
+    border-left: 2px solid @gray-50;
+}
 
+.map-header__map-title {
+  line-height: 26px;
+}
 
+.map-aside {
+
+  h3 {
+    font-size: .875em;
+    text-transform: uppercase;
+    .webfont-demi();
+    margin-bottom: .875em;
+  }
+  p,
+  dt,
+  dd {
+    font-size: .75em;
+  }
+  dt {
+    .webfont-medium();
+  }
+  dd {
+    margin-left: 12px;
+    margin-bottom: 4px;
+  }
+  .btn {
+    //width: 150px;
+    font-size: .875em;
+  }
+}
+
+.map-aside__lender-details,
+.map-aside__export {
+  border-bottom: 1px solid @gray-50;
+  padding: 15px;
+}
 
 
 .hidden {
@@ -144,49 +212,14 @@ html, body {
 }
 
 
-/* Map Footer */
-#lender-info, #lower-right-icons {
-  margin-top: 0.5em;
-  margin-left: 5em;
-  margin-right: 5em;
-  font-family: "Avenir Next W01", Arial, sans-serif;
-}
-#lender-info h2 {
-  margin-bottom: 0;
-}
-#lender-info .lender-id {
-  font-size: small;
-}
-#lender-info table {
-  margin-top: 0.5em;
-}
-#lender-info th {
-  vertical-align: top;
-  padding-bottom: 0.25em;
-}
-#lender-info td {
-  padding-bottom: 0.25em;
-}
-#lower-right-icons {
-  float: right;
-}
-#download-data {
-  border-bottom: 0;
-  color: #000;
-  font-size: 24px;
-}
-#take-screenshot {
-  border-bottom: 0;
-  color: #000;
-  font-size: 18px;
-  margin-right: 1em;
-}
+
 .vex-dialog-message h2 {
   font-weight: bold;
   font-size: larger;
 }
 
 /* Map header */
+/*
 #map-header {
   background-color: #d0e5ca;
   border-bottom: 4px solid #2cb34a;
@@ -202,28 +235,28 @@ html, body {
   border-bottom: none;
   text-transform: uppercase;
 }
-#lock-map-container {
-  float: right;
-  margin-top: 0.5em;
-}
-#lock-map-container label {
-  padding-right: 10px;
-  line-height: 30px;
-  vertical-align: top;
-}
-
-#lock-map-container label:after {
-  font-family: 'CFPB Minicons';
-  content: "\e635  \e632";
-  font-size: 30px;
-  margin-left: 10px;
-}
-#lock-map-container label.locked:after {
-  font-family: 'CFPB Minicons';
-  content: "\e634  \e633";
-  font-size: 30px;
-  margin-left: 10px;
-}
-#lock-map-container input {
-  display: none;
+*/
+.map-header__lock-msa {
+  text-align: right;
+  font-size: 14px;
+  label {
+    //padding-right: 8px;
+    line-height: 26px;
+    //vertical-align: top;
+  }
+  label:after {
+    font-family: 'CFPB Minicons';
+    content: "\e635  \e632";
+    font-size: 18px;
+    margin-left: 8px;
+  }
+  label.locked:after {
+    font-family: 'CFPB Minicons';
+    content: "\e634  \e633";
+    font-size: 18px;
+    margin-left: 8px;
+  }
+  input {
+    display: none;
+  }
 }
