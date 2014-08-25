@@ -27,8 +27,10 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-POSTGIS_VERSION = (2, 1, 3)
-DATABASES = {'default': {'ENGINE': 'django.contrib.gis.db.backends.postgis', 'NAME': 'fairlending', 'USER': 'fairlending', 'PASSWORD': 'fairlending'}}
+# Database
+# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+DATABASES = {'default': {'ENGINE': '', 'NAME': '', 'USER': '', 'PASSWORD': ''}}
+
 # Application definition
 
 INSTALLED_APPS = (
