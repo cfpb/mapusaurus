@@ -101,6 +101,13 @@ class ViewTest(TestCase):
 
         self.assertTrue(len(topo_str) < len(geo_str))
         topo_geo_dict = geojson(topo_dict)
+        self.assertEqual(len(geo_dict['features']),
+                         len(topo_geo_dict['features']))
+        geo_dict['features'] = sorted(geo_dict['features'],
+                                      key=lambda f: f['properties']['geoid'])
+        topo_geo_dict['features'] = sorted(
+            topo_geo_dict['features'], key=lambda f: f['properties']['geoid'])
+        self.assertEqual(len(geo_dict['features']),  3)
         self.assertEqual(geo_dict, topo_geo_dict)
 
     @patch('geo.views.SearchQuerySet')
