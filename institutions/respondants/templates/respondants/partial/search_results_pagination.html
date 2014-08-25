@@ -1,5 +1,5 @@
 
-{% if total_results != 0 %}
+{% if total_pages > 1 %}
 
   <nav class="pagination">
 
@@ -40,6 +40,10 @@
     {% endif %}
 
   </nav>
+
+{% elif total_pages == 1 %}
+
+  <hr>
 
 {% endif %}
 

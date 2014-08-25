@@ -1,0 +1,261 @@
+/*
+@font-face {
+  font-family: 'CFPB Minicons';
+  src: url('../font/cf-icons.eot');
+  src: url('../font/cf-icons.eot?#iefix') format('embedded-opentype'), url('../font/cf-icons.woff') format('woff'), url('../font/cf-icons.ttf') format('truetype'), url('../font/cf-icons.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+*/
+
+// Set the map and all its containers to 100% so it fills the viewport
+html, body {
+    //height:100%;
+}
+
+.map-container {
+  //min-height: 100%;
+  //overflow: hidden;
+}
+
+.map-wrapper {
+  .grid_wrapper( 100% );
+  max-width: 100%; // over-ride cg-grid default
+  padding: 0; // over-ride cg-grid default
+  //margin-bottom: -99999px; // trick from: https://blog.credera.com/technology-insights/full-height-column-layout-with-bootstrap/
+  //padding-bottom: 99999px;
+}
+
+/* Mobile first means all content boxes are full width */
+
+.map-header,
+.map-aside-header,
+.map-aside,
+.map-main {
+  .grid_column(12);
+  border-width: 0; // over-ride cf-grid
+  box-sizing: border-box; 
+}
+
+.map-header,
+.map-aside-header,
+.map-aside {
+  background-color: @gray-20;
+}
+
+.map-header,
+.map-aside-header {
+  height: 34px;
+  line-height: 26px; //34 px high minus 8px padding
+  padding: 4px 8px;
+}
+
+
+
+/* Media Queries
+   ========================================================================== */
+
+/* Mobile portrait (320px) */
+@media only screen and (min-width: 20em) {
+
+}
+
+/* Mobile landscape (480px) */
+@media only screen and (min-width: 30em) {
+
+}
+
+/* Small tablet (600px) */
+@media only screen and (min-width: 37.5em) {
+
+  .map-aside,
+  .map-aside-header {
+    .grid_column(2);
+    border-width: 0;
+    box-sizing: border-box;
+  }
+
+  .map-main,
+  .map-header {
+    .grid_column(10);
+    border-width: 0;
+    box-sizing: border-box; 
+  }
+
+  .map-main {
+      border-left: 2px solid @gray-50;
+  }
+
+  .map-header {
+      border-left: 2px solid @gray-50;
+      border-bottom: 1px solid @gray-50;
+  }
+
+  .map-aside-header {
+      border-bottom: 1px solid @gray-50;
+  }
+
+  .map-header__wrapper {
+    .grid_nested-col-group();
+  } 
+
+  .map-header__map-title {
+    .grid_column(8);
+  }
+
+  .map-header__lock-msa {
+    .grid_column(4);
+  }
+
+
+} //end media query
+
+
+
+.map-aside {
+
+  h3 {
+    font-size: .875em;
+    text-transform: uppercase;
+    .webfont-demi();
+    margin-bottom: .875em;
+  }
+
+  h4 {
+    font-size: .75em;
+    .webfont-demi();
+    //margin-bottom: 8px;
+  }
+
+  p,
+  dt,
+  dd {
+    font-size: .75em;
+  }
+  dt {
+    .webfont-medium();
+  }
+  dd {
+    margin-left: 12px;
+    margin-bottom: 4px;
+  }
+  .btn {
+    //width: 150px;
+    font-size: .875em;
+  }
+}
+
+.map-aside__lender-details,
+.map-aside__export {
+  border-bottom: 1px solid @gray-50;
+  padding: 15px;
+}
+
+
+.hidden {
+  display: block;
+}
+
+
+
+
+#map .hover-box {
+  position: absolute;
+  bottom: 85px;
+  left: 50px;
+  z-index: 1002;
+  background-color: #fff;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+
+#key {
+  width: 300px;
+  border: solid 1px #000;
+  background: #fff;
+  padding: 10px;
+}
+
+#key label {
+  font-size: larger;
+  font-weight: bold;
+}
+
+#minority-key {
+  width: 100%;
+  margin-top: 5px;
+  background-image: url(choropleth-key.svg);
+  /*background: linear-gradient(to right, #ffffd9, #c6eab2 50%, #0e90c2 80%, #1d5caa);*/
+}
+
+#key select {
+  width: 100%;
+  margin-top: 10px;
+  font-size: large;
+}
+
+#percentage-container .left {
+  display: inline-block;
+  width: 25%;
+}
+#percentage-container .center {
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+}
+#percentage-container .right {
+  display: inline-block;
+  width: 25%;
+  text-align: right;
+}
+
+
+
+.vex-dialog-message h2 {
+  font-weight: bold;
+  font-size: larger;
+}
+
+/* Map header */
+/*
+#map-header {
+  background-color: #d0e5ca;
+  border-bottom: 4px solid #2cb34a;
+  padding: 0.5em 0;
+  min-height: 4em;
+}
+#map-header .map-type {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#map-header a {
+  color: #f00;
+  border-bottom: none;
+  text-transform: uppercase;
+}
+*/
+.map-header__lock-msa {
+  text-align: right;
+  font-size: 14px;
+  label {
+    //padding-right: 8px;
+    //line-height: 26px;
+    //vertical-align: top;
+  }
+  label:after {
+    font-family: 'CFPB Minicons';
+    content: "\e635  \e632";
+    font-size: 18px;
+    margin-left: 8px;
+  }
+  label.locked:after {
+    font-family: 'CFPB Minicons';
+    content: "\e634  \e633";
+    font-size: 18px;
+    margin-left: 8px;
+  }
+  input {
+    display: none;
+  }
+}
