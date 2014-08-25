@@ -43,13 +43,16 @@ html, body {
   background-color: @gray-20;
 }
 
-.map-header,
-.map-aside-header {
+.map-header {
   height: 34px;
   line-height: 26px; //34 px high minus 8px padding
   padding: 4px 8px;
 }
 
+
+.map-aside-header {
+  height: 34px;
+}
 
 
 /* Media Queries
@@ -259,3 +262,80 @@ html, body {
     display: none;
   }
 }
+
+
+// MAP ASIDE
+
+ul.map-aside-header__tablist {
+    .clearfix();
+    list-style-type: none;
+    margin: 0; 
+    padding: 0;
+
+    li {
+        
+        float: left;
+        margin: 0;
+        padding: 0;
+        
+        a {
+            // font
+
+            color: @gray;
+            font-size: 18px;
+            line-height: 25px; // 34 minus 4px top and bottom padding minus 1 px bottom border
+
+            cursor: pointer;
+            text-decoration: none;
+
+            padding: 4px 16px;
+
+            // over-ride bottom borders from CFPB global styles.css 
+            border-bottom: 1px solid @gray-50;
+            border-right: 1px solid @gray-50;
+
+            //tab color
+            background-color: @gray-10;
+
+            // position
+            position: relative; 
+            display: block; 
+            top: 0;
+
+            &.active {
+                background-color: @gray-20;
+                color: @black;
+
+                &:hover {
+                    background-color: @gray-20;
+                    //border: none;
+                }    
+            }
+
+            &:hover {
+                background-color: @gray-20;
+                
+            }
+
+            &:hover,
+            &:focus {
+                /* over-ride bottom borders from CFPB global styles.css */
+                border-bottom: 1px solid @gray-50;
+            }
+        } //a
+    } //li
+} //ul.cf-tablist
+
+
+    .map-aside__tabpanel {
+        background: @white;
+        padding: 1em 0;
+
+        > div {
+            .clearfix();
+            min-height: 4em;
+        }
+        
+    } //.map-aside__tabpanel
+
+
