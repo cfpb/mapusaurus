@@ -19,38 +19,30 @@
 
 {% block sidebar_content %}
 
+    {% include 'partial/map_lender_info.html'%}
 
-            {% include 'partial/map_header.html'%}
-
-            {#% include 'partial/map_lender_info.html'%#}
-
-             {% include 'partial/map_actions.html'%}
+    {% include 'partial/map_actions.html'%}
 
 {% endblock %}
 
 
 {% block main_content %}
 
-            <div 
-                {% if metro %} 
-                    data-cent-lat="{{metro.centlat}}"
-                    data-cent-lon="{{metro.centlon}}"
-                    data-geoid="{{metro.geoid}}"
-                {% endif %}
-            >
-                {% leaflet_map "map" callback="Mapusaurus.initialize" %}
+    <div 
+        {% if metro %} 
+            data-cent-lat="{{metro.centlat}}"
+            data-cent-lon="{{metro.centlon}}"
+            data-geoid="{{metro.geoid}}"
+        {% endif %}
+    >
+            
+    {% leaflet_map "map" callback="Mapusaurus.initialize" %}
+
+    </div>
 
 
+    {% include 'partial/map_key.html'%}
 
-
-            </div>
-
-
-        {% include 'partial/map_key.html'%}
-
-       
-        
-        
 
 {% endblock %}
 
@@ -77,24 +69,27 @@
 function setMapHeight() {
     /* Set the map div to the height of the browser window. */
 
-    var mapViewportHeight = $(window).height();
-    //console.log("mapViewportHeight: " + mapViewportHeight);
+    var viewportHeight = $(window).height();
+    //console.log("viewportHeight: " + viewportHeight);
 
-    var mapHeaderHeight = $("#header").height();
-    //console.log("mapHeaderHeight: " + mapHeaderHeight);
+    var warningBannerHeight = $("#warning-banner").height();
+    //console.log("warningBannerHeight: " + warningBannerHeight);
 
-    var mapWarningBannerHeight = $("#warning-banner").height();
-    //console.log("mapWarningBannerHeight: " + mapWarningBannerHeight);
+    var headerHeight = $("#header").height();
+    //console.log("headerHeight: " + headerHeight);
 
-    var mapHeight = (mapViewportHeight - (mapHeaderHeight + mapWarningBannerHeight));
-    mapHeight = mapHeight - 16; // we are getting an extra 16px from somewhere -Dan
+    var mapHeaderHeight = $("#map-main-header").height();
+    console.log("mapHeaderHeight: " + mapHeaderHeight);
+
+    var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
+
+    mapHeight = mapHeight - 17; // we are getting an extra 16px from padding on various divs that .height does not return -Dan
     //console.log("mapHeight: " + mapHeight);
 
     $('#map').css("height", mapHeight);
 }
+
 setMapHeight();
-
-
 
 $( window ).resize(function() {
   setMapHeight();

@@ -1,18 +1,32 @@
 {% if lender %}
-        <section id="lender-info">
-            <h2>{{ lender.name}}</h2>
-            <span class="lender-id">{{ lender.ffiec_id }} ({{ lender.agency.acronym }})</span>
-            <table>
-                <tr>
-                    <th>Address</th>
-                    <td>{{ lender.mailing_address }}<br />
-                      {{lender.zip_code.city}}, {{lender.zip_code.state}}
-                      {{lender.zip_code.zip_code }}</td>
-                </tr>
-                <tr>
-                    <th>Year</th>
-                    <td>{{ lender.year }}</li>
-                </tr>
-            </table>
-        </section>
+<div class="map-aside__lender-details">
+    <h3>Lender Details</h3>
+    <dl>
+        <dt>Regulating Agency:</dt>
+            <dd>{{ lender.agency.acronym }}</dd>
+        <dt>Lender ID:</dt>
+            <dd>{{ lender.ffiec_id }}-{{ lender.agency.id }}</dd>
+        <dt>RSSID ID:</dt>
+            <dd>{{ lender.rss_id }}</dd>
+        <dt>Address:</dt>
+            <dd>{{ lender.mailing_address }}<br />
+                {{lender.zip_code.city}}, {{lender.zip_code.state}}
+                {{lender.zip_code.zip_code }}
+            </dd>
+        <dt>HMDA Data Year:</dt>
+            <dd>{{ lender.year }}</dd>
+    </dl>
+</div>
+
+
+<div class="map-aside__lender-details">
+    <h3>MSA Details</h3>
+    <dl>
+        <dt>Population (2012):</dt>
+            <dd>12344566</dd>
+        <dt>Counties:</dt>
+            <dd>12</dd>
+    </dl>
+</div>
+
 {% endif %}

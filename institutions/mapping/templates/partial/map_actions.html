@@ -1,6 +1,18 @@
-        <section id="lower-right-icons">
-            <a id="take-screenshot"><i class="fa fa-camera"></i></a>
-            {% if download_url %}
-            <a target="_blank" id="download-data" href="{{ download_url }}" ><i class="fa fa-download"></i></a>
-            {% endif %}
-        </section>
+        <div class="map-aside__export">
+            <h3>Export Map</h3>
+            <p>Export the current map view as a PNG file:</p>
+            <p style="text-align:center"><a class="btn" id="take-screenshot">
+                Export Map
+                <span class="btn_icon__right fa fa-picture-o"></span>
+            </a></p>
+        </div>
+{% if download_url %}
+        <div class="map-aside__export">
+            <h3>Download Data</h3>
+            <p>Download the loan application records (LAR) for the current Lender/MSA/Year combination:</p>
+            <p style="text-align:center"><a target="_blank" id="download-data" class="btn" href="{{ download_url }}" >
+                Download CSV
+                <span class="btn_icon__right fa fa-download"></span>
+            </a></p>
+        </div>
+{% endif %}

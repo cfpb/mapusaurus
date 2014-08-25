@@ -5,27 +5,34 @@
 
         {% include "common/predecisional_banner.html" %}
 
-	    {% include "basestyle/common/header_map.html" %}
+        {% include "basestyle/common/header_map.html" %}
 
-	    {% block header_content %}{% endblock %}
+        <div class="map-wrapper">
 
-	    <div class="map-wrapper">
+            <div id="map-aside-header" class="map-aside-header">
+                &nbsp;
+            </div>
 
-	        <aside id="map-aside" class="map-aside" role="complementary">
+            <div id="map-header" class="map-header">
+                {% include "partial/map_header.html" %}
+            </div>
 
-	            {% block sidebar_content %}{% endblock %}
+        </div><!-- ./map-wrapper -->
 
-	        </aside>
+        <div class="map-wrapper">        
+            <aside id="map-aside" class="map-aside" role="complementary">
 
-	        <main id="map-main" class="map-main" role="main">
+                {% block sidebar_content %}{% endblock %}
 
-	            {% block main_content %}{% endblock %}
+            </aside>
 
-	        </main>
+            <main id="map-main" class="map-main" role="main">
 
-	    </div><!-- ./wrap -->
+                {% block main_content %}{% endblock %}
 
-	    {% block footer_content %}{% endblock %}
+            </main>
+        </div><!-- ./map-wrapper -->
+
 
 </div>
 {% endblock %}

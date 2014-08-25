@@ -6554,27 +6554,9 @@ html b {
   padding: 0;
 }
 /* Mobile first means all content boxes are full width */
-.map-aside {
-  display: inline-block;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  border: solid transparent;
-  border-width: 0 15px;
-  margin-right: -0.25em;
-  vertical-align: top;
-  width: 100%;
-  border-width: 0;
-}
-.ie .map-aside {
-  margin-right: -0.26em;
-}
-.lt-ie8 .map-aside {
-  display: inline;
-  margin-right: 0;
-  zoom: 1;
-  behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
-}
+.map-header,
+.map-aside-header,
+.map-aside,
 .map-main {
   display: inline-block;
   -webkit-box-sizing: border-box;
@@ -6587,9 +6569,15 @@ html b {
   width: 100%;
   border-width: 0;
 }
+.ie .map-header,
+.ie .map-aside-header,
+.ie .map-aside,
 .ie .map-main {
   margin-right: -0.26em;
 }
+.lt-ie8 .map-header,
+.lt-ie8 .map-aside-header,
+.lt-ie8 .map-aside,
 .lt-ie8 .map-main {
   display: inline;
   margin-right: 0;
@@ -6602,28 +6590,66 @@ html b {
 /* Mobile landscape (480px) */
 /* Small tablet (600px) */
 @media only screen and (min-width: 37.5em) {
-  .map-aside {
+  .map-aside,
+  .map-aside-header {
     display: inline-block;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
-    box-sizing: border-box;
     border: solid transparent;
     border-width: 0 15px;
     margin-right: -0.25em;
     vertical-align: top;
     width: 16.66666667%;
     border-width: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
   }
-  .ie .map-aside {
+  .ie .map-aside,
+  .ie .map-aside-header {
     margin-right: -0.26em;
   }
-  .lt-ie8 .map-aside {
+  .lt-ie8 .map-aside,
+  .lt-ie8 .map-aside-header {
     display: inline;
     margin-right: 0;
     zoom: 1;
     behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
   }
-  .map-main {
+  .map-main,
+  .map-header {
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border: solid transparent;
+    border-width: 0 15px;
+    margin-right: -0.25em;
+    vertical-align: top;
+    width: 83.33333333%;
+    border-width: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  .ie .map-main,
+  .ie .map-header {
+    margin-right: -0.26em;
+  }
+  .lt-ie8 .map-main,
+  .lt-ie8 .map-header {
+    display: inline;
+    margin-right: 0;
+    zoom: 1;
+    behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
+  }
+  .map-header__wrapper {
+    display: block;
+    position: relative;
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+  .map_header__map-title,
+  .map-header__lock-msa {
     display: inline-block;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -6632,19 +6658,84 @@ html b {
     border-width: 0 15px;
     margin-right: -0.25em;
     vertical-align: top;
-    width: 83.33333333%;
-    border-width: 0;
-    border-left: 5px solid #666;
+    width: 50%;
   }
-  .ie .map-main {
+  .ie .map_header__map-title,
+  .ie .map-header__lock-msa {
     margin-right: -0.26em;
   }
-  .lt-ie8 .map-main {
+  .lt-ie8 .map_header__map-title,
+  .lt-ie8 .map-header__lock-msa {
     display: inline;
     margin-right: 0;
     zoom: 1;
     behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
   }
+}
+.map-header,
+.map-aside-header,
+.map-aside {
+  background-color: #e3e4e5;
+}
+.map-header,
+.map-aside-header {
+  height: 34px;
+}
+.map-header {
+  border-left: 2px solid #babbbd;
+  border-bottom: 1px solid #babbbd;
+  padding: 4px 8px;
+}
+.map-aside-header {
+  border-bottom: 1px solid #babbbd;
+}
+.map-main {
+  border-left: 2px solid #babbbd;
+}
+.map-header__map-title {
+  line-height: 26px;
+}
+.map-aside h3 {
+  font-size: .875em;
+  text-transform: uppercase;
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  margin-bottom: .875em;
+}
+.lt-ie9 .map-aside h3 {
+  font-weight: normal !important;
+}
+.lt-ie9 .map-aside h3 {
+  font-weight: normal !important;
+}
+.map-aside p,
+.map-aside dt,
+.map-aside dd {
+  font-size: .75em;
+}
+.map-aside dt {
+  font-family: "AvenirNextLTW01-Medium", Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+}
+.lt-ie9 .map-aside dt {
+  font-weight: normal !important;
+}
+.lt-ie9 .map-aside dt {
+  font-weight: normal !important;
+}
+.map-aside dd {
+  margin-left: 12px;
+  margin-bottom: 4px;
+}
+.map-aside .btn {
+  font-size: .875em;
+}
+.map-aside__lender-details,
+.map-aside__export {
+  border-bottom: 1px solid #babbbd;
+  padding: 15px;
 }
 .hidden {
   display: block;
@@ -6693,49 +6784,12 @@ html b {
   width: 25%;
   text-align: right;
 }
-/* Map Footer */
-#lender-info,
-#lower-right-icons {
-  margin-top: 0.5em;
-  margin-left: 5em;
-  margin-right: 5em;
-  font-family: "Avenir Next W01", Arial, sans-serif;
-}
-#lender-info h2 {
-  margin-bottom: 0;
-}
-#lender-info .lender-id {
-  font-size: small;
-}
-#lender-info table {
-  margin-top: 0.5em;
-}
-#lender-info th {
-  vertical-align: top;
-  padding-bottom: 0.25em;
-}
-#lender-info td {
-  padding-bottom: 0.25em;
-}
-#lower-right-icons {
-  float: right;
-}
-#download-data {
-  border-bottom: 0;
-  color: #000;
-  font-size: 24px;
-}
-#take-screenshot {
-  border-bottom: 0;
-  color: #000;
-  font-size: 18px;
-  margin-right: 1em;
-}
 .vex-dialog-message h2 {
   font-weight: bold;
   font-size: larger;
 }
 /* Map header */
+/*
 #map-header {
   background-color: #d0e5ca;
   border-bottom: 4px solid #2cb34a;
@@ -6751,28 +6805,27 @@ html b {
   border-bottom: none;
   text-transform: uppercase;
 }
-#lock-map-container {
-  float: right;
-  margin-top: 0.5em;
+*/
+.map-header__lock-msa {
+  text-align: right;
+  font-size: 14px;
 }
-#lock-map-container label {
-  padding-right: 10px;
-  line-height: 30px;
-  vertical-align: top;
+.map-header__lock-msa label {
+  line-height: 26px;
 }
-#lock-map-container label:after {
+.map-header__lock-msa label:after {
   font-family: 'CFPB Minicons';
   content: "\e635  \e632";
-  font-size: 30px;
-  margin-left: 10px;
+  font-size: 18px;
+  margin-left: 8px;
 }
-#lock-map-container label.locked:after {
+.map-header__lock-msa label.locked:after {
   font-family: 'CFPB Minicons';
   content: "\e634  \e633";
-  font-size: 30px;
-  margin-left: 10px;
+  font-size: 18px;
+  margin-left: 8px;
 }
-#lock-map-container input {
+.map-header__lock-msa input {
   display: none;
 }
 /* Shrink the default button sizes by a few pixels */
