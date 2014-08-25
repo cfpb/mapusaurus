@@ -2,27 +2,6 @@
 
 vex.defaultOptions.className = 'vex-theme-plain';
 
-function setMapHeight() {
-    /* Set the map div to the height of the browser window minus the header. */
-    var viewportHeight = $(window).height();
-    //console.log("viewportHeight: " + viewportHeight);
-    var warningBannerHeight = $("#warning-banner").outerHeight();
-    //console.log("warningBannerHeight: " + warningBannerHeight);
-    var headerHeight = $("#header").outerHeight();
-    //console.log("headerHeight: " + headerHeight);
-    var mapHeaderHeight = $("#map-header").outerHeight();
-    //console.log("mapHeaderHeight: " + mapHeaderHeight);
-    var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
-    //console.log("mapHeight: " + mapHeight);
-    $('#map').css("height", mapHeight);
-}
-
-setMapHeight();
-
-$( window ).resize(function() {
-  setMapHeight();
-});
-
 
 /* The GeoJSON tile layer is excellent, but makes assumptions that we don't
  * want (like refreshing whenever zooming, and that a single logic layer is
@@ -745,7 +724,30 @@ var Mapusaurus = {
     }
 };
 
+function setMapHeight() {
+    /* Set the map div to the height of the browser window minus the header. */
+    var viewportHeight = $(window).height();
+    //console.log("viewportHeight: " + viewportHeight);
+    var warningBannerHeight = $("#warning-banner").outerHeight();
+    //console.log("warningBannerHeight: " + warningBannerHeight);
+    var headerHeight = $("#header").outerHeight();
+    //console.log("headerHeight: " + headerHeight);
+    var mapHeaderHeight = $("#map-header").outerHeight();
+    //console.log("mapHeaderHeight: " + mapHeaderHeight);
+    var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
+    //console.log("mapHeight: " + mapHeight);
+    $('#map').css("height", mapHeight);
+}
+
 $(document).ready(function() {
+
+    setMapHeight();
+
+    $( window ).resize(function() {
+        setMapHeight();
+    });
+
+
     $('#take-screenshot').click(function(ev) {
         ev.preventDefault();
         vex.dialog.alert({
