@@ -6561,13 +6561,15 @@ html b {
   display: inline-block;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-  box-sizing: border-box;
   border: solid transparent;
   border-width: 0 15px;
   margin-right: -0.25em;
   vertical-align: top;
   width: 100%;
   border-width: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .ie .map-header,
 .ie .map-aside-header,
@@ -6583,6 +6585,17 @@ html b {
   margin-right: 0;
   zoom: 1;
   behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
+}
+.map-header,
+.map-aside-header,
+.map-aside {
+  background-color: #e3e4e5;
+}
+.map-header,
+.map-aside-header {
+  height: 34px;
+  line-height: 26px;
+  padding: 4px 8px;
 }
 /* Media Queries
    ========================================================================== */
@@ -6642,13 +6655,23 @@ html b {
     zoom: 1;
     behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
   }
+  .map-main {
+    border-left: 2px solid #babbbd;
+  }
+  .map-header {
+    border-left: 2px solid #babbbd;
+    border-bottom: 1px solid #babbbd;
+  }
+  .map-aside-header {
+    border-bottom: 1px solid #babbbd;
+  }
   .map-header__wrapper {
     display: block;
     position: relative;
     margin-left: -15px;
     margin-right: -15px;
   }
-  .map_header__map-title {
+  .map-header__map-title {
     display: inline-block;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -6659,10 +6682,10 @@ html b {
     vertical-align: top;
     width: 66.66666667%;
   }
-  .ie .map_header__map-title {
+  .ie .map-header__map-title {
     margin-right: -0.26em;
   }
-  .lt-ie8 .map_header__map-title {
+  .lt-ie8 .map-header__map-title {
     display: inline;
     margin-right: 0;
     zoom: 1;
@@ -6688,29 +6711,6 @@ html b {
     zoom: 1;
     behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
   }
-}
-.map-header,
-.map-aside-header,
-.map-aside {
-  background-color: #e3e4e5;
-}
-.map-header,
-.map-aside-header {
-  height: 34px;
-}
-.map-header {
-  border-left: 2px solid #babbbd;
-  border-bottom: 1px solid #babbbd;
-  padding: 4px 8px;
-}
-.map-aside-header {
-  border-bottom: 1px solid #babbbd;
-}
-.map-main {
-  border-left: 2px solid #babbbd;
-}
-.map-header__map-title {
-  line-height: 26px;
 }
 .map-aside h3 {
   font-size: .875em;
@@ -6838,9 +6838,6 @@ html b {
 .map-header__lock-msa {
   text-align: right;
   font-size: 14px;
-}
-.map-header__lock-msa label {
-  line-height: 26px;
 }
 .map-header__lock-msa label:after {
   font-family: 'CFPB Minicons';
