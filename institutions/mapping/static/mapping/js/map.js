@@ -2,6 +2,28 @@
 
 vex.defaultOptions.className = 'vex-theme-plain';
 
+function setMapHeight() {
+    /* Set the map div to the height of the browser window minus the header. */
+    var viewportHeight = $(window).height();
+    //console.log("viewportHeight: " + viewportHeight);
+    var warningBannerHeight = $("#warning-banner").outerHeight();
+    //console.log("warningBannerHeight: " + warningBannerHeight);
+    var headerHeight = $("#header").outerHeight();
+    //console.log("headerHeight: " + headerHeight);
+    var mapHeaderHeight = $("#map-header").outerHeight();
+    //console.log("mapHeaderHeight: " + mapHeaderHeight);
+    var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
+    //console.log("mapHeight: " + mapHeight);
+    $('#map').css("height", mapHeight);
+}
+
+setMapHeight();
+
+$( window ).resize(function() {
+  setMapHeight();
+});
+
+
 /* The GeoJSON tile layer is excellent, but makes assumptions that we don't
  * want (like refreshing whenever zooming, and that a single logic layer is
  * encoded in the ajaxed data). We instead extend a simpler primitive, and
@@ -21,39 +43,12 @@ L.TileLayer.GeoJSONData = L.TileLayer.Ajax.extend({
     _tileLoaded: function (tile, tilePoint) {
         L.TileLayer.Ajax.prototype._tileLoaded.apply(this, arguments);
         if (tile.datum !== null && tile.datum.features !== null) {
+            if (this.options.initialTransform) {
+                tile.datum = this.options.initialTransform(tile.datum);
+            }
             this.addTileData(tile.datum.features, tilePoint);
         }
     }
-});
-
-
-function setMapHeight() {
-    /* Set the map div to the height of the browser window minus the header. */
-
-    var viewportHeight = $(window).height();
-    //console.log("viewportHeight: " + viewportHeight);
-
-    var warningBannerHeight = $("#warning-banner").outerHeight();
-    //console.log("warningBannerHeight: " + warningBannerHeight);
-
-    var headerHeight = $("#header").outerHeight();
-    //console.log("headerHeight: " + headerHeight);
-
-    var mapHeaderHeight = $("#map-header").outerHeight();
-    //console.log("mapHeaderHeight: " + mapHeaderHeight);
-
-    var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
-
-    //mapHeight = mapHeight - 17; // we are getting an extra 16px from padding on various divs that .height does not return -Dan
-    //console.log("mapHeight: " + mapHeight);
-
-    $('#map').css("height", mapHeight);
-}
-
-setMapHeight();
-
-$( window ).resize(function() {
-  setMapHeight();
 });
 
 
@@ -86,7 +81,7 @@ var Mapusaurus = {
     //  Some style info
     bubbleStyle: {stroke: false, fillOpacity: 0.9, weight: 2},
     //  fillColor and color will be assigned when rendering
-    tractStyle: {stroke: false, fillOpacity: 0.4, weight: 2, fill: true,
+    tractStyle: {stroke: false, fillOpacity: 0.25, weight: 2, fill: true,
                  smoothFactor: 0.1},
     //  used when loading census tracts
     loadingStyle: {stroke: true, weight: 2, color: '#babbbd', fill: false,
@@ -106,7 +101,7 @@ var Mapusaurus = {
                        fillOpacity: 0.5},
 
     initialize: function (map) {
-        var mainEl = $('main'),
+        var mainEl = $('#map-container'),
             centLat = parseFloat(mainEl.data('cent-lat')) || 41.88,
             centLon = parseFloat(mainEl.data('cent-lon')) || -87.63,
             $enforceBoundsEl = $('#enforce-bounds');
@@ -114,10 +109,11 @@ var Mapusaurus = {
         Mapusaurus.map = map;
         Mapusaurus.addKey(map);
         //  We don't need to hold on to this layer as it is feeding others
-        new L.TileLayer.GeoJSONData('/shapes/tiles/{z}/{x}/{y}', {
+        new L.TileLayer.GeoJSONData('/shapes/topotiles/{z}/{x}/{y}', {
             //  don't redraw shapes
             filter: Mapusaurus.notDrawn,
             perGeo: Mapusaurus.handleGeo,
+            initialTransform: Mapusaurus.extractTopo,
             postTileLoaded: Mapusaurus.afterShapeTile
 
         }).addTo(map);
@@ -181,15 +177,23 @@ var Mapusaurus = {
         }).addTo(map);
     },
 
+    /* check if a tile is encoded w/ topojson. If so, convert it to geojson */
+    extractTopo: function(tile) {
+        if (tile.type === 'Topology') {
+            return topojson.feature(tile, tile.objects.name);
+        } else {
+            return tile;
+        }
+    },
 
     isCounty: function(feature) {
-        return feature.properties.geoType[0] === 2;
+        return feature.properties.geoType === 2;
     },
     isTract: function(feature) {
-        return feature.properties.geoType[0] === 3;
+        return feature.properties.geoType === 3;
     },
     isMetro: function(feature) {
-        return feature.properties.geoType[0] === 4;
+        return feature.properties.geoType === 4;
     },
 
     /* Called after each tile of geojson shape data loads */
@@ -465,12 +469,17 @@ var Mapusaurus = {
         Mapusaurus.reZIndex();
     },
 
-    //  Using the selector, determine which hmda statistic to display
+    /* Using the selector, determine which hmda statistic to display. Our goal
+     * is to increase the area of the circle, but the metric we have is
+     * radius, so do the proper algebra */
     hmdaStat: function(tractData) {
-        var fieldName = $('#bubble-selector').val(),
-            splitAt = fieldName.indexOf('_'),
-            scale = parseFloat(fieldName.substring(0, splitAt));
-        return scale * tractData[fieldName.substr(splitAt + 1)];
+        var $selected = $('#bubble-selector option:selected'),
+            fieldName = $selected.val(),
+            scale = $selected.data('scale'),
+            area = scale * tractData[fieldName];
+        //  As Pi is just a constant scalar, we can ignore it in this
+        //  calculation: a = pi*r*r   or r = sqrt(a/pi)
+        return Math.sqrt(area);
     },
 
     /* Makes sure that all bubbles are shown/hidden as needed and have the

@@ -12,7 +12,7 @@ class Geo(models.Model):
              (METDIV_TYPE, 'Metropolitan Division')]
 
     geoid = models.CharField(max_length=20, primary_key=True)
-    geo_type = models.PositiveIntegerField(choices=TYPES)
+    geo_type = models.PositiveIntegerField(choices=TYPES, db_index=True)
     name = models.CharField(max_length=50)
 
     state = models.CharField(max_length=2, null=True)
@@ -41,29 +41,22 @@ class Geo(models.Model):
                           ("geo_type", "minlat", "maxlon"),
                           ("geo_type", "maxlat", "minlon"),
                           ("geo_type", "maxlat", "maxlon"),
-                          ("geo_type", "centlat", "centlon")]
+                          ("geo_type", "centlat", "centlon"),
+                          ("geo_type", "cbsa")]
 
     def as_geojson(self):
-        # geometry is a placeholder, as we'll be inserting a pre-serialized
-        # json string
-        geojson = {"type": "Feature", "geometry": "$_$"}
-        geojson['properties'] = {
-            'geoid': self.geoid,
-            'geoType': Geo.TYPES[self.geo_type - 1],    # 1-indexed
-            'name': self.name,
-            'state': self.state,
-            'county': self.county,
-            'tract': self.tract,
-            'cbsa': self.cbsa,
-            'minlat': self.minlat,
-            'maxlat': self.maxlat,
-            'minlon': self.minlon,
-            'maxlon': self.maxlon,
-            'centlat': self.centlat,
-            'centlon': self.centlon
-        }
+        """Convert this model into a geojson string"""
+        geojson = {'type': 'Feature',
+                   'geometry': '$_$',   # placeholder
+                   'properties': {
+                       'geoid': self.geoid,
+                       'geoType': self.geo_type,
+                       'state': self.state,
+                       'county': self.county,
+                       'cbsa': self.cbsa,
+                       'centlat': self.centlat,
+                       'centlon': self.centlon}}
         geojson = json.dumps(geojson)
-        geojson = geojson.replace(
+        return geojson.replace(
             '"$_$"',
             self.geom.simplify(preserve_topology=True).geojson)
-        return geojson

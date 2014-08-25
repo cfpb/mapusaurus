@@ -25,6 +25,7 @@
     "define": true,
     "Bloodhound": true,
     "canvg": true,
+    "topojson": true,
     "vex": true
   }
 }
