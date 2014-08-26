@@ -149,7 +149,10 @@ html, body {
 }
 
 .map-aside__lender-details,
-.map-aside__export {
+.map-aside__msa-details,
+.map-aside__export,
+.map-aside__download,
+.map-aside__msa-search {
   border-bottom: 1px solid @gray-50;
   padding: 15px;
 }
@@ -158,8 +161,6 @@ html, body {
 .hidden {
   display: block;
 }
-
-
 
 
 #map .hover-box {
@@ -198,22 +199,24 @@ html, body {
   font-size: large;
 }
 
-#percentage-container .left {
-  display: inline-block;
-  width: 25%;
-}
-#percentage-container .center {
-  display: inline-block;
-  width: 50%;
-  text-align: center;
-}
-#percentage-container .right {
-  display: inline-block;
-  width: 25%;
-  text-align: right;
-}
+#percentage-container {
 
+  .left {
+    display: inline-block;
+    width: 25%;
+  }
+  .center {
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+  }
+  .right {
+    display: inline-block;
+    width: 25%;
+    text-align: right;
+  }
 
+}
 
 .vex-dialog-message h2 {
   font-weight: bold;
@@ -265,77 +268,73 @@ html, body {
 
 
 // MAP ASIDE
+.tabs {
+  ul {
+      .clearfix();
+      list-style-type: none;
+      margin: 0; 
+      padding: 0;
 
-ul.map-aside-header__tablist {
+      li {
+          
+          float: left;
+          margin: 0;
+          padding: 0;
+          
+          a {
+              // font
+
+              color: @gray;
+              font-size: 18px;
+              line-height: 25px; // 34 minus 4px top and bottom padding minus 1 px bottom border
+
+              cursor: pointer;
+              text-decoration: none;
+
+              padding: 4px 16px;
+
+              // over-ride bottom borders from CFPB global styles.css 
+              border-bottom: 1px solid @gray-50;
+              border-right: 1px solid @gray-50;
+
+              //tab color
+              background-color: @gray-10;
+
+              // position
+              position: relative; 
+              display: block; 
+              top: 0;
+
+              &.active {
+                  background-color: @gray-20;
+                  color: @black;
+
+                  &:hover {
+                      background-color: @gray-20;
+                      //border: none;
+                  }    
+              }
+
+              &:hover {
+                  background-color: @gray-20;
+                  
+              }
+
+              &:hover,
+              &:focus {
+                  /* over-ride bottom borders from CFPB global styles.css */
+                  border-bottom: 1px solid @gray-50;
+              }
+          } //a
+      } //li
+  } //ul
+} //.tabs
+
+.tabpanel {
+
     .clearfix();
-    list-style-type: none;
-    margin: 0; 
-    padding: 0;
+    min-height: 2em;
 
-    li {
-        
-        float: left;
-        margin: 0;
-        padding: 0;
-        
-        a {
-            // font
-
-            color: @gray;
-            font-size: 18px;
-            line-height: 25px; // 34 minus 4px top and bottom padding minus 1 px bottom border
-
-            cursor: pointer;
-            text-decoration: none;
-
-            padding: 4px 16px;
-
-            // over-ride bottom borders from CFPB global styles.css 
-            border-bottom: 1px solid @gray-50;
-            border-right: 1px solid @gray-50;
-
-            //tab color
-            background-color: @gray-10;
-
-            // position
-            position: relative; 
-            display: block; 
-            top: 0;
-
-            &.active {
-                background-color: @gray-20;
-                color: @black;
-
-                &:hover {
-                    background-color: @gray-20;
-                    //border: none;
-                }    
-            }
-
-            &:hover {
-                background-color: @gray-20;
-                
-            }
-
-            &:hover,
-            &:focus {
-                /* over-ride bottom borders from CFPB global styles.css */
-                border-bottom: 1px solid @gray-50;
-            }
-        } //a
-    } //li
-} //ul.cf-tablist
-
-
-    .map-aside__tabpanel {
-        background: @white;
-        padding: 1em 0;
-
-        > div {
-            .clearfix();
-            min-height: 4em;
-        }
-        
-    } //.map-aside__tabpanel
+} //.tabpanel
 
 
