@@ -38,18 +38,20 @@ html, body {
 }
 
 .map-header,
-.map-aside-header,
-.map-aside {
+.map-aside-header {
   background-color: @gray-20;
 }
 
-.map-header,
-.map-aside-header {
+.map-header {
   height: 34px;
   line-height: 26px; //34 px high minus 8px padding
   padding: 4px 8px;
 }
 
+
+.map-aside-header {
+  height: 34px;
+}
 
 
 /* Media Queries
@@ -71,6 +73,7 @@ html, body {
   .map-aside,
   .map-aside-header {
     .grid_column(2);
+    min-width: 240px;
     border-width: 0;
     box-sizing: border-box;
   }
@@ -114,6 +117,8 @@ html, body {
 
 .map-aside {
 
+  background-color: @gray-10;
+
   h3 {
     font-size: .875em;
     text-transform: uppercase;
@@ -123,7 +128,7 @@ html, body {
 
   h4 {
     font-size: .75em;
-    .webfont-demi();
+    .webfont-medium();
     //margin-bottom: 8px;
   }
 
@@ -146,17 +151,106 @@ html, body {
 }
 
 .map-aside__lender-details,
-.map-aside__export {
+.map-aside__msa-details,
+.map-aside__export,
+.map-aside__download,
+.map-aside__msa-search {
+  background-color: @gray-20;
   border-bottom: 1px solid @gray-50;
   padding: 15px;
 }
 
+.map-aside__msa-search {
+  label {
+    font-size: 12px;
+    .webfont-medium();
+    margin-bottom: 8px;
+  }
+  input[type="text"] {
+    font-size: 14px;
+    width: 200px;
+    box-sizing: border-box;
+    border: 1px solid @gray-50;
+    margin-bottom: 1px; // move type-ahead down so it does not overlap the bottom border
+  }
+
+  .btn {
+    margin-top: 8px;
+    font-size: 12px;
+  }
+
+  .btn__disabled {
+    border: 1px solid @gray-50;
+  }
+
+  .tt-dropdown-menu {
+
+  }
+
+
+  .tt-suggestion {
+
+      text-transform: capitalize;
+      border-left: 1px solid @gray-50;
+      border-right: 1px solid @gray-50;
+      border-bottom: 1px solid @gray-50;
+      padding: 0 4px;
+      background-color: @gray-10;
+      box-sizing: border-box; 
+      width: 200px;
+  }
+
+  .tt-suggestion p {
+      font-size: 14px;
+      margin-bottom: 8px;
+  }
+
+  .typeahead,
+  .tt-query,
+  .tt-hint {
+
+  }
+
+  .typeahead {
+
+  }
+
+  .typeahead:focus {
+
+  }
+
+  .tt-query {
+
+  }
+
+  .tt-hint {
+
+  }
+
+  .tt-dropdown-menu {
+
+  }
+
+  .tt-suggestion {
+
+
+
+  }
+
+  .tt-suggestion.tt-cursor {
+    color: @white;
+    background-color: @pacific;
+
+  }
+
+
+
+
+}
 
 .hidden {
   display: block;
 }
-
-
 
 
 #map .hover-box {
@@ -195,22 +289,24 @@ html, body {
   font-size: large;
 }
 
-#percentage-container .left {
-  display: inline-block;
-  width: 25%;
-}
-#percentage-container .center {
-  display: inline-block;
-  width: 50%;
-  text-align: center;
-}
-#percentage-container .right {
-  display: inline-block;
-  width: 25%;
-  text-align: right;
-}
+#percentage-container {
 
+  .left {
+    display: inline-block;
+    width: 25%;
+  }
+  .center {
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+  }
+  .right {
+    display: inline-block;
+    width: 25%;
+    text-align: right;
+  }
 
+}
 
 .vex-dialog-message h2 {
   font-weight: bold;
@@ -259,3 +355,76 @@ html, body {
     display: none;
   }
 }
+
+
+// MAP ASIDE
+.tabs {
+  ul {
+      .clearfix();
+      list-style-type: none;
+      margin: 0; 
+      padding: 0;
+
+      li {
+          
+          float: left;
+          margin: 0;
+          padding: 0;
+          
+          a {
+              // font
+
+              color: @gray;
+              font-size: 18px;
+              line-height: 25px; // 34 minus 4px top and bottom padding minus 1 px bottom border
+
+              cursor: pointer;
+              text-decoration: none;
+
+              padding: 4px 16px;
+
+              // over-ride bottom borders from CFPB global styles.css 
+              border-bottom: 1px solid @gray-50;
+              border-right: 1px solid @gray-50;
+
+              //tab color
+              background-color: @gray-10;
+
+              // position
+              position: relative; 
+              display: block; 
+              top: 0;
+
+              &.active {
+                  background-color: @gray-20;
+                  color: @black;
+
+                  &:hover {
+                      background-color: @gray-20;
+                      //border: none;
+                  }    
+              }
+
+              &:hover {
+                  background-color: @gray-20;
+                  
+              }
+
+              &:hover,
+              &:focus {
+                  /* over-ride bottom borders from CFPB global styles.css */
+                  border-bottom: 1px solid @gray-50;
+              }
+          } //a
+      } //li
+  } //ul
+} //.tabs
+
+.tabpanel {
+
+    .clearfix();
+    min-height: 2em;
+
+} //.tabpanel
+
+

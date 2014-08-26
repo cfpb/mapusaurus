@@ -12,7 +12,8 @@
     "cf-typography": "git://github.com/cfpb/cf-typography.git",
     "jquery": "~1.11.0",
     "jquery.easing": "~1.3.0",
-    "font-awesome": "~3.2.1",
-    "normalize-css": "~3.0.0"
+    "font-awesome": "~4.2.0",
+    "normalize-css": "~3.0.0",
+    "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.1.0/chosen_v1.1.0.zip"
   }
 }
