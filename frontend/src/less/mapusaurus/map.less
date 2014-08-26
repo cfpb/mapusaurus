@@ -162,27 +162,34 @@ html, body {
 
 .map-aside__msa-search {
   label {
-    font-size: .75em;
+    font-size: 12px;
     .webfont-medium();
+    margin-bottom: 8px;
   }
   input[type="text"] {
-    font-size: .875em;
+    font-size: 14px;
     width: 200px;
-    margin: 8px 0;
     box-sizing: border-box;
     border: 1px solid @gray-50;
+    margin-bottom: 1px; // move type-ahead down so it does not overlap the bottom border
   }
 
   .btn {
-    font-size: .75em;
+    margin-top: 8px;
+    font-size: 12px;
   }
 
   .btn__disabled {
     border: 1px solid @gray-50;
   }
 
+  .tt-dropdown-menu {
+
+  }
+
+
   .tt-suggestion {
-      font-size: .75em;
+
       text-transform: capitalize;
       border-left: 1px solid @gray-50;
       border-right: 1px solid @gray-50;
@@ -190,12 +197,54 @@ html, body {
       padding: 0 4px;
       background-color: @gray-10;
       box-sizing: border-box; 
-      width: 210px;
+      width: 200px;
   }
 
   .tt-suggestion p {
+      font-size: 14px;
       margin-bottom: 8px;
   }
+
+  .typeahead,
+  .tt-query,
+  .tt-hint {
+
+  }
+
+  .typeahead {
+
+  }
+
+  .typeahead:focus {
+
+  }
+
+  .tt-query {
+
+  }
+
+  .tt-hint {
+
+  }
+
+  .tt-dropdown-menu {
+
+  }
+
+  .tt-suggestion {
+
+
+
+  }
+
+  .tt-suggestion.tt-cursor {
+    color: @white;
+    background-color: @pacific;
+
+  }
+
+
+
 
 }
 
