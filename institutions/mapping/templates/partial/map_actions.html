@@ -1,41 +1,53 @@
-{% if lender %}
-    <div id="lender-details" class="map-aside__lender-details tabpanel">
-        <h3>Lender Details</h3>
-        <h4>{{ lender.name}}</h4>
-        <dl>
-            <dt>Regulating Agency:</dt>
-                <dd>{{ lender.agency.acronym }}</dd>
-            <dt>Lender ID:</dt>
-                <dd>0{{ lender.agency_id }}-{{ lender.ffiec_id }}</dd>
-            <!--<dt>RSSID ID:</dt>
-                <dd>{{ lender.rss_id }}</dd>-->
-            <dt>Address:</dt>
-                <dd>{{ lender.mailing_address }}<br />
-                    {{lender.zip_code.city}}, {{lender.zip_code.state}}
-                    {{lender.zip_code.zip_code }}
-                </dd>
-            <dt>HMDA Year:</dt>
-                <dd>{{ lender.year }}</dd>
-        </dl>
-    </div>
-{% endif %}
+<div id="map-aside-header__tabpanels" class="tabpanels">
 
-{% if metro %}
-    <div id="msa-details" class="map-aside__msa-details tabpanel">
-        <h3>MSA Details</h3>
-        <dl>
-            <dt>Population (2012):</dt>
-                <dd>12344566</dd>
-            <dt>Counties:</dt>
-                <dd>12</dd>
-        </dl>
-    </div>
-{% endif %}
+    <div id="map-aside__lender-details" class="map-aside__lender-details">
+
+        {% if lender %}
+            <div id="lender-info"><!-- lender-info ID is in a test, it needs to be changed in the test -->
+                <h3>Lender Details</h3>
+                <h4>{{ lender.name}}</h4>
+                <dl>
+                    <dt>Regulating Agency:</dt>
+                        <dd>{{ lender.agency.acronym }}</dd>
+                    <dt>Lender ID:</dt>
+                        <dd>0{{ lender.agency_id }}-{{ lender.ffiec_id }}</dd>
+                    <!--<dt>RSSID ID:</dt>
+                        <dd>{{ lender.rss_id }}</dd>-->
+                    <dt>Address:</dt>
+                        <dd>{{ lender.mailing_address }}<br />
+                            {{lender.zip_code.city}}, {{lender.zip_code.state}}
+                            {{lender.zip_code.zip_code }}
+                        </dd>
+                    <dt>HMDA Year:</dt>
+                        <dd>{{ lender.year }}</dd>
+                </dl>
+            </div>
+        {% endif %}
+
+    </div><!-- /.tabpanel -->
+
+    {% if metro %}
 
 
 
+            <div id="map-aside__msa-details" class="map-aside__msa-details">
+                <h3>MSA Details</h3>
+                <dl>
+                    <dt>Population (2012):</dt>
+                        <dd>12344566</dd>
+                    <dt>Counties:</dt>
+                        <dd>12</dd>
+                </dl>
+            </div>
 
-<div class="tabpanel">
+
+
+    {% endif %}
+
+
+
+
+    <div id="map-aside__download-export">
 
         <div class="map-aside__export">
             <h3>Export Map</h3>
@@ -45,15 +57,24 @@
                 <span class="btn_icon__right fa fa-picture-o"></span>
             </a></p>
         </div>
-    {% if download_url %}
-        <div class="map-aside__download">
-            <h3>Download Data</h3>
-            <p>Download the loan application records (LAR) for the current Lender/MSA/Year combination:</p>
-            <p style="text-align:center"><a target="_blank" id="download-data" class="btn" href="{{ download_url }}" >
-                Download CSV
-                <span class="btn_icon__right fa fa-download"></span>
-            </a></p>
-        </div>
-    {% endif %}
+        {% if download_url %}
+            <div class="map-aside__download">
+                <h3>Download Data</h3>
+                <p>Download the loan application records (LAR) for the current Lender/MSA/Year combination:</p>
+                <p style="text-align:center"><a target="_blank" id="download-data" class="btn" href="{{ download_url }}" >
+                    Download CSV
+                    <span class="btn_icon__right fa fa-download"></span>
+                </a></p>
+            </div>
+        {% endif %}
 
-</div>
+    </div><!-- /.tabpanel -->
+
+
+    <div id="map-aside__msa-search">
+
+            MSA Search
+    </div><!-- /.tabpanel -->
+
+
+</div><!-- /.map-aside-header__tablist -->
