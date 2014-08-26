@@ -1,9 +1,11 @@
 from urllib import urlencode
 
-from django.db import connection
 from django.shortcuts import render
 
 from geo.models import Geo
+from hmda.models import LendingStats
+from hmda.management.commands.calculate_loan_stats import (
+    calculate_median_loans)
 from respondants.models import Institution
 
 
@@ -30,7 +32,7 @@ def map(request):
             context['metro'] = metro
 
     context['download_url'] = make_download_url(lender, metro)
-    context['median_loans'] = calculate_median_loans(lender, metro) or 0
+    context['median_loans'] = lookup_median(lender, metro) or 0
     if context['median_loans']:
         # 50000 is an arbitrary constant; should be altered if we want to
         # change how big the median circle size is
@@ -66,40 +68,13 @@ def make_download_url(lender, metro):
         return base_url + 'hmda_lar.csv?' + query
 
 
-def calculate_median_loans(lender, metro):
-    """For a given lender, find the median loans per census tract. Limit to
-    metro if present. The ORM makes these aggregations ugly, so we use raw
-    SQL."""
+def lookup_median(lender, metro):
+    """Look up median. If not present, calculate it."""
     if lender:
         lender_str = str(lender.agency_id) + lender.ffiec_id
-        # First, count how many tracts this lender operates in
-        query = Geo.objects.filter(
-            geo_type=Geo.TRACT_TYPE, hmdarecord__lender=lender_str)
         if metro:
-            query = query.filter(cbsa=metro.geoid)
-        num_tracts = query.values('geoid').distinct('geoid').count()
-
-        cursor = connection.cursor()
-        # Next, aggregate the # of loans per tract. This query will *not*
-        # include zeros
-        query = """
-            SELECT COUNT(hmda_hmdarecord.id) AS loan_count
-            FROM geo_geo LEFT JOIN hmda_hmdarecord ON (geoid=geoid_id)
-            WHERE geo_type = %s
-            AND lender = %s
-        """
-        params = [Geo.TRACT_TYPE, lender_str]
-        if metro:
-            query = query + "AND cbsa = %s\n"
-            params.append(metro.geoid)
-        query += """
-            GROUP BY geo_geo.geoid
-            ORDER BY loan_count
-            LIMIT 1
-            OFFSET %s
-        """
-        params.append(num_tracts // 2)     # median
-        cursor.execute(query, params)
-        result = cursor.fetchone()
-        if result:
-            return result[0]
+            stat = LendingStats.objects.filter(
+                lender=lender_str, geoid=metro.geoid).first()
+            if stat:
+                return stat.median_per_tract
+        return calculate_median_loans(lender_str, metro)

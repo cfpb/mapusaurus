@@ -75,3 +75,19 @@ class HMDARecord(models.Model):
     def save(self, *args, **kwargs):
         self.auto_fields()
         super(HMDARecord, self).save(*args, **kwargs)
+
+
+class LendingStats(models.Model):
+    """For certain lender x geo combinations, we have pre-computed
+    aggregations to speed up query time."""
+
+    lender = models.CharField(max_length=11)
+    geoid = models.ForeignKey('geo.Geo', to_field='geoid')
+
+    median_per_tract = models.PositiveIntegerField(
+        help_text=("Median number of applications per census tract within "
+                   + "this geo associated with this lender"))
+
+    class Meta:
+        index_together = [("lender", "geoid")]
+        unique_together = [("lender", "geoid")]
