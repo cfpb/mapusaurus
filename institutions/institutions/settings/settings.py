@@ -139,4 +139,6 @@ CACHES = {
 if 'test' in sys.argv:
     CACHES['long_term_geos']['BACKEND'] = 'django.core.cache.backends.dummy.DummyCache'
 
+CONTACT_US_EMAIL = 'feedback@example.com'
+
 from institutions.settings.local_settings import *

@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase
 from mock import Mock, patch
@@ -259,6 +260,13 @@ class ViewTest(TestCase):
                                                   'num_results': 'str'})
         results = views.search_results(request)
         self.assertEqual(results.data['num_results'], 25)
+
+    def test_landing_email_addy(self):
+        old_email = settings.CONTACT_US_EMAIL
+        settings.CONTACT_US_EMAIL = 'someotherexample@domain.com'
+        results = self.client.get(reverse('respondants:search_home'))
+        self.assertTrue('someotherexample@domain.com' in results.content)
+        settings.CONTACT_US_EMAIL = old_email
 
 
 class InstitutionIndexTests(TestCase):
