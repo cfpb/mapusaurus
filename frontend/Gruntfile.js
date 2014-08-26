@@ -153,8 +153,8 @@ module.exports = function(grunt) {
           {
             expand: true,
             flatten: true,
-            src: ['frontend/bower_components/font-awesome/font/*'],
-            dest: 'frontend/dist/font/',
+            src: ['frontend/bower_components/font-awesome/fonts/*'],
+            dest: 'frontend/dist/fonts/',
             filter: 'isFile'
           },
           {

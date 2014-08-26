@@ -38,8 +38,7 @@ html, body {
 }
 
 .map-header,
-.map-aside-header,
-.map-aside {
+.map-aside-header {
   background-color: @gray-20;
 }
 
@@ -74,6 +73,7 @@ html, body {
   .map-aside,
   .map-aside-header {
     .grid_column(2);
+    min-width: 240px;
     border-width: 0;
     box-sizing: border-box;
   }
@@ -117,6 +117,8 @@ html, body {
 
 .map-aside {
 
+  background-color: @gray-10;
+
   h3 {
     font-size: .875em;
     text-transform: uppercase;
@@ -126,7 +128,7 @@ html, body {
 
   h4 {
     font-size: .75em;
-    .webfont-demi();
+    .webfont-medium();
     //margin-bottom: 8px;
   }
 
@@ -153,10 +155,49 @@ html, body {
 .map-aside__export,
 .map-aside__download,
 .map-aside__msa-search {
+  background-color: @gray-20;
   border-bottom: 1px solid @gray-50;
   padding: 15px;
 }
 
+.map-aside__msa-search {
+  label {
+    font-size: .75em;
+    .webfont-medium();
+  }
+  input[type="text"] {
+    font-size: .875em;
+    width: 200px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 1px solid @gray-50;
+  }
+
+  .btn {
+    font-size: .75em;
+  }
+
+  .btn__disabled {
+    border: 1px solid @gray-50;
+  }
+
+  .tt-suggestion {
+      font-size: .75em;
+      text-transform: capitalize;
+      border-left: 1px solid @gray-50;
+      border-right: 1px solid @gray-50;
+      border-bottom: 1px solid @gray-50;
+      padding: 0 4px;
+      background-color: @gray-10;
+      box-sizing: border-box; 
+      width: 210px;
+  }
+
+  .tt-suggestion p {
+      margin-bottom: 8px;
+  }
+
+}
 
 .hidden {
   display: block;
