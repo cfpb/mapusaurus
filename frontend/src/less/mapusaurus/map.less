@@ -32,7 +32,7 @@ html, body {
 .map-aside-header,
 .map-aside,
 .map-main {
-  .grid_column(12);
+  //.grid_column(12);
   border-width: 0; // over-ride cf-grid
   box-sizing: border-box; 
 }
@@ -72,15 +72,16 @@ html, body {
 
   .map-aside,
   .map-aside-header {
-    .grid_column(2);
-    min-width: 240px;
+    //.grid_column(2);
+    float: left;
+    width: 240px;
     border-width: 0;
     box-sizing: border-box;
   }
 
   .map-main,
   .map-header {
-    .grid_column(10);
+    overflow:hidden;
     border-width: 0;
     box-sizing: border-box; 
   }

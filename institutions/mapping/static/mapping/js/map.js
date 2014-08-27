@@ -727,15 +727,10 @@ var Mapusaurus = {
 function setMapHeight() {
     /* Set the map div to the height of the browser window minus the header. */
     var viewportHeight = $(window).height();
-    //console.log("viewportHeight: " + viewportHeight);
     var warningBannerHeight = $('#warning-banner').outerHeight();
-    //console.log("warningBannerHeight: " + warningBannerHeight);
     var headerHeight = $('#header').outerHeight();
-    //console.log("headerHeight: " + headerHeight);
     var mapHeaderHeight = $('#map-header').outerHeight();
-    //console.log("mapHeaderHeight: " + mapHeaderHeight);
     var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
-    //console.log("mapHeight: " + mapHeight);
     $('#map-aside').css('height', mapHeight);
     $('#map').css('height', mapHeight);
 }
