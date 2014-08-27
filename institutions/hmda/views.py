@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.http import HttpResponseBadRequest
 
-from batch.conversions import use_GET_in
+from batch.utils import use_GET_in, state_county_filter
 from hmda.models import HMDARecord
 
 
@@ -18,15 +18,14 @@ def loan_originations(request_dict):
     """Get loan originations for a given lender, county combination. This
     ignores year for the moment."""
 
-    state_fips = request_dict.get('state_fips', '')
-    county_fips = request_dict.get('county_fips', '')
-    lender = request_dict.get('lender', '')
+    counties = request_dict.get('county', [])
+    lender = request_dict.get('lender', [])
 
-    if state_fips and county_fips and lender:
-        records = HMDARecord.objects.filter(
-            countyfp=county_fips, lender=lender, statefp=state_fips,
-            action_taken__lte=6)    # actions 7-8 are preapprovals to ignore
-        query = records.values(
+    if counties and all(len(c) == 5 for c in counties) and lender:
+        query = HMDARecord.objects.filter(
+            # actions 7-8 are preapprovals to ignore
+            lender=lender[0], action_taken__lte=6
+        ).filter(state_county_filter(counties)).values(
             'geoid', 'geoid__census2010households__total'
         ).annotate(volume=Count('geoid'))
         data = {}
@@ -40,7 +39,7 @@ def loan_originations(request_dict):
         return data
     else:
         return HttpResponseBadRequest(
-            "Missing one of state_fips, county_fips, lender")
+            "Missing one of county or lender")
 
 
 def loan_originations_http(request):
