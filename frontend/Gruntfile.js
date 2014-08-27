@@ -35,7 +35,7 @@ module.exports = function(grunt) {
     concat: {
       main: {
         src: [
-          'frontend/bower_components/normalize.css/normalize.css',
+          //'frontend/bower_components/normalize.css/normalize.css',
           'frontend/bower_components/font-awesome/css/font-awesome.min.css'
         ],
         dest: 'frontend/dist/css/vendor.min.css',
