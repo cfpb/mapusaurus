@@ -1,5 +1,10 @@
+@import "../../bower_components/normalize/normalize.css";
+@import "../../bower_components/normalize-legacy-addon/normalize-legacy-addon.css";
 @import url(//fast.fonts.net/t/1.css?apiType=css&projectid=44e8c964-4684-44c6-a6e3-3f3da8787b50);
-@import url(//fast.fonts.net/t/1.css?apiType=css&projectid=44e8c964-4684-44c6-a6e3-3f3da8787b50);
+/* ==========================================================================
+   Capital Framework
+   Color variables
+   ========================================================================== */
 /* ==========================================================================
    Capital Framework
    Less variables
@@ -562,20 +567,6 @@ h3 i,
 .lt-ie9 .h3 i {
   font-style: normal !important;
 }
-.lt-ie9 h1 em,
-.lt-ie9 .h1 em,
-.lt-ie9 h2 em,
-.lt-ie9 .h2 em,
-.lt-ie9 h3 em,
-.lt-ie9 .h3 em,
-.lt-ie9 h1 i,
-.lt-ie9 .h1 i,
-.lt-ie9 h2 i,
-.lt-ie9 .h2 i,
-.lt-ie9 h3 i,
-.lt-ie9 .h3 i {
-  font-style: normal !important;
-}
 h1 strong,
 .h1 strong,
 h2 strong,
@@ -591,108 +582,6 @@ h3 b,
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
-}
-.lt-ie9 h1 strong,
-.lt-ie9 .h1 strong,
-.lt-ie9 h2 strong,
-.lt-ie9 .h2 strong,
-.lt-ie9 h3 strong,
-.lt-ie9 .h3 strong,
-.lt-ie9 h1 b,
-.lt-ie9 .h1 b,
-.lt-ie9 h2 b,
-.lt-ie9 .h2 b,
-.lt-ie9 h3 b,
-.lt-ie9 .h3 b {
-  font-weight: normal !important;
-}
-.lt-ie9 h1 strong,
-.lt-ie9 .h1 strong,
-.lt-ie9 h2 strong,
-.lt-ie9 .h2 strong,
-.lt-ie9 h3 strong,
-.lt-ie9 .h3 strong,
-.lt-ie9 h1 b,
-.lt-ie9 .h1 b,
-.lt-ie9 h2 b,
-.lt-ie9 .h2 b,
-.lt-ie9 h3 b,
-.lt-ie9 .h3 b {
-  font-weight: normal !important;
-}
-h1 em,
-.h1 em,
-h2 em,
-.h2 em,
-h3 em,
-.h3 em,
-h1 i,
-.h1 i,
-h2 i,
-.h2 i,
-h3 i,
-.h3 i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 h1 em,
-.lt-ie9 .h1 em,
-.lt-ie9 h2 em,
-.lt-ie9 .h2 em,
-.lt-ie9 h3 em,
-.lt-ie9 .h3 em,
-.lt-ie9 h1 i,
-.lt-ie9 .h1 i,
-.lt-ie9 h2 i,
-.lt-ie9 .h2 i,
-.lt-ie9 h3 i,
-.lt-ie9 .h3 i {
-  font-style: normal !important;
-}
-.lt-ie9 h1 em,
-.lt-ie9 .h1 em,
-.lt-ie9 h2 em,
-.lt-ie9 .h2 em,
-.lt-ie9 h3 em,
-.lt-ie9 .h3 em,
-.lt-ie9 h1 i,
-.lt-ie9 .h1 i,
-.lt-ie9 h2 i,
-.lt-ie9 .h2 i,
-.lt-ie9 h3 i,
-.lt-ie9 .h3 i {
-  font-style: normal !important;
-}
-h1 strong,
-.h1 strong,
-h2 strong,
-.h2 strong,
-h3 strong,
-.h3 strong,
-h1 b,
-.h1 b,
-h2 b,
-.h2 b,
-h3 b,
-.h3 b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 h1 strong,
-.lt-ie9 .h1 strong,
-.lt-ie9 h2 strong,
-.lt-ie9 .h2 strong,
-.lt-ie9 h3 strong,
-.lt-ie9 .h3 strong,
-.lt-ie9 h1 b,
-.lt-ie9 .h1 b,
-.lt-ie9 h2 b,
-.lt-ie9 .h2 b,
-.lt-ie9 h3 b,
-.lt-ie9 .h3 b {
-  font-weight: normal !important;
 }
 .lt-ie9 h1 strong,
 .lt-ie9 .h1 strong,
@@ -743,10 +632,6 @@ h4,
 .lt-ie9 .h4 {
   font-weight: normal !important;
 }
-.lt-ie9 h4,
-.lt-ie9 .h4 {
-  font-weight: normal !important;
-}
 h5,
 h6,
 .h5,
@@ -756,12 +641,6 @@ h6,
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
-}
-.lt-ie9 h5,
-.lt-ie9 h6,
-.lt-ie9 .h5,
-.lt-ie9 .h6 {
-  font-weight: normal !important;
 }
 .lt-ie9 h5,
 .lt-ie9 h6,
@@ -790,9 +669,6 @@ h6,
   font-style: normal;
   font-weight: bold;
   line-height: 1.375;
-}
-.lt-ie9 .superheader {
-  font-weight: normal !important;
 }
 .lt-ie9 .superheader {
   font-weight: normal !important;
@@ -1042,47 +918,11 @@ table i {
 .lt-ie9 table i {
   font-style: normal !important;
 }
-.lt-ie9 table em,
-.lt-ie9 table i {
-  font-style: normal !important;
-}
 table strong,
 table b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
-}
-.lt-ie9 table strong,
-.lt-ie9 table b {
-  font-weight: normal !important;
-}
-.lt-ie9 table strong,
-.lt-ie9 table b {
-  font-weight: normal !important;
-}
-table em,
-table i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 table em,
-.lt-ie9 table i {
-  font-style: normal !important;
-}
-.lt-ie9 table em,
-.lt-ie9 table i {
-  font-style: normal !important;
-}
-table strong,
-table b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 table strong,
-.lt-ie9 table b {
-  font-weight: normal !important;
 }
 .lt-ie9 table strong,
 .lt-ie9 table b {
@@ -1111,9 +951,6 @@ th {
   font-style: normal;
   font-weight: bold;
   text-align: left;
-}
-.lt-ie9 th {
-  font-weight: normal !important;
 }
 .lt-ie9 th {
   font-weight: normal !important;
@@ -1213,103 +1050,11 @@ blockquote {
 .lt-ie9 .pull-quote_body i {
   font-style: normal !important;
 }
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
 .pull-quote_body strong,
 .pull-quote_body b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote_body em,
-.pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote_body strong,
-.pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote_body em,
-.pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote_body strong,
-.pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote_body em,
-.pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote_body strong,
-.pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
 }
 .lt-ie9 .pull-quote_body strong,
 .lt-ie9 .pull-quote_body b {
@@ -1326,15 +1071,6 @@ blockquote {
   font-size: 0.875em;
   line-height: 1.57142857;
   color: #75787b;
-}
-.lt-ie9 .pull-quote_citation {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_citation {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_citation {
-  font-weight: normal !important;
 }
 .lt-ie9 .pull-quote_citation {
   font-weight: normal !important;
@@ -1359,103 +1095,11 @@ blockquote {
 .lt-ie9 .pull-quote__large .pull-quote_body i {
   font-style: normal !important;
 }
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
 .pull-quote__large .pull-quote_body strong,
 .pull-quote__large .pull-quote_body b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote__large .pull-quote_body em,
-.pull-quote__large .pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote__large .pull-quote_body strong,
-.pull-quote__large .pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote__large .pull-quote_body em,
-.pull-quote__large .pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote__large .pull-quote_body strong,
-.pull-quote__large .pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote__large .pull-quote_body em,
-.pull-quote__large .pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote__large .pull-quote_body strong,
-.pull-quote__large .pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
 }
 .lt-ie9 .pull-quote__large .pull-quote_body strong,
 .lt-ie9 .pull-quote__large .pull-quote_body b {
@@ -1588,945 +1232,6 @@ select[multiple].focus {
 }
 :-ms-input-placeholder {
   color: #75787b;
-}
-/* topdoc
-  name: EOF
-  eof: true
-*/
-/* ==========================================================================
-   Capital Framework
-   Basic Typography
-   ========================================================================== */
-/*
- * Source: http://fast.fonts.net/cssapi/44e8c964-4684-44c6-a6e3-3f3da8787b50.css
- * This file has been edited to use absolute URLS so we can concatenate it with
- * all of our other styles.
- */
-@font-face {
-  font-family: "AvenirNextLTW01-Regular";
-  src: url("//fast.fonts.net/dv2/2/e9167238-3b3f-4813-a04a-a384394eed42.eot?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("eot");
-  font-style: normal;
-  font-weight: normal;
-}
-@font-face {
-  font-family: "AvenirNextLTW01-Regular";
-  src: url("//fast.fonts.net/dv2/2/e9167238-3b3f-4813-a04a-a384394eed42.eot?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50");
-  src: url("//fast.fonts.net/dv2/3/1e9892c0-6927-4412-9874-1b82801ba47a.woff?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("woff"), url("//fast.fonts.net/dv2/1/46cf1067-688d-4aab-b0f7-bd942af6efd8.ttf?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("truetype"), url("//fast.fonts.net/dv2/11/52a192b1-bea5-4b48-879f-107f009b666f.svg?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50#52a192b1-bea5-4b48-879f-107f009b666f") format("svg");
-  font-style: normal;
-  font-weight: normal;
-}
-@font-face {
-  font-family: "AvenirNextLTW01-Italic";
-  src: url("//fast.fonts.net/dv2/2/d1fddef1-d940-4904-8f6c-17e809462301.eot?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("eot");
-  font-style: italic;
-  font-weight: normal;
-}
-@font-face {
-  font-family: "AvenirNextLTW01-Italic";
-  src: url("//fast.fonts.net/dv2/2/d1fddef1-d940-4904-8f6c-17e809462301.eot?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50");
-  src: url("//fast.fonts.net/dv2/3/92b66dbd-4201-4ac2-a605-4d4ffc8705cc.woff?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("woff"), url("//fast.fonts.net/dv2/1/18839597-afa8-4f0b-9abb-4a30262d0da8.ttf?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("truetype"), url("//fast.fonts.net/dv2/11/1de7e6f4-9d4d-47e7-ab23-7d5cf10ab585.svg?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50#1de7e6f4-9d4d-47e7-ab23-7d5cf10ab585") format("svg");
-  font-style: italic;
-  font-weight: normal;
-}
-@font-face {
-  font-family: "AvenirNextLTW01-Medium";
-  src: url("//fast.fonts.net/dv2/2/1a7c9181-cd24-4943-a9d9-d033189524e0.eot?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("eot");
-  font-style: normal;
-  font-weight: 500;
-}
-@font-face {
-  font-family: "AvenirNextLTW01-Medium";
-  src: url("//fast.fonts.net/dv2/2/1a7c9181-cd24-4943-a9d9-d033189524e0.eot?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50");
-  src: url("//fast.fonts.net/dv2/3/f26faddb-86cc-4477-a253-1e1287684336.woff?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("woff"), url("//fast.fonts.net/dv2/1/63a74598-733c-4d0c-bd91-b01bffcd6e69.ttf?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("truetype"), url("//fast.fonts.net/dv2/11/a89d6ad1-a04f-4a8f-b140-e55478dbea80.svg?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50#a89d6ad1-a04f-4a8f-b140-e55478dbea80") format("svg");
-  font-style: normal;
-  font-weight: 500;
-}
-@font-face {
-  font-family: "AvenirNextLTW01-Demi";
-  src: url("//fast.fonts.net/dv2/2/12d643f2-3899-49d5-a85b-ff430f5fad15.eot?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("eot");
-  font-style: normal;
-  font-weight: 700;
-}
-@font-face {
-  font-family: "AvenirNextLTW01-Demi";
-  src: url("//fast.fonts.net/dv2/2/12d643f2-3899-49d5-a85b-ff430f5fad15.eot?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50");
-  src: url("//fast.fonts.net/dv2/3/91b50bbb-9aa1-4d54-9159-ec6f19d14a7c.woff?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("woff"), url("//fast.fonts.net/dv2/1/a0f4c2f9-8a42-4786-ad00-fce42b57b148.ttf?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50") format("truetype"), url("//fast.fonts.net/dv2/11/99affa9a-a5e9-4559-bd07-20cf0071852d.svg?d44f19a684109620e4841679af90e818b934c450213fb296d217dd76fbd8133e8104ffce1b8d7381e92baf075aac747ded01b441045f936c159eb0f46c11e1f99e958a3e0d6904164b21814766132f7cb38b46df85fb387875d6907338f619856e049c29c288424547a2ca329b1d0251faf8c505bae9c3ec3d5a1e4327f5fdf46ffb088d97582c65a45857e1e0662c2d545166a03c7b024ca17ac3839d703086c5f9fd694b6f5493360c3bcd9d5d427b599ea7651d27005ca2f4c1d0312515f51a323f79b7f5cf1afa2ab67a3ddbfee1&projectId=44e8c964-4684-44c6-a6e3-3f3da8787b50#99affa9a-a5e9-4559-bd07-20cf0071852d") format("svg");
-  font-style: normal;
-  font-weight: 700;
-}
-/* topdoc
-  name: Less variables
-  family: cf-typography
-  patterns:
-    - name: Font sizes
-      codenotes:
-        - "@base-font-size-px: 16px;"
-        - "@base-line-height-px: 22px;"
-        - "@base-line-height: unit(@base-line-height-px / @base-font-size-px);"
-  tags:
-    - cf-typography
-*/
-/* topdoc
-  name: Webfonts
-  family: cf-typography
-  patterns:
-    - name: Licensed webfonts
-      notes:
-        - "Avenir Next is included via the licensed-fonts.css file.
-          This file contains absolute links to our paid font service.
-          Fonts included this way will only work on CFPB-registered domains."
-        - "Note that when using Avenir Regular we automatically fix faux italic
-          and bold issues by overriding i, em, b, and strong tags to use the
-          appropriate fonts."
-    - name: Webfont mixins
-      codenotes:
-        - ".webfont-regular()"
-        - ".webfont-italic()"
-        - ".webfont-medium()"
-        - ".webfont-demi()"
-      notes:
-        - "Use these mixins to easily add the Avenir Next font family to your
-          elements."
-        - "To avoid faux bold and italics in Avenir Next, you must use the font
-          family name for that particular style. So when defining an italic or
-          bold style in Avenir Next you need to use the Avenir Next Italic font
-          family. Use the mixins when setting bold or italic text as they also
-          set the appropriate font-weight and font-style."
-        - "These mixins also add the appropriate .lt-ie9 overrides.
-          .lt-ie9 overrides are necessary to override font-style and font-weight
-          each time the webfont is used. These overrides are built into the webfont
-          mixins so you get them automatically. Note that this requires you to
-          use conditional classes on the <html> element:
-          https://github.com/h5bp/html5-boilerplate/blob/v4.3.0/doc/html.md#conditional-html-classes."
-  tags:
-    - cf-typography
-*/
-/* topdoc
-  name: Type hierarchy
-  family: cf-typography
-  patterns:
-    - name: Default body type
-      markup: |
-        <p>Lorem ipsum dolor sit amet, <em>consectetur adipisicing elit</em>, sed do eiusmod <strong>tempor incididunt</strong> ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    - name: Heading level 1
-      markup: |
-        <h1>Example heading element</h1>
-        <p class="h1">A non-heading element</p>
-    - name: Heading level 2
-      markup: |
-        <h2>Example heading element</h2>
-        <p class="h2">A non-heading element</p>
-    - name: Heading level 3
-      markup: |
-        <h3>Example heading element</h3>
-        <p class="h3">A non-heading element</p>
-    - name: Heading level 4
-      markup: |
-        <h4>Example heading element</h4>
-        <p class="h4">A non-heading element</p>
-    - name: Heading level 5
-      markup: |
-        <h5>Example heading element</h5>
-        <p class="h5">A non-heading element</p>
-    - name: Heading level 6
-      markup: |
-        <h6>Example heading element</h6>
-        <p class="h6">A non-heading element</p>
-    - name: Super header
-      markup: |
-        <h1 class="superheader">Example super heading</h1>
-        <p class="superheader">Example super heading</p>
-  tags:
-    - cf-typography
-*/
-body {
-  color: #101820;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 100%;
-  line-height: 1.375;
-}
-h1,
-.h1,
-h2,
-.h2,
-h3,
-.h3 {
-  font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
-  font-style: normal;
-  font-weight: normal;
-}
-h1 em,
-.h1 em,
-h2 em,
-.h2 em,
-h3 em,
-.h3 em,
-h1 i,
-.h1 i,
-h2 i,
-.h2 i,
-h3 i,
-.h3 i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 h1 em,
-.lt-ie9 .h1 em,
-.lt-ie9 h2 em,
-.lt-ie9 .h2 em,
-.lt-ie9 h3 em,
-.lt-ie9 .h3 em,
-.lt-ie9 h1 i,
-.lt-ie9 .h1 i,
-.lt-ie9 h2 i,
-.lt-ie9 .h2 i,
-.lt-ie9 h3 i,
-.lt-ie9 .h3 i {
-  font-style: normal !important;
-}
-.lt-ie9 h1 em,
-.lt-ie9 .h1 em,
-.lt-ie9 h2 em,
-.lt-ie9 .h2 em,
-.lt-ie9 h3 em,
-.lt-ie9 .h3 em,
-.lt-ie9 h1 i,
-.lt-ie9 .h1 i,
-.lt-ie9 h2 i,
-.lt-ie9 .h2 i,
-.lt-ie9 h3 i,
-.lt-ie9 .h3 i {
-  font-style: normal !important;
-}
-h1 strong,
-.h1 strong,
-h2 strong,
-.h2 strong,
-h3 strong,
-.h3 strong,
-h1 b,
-.h1 b,
-h2 b,
-.h2 b,
-h3 b,
-.h3 b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 h1 strong,
-.lt-ie9 .h1 strong,
-.lt-ie9 h2 strong,
-.lt-ie9 .h2 strong,
-.lt-ie9 h3 strong,
-.lt-ie9 .h3 strong,
-.lt-ie9 h1 b,
-.lt-ie9 .h1 b,
-.lt-ie9 h2 b,
-.lt-ie9 .h2 b,
-.lt-ie9 h3 b,
-.lt-ie9 .h3 b {
-  font-weight: normal !important;
-}
-.lt-ie9 h1 strong,
-.lt-ie9 .h1 strong,
-.lt-ie9 h2 strong,
-.lt-ie9 .h2 strong,
-.lt-ie9 h3 strong,
-.lt-ie9 .h3 strong,
-.lt-ie9 h1 b,
-.lt-ie9 .h1 b,
-.lt-ie9 h2 b,
-.lt-ie9 .h2 b,
-.lt-ie9 h3 b,
-.lt-ie9 .h3 b {
-  font-weight: normal !important;
-}
-h1 em,
-.h1 em,
-h2 em,
-.h2 em,
-h3 em,
-.h3 em,
-h1 i,
-.h1 i,
-h2 i,
-.h2 i,
-h3 i,
-.h3 i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 h1 em,
-.lt-ie9 .h1 em,
-.lt-ie9 h2 em,
-.lt-ie9 .h2 em,
-.lt-ie9 h3 em,
-.lt-ie9 .h3 em,
-.lt-ie9 h1 i,
-.lt-ie9 .h1 i,
-.lt-ie9 h2 i,
-.lt-ie9 .h2 i,
-.lt-ie9 h3 i,
-.lt-ie9 .h3 i {
-  font-style: normal !important;
-}
-.lt-ie9 h1 em,
-.lt-ie9 .h1 em,
-.lt-ie9 h2 em,
-.lt-ie9 .h2 em,
-.lt-ie9 h3 em,
-.lt-ie9 .h3 em,
-.lt-ie9 h1 i,
-.lt-ie9 .h1 i,
-.lt-ie9 h2 i,
-.lt-ie9 .h2 i,
-.lt-ie9 h3 i,
-.lt-ie9 .h3 i {
-  font-style: normal !important;
-}
-h1 strong,
-.h1 strong,
-h2 strong,
-.h2 strong,
-h3 strong,
-.h3 strong,
-h1 b,
-.h1 b,
-h2 b,
-.h2 b,
-h3 b,
-.h3 b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 h1 strong,
-.lt-ie9 .h1 strong,
-.lt-ie9 h2 strong,
-.lt-ie9 .h2 strong,
-.lt-ie9 h3 strong,
-.lt-ie9 .h3 strong,
-.lt-ie9 h1 b,
-.lt-ie9 .h1 b,
-.lt-ie9 h2 b,
-.lt-ie9 .h2 b,
-.lt-ie9 h3 b,
-.lt-ie9 .h3 b {
-  font-weight: normal !important;
-}
-.lt-ie9 h1 strong,
-.lt-ie9 .h1 strong,
-.lt-ie9 h2 strong,
-.lt-ie9 .h2 strong,
-.lt-ie9 h3 strong,
-.lt-ie9 .h3 strong,
-.lt-ie9 h1 b,
-.lt-ie9 .h1 b,
-.lt-ie9 h2 b,
-.lt-ie9 .h2 b,
-.lt-ie9 h3 b,
-.lt-ie9 .h3 b {
-  font-weight: normal !important;
-}
-h1,
-.h1 {
-  margin-top: 0;
-  margin-bottom: 0.47058824em;
-  font-size: 2.125em;
-  line-height: 1.29411765;
-}
-h2,
-.h2 {
-  margin-top: 0;
-  margin-bottom: 0.30769231em;
-  font-size: 1.625em;
-  line-height: 1.26923077;
-}
-h3,
-.h3 {
-  margin-top: 0;
-  margin-bottom: 0.22727273em;
-  font-size: 1.375em;
-  line-height: 1.27272727;
-}
-h4,
-.h4 {
-  margin-top: 0;
-  margin-bottom: 0.27777778em;
-  font-size: 1.125em;
-  font-family: "AvenirNextLTW01-Medium", Arial, sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 1.22222222;
-}
-.lt-ie9 h4,
-.lt-ie9 .h4 {
-  font-weight: normal !important;
-}
-.lt-ie9 h4,
-.lt-ie9 .h4 {
-  font-weight: normal !important;
-}
-h5,
-h6,
-.h5,
-.h6 {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.lt-ie9 h5,
-.lt-ie9 h6,
-.lt-ie9 .h5,
-.lt-ie9 .h6 {
-  font-weight: normal !important;
-}
-.lt-ie9 h5,
-.lt-ie9 h6,
-.lt-ie9 .h5,
-.lt-ie9 .h6 {
-  font-weight: normal !important;
-}
-h5,
-.h5 {
-  margin-top: 0;
-  margin-bottom: 0.35714286em;
-  font-size: 0.875em;
-  line-height: 1.57142857;
-}
-h6,
-.h6 {
-  margin-top: 0;
-  margin-bottom: 0.41666667em;
-  font-size: 0.75em;
-  line-height: 1.83333333;
-}
-.superheader {
-  margin-bottom: 0.1875em;
-  font-size: 3em;
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-  line-height: 1.375;
-}
-.lt-ie9 .superheader {
-  font-weight: normal !important;
-}
-.lt-ie9 .superheader {
-  font-weight: normal !important;
-}
-/* topdoc
-  name: Margins
-  family: cf-typography
-  patterns:
-    - name: Consistent vertical margins
-      notes:
-        - "Assumes that the font size of each of these items remains the default."
-      markup: |
-        <p>Paragraph margin example</p>
-        <p>Paragraph margin example</p>
-  tags:
-    - cf-typography
-*/
-p,
-ul,
-ol,
-dl,
-table,
-figure {
-  margin-top: 0;
-  margin-bottom: 1.25em;
-}
-/* topdoc
-  name: Default link
-  notes:
-    - "Note that the .visited, .hover, .focus, .active classes are for demonstration purposes only and should not 
-      be used in production."
-  family: cf-typography
-  patterns:
-    - name: Default state
-      markup: |
-        <a href="#">Default link style</a>
-    - name: Visited state
-      markup: |
-        <a href="#" class="visited">Visited link style</a>
-    - name: Hovered state
-      markup: |
-        <a href="#" class="hover">Hovered link style</a>
-    - name: Focused state
-      markup: |
-        <a href="#" class="focus">Focused link style</a>
-    - name: Active state
-      markup: |
-        <a href="#" class="active">Active link style</a>
-  tags:
-    - cf-typography
-*/
-a {
-  border-width: 0;
-  border-style: dotted;
-  border-color: #0072ce;
-  color: #0072ce;
-  text-decoration: none;
-}
-a:visited,
-a.visited {
-  border-color: #005e5d;
-  color: #005e5d;
-}
-a:hover,
-a.hover {
-  border-style: solid;
-  border-color: #7fb8e6;
-  color: #7fb8e6;
-}
-a:focus,
-a.focus {
-  border-style: solid;
-  outline: thin dotted;
-}
-a:active,
-a.active {
-  border-style: solid;
-  border-color: #002d72;
-  color: #002d72;
-}
-/* topdoc
-  name: Underlined links
-  family: cf-typography
-  patterns:
-    - name: States
-      notes:
-        - "Note that the .visited, .hover, .focus, .active classes are for demonstration purposes only and should not 
-          be used in production."
-        - "The underline style properties are mostly set above in the a tag.
-          To enable the underline simply set a bottom-border-width as done here."
-      markup: |
-        <p>
-            <a href="#">Default</a>,
-            <a href="#" class="visited">Visited</a>,
-            <a href="#" class="hover">Hovered</a>,
-            <a href="#" class="focus">Focused</a>,
-            <a href="#" class="active">Active</a>
-        </p>
-    - name: Underline conditions
-      notes:
-        - "We're restricting link borders to links within p, li, and dd so that
-          we don't have to override them every time we want a plain link."
-      markup: |
-        <p>
-            <a href="#">A child of a paragraph</a>
-        </p>
-        <ul>
-            <li>
-                <a href="#">A child of a list item</a>
-            </li>
-        </ul>
-        <dl>
-            <dt>
-                Definition list term
-            </dt>
-            <dd>
-                <a href="#">A child of a definition list description</a>
-            </dd>
-        </dl>
-    - name: Exceptions for underlined links
-      notes:
-        - "Inline text links inside of a nav element are not underlined."
-      markup: |
-        <nav>
-            <p>
-                <a href="#">A child of a paragraph</a>
-            </p>
-            <ul>
-                <li>
-                    <a href="#">A child of a list item</a>
-                </li>
-            </ul>
-            <dl>
-                <dt>
-                    Definition list term
-                </dt>
-                <dd>
-                    <a href="#">A child of a definition list description</a>
-                </dd>
-            </dl>
-        </nav>
-  tags:
-    - cf-typography
-*/
-p a,
-li a,
-dd a {
-  border-bottom-width: 1px;
-}
-nav a {
-  border-bottom-width: 0;
-}
-/* topdoc
-  name: Lists
-  family: cf-typography
-  patterns:
-    - name: Unordered list
-      markup: |
-        <ul>
-            <li>List item</li>
-            <li>List item</li>
-            <li>List item</li>
-        </ul>
-  tags:
-    - cf-typography
-*/
-ul {
-  list-style: square;
-}
-/* topdoc
-  name: Block quote
-  family: cf-typography
-  patterns:
-    - name: Default block quote
-      markup: |
-        <blockquote cite="link-to-source">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa
-            similique fugit hic eligendi praesentium officiis illum optio iusto
-            commodi eum tempore nisi ad in perferendis enim quo dolores.
-            Reprehenderit similique earum quibusdam possimus vitae esse
-            nesciunt mollitia sed beatae aliquid dolores iure a impedit quam
-            minus eum modi illum ducimus eligendi eveniet labore non sequi
-            voluptate et totam praesentium animi itaque asperiores dolorum
-            sunt laudantium repellat nam commodi. Perspiciatis natus aliquam
-            veniam officiis ducimus voluptatum ut necessitatibus non!
-        </blockquote>
-      notes:
-        - "Use a block quote to quote from an external work. See .pull-quote if
-          you need to highlight an excerpt from the current work."
-        - "It is best practice to document the URL of a quoted work using the
-          cite attribute."
-  tags:
-    - cf-typography
-*/
-blockquote {
-  margin: 1.25em;
-}
-@media only all and (min-width: 37.5em) {
-  blockquote {
-    margin: 1.75em 2.5em;
-  }
-}
-/* topdoc
-  name: Pull quote
-  family: cf-typography
-  patterns:
-    - name: Default pull quote
-      markup: |
-        <aside class="pull-quote">
-            <div class="pull-quote_body">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Cum corrupti tempora nam nihil qui mollitia consectetur
-                corporis nemo culpa dolorum!
-            </div>
-            <footer>
-                <cite class="pull-quote_citation">
-                    - Author Name
-                </cite>
-            <footer>
-        </aside>
-      notes:
-        - "Use a pull quote to highlight excerpts from the current work.
-          This is not to be confused with blockquote which quotes from an
-          external work."
-        - "Since a pull quote is an excerpt and repeats content from the
-          article it's contained within you should use the aside element."
-    - name: Large pull quote
-      markup: |
-        <aside class="pull-quote pull-quote__large">
-            <div class="pull-quote_body">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Cum corrupti tempora nam nihil qui mollitia consectetur
-                corporis nemo culpa dolorum!
-            </div>
-            <footer>
-                <cite class="pull-quote_citation">
-                    - Author Name
-                </cite>
-            <footer>
-        </aside>
-  tags:
-    - cf-typography
-*/
-.pull-quote_body {
-  font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  margin-top: 0;
-  margin-bottom: 0.22727273em;
-  font-size: 1.375em;
-  line-height: 1.27272727;
-  margin-bottom: 0.54545455em;
-  color: #101820;
-}
-.pull-quote_body em,
-.pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote_body strong,
-.pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote_body em,
-.pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote_body strong,
-.pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote_body em,
-.pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote_body strong,
-.pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote_body em,
-.pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote_body em,
-.lt-ie9 .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote_body strong,
-.pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_body strong,
-.lt-ie9 .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote_citation {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-top: 0;
-  margin-bottom: 0.35714286em;
-  font-size: 0.875em;
-  line-height: 1.57142857;
-  color: #75787b;
-}
-.lt-ie9 .pull-quote_citation {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_citation {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_citation {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote_citation {
-  font-weight: normal !important;
-}
-.pull-quote__large .pull-quote_body {
-  font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  margin-top: 0;
-  margin-bottom: 0.30769231em;
-  font-size: 1.625em;
-  line-height: 1.26923077;
-  margin-bottom: 0.69230769em;
-}
-.pull-quote__large .pull-quote_body em,
-.pull-quote__large .pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote__large .pull-quote_body strong,
-.pull-quote__large .pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote__large .pull-quote_body em,
-.pull-quote__large .pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote__large .pull-quote_body strong,
-.pull-quote__large .pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote__large .pull-quote_body em,
-.pull-quote__large .pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote__large .pull-quote_body strong,
-.pull-quote__large .pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.pull-quote__large .pull-quote_body em,
-.pull-quote__large .pull-quote_body i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body em,
-.lt-ie9 .pull-quote__large .pull-quote_body i {
-  font-style: normal !important;
-}
-.pull-quote__large .pull-quote_body strong,
-.pull-quote__large .pull-quote_body b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pull-quote__large .pull-quote_body strong,
-.lt-ie9 .pull-quote__large .pull-quote_body b {
-  font-weight: normal !important;
 }
 /* topdoc
   name: EOF
@@ -4343,9 +3048,6 @@ blockquote {
 .lt-ie9 .btn {
   font-weight: normal !important;
 }
-.lt-ie9 .btn {
-  font-weight: normal !important;
-}
 .btn,
 .btn:link,
 .btn:visited {
@@ -4865,15 +3567,6 @@ input.btn::-moz-focus-inner {
 .lt-ie9 .form-label-header {
   font-weight: normal !important;
 }
-.lt-ie9 .form-label-header {
-  font-weight: normal !important;
-}
-.lt-ie9 .form-label-header {
-  font-weight: normal !important;
-}
-.lt-ie9 .form-label-header {
-  font-weight: normal !important;
-}
 /* topdoc
     name: Input states
     family: cf-forms
@@ -5236,9 +3929,6 @@ textarea.success {
 .lt-ie9 .expandable_label {
   font-weight: normal !important;
 }
-.lt-ie9 .expandable_label {
-  font-weight: normal !important;
-}
 .expandable_link {
   color: #0072ce;
   font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
@@ -5257,47 +3947,11 @@ textarea.success {
 .lt-ie9 .expandable_link i {
   font-style: normal !important;
 }
-.lt-ie9 .expandable_link em,
-.lt-ie9 .expandable_link i {
-  font-style: normal !important;
-}
 .expandable_link strong,
 .expandable_link b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
-}
-.lt-ie9 .expandable_link strong,
-.lt-ie9 .expandable_link b {
-  font-weight: normal !important;
-}
-.lt-ie9 .expandable_link strong,
-.lt-ie9 .expandable_link b {
-  font-weight: normal !important;
-}
-.expandable_link em,
-.expandable_link i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .expandable_link em,
-.lt-ie9 .expandable_link i {
-  font-style: normal !important;
-}
-.lt-ie9 .expandable_link em,
-.lt-ie9 .expandable_link i {
-  font-style: normal !important;
-}
-.expandable_link strong,
-.expandable_link b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .expandable_link strong,
-.lt-ie9 .expandable_link b {
-  font-weight: normal !important;
 }
 .lt-ie9 .expandable_link strong,
 .lt-ie9 .expandable_link b {
@@ -5498,47 +4152,11 @@ button.expandable_header {
 .lt-ie9 .pagination_form i {
   font-style: normal !important;
 }
-.lt-ie9 .pagination_form em,
-.lt-ie9 .pagination_form i {
-  font-style: normal !important;
-}
 .pagination_form strong,
 .pagination_form b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
-}
-.lt-ie9 .pagination_form strong,
-.lt-ie9 .pagination_form b {
-  font-weight: normal !important;
-}
-.lt-ie9 .pagination_form strong,
-.lt-ie9 .pagination_form b {
-  font-weight: normal !important;
-}
-.pagination_form em,
-.pagination_form i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .pagination_form em,
-.lt-ie9 .pagination_form i {
-  font-style: normal !important;
-}
-.lt-ie9 .pagination_form em,
-.lt-ie9 .pagination_form i {
-  font-style: normal !important;
-}
-.pagination_form strong,
-.pagination_form b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .pagination_form strong,
-.lt-ie9 .pagination_form b {
-  font-weight: normal !important;
 }
 .lt-ie9 .pagination_form strong,
 .lt-ie9 .pagination_form b {
@@ -5569,11 +4187,6 @@ input[type="text"].pagination_current-page {
   font-style: normal;
   font-weight: bold;
   text-align: right;
-}
-.lt-ie9 .pagination_current-page,
-.lt-ie9 input[type="number"].pagination_current-page,
-.lt-ie9 input[type="text"].pagination_current-page {
-  font-weight: normal !important;
 }
 .lt-ie9 .pagination_current-page,
 .lt-ie9 input[type="number"].pagination_current-page,
@@ -5805,12 +4418,6 @@ html i {
 .lt-ie9 html i {
   font-style: normal !important;
 }
-.lt-ie9 body em,
-.lt-ie9 html em,
-.lt-ie9 body i,
-.lt-ie9 html i {
-  font-style: normal !important;
-}
 body strong,
 html strong,
 body b,
@@ -5818,52 +4425,6 @@ html b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
-}
-.lt-ie9 body strong,
-.lt-ie9 html strong,
-.lt-ie9 body b,
-.lt-ie9 html b {
-  font-weight: normal !important;
-}
-.lt-ie9 body strong,
-.lt-ie9 html strong,
-.lt-ie9 body b,
-.lt-ie9 html b {
-  font-weight: normal !important;
-}
-body em,
-html em,
-body i,
-html i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 body em,
-.lt-ie9 html em,
-.lt-ie9 body i,
-.lt-ie9 html i {
-  font-style: normal !important;
-}
-.lt-ie9 body em,
-.lt-ie9 html em,
-.lt-ie9 body i,
-.lt-ie9 html i {
-  font-style: normal !important;
-}
-body strong,
-html strong,
-body b,
-html b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 body strong,
-.lt-ie9 html strong,
-.lt-ie9 body b,
-.lt-ie9 html b {
-  font-weight: normal !important;
 }
 .lt-ie9 body strong,
 .lt-ie9 html strong,
@@ -6043,9 +4604,6 @@ html b {
 .lt-ie9 .header .site-title .title-link .site-org {
   font-weight: normal !important;
 }
-.lt-ie9 .header .site-title .title-link .site-org {
-  font-weight: normal !important;
-}
 .header .site-title .title-link:visited {
   color: #919395;
 }
@@ -6151,47 +4709,11 @@ html b {
 .lt-ie9 .main-content .lead-in i {
   font-style: normal !important;
 }
-.lt-ie9 .main-content .lead-in em,
-.lt-ie9 .main-content .lead-in i {
-  font-style: normal !important;
-}
 .main-content .lead-in strong,
 .main-content .lead-in b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
-}
-.lt-ie9 .main-content .lead-in strong,
-.lt-ie9 .main-content .lead-in b {
-  font-weight: normal !important;
-}
-.lt-ie9 .main-content .lead-in strong,
-.lt-ie9 .main-content .lead-in b {
-  font-weight: normal !important;
-}
-.main-content .lead-in em,
-.main-content .lead-in i {
-  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
-  font-style: italic;
-  font-weight: normal;
-}
-.lt-ie9 .main-content .lead-in em,
-.lt-ie9 .main-content .lead-in i {
-  font-style: normal !important;
-}
-.lt-ie9 .main-content .lead-in em,
-.lt-ie9 .main-content .lead-in i {
-  font-style: normal !important;
-}
-.main-content .lead-in strong,
-.main-content .lead-in b {
-  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
-  font-style: normal;
-  font-weight: bold;
-}
-.lt-ie9 .main-content .lead-in strong,
-.lt-ie9 .main-content .lead-in b {
-  font-weight: normal !important;
 }
 .lt-ie9 .main-content .lead-in strong,
 .lt-ie9 .main-content .lead-in b {
@@ -6235,9 +4757,6 @@ html b {
 .lt-ie9 .main-content .toc li {
   font-weight: normal !important;
 }
-.lt-ie9 .main-content .toc li {
-  font-weight: normal !important;
-}
 .main-content .toc li a {
   text-decoration: none;
   border-bottom: none;
@@ -6265,9 +4784,6 @@ html b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
-}
-.lt-ie9 .main-content dt {
-  font-weight: normal !important;
 }
 .lt-ie9 .main-content dt {
   font-weight: normal !important;
@@ -6397,9 +4913,6 @@ html b {
     font-size: 1.125em;
     /* 18px */
     list-style: none;
-  }
-  .lt-ie9 .main-nav li {
-    font-weight: normal !important;
   }
   .lt-ie9 .main-nav li {
     font-weight: normal !important;
@@ -6585,7 +5098,7 @@ html b {
   .map-aside-header {
     float: left;
     width: 240px;
-    border-width: 0;
+    border-right: 2px solid #babbbd;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -6598,11 +5111,7 @@ html b {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
-  .map-main {
-    border-left: 2px solid #babbbd;
-  }
   .map-header {
-    border-left: 2px solid #babbbd;
     border-bottom: 1px solid #babbbd;
   }
   .map-aside-header {
@@ -6669,17 +5178,11 @@ html b {
 .lt-ie9 .map-aside h3 {
   font-weight: normal !important;
 }
-.lt-ie9 .map-aside h3 {
-  font-weight: normal !important;
-}
 .map-aside h4 {
   font-size: .75em;
   font-family: "AvenirNextLTW01-Medium", Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
-}
-.lt-ie9 .map-aside h4 {
-  font-weight: normal !important;
 }
 .lt-ie9 .map-aside h4 {
   font-weight: normal !important;
@@ -6693,9 +5196,6 @@ html b {
   font-family: "AvenirNextLTW01-Medium", Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
-}
-.lt-ie9 .map-aside dt {
-  font-weight: normal !important;
 }
 .lt-ie9 .map-aside dt {
   font-weight: normal !important;
@@ -6722,9 +5222,6 @@ html b {
   font-style: normal;
   font-weight: 500;
   margin-bottom: 8px;
-}
-.lt-ie9 .map-aside__msa-search label {
-  font-weight: normal !important;
 }
 .lt-ie9 .map-aside__msa-search label {
   font-weight: normal !important;
@@ -7107,9 +5604,6 @@ html b {
   font-weight: 500;
   text-align: right;
   padding-right: 8px;
-}
-.lt-ie9 .search-results .search-result-record table th {
-  font-weight: normal !important;
 }
 .lt-ie9 .search-results .search-result-record table th {
   font-weight: normal !important;
