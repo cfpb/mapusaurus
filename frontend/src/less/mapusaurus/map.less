@@ -1,0 +1,431 @@
+/*
+@font-face {
+  font-family: 'CFPB Minicons';
+  src: url('../font/cf-icons.eot');
+  src: url('../font/cf-icons.eot?#iefix') format('embedded-opentype'), url('../font/cf-icons.woff') format('woff'), url('../font/cf-icons.ttf') format('truetype'), url('../font/cf-icons.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+*/
+
+// Set the map and all its containers to 100% so it fills the viewport
+html, body {
+    //height:100%;
+}
+
+.map-container {
+  //min-height: 100%;
+  //overflow: hidden;
+}
+
+.map-wrapper {
+  .grid_wrapper( 100% );
+  max-width: 100%; // over-ride cg-grid default
+  padding: 0; // over-ride cg-grid default
+  //margin-bottom: -99999px; // trick from: https://blog.credera.com/technology-insights/full-height-column-layout-with-bootstrap/
+  //padding-bottom: 99999px;
+}
+
+/* Mobile first means all content boxes are full width */
+
+.map-header,
+.map-aside-header,
+.map-aside,
+.map-main {
+  //.grid_column(12);
+  border-width: 0; // over-ride cf-grid
+  box-sizing: border-box; 
+}
+
+.map-header,
+.map-aside-header {
+  background-color: @gray-20;
+}
+
+.map-header {
+  height: 34px;
+  line-height: 26px; //34 px high minus 8px padding
+  padding: 4px 8px;
+}
+
+
+.map-aside-header {
+  height: 34px;
+}
+
+
+/* Media Queries
+   ========================================================================== */
+
+/* Mobile portrait (320px) */
+@media only screen and (min-width: 20em) {
+
+}
+
+/* Mobile landscape (480px) */
+@media only screen and (min-width: 30em) {
+
+}
+
+/* Small tablet (600px) */
+@media only screen and (min-width: 37.5em) {
+
+  .map-aside,
+  .map-aside-header {
+    //.grid_column(2);
+    float: left;
+    width: 240px;
+    border-right: 2px solid @gray-50;
+    box-sizing: border-box;
+  }
+
+  .map-main,
+  .map-header {
+    overflow:hidden;
+    border-width: 0;
+    box-sizing: border-box; 
+  }
+
+  .map-main {
+      //border-left: 2px solid @gray-50;
+  }
+
+  .map-header {
+      //border-left: 2px solid @gray-50;
+      border-bottom: 1px solid @gray-50;
+  }
+
+  .map-aside-header {
+      border-bottom: 1px solid @gray-50;
+  }
+
+  .map-header__wrapper {
+    .grid_nested-col-group();
+  } 
+
+  .map-header__map-title {
+    .grid_column(8);
+  }
+
+  .map-header__lock-msa {
+    .grid_column(4);
+  }
+
+
+} //end media query
+
+
+
+.map-aside {
+
+  background-color: @gray-10;
+
+  h3 {
+    font-size: .875em;
+    text-transform: uppercase;
+    .webfont-demi();
+    margin-bottom: .875em;
+  }
+
+  h4 {
+    font-size: .75em;
+    .webfont-medium();
+    //margin-bottom: 8px;
+  }
+
+  p,
+  dt,
+  dd {
+    font-size: .75em;
+  }
+  dt {
+    .webfont-medium();
+  }
+  dd {
+    margin-left: 12px;
+    margin-bottom: 4px;
+  }
+  .btn {
+    //width: 150px;
+    font-size: .875em;
+  }
+}
+
+.map-aside__lender-details,
+.map-aside__msa-details,
+.map-aside__export,
+.map-aside__download,
+.map-aside__msa-search {
+  background-color: @gray-20;
+  border-bottom: 1px solid @gray-50;
+  padding: 15px;
+}
+
+.map-aside__msa-search {
+  label {
+    font-size: 12px;
+    .webfont-medium();
+    margin-bottom: 8px;
+  }
+  input[type="text"] {
+    font-size: 14px;
+    width: 200px;
+    box-sizing: border-box;
+    border: 1px solid @gray-50;
+    margin-bottom: 1px; // move type-ahead down so it does not overlap the bottom border
+  }
+
+  .btn {
+    margin-top: 8px;
+    font-size: 12px;
+  }
+
+  .btn__disabled {
+    border: 1px solid @gray-50;
+  }
+
+  .tt-dropdown-menu {
+
+  }
+
+
+  .tt-suggestion {
+
+      text-transform: capitalize;
+      border-left: 1px solid @gray-50;
+      border-right: 1px solid @gray-50;
+      border-bottom: 1px solid @gray-50;
+      padding: 0 4px;
+      background-color: @gray-10;
+      box-sizing: border-box; 
+      width: 200px;
+  }
+
+  .tt-suggestion p {
+      font-size: 14px;
+      margin-bottom: 8px;
+  }
+
+  .typeahead,
+  .tt-query,
+  .tt-hint {
+
+  }
+
+  .typeahead {
+
+  }
+
+  .typeahead:focus {
+
+  }
+
+  .tt-query {
+
+  }
+
+  .tt-hint {
+
+  }
+
+  .tt-dropdown-menu {
+
+  }
+
+  .tt-suggestion {
+
+
+
+  }
+
+  .tt-suggestion.tt-cursor {
+    color: @white;
+    background-color: @pacific;
+
+  }
+
+
+
+
+}
+
+.hidden {
+  display: block;
+}
+
+
+#map .hover-box {
+  position: absolute;
+  bottom: 85px;
+  left: 50px;
+  z-index: 1002;
+  background-color: #fff;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+
+#key {
+  width: 300px;
+  border: solid 1px #000;
+  background: #fff;
+  padding: 10px;
+}
+
+#key label {
+  font-size: larger;
+  font-weight: bold;
+}
+
+#minority-key {
+  width: 100%;
+  margin-top: 5px;
+  background-image: url(choropleth-key.svg);
+  /*background: linear-gradient(to right, #ffffd9, #c6eab2 50%, #0e90c2 80%, #1d5caa);*/
+}
+
+#key select {
+  width: 100%;
+  margin-top: 10px;
+  font-size: large;
+}
+
+#percentage-container {
+
+  .left {
+    display: inline-block;
+    width: 25%;
+  }
+  .center {
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+  }
+  .right {
+    display: inline-block;
+    width: 25%;
+    text-align: right;
+  }
+
+}
+
+.vex-dialog-message h2 {
+  font-weight: bold;
+  font-size: larger;
+}
+
+/* Map header */
+/*
+#map-header {
+  background-color: #d0e5ca;
+  border-bottom: 4px solid #2cb34a;
+  padding: 0.5em 0;
+  min-height: 4em;
+}
+#map-header .map-type {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#map-header a {
+  color: #f00;
+  border-bottom: none;
+  text-transform: uppercase;
+}
+*/
+.map-header__lock-msa {
+  text-align: right;
+  font-size: 14px;
+  label {
+    //padding-right: 8px;
+    //line-height: 26px;
+    //vertical-align: top;
+  }
+  label:after {
+    font-family: 'CFPB Minicons';
+    content: "\e635  \e632";
+    font-size: 18px;
+    margin-left: 8px;
+  }
+  label.locked:after {
+    font-family: 'CFPB Minicons';
+    content: "\e634  \e633";
+    font-size: 18px;
+    margin-left: 8px;
+  }
+  input {
+    display: none;
+  }
+}
+
+
+// MAP ASIDE
+.tabs {
+  ul {
+      .clearfix();
+      list-style-type: none;
+      margin: 0; 
+      padding: 0;
+
+      li {
+          
+          float: left;
+          margin: 0;
+          padding: 0;
+          
+          a {
+              // font
+
+              color: @gray;
+              font-size: 18px;
+              line-height: 25px; // 34 minus 4px top and bottom padding minus 1 px bottom border
+
+              cursor: pointer;
+              text-decoration: none;
+
+              padding: 4px 16px;
+
+              // over-ride bottom borders from CFPB global styles.css 
+              border-bottom: 1px solid @gray-50;
+              border-right: 1px solid @gray-50;
+
+              //tab color
+              background-color: @gray-10;
+
+              // position
+              position: relative; 
+              display: block; 
+              top: 0;
+
+              &.active {
+                  background-color: @gray-20;
+                  color: @black;
+
+                  &:hover {
+                      background-color: @gray-20;
+                      //border: none;
+                  }    
+              }
+
+              &:hover {
+                  background-color: @gray-20;
+                  
+              }
+
+              &:hover,
+              &:focus {
+                  /* over-ride bottom borders from CFPB global styles.css */
+                  border-bottom: 1px solid @gray-50;
+              }
+          } //a
+      } //li
+  } //ul
+} //.tabs
+
+.tabpanel {
+
+    .clearfix();
+    min-height: 2em;
+
+} //.tabpanel
+
+

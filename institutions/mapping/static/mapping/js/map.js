@@ -2,6 +2,7 @@
 
 vex.defaultOptions.className = 'vex-theme-plain';
 
+
 /* The GeoJSON tile layer is excellent, but makes assumptions that we don't
  * want (like refreshing whenever zooming, and that a single logic layer is
  * encoded in the ajaxed data). We instead extend a simpler primitive, and
@@ -15,7 +16,7 @@ L.TileLayer.GeoJSONData = L.TileLayer.Ajax.extend({
             _.each(features, this.options.perGeo);
         }
         if (this.options.postTileLoaded) {
-            this.options.postTileLoaded(features, tilePoint);
+            this.options.postTileLoaded(features, tilePoint, this._tilesToLoad);
         }
     },
     _tileLoaded: function (tile, tilePoint) {
@@ -45,6 +46,9 @@ var Mapusaurus = {
     layers: {tract: null, county: null, metro: null},
     //  Tracks layer data/stats
     dataStore: {tract: {}},
+    //  We don't immediately fetch statistical data when we know that we need
+    //  it. This buffers the requests until enough have been logged
+    toBatchLoad: [],
     //  Tracks which tracts have been drawn. Gets cleared when zooming
     drawn: {},
     notDrawn: function(feature) {
@@ -79,7 +83,7 @@ var Mapusaurus = {
                        fillOpacity: 0.5},
 
     initialize: function (map) {
-        var mainEl = $('main'),
+        var mainEl = $('#map-container'),
             centLat = parseFloat(mainEl.data('cent-lat')) || 41.88,
             centLon = parseFloat(mainEl.data('cent-lon')) || -87.63,
             $enforceBoundsEl = $('#enforce-bounds');
@@ -138,7 +142,7 @@ var Mapusaurus = {
             Mapusaurus.lockState.geoid = mainEl.data('geoid').toString();
             Mapusaurus.enforceBounds();
         }
-
+        /*
         L.control.search({
             url: '/shapes/search/?auto=1&q={s}',
             autoCollapse: true,
@@ -153,6 +157,7 @@ var Mapusaurus = {
                 return results;
             },
         }).addTo(map);
+        */
     },
 
     /* check if a tile is encoded w/ topojson. If so, convert it to geojson */
@@ -174,17 +179,16 @@ var Mapusaurus = {
         return feature.properties.geoType === 4;
     },
 
-    /* Called after each tile of geojson shape data loads */
-    afterShapeTile: function(features) {
+    /* Called after each tile of geojson shape data loads. The tilesToLoad
+     * parameter indicates how many additional shape tiles remain */
+    afterShapeTile: function(features, tilePoint, tilesToLoad) {
         var tracts = _.filter(features, Mapusaurus.isTract);
         //  convert to geoids
         tracts = _.map(tracts, function(feature) {
             return feature.properties.geoid;
         });
-        if (tracts.length > 0) {
-            Mapusaurus.updateDataWithoutGeos(tracts);
-            Mapusaurus.fetchMissingStats(tracts);
-        }
+        Mapusaurus.updateDataWithoutGeos(tracts);
+        Mapusaurus.fetchMissingStats(tracts, /* force */ tilesToLoad === 0);
         
     },
     /* Keep expected functionality with double clicking */
@@ -329,9 +333,11 @@ var Mapusaurus = {
         Mapusaurus.draw(toDraw);
     },
 
-    /* We have geos without their associated stats - kick off the load */
-    fetchMissingStats: function(newTracts) {
-        //  This is a list of triples: [[layer name, state, county]]
+    /* We have geos without their associated stats. Only make the HTTP call
+     * after enough data has accumulated (or force === true, which occurs if
+     * there are no additional data tiles to load) */
+    fetchMissingStats: function(newTracts, force) {
+        //  This is a list of pairs: [[layer name, state-county]]
         var missingStats = [];
         _.each(_.keys(Mapusaurus.statsLoaded), function(layerName) {
             //  We only care about unseen stat data
@@ -352,14 +358,18 @@ var Mapusaurus = {
             //  Keep track of what we will be loading
             _.each(missingData, function(stateCounty) {
                 //  Add to the list of data to load
-                missingStats.push([layerName, stateCounty.substr(0, 2),
-                                   stateCounty.substr(2)]);
+                missingStats.push([layerName, stateCounty]);
                 //  Signify that we are loading it...
                 Mapusaurus.statsLoaded[layerName][stateCounty] = 'loading';
             });
         });
-        if (missingStats.length > 0) {
-            Mapusaurus.batchLoadStats(missingStats);
+        Mapusaurus.toBatchLoad.push(missingStats);
+        if (force || Mapusaurus.toBatchLoad.length === 10) {
+            missingStats = _.flatten(Mapusaurus.toBatchLoad, true);
+            Mapusaurus.toBatchLoad = [];
+            if (missingStats.length > 0) {
+                Mapusaurus.batchLoadStats(missingStats);
+            }
         }
     },
 
@@ -367,39 +377,37 @@ var Mapusaurus = {
      * endpoint/layer we care about, the data it needs (state, county, etc.),
      * and then we need to process the result. */
     batchLoadStats: function(missingStats) {
-        var requests = _.map(missingStats, function(triple) {
-            var params = {'state_fips': triple[1],
-                          'county_fips': triple[2]};
-            if (Mapusaurus.urlParam('lender')) {
-                params['lender'] = Mapusaurus.urlParam('lender');
-            }
-            return {endpoint: triple[0], params: params};
+        var endpoints = [],
+            counties = [],
+            params;
+        _.each(missingStats, function(pair) {
+            endpoints.push(pair[0]);
+            counties.push(pair[1]);
         });
-
+        endpoints = _.uniq(endpoints);
+        counties = _.uniq(counties);
+        params = {'endpoint': endpoints, 'county': counties};
+        if (Mapusaurus.urlParam('lender')) {
+            params['lender'] = Mapusaurus.urlParam('lender');
+        }
         $.ajax({
-            type: 'POST',
-            url: '/batch',
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify({requests: requests}),
-            success: Mapusaurus.makeBatchSuccessFn(requests)
+            url: '/batch', data: params, traditional: true,
+            success: Mapusaurus.makeBatchSuccessFn(endpoints, counties)
         });
     },
 
     /*  As the success function for making a batch request relies on the
      *  requests made, this returns a closure to handle the results of a batch
      *  load */
-    makeBatchSuccessFn: function(requests) {
+    makeBatchSuccessFn: function(endpoints, counties) {
         return function(data) {
             var toDraw = {};
             _.each(_.keys(Mapusaurus.statsLoaded), function(layerName) {
                 toDraw[layerName] = [];
             });
-            _.each(requests, function(request, idx) {
-                var layerName = request['endpoint'],
-                    llName = 'layer_' + layerName,
-                    response = data['responses'][idx],
-                    stateCounty = request.params['state_fips'] +
-                                  request.params['county_fips'];
+            _.each(endpoints, function(layerName) {
+                var llName = 'layer_' + layerName,
+                    response = data[layerName];
                 _.each(_.keys(response), function(geoid) {
                     var geo = Mapusaurus.dataStore.tract[geoid];
                     //  Have not loaded the geo data yet
@@ -412,7 +420,9 @@ var Mapusaurus = {
                         toDraw[layerName].push(geoid);
                     }
                 });
-                Mapusaurus.statsLoaded[layerName][stateCounty] = true;
+                _.each(counties, function(county) {
+                    Mapusaurus.statsLoaded[layerName][county] = true;
+                });
             });
             Mapusaurus.draw(toDraw);
         };
@@ -714,7 +724,26 @@ var Mapusaurus = {
     }
 };
 
+function setMapHeight() {
+    /* Set the map div to the height of the browser window minus the header. */
+    var viewportHeight = $(window).height();
+    var warningBannerHeight = $('#warning-banner').outerHeight();
+    var headerHeight = $('#header').outerHeight();
+    var mapHeaderHeight = $('#map-header').outerHeight();
+    var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
+    $('#map-aside').css('height', mapHeight);
+    $('#map').css('height', mapHeight);
+}
+
 $(document).ready(function() {
+
+    setMapHeight();
+
+    $( window ).resize(function() {
+        setMapHeight();
+    });
+
+
     $('#take-screenshot').click(function(ev) {
         ev.preventDefault();
         vex.dialog.alert({
@@ -724,3 +753,115 @@ $(document).ready(function() {
         Mapusaurus.takeScreenshot();
     });
 });
+
+
+/* Map Tabs */
+
+    (function( $ ) {
+      $.fn.mapusaurusTabs = function() {
+
+        var tabList = this.find('> ul');
+        var tabPanel = $('#map-aside-header__tabpanels > div');
+
+        //console.log(tabList);
+        //console.log(tabPanel);
+
+        // Hide all the inactive tab panels. They are not hidden by CSS for 508 compliance
+        tabPanel.hide();
+        tabPanel.first().show().addClass('active');
+
+        // Set the first tab to dark green
+
+        tabList.find('a').first().addClass('active');
+        
+        //set the default aria attributes to the tab list
+        tabList.attr('role', 'tablist');
+        tabList.find('li').attr('role', 'presentation');
+        tabList.find('a').attr('role', 'tab').attr('aria-selected', 'false').attr('aria-expanded', 'false').attr('tabindex', '-1');
+        tabList.find('a').first().attr('aria-selected', 'true').attr('aria-expanded', 'true').attr('tabindex', '0');
+
+        // add the default aria attributes to the tab panel
+        tabPanel.attr('role', 'tabpanel').attr('aria-hidden', 'true').attr('tabindex', '-1');
+        tabPanel.first().attr('aria-hidden', 'false').attr('tabindex', '0');
+
+        // create IDs for each anchor for the area-labelledby
+        tabList.find('a').each(function() {
+          var tabID = $( this ).attr('href').substring(1);
+          //console.log(tabID);
+          $(this).attr('id','tablist-' + tabID).attr('aria-controls', tabID);
+        });
+
+        tabPanel.each(function() {
+          //console.log( index + ': ' + $( this ).attr('href').substring(1) );
+          var tabID = 'tablist-' + $( this ).attr('id');
+          //console.log(tabID);
+          $(this).attr('aria-labelledby',tabID).addClass('tabpanel');
+        });
+
+
+        // Attach a click handler to all tab anchor elements
+        this.find('> ul a').click(function(event) {
+          // prevent the anchor link from modifing the url. We don't want the brower scrolling down to the anchor.
+          event.preventDefault();
+          // The entire tabset, the parent of the clicked tab
+          var $thisTabList = $(this).closest('.tabs');
+          var $thisTabPanels = $('#map-aside-header__tabpanels');
+          //console.log('$thisTabset:');
+          //console.log($thisTabset);
+
+          var thisTabID = $(this).attr('href');
+
+          //console.log('thisTabID: ' + thisTabID);
+
+          //var $thisTabContent = $thisTabset.find(thisTabID);
+
+          //console.log('$thisTabContent:');
+          //console.log($thisTabContent);
+
+          // remove all the active classes on the tabs and panels
+          $thisTabList.find('.active').removeClass('active');
+          $thisTabPanels.find('.active').removeClass('active');
+          // set the aria roles to the default settings for all
+          //$thisTabset.find('> ul > li > a').attr('aria-selected', 'false').attr('aria-expanded', 'false').attr('tabindex', '-1');
+          // hide all the tab panels
+          $thisTabPanels.find('.tabpanel').hide().attr('aria-hidden', 'true').attr('tabindex', '-1');
+          
+          
+          // show the panel
+          $(thisTabID).addClass('active').show().attr('aria-hidden', 'false').attr('tabindex', '0');
+          //highlight the clicked tab
+          $(this).addClass('active').attr('aria-selected', 'true').attr('aria-expanded', 'true').attr('tabindex', '0');
+          $(this).focus();
+        });
+
+        //set keydown events on tabList item for navigating tabs
+        $(tabList).delegate('a', 'keydown',
+          function (e) {
+            switch (e.which) {
+              case 37: case 38:
+                if ($(this).parent().prev().length!==0) {
+                  $(this).parent().prev().find('>a').click();
+                } else {
+                  $(tabList).find('li:last>a').click();
+                }
+                break;
+              case 39: case 40:
+                if ($(this).parent().next().length!==0) {
+                  $(this).parent().next().find('>a').click();
+                } else {
+                  $(tabList).find('li:first>a').click();
+                }
+                break;
+            }
+          }
+        );
+
+
+      };
+
+      // auto-init
+      $(function(){
+        $('.tabs').mapusaurusTabs();
+      });
+
+    })( jQuery );

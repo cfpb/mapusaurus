@@ -7,7 +7,8 @@
 /* Mobile-First Defaults: */
 .header {
 	border-bottom: 4px solid @green;
-	padding-top: 0.5em;
+	box-sizing: border-box; /* make the border inside the box */
+	padding-top: 4px;
 	width: 100%;
 
 	.site-title {
@@ -44,19 +45,20 @@
 @media only screen and (min-width: 37.5em) {
 	.header {
 
-		padding: 2em 0 0;
-
 		.site-title {
-			.grid_column(6);
+			.grid_column(8);
 			text-align: left;
 			
 			h1 {
-				font-size: 1.5em;
+				font-size: 24px;
+				line-height: 44px; //match the logo height
+				margin: 0;
+				
 			}
 		}
 
 		.site-logo {
-			.grid_column(6);
+			.grid_column(4);
 			text-align: right;
 
 			.logo {
