@@ -144,6 +144,20 @@
   tags:
     - cf-core
 */
+
+
+.circlelabel {
+     width:30px;
+     height:30px;
+     border-radius:30px;
+     display:inline-block;
+     font-size:13px;
+     color:#fff;
+     line-height:30px;
+     text-align:center;
+     background:#404040
+}
+
 .u-visually-hidden {
   position: absolute;
   overflow: hidden;

@@ -12,21 +12,22 @@
 
         
 
-        <p>Welcome to the Fair Lending HMDA Visualization Toolkit! This is a
-        beta version, and we welcome your feedback: 
-        <a href="mailto:{{ contact_us_email }}?subject=Visualization%20Toolkit%20Feedback">email us</a>.</p>
 
-        <p>Currently, this tool can only show originations and applications from a given lender in a selected MSA in the 2012 HMDA data.<br> Additional functionality will be coming soon.</p>
-
-        <p>&nbsp;</p>
 
     <div class="search-home">
+        <p>Welcome to the Fair Lending HMDA Visualization Toolkit! This is a beta version: we welcome your feedback at
+        <a href="mailto:{{ contact_us_email }}?subject=Visualization%20Toolkit%20Feedback">{{ contact_us_email }}</a>.</p>
 
-        <h2>Find a lender</h2>
+        <p>Currently, this tool can only show originations and applications from a given lender in a selected MSA in the 2012 HMDA data. Additional functionality will be coming soon.
+        <p>&nbsp;</p>
+
+
+        <h3 style="font-weight:bold"> <div class="circlelabel">1</div> Find an institution with 2012 orginations</h3>
+        <p>&nbsp;</p>
 
         <form action="{% url 'respondants:search_results' %}" method="GET">
             <div class="search-field">
-                <label for="search_name" class="search-name-label">Search by lender name or lender ID
+                <label for="search_name" class="search-name-label">Search by name or lender ID
                     (<a target="new" href="http://www.ffiec.gov/nicpubweb/nicweb/SearchForm.aspx">Need a Lender ID?</a> <span class="cf-icon cf-icon-external-link"></span>)
                 </label>
                 <input type="text" id="search_name" name="q" />
