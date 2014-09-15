@@ -171,6 +171,13 @@ module.exports = function(grunt) {
             src: ['frontend/src/img/*'],
             dest: 'frontend/dist/img/',
             filter: 'isFile'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['frontend/src/img/font-awesome/*'],
+            dest: 'frontend/dist/img/font-awesome/',
+            filter: 'isFile'
           }
         ]
       },
