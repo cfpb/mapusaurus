@@ -5649,6 +5649,17 @@ html b {
 .search-results .pagination {
   margin-bottom: 2em;
 }
+.circlelabel {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  display: inline-block;
+  font-size: 13px;
+  color: #fff;
+  line-height: 30px;
+  text-align: center;
+  background: #43484e;
+}
 @media only screen and (min-width: 37.5em) {
   .search-home {
     display: inline-block;
