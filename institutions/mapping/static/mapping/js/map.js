@@ -125,8 +125,10 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.setStyle(
                 Mapusaurus[$('#style-selector').val()]);
         });
+        //  Selector to change minority category shown
         $('#category-selector').on('change', function() {
             Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
+            Mapusaurus.redrawBubbles();
         });
 
         $enforceBoundsEl.on('change', function() {
@@ -486,8 +488,11 @@ var Mapusaurus = {
         Mapusaurus.layers.loanVolume.eachLayer(function(layer) {
             var geoid = layer.geoid,
                 tractData = Mapusaurus.dataStore.tract[geoid],
-                stat = Mapusaurus.hmdaStat(tractData['layer_loanVolume']);
+                stat = Mapusaurus.hmdaStat(tractData['layer_loanVolume']),
+                style = Mapusaurus.minorityContinuousStyle(
+                  tractData, Mapusaurus.bubbleStyle);
             layer.setRadius(stat);
+            layer.setStyle(style);
         });
     },
 
