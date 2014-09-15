@@ -1,4 +1,4 @@
-Django
+Django==1.6.5
 psycopg2
 requests
 south
