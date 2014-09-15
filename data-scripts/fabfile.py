@@ -71,10 +71,27 @@ def load_state_shapefiles(working_dir):
             local("unzip " + filename)
             local("rm " + filename)
         with lcd("../institutions"):
-            local("python manage.py load_state_shapefile "
-                  + working_dir + "/" + filename.replace("zip", "shp"))
+            local("python manage.py load_geos_from " + working_dir + "/"
+                  + filename.replace("zip", "shp"))
         with lcd(working_dir):
             local("rm " + filename.replace("zip", "*"))
+
+
+def load_other_geos(working_dir):
+    """In addition to tracts, we need to load counties, metros, and more."""
+    for geo_type in ('county', 'cbsa', 'metdiv'):
+        filename = "tl_2013_us_" + geo_type + ".zip"
+        with lcd(working_dir):
+            local("wget ftp://ftp2.census.gov/geo/tiger/TIGER2013/"
+                  + geo_type.upper() + "/" + filename)
+            local("unzip " + filename)
+        with lcd("../institutions"):
+            local("python manage.py load_geos_from " + working_dir + "/"
+                  + filename.replace("zip", "shp"))
+        with lcd(working_dir):
+            local("rm " + filename.replace("zip", "*"))
+    with lcd("../institutions"):
+        local("python manage.py set_tract_csa_cbsa")
 
 
 def load_summary_ones(working_dir):
@@ -110,9 +127,17 @@ def load_hmda(working_dir):
         local("rm '" + filename.replace("zip", "csv") + "'")
 
 
+def precache_hmda():
+    """We precache median loan amount per lender x metro"""
+    with lcd("../institutions"):
+        local("python manage.py calculate_loan_stats")
+
+
 def load_all(working_dir="/tmp"):
     """Download and import all data for the app"""
     load_respondants(working_dir)
     load_state_shapefiles(working_dir)
+    load_other_geos(working_dir)
     load_summary_ones(working_dir)
     load_hmda(working_dir)
+    precache_hmda()

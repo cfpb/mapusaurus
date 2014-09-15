@@ -35,6 +35,18 @@ Postgres 9.1.13
 
 There's also a requirements.txt file in the repository root directory.  
 
+## Download All the Data in One Shot
+
+We have a fabric script to download *all* of the data (tens of gigs). To run
+it, we assume you've already set up your database, python environment, etc.
+etc. Then:
+
+```bash
+    cd ~/mapusaurus/data-scripts
+    sudo pip install fabric
+    fab load_all:working_dir=/tmp
+```
+
 
 ## Loading the data
 
@@ -162,6 +174,13 @@ added later, for example).
 
 Warning: At the moment, the import assumes a single year of information.
 That's a todo.
+
+You will most likely want to pre-calculate the median number of loans for a
+particular lender X city pair -- this speeds up map loading quite a bit.
+
+```
+    python manage.py calculate_loan_stats
+```
 
 
 ## Styles
