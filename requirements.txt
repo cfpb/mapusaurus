@@ -5,7 +5,6 @@ south
 django-localflavor
 django-geojson
 django-haystack==2.1.0
-django-overextends
 djangorestframework
 git+https://github.com/makinacorpus/django-leaflet.git#egg=django-leaflet
 git+https://github.com/cmc333333/topojson.py.git@e86e76705cef03559bd2b90ec0b624dfdf2c8356#egg=topojson
