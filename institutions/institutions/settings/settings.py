@@ -27,9 +27,6 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-DATABASES = {'default': {'ENGINE': '', 'NAME': '', 'USER': '', 'PASSWORD': ''}}
 
 # Application definition
 
@@ -74,7 +71,10 @@ ROOT_URLCONF = 'institutions.urls'
 WSGI_APPLICATION = 'institutions.wsgi.application'
 
 
- 
+# Database
+# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+DATABASES = {'default': {'ENGINE': '', 'NAME': '', 'USER': '', 'PASSWORD': ''}}
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
@@ -138,7 +138,5 @@ CACHES = {
 
 if 'test' in sys.argv:
     CACHES['long_term_geos']['BACKEND'] = 'django.core.cache.backends.dummy.DummyCache'
-
-CONTACT_US_EMAIL = 'feedback@example.com'
 
 from institutions.settings.local_settings import *
