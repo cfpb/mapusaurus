@@ -52,7 +52,11 @@ module.exports = function(grunt) {
     less: {
       main: {
         options: {
-          paths: ['frontend/src/less']
+          paths: ['frontend/src/less'],
+          compress: false,
+          sourceMap: true,
+          sourceMapFilename: 'frontend/dist/css/mapusaurus_sourcemap.css.map',
+          sourceMapURL: '/static/basestyle/css/mapusaurus_sourcemap.css.map'
         },
         files: {
           'frontend/dist/css/<%= pkg.name %>.css': ['<%= banner %>', 'frontend/src/less/<%= pkg.name %>.less']
@@ -170,6 +174,13 @@ module.exports = function(grunt) {
             flatten: true,
             src: ['frontend/src/img/*'],
             dest: 'frontend/dist/img/',
+            filter: 'isFile'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['frontend/src/img/font-awesome/*'],
+            dest: 'frontend/dist/img/font-awesome/',
             filter: 'isFile'
           }
         ]
