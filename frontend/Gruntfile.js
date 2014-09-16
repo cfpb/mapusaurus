@@ -52,7 +52,11 @@ module.exports = function(grunt) {
     less: {
       main: {
         options: {
-          paths: ['frontend/src/less']
+          paths: ['frontend/src/less'],
+          compress: false,
+          sourceMap: true,
+          sourceMapFilename: 'frontend/dist/css/mapusaurus_sourcemap.css.map',
+          sourceMapURL: '/static/basestyle/css/mapusaurus_sourcemap.css.map'
         },
         files: {
           'frontend/dist/css/<%= pkg.name %>.css': ['<%= banner %>', 'frontend/src/less/<%= pkg.name %>.less']

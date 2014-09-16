@@ -5701,9 +5701,9 @@ html b {
     border-width: 0 15px;
     margin-right: -0.25em;
     vertical-align: top;
-    width: 50%;
+    width: 66.66666667%;
     position: relative;
-    left: 25%;
+    left: 16.66666667%;
   }
   .ie .search-home {
     margin-right: -0.26em;
@@ -5879,3 +5879,4 @@ html b {
     margin-right: 0;
   }
 }
+/*# sourceMappingURL=/static/basestyle/css/mapusaurus_sourcemap.css.map */
