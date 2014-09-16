@@ -5047,7 +5047,7 @@ html b {
   border-bottom: none;
 }
 /*
-@font-face {
+@font-face {enforce-bounds
   font-family: 'CFPB Minicons';
   src: url('../font/cf-icons.eot');
   src: url('../font/cf-icons.eot?#iefix') format('embedded-opentype'), url('../font/cf-icons.woff') format('woff'), url('../font/cf-icons.ttf') format('truetype'), url('../font/cf-icons.svg') format('svg');
@@ -5151,6 +5151,7 @@ html b {
     margin-right: -0.25em;
     vertical-align: top;
     width: 33.33333333%;
+    text-align: right;
   }
   .ie .map-header__lock-msa {
     margin-right: -0.26em;
@@ -5330,30 +5331,41 @@ html b {
 }
 */
 .map-header__lock-msa {
+  font-size: 18px;
+  margin-left: 8px;
+}
+/*
+.map-header__lock-msa {
   text-align: right;
   font-size: 14px;
+  label {
+    //padding-right: 8px;
+    //line-height: 26px;
+    //vertical-align: top;
+  }
+  label:after {
+    font-family: 'CFPB Minicons';
+    content: "\e635  \e632";
+    font-size: 18px;
+    margin-left: 8px;
+  }
+  label.locked:after {
+    font-family: 'CFPB Minicons';
+    content: "\e634  \e633";
+    font-size: 18px;
+    margin-left: 8px;
+  }
+  input {
+    display: none;
+  }
 }
-.map-header__lock-msa label:after {
-  font-family: 'CFPB Minicons';
-  content: "\e635  \e632";
-  font-size: 18px;
-  margin-left: 8px;
-}
-.map-header__lock-msa label.locked:after {
-  font-family: 'CFPB Minicons';
-  content: "\e634  \e633";
-  font-size: 18px;
-  margin-left: 8px;
-}
-.map-header__lock-msa input {
-  display: none;
-}
+*/
 .static-fa {
   background-repeat: no-repeat;
   display: block;
   height: 18px;
   width: 18px;
-  margin: 4px 2px 3px 2px;
+  margin: 4px 0 3px 0;
 }
 .static-fa-info-circle {
   background-image: url("../img/font-awesome/info-circle_75787b_18.png");
@@ -5365,19 +5377,19 @@ html b {
   background-image: url("../img/font-awesome/download_75787b_18.png");
 }
 .static-fa-search {
-  background-image: url("../font-awesome/search_75787b_18.png");
+  background-image: url("../img/font-awesome/search_75787b_18.png");
 }
 .active .static-fa-info-circle {
-  background-image: url("/static/basestyle/img/font-awesome/info-circle_101820_18.png");
+  background-image: url("../img/font-awesome/info-circle_101820_18.png");
 }
 .active .static-fa-map-marker {
-  background-image: url("/static/basestyle/img/font-awesome/map-marker_101820_18.png");
+  background-image: url("../img/font-awesome/map-marker_101820_18.png");
 }
 .active .static-fa-download {
-  background-image: url("/static/basestyle/img/font-awesome/download_101820_18.png");
+  background-image: url("../img/font-awesome/download_101820_18.png");
 }
 .active .static-fa-search {
-  background-image: url("/static/basestyle/img/font-awesome/search_101820_18.png");
+  background-image: url("../img/font-awesome/search_101820_18.png");
 }
 .tabs ul {
   list-style-type: none;

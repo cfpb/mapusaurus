@@ -131,19 +131,31 @@ var Mapusaurus = {
             Mapusaurus.redrawBubbles();
         });
 
-        $enforceBoundsEl.on('change', function() {
-            if ($enforceBoundsEl[0].checked) {
-                $enforceBoundsEl.prev().addClass('locked');
-                Mapusaurus.enforceBounds();
-            } else {
-                $enforceBoundsEl.prev().removeClass('locked');
+        var defaultLabel = $enforceBoundsEl.find('a').text();
+        var defaultTitle = $enforceBoundsEl.find('a').attr('title');
+
+        var unlockedLabel = $enforceBoundsEl.data('unlocked-label');
+        var unlockedTitle = $enforceBoundsEl.data('unlocked-title');
+        
+        $enforceBoundsEl.click(function(e) {
+            e.preventDefault();
+            if ($(this).data('enforce-bounds-state') === 'locked') {
+                $(this).data('enforce-bounds-state', 'unlocked');
+                $(this).contents().text(unlockedLabel).attr('title', unlockedTitle);
                 Mapusaurus.disableBounds();
+            } else {
+                $(this).data('enforce-bounds-state', 'locked');
+                $(this).contents().text(defaultLabel).attr('title', defaultTitle);
+                Mapusaurus.enforceBounds();
             }
         });
+
+        /*
         if ($enforceBoundsEl.length > 0) {
             Mapusaurus.lockState.geoid = mainEl.data('geoid').toString();
             Mapusaurus.enforceBounds();
         }
+        */
         /*
         L.control.search({
             url: '/shapes/search/?auto=1&q={s}',

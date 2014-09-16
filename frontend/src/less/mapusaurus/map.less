@@ -1,5 +1,5 @@
 /*
-@font-face {
+@font-face {enforce-bounds
   font-family: 'CFPB Minicons';
   src: url('../font/cf-icons.eot');
   src: url('../font/cf-icons.eot?#iefix') format('embedded-opentype'), url('../font/cf-icons.woff') format('woff'), url('../font/cf-icons.ttf') format('truetype'), url('../font/cf-icons.svg') format('svg');
@@ -83,7 +83,7 @@ html, body {
   .map-header {
     overflow:hidden;
     border-width: 0;
-    box-sizing: border-box; 
+    box-sizing: border-box;
   }
 
   .map-main {
@@ -109,6 +109,7 @@ html, body {
 
   .map-header__lock-msa {
     .grid_column(4);
+    text-align: right;
   }
 
 
@@ -332,6 +333,12 @@ html, body {
   text-transform: uppercase;
 }
 */
+
+.map-header__lock-msa {
+  font-size: 18px;
+  margin-left: 8px;
+}
+/*
 .map-header__lock-msa {
   text-align: right;
   font-size: 14px;
@@ -356,7 +363,7 @@ html, body {
     display: none;
   }
 }
-
+*/
 // STATIC MAP ICONS -- Since Icons fonts do not work in IE on gov't laptops.
 // Make the icons here: http://fa2png.io/
 
@@ -365,7 +372,7 @@ html, body {
   display: block;
   height: 18px;
   width: 18px;
-  margin: 4px 2px 3px 2px;
+  margin: 4px 0 3px 0;
   // Total height=25px 
 }
 
