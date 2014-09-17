@@ -5083,6 +5083,9 @@ html b {
   line-height: 26px;
   padding: 4px 8px;
 }
+.map-header__lock-msa {
+  font-size: .875em;
+}
 .map-aside-header {
   height: 34px;
 }
@@ -5330,10 +5333,6 @@ html b {
   text-transform: uppercase;
 }
 */
-.map-header__lock-msa {
-  font-size: 18px;
-  margin-left: 8px;
-}
 /*
 .map-header__lock-msa {
   text-align: right;

@@ -131,8 +131,8 @@ var Mapusaurus = {
             Mapusaurus.redrawBubbles();
         });
 
-        var defaultLabel = $enforceBoundsEl.find('a').text();
-        var defaultTitle = $enforceBoundsEl.find('a').attr('title');
+        var defaultLabel = $enforceBoundsEl.contents().text();
+        var defaultTitle = $enforceBoundsEl.contents().attr('title');
 
         var unlockedLabel = $enforceBoundsEl.data('unlocked-label');
         var unlockedTitle = $enforceBoundsEl.data('unlocked-title');
@@ -150,12 +150,12 @@ var Mapusaurus = {
             }
         });
 
-        /*
+        
         if ($enforceBoundsEl.length > 0) {
             Mapusaurus.lockState.geoid = mainEl.data('geoid').toString();
             Mapusaurus.enforceBounds();
         }
-        */
+        
         /*
         L.control.search({
             url: '/shapes/search/?auto=1&q={s}',
