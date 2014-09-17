@@ -187,6 +187,6 @@ particular lender X city pair -- this speeds up map loading quite a bit.
 
 While the base application attempts to appear "acceptable", you will likely
 wish to provide your own icons, colors, etc. We provide an example app
-(`cfpbstyle`) which you can modify directly or copy into a separate Django
+(`basestyle`) which you can modify directly or copy into a separate Django
 app. If you go the latter route, remember to activate your new app and
-deactivate the CFPB style.
+deactivate the basestyle.
