@@ -5046,15 +5046,6 @@ html b {
 .secondary-nav li:last-child {
   border-bottom: none;
 }
-/*
-@font-face {enforce-bounds
-  font-family: 'CFPB Minicons';
-  src: url('../font/cf-icons.eot');
-  src: url('../font/cf-icons.eot?#iefix') format('embedded-opentype'), url('../font/cf-icons.woff') format('woff'), url('../font/cf-icons.ttf') format('truetype'), url('../font/cf-icons.svg') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-*/
 .map-wrapper {
   max-width: 70%;
   padding: 0 15px;
