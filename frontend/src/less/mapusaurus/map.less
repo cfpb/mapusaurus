@@ -1,13 +1,3 @@
-/*
-@font-face {
-  font-family: 'CFPB Minicons';
-  src: url('../font/cf-icons.eot');
-  src: url('../font/cf-icons.eot?#iefix') format('embedded-opentype'), url('../font/cf-icons.woff') format('woff'), url('../font/cf-icons.ttf') format('truetype'), url('../font/cf-icons.svg') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-*/
-
 // Set the map and all its containers to 100% so it fills the viewport
 html, body {
     //height:100%;
@@ -47,11 +37,14 @@ html, body {
   line-height: 26px; //34 px high minus 8px padding
   padding: 4px 8px;
 }
-
+.map-header__lock-msa {
+  font-size: .875em;
+}
 
 .map-aside-header {
   height: 34px;
 }
+
 
 
 /* Media Queries
@@ -83,7 +76,7 @@ html, body {
   .map-header {
     overflow:hidden;
     border-width: 0;
-    box-sizing: border-box; 
+    box-sizing: border-box;
   }
 
   .map-main {
@@ -109,6 +102,7 @@ html, body {
 
   .map-header__lock-msa {
     .grid_column(4);
+    text-align: right;
   }
 
 
@@ -332,6 +326,9 @@ html, body {
   text-transform: uppercase;
 }
 */
+
+
+/*
 .map-header__lock-msa {
   text-align: right;
   font-size: 14px;
@@ -356,7 +353,7 @@ html, body {
     display: none;
   }
 }
-
+*/
 // STATIC MAP ICONS -- Since Icons fonts do not work in IE on gov't laptops.
 // Make the icons here: http://fa2png.io/
 
@@ -365,36 +362,36 @@ html, body {
   display: block;
   height: 18px;
   width: 18px;
-  margin: 4px 2px 3px 2px;
+  margin: 4px 0 3px 0;
   // Total height=25px 
 }
 
 
 .static-fa-info-circle {
-  background-image: url("/static/basestyle/img/font-awesome/info-circle_75787b_18.png");
+  background-image: url("../img/font-awesome/info-circle_75787b_18.png");
 }
 .static-fa-map-marker {
-  background-image: url("/static/basestyle/img/font-awesome/map-marker_75787b_18.png");
+  background-image: url("../img/font-awesome/map-marker_75787b_18.png");
 }
 .static-fa-download {
-  background-image: url("/static/basestyle/img/font-awesome/download_75787b_18.png");
+  background-image: url("../img/font-awesome/download_75787b_18.png");
 }
 .static-fa-search {
-  background-image: url("/static/basestyle/img/font-awesome/search_75787b_18.png");
+  background-image: url("../img/font-awesome/search_75787b_18.png");
 }
 
 .active {
   .static-fa-info-circle {
-    background-image: url("/static/basestyle/img/font-awesome/info-circle_101820_18.png");
+    background-image: url("../img/font-awesome/info-circle_101820_18.png");
   }
   .static-fa-map-marker {
-    background-image: url("/static/basestyle/img/font-awesome/map-marker_101820_18.png");
+    background-image: url("../img/font-awesome/map-marker_101820_18.png");
   }
   .static-fa-download {
-    background-image: url("/static/basestyle/img/font-awesome/download_101820_18.png");
+    background-image: url("../img/font-awesome/download_101820_18.png");
   }
   .static-fa-search {
-    background-image: url("/static/basestyle/img/font-awesome/search_101820_18.png");
+    background-image: url("../img/font-awesome/search_101820_18.png");
   }
 }
 
