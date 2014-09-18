@@ -9,22 +9,6 @@ module.exports = function(grunt) {
      */
     pkg: grunt.file.readJSON('package.json'),
 
-    /**
-     * Here's a banner with some template variables.
-     * We'll be inserting it at the top of minified assets.
-     */
-    banner:
-      '/*\n' +
-      ' * ==========================================================================\n' +
-      ' * Package name: <%= pkg.name %>\n' +
-      ' * Version: <%= pkg.version %>\n' +
-      ' * Last modified: <%= grunt.template.today("yyyy-mm-dd h:MM:ss TT") %>\n' +
-      ' * URL: <%= pkg.homepage %>\n' +
-      ' * A public domain work of the <%= pkg.author.name %>\n' +
-      ' * ==========================================================================\n' +
-      '*/\n\n',
-
-
     /* 
      * CONCAT
      * 
@@ -59,7 +43,7 @@ module.exports = function(grunt) {
           sourceMapURL: '/static/basestyle/css/mapusaurus_sourcemap.css.map'
         },
         files: {
-          'frontend/dist/css/<%= pkg.name %>.css': ['<%= banner %>', 'frontend/src/less/<%= pkg.name %>.less']
+          'frontend/dist/css/<%= pkg.name %>.css': ['frontend/src/less/<%= pkg.name %>.less']
         }
       }
     },
@@ -109,8 +93,7 @@ module.exports = function(grunt) {
       options: {
         compress: true,
         mangle: false,
-        beautify: true,
-        banner: '<%= banner %>'
+        beautify: true
       }
       ,
       vendor: {
@@ -220,7 +203,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-autoprefixer');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  //grunt.loadNpmTasks('grunt-topdoc');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
