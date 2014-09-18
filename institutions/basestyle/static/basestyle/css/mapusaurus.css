@@ -97,6 +97,35 @@
    Utilities
    ========================================================================== */
 /* topdoc
+  name: JS-only
+  family: cf-core
+  patterns:
+    - name: Setup
+      codenotes:
+        - <html class="no-js">
+        - |
+            <script>
+                // Confirm availability of JS and remove no-js class from html
+                var docElement = document.documentElement;
+                docElement.className = docElement.className.replace(/(^|\s)no-js(\s|$)/, '$1$2');
+            </script>
+      notes:
+        - "First add the .no-js class to the HTML element."
+        - "Then add the script to your HEAD which removes the .no-js class when
+           JS is available."
+    - name: Utility class
+      codenotes:
+        - .u-js-only;
+      notes:
+        - "Hide stuff when JavaScript isn't available. Depends on having a small
+           script in the HEAD of your HTML document that removes a .no-js class."
+  tags:
+    - cf-core
+*/
+.no-js .u-js-only {
+  display: none !important;
+}
+/* topdoc
   name: Clearfix
   family: cf-core
   patterns:
@@ -104,7 +133,7 @@
       markup: |
         <div class="u-clearfix">
             <div style="float:left; width:100%; height:60px; background:black;"></div>
-        </h1>
+        </div>
       codenotes:
         - .u-clearfix;
       notes:
@@ -190,6 +219,40 @@
 */
 .u-right {
   float: right;
+}
+/* topdoc
+  name: Break word
+  family: cf-core
+  patterns:
+    - name: Utility class
+      markup: |
+        <div style="width: 100px;">
+            This link should break:
+            <br>
+            <a class="u-break-word" href="#">
+                something@something.com
+            </a>
+            <br>
+            <br>
+            This link should not:
+            <br>
+            <a href="#">
+                something@something.com
+            </a>
+        </div>
+      codenotes:
+        - .u-break-word
+      notes:
+        - "Use this on elements where you need the words to break when confined
+           to small containers."
+        - "This only works in IE8 when the element with the .u-break-word class
+           has layout. See <http://stackoverflow.com/questions/3997223/word-wrapbreak-word-not-working-in-ie8>
+           for more information."
+  tags:
+    - cf-core
+*/
+.u-break-word {
+  word-break: break-all;
 }
 /* topdoc
   name: Align with button
@@ -335,12 +398,12 @@
     - codenotes:
         - .u-link__colors(@c, @v, @h, @f, @a, @bc, @bv, @bh, @bf, @ba);
       notes:
-        - "Allows you to color text and the bottom border separately."
+        - "Allows you to color text and the borders separately."
         - "The first five colors in 'love/hate' mnemonic order will color text
           for the :link, :visited, :hover, :focus, and :active states
           respectively. The last five colors in 'love/hate' mnemonic order will
-          color the bottom border for the :link, :visited, :hover, :focus, and
-          :active states respectively."
+          color the borders for the :link, :visited, :hover, :focus, and :active
+          states respectively."
         - "Even though this mixin is basically the same as
           .u-link__colors-base(@c, @v, @h, @f, @a, @bc, @bv, @bh, @bf, @ba); we
           encourage you to use .u-link__colors(@c, @v, @h, @f, @a, @bc, @bv, @bh, @bf, @ba)
@@ -692,6 +755,10 @@ table,
 figure {
   margin-top: 0;
   margin-bottom: 1.25em;
+}
+figure {
+  margin-left: 0;
+  margin-right: 0;
 }
 /* topdoc
   name: Default link
@@ -1112,11 +1179,49 @@ blockquote {
     - name: Default label
       markup: |
         <label>Form label</label>
+    - name: Label wrapping a radio or checkbox
+      markup: |
+        <label>
+            <input type="radio">
+            Radio label
+        </label>
+        <label>
+            <input type="checkbox">
+            Checkbox label
+        </label>
     tags:
     - cf-core
 */
 label {
   display: block;
+  margin-bottom: 0.3125em;
+  font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+}
+label em,
+label i {
+  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
+  font-style: italic;
+  font-weight: normal;
+}
+.lt-ie9 label em,
+.lt-ie9 label i {
+  font-style: normal !important;
+}
+label strong,
+label b {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 label strong,
+.lt-ie9 label b {
+  font-weight: normal !important;
+}
+label input[type="radio"],
+label input[type="checkbox"] {
+  margin-right: 0.375em;
 }
 /* topdoc
     name: Form elements
@@ -3009,11 +3114,16 @@ select[multiple].focus {
         <a href="#" class="btn">Anchor Tag</a>
         <button class="btn">Button Tag</button>
         <input type="submit" value="Input Tag" class="btn">
-    - name: Hovered/focused state
+    - name: Hovered state
       markup: |
         <a href="#" class="btn hover">Anchor Tag</a>
         <button class="btn hover">Button Tag</button>
         <input type="submit" value="Input Tag" class="btn hover">
+    - name: Focused state
+      markup: |
+        <a href="#" class="btn focus">Anchor Tag</a>
+        <button class="btn focus">Button Tag</button>
+        <input type="submit" value="Input Tag" class="btn focus">
     - name: Active state
       markup: |
         <a href="#" class="btn active">Anchor Tag</a>
@@ -3053,9 +3163,14 @@ select[multiple].focus {
   color: #ffffff;
 }
 .btn:hover,
-.btn:focus,
 .btn.hover {
   background-color: #328ed8;
+}
+.btn:focus,
+.btn.focus {
+  background-color: #328ed8;
+  outline: 1px dotted #0072ce;
+  outline-offset: 1px;
 }
 .btn:active,
 .btn.active {
@@ -3089,11 +3204,16 @@ input.btn::-moz-focus-inner {
         <a href="#" class="btn btn__secondary">Anchor Tag</a>
         <button class="btn btn__secondary">Button Tag</button>
         <input type="submit" value="Input Tag" class="btn btn__secondary">
-    - name: Hovered/focused state
+    - name: Hovered state
       markup: |
         <a href="#" class="btn btn__secondary hover">Anchor Tag</a>
         <button class="btn btn__secondary hover">Button Tag</button>
         <input type="submit" value="Input Tag" class="btn btn__secondary hover">
+    - name: Focused state
+      markup: |
+        <a href="#" class="btn btn__secondary focus">Anchor Tag</a>
+        <button class="btn btn__secondary focus">Button Tag</button>
+        <input type="submit" value="Input Tag" class="btn btn__secondary focus">
     - name: Active state
       markup: |
         <a href="#" class="btn btn__secondary active">Anchor Tag</a>
@@ -3109,9 +3229,13 @@ input.btn::-moz-focus-inner {
   color: #ffffff;
 }
 .btn__secondary:hover,
-.btn__secondary:focus,
 .btn__secondary.hover {
   background-color: #919395;
+}
+.btn__secondary:focus,
+.btn__secondary.focus {
+  background-color: #919395;
+  outline-color: #75787b;
 }
 .btn__secondary:active,
 .btn__secondary.active {
@@ -3129,11 +3253,16 @@ input.btn::-moz-focus-inner {
         <a href="#" class="btn btn__warning">Anchor Tag</a>
         <button class="btn btn__warning">Button Tag</button>
         <input type="submit" value="Input Tag" class="btn btn__warning">
-    - name: Hovered/focused state
+    - name: Hovered state
       markup: |
         <a href="#" class="btn btn__warning hover">Anchor Tag</a>
         <button class="btn btn__warning hover">Button Tag</button>
         <input type="submit" value="Input Tag" class="btn btn__warning hover">
+    - name: Focused state
+      markup: |
+        <a href="#" class="btn btn__warning focus">Anchor Tag</a>
+        <button class="btn btn__warning focus">Button Tag</button>
+        <input type="submit" value="Input Tag" class="btn btn__warning focus">
     - name: Active state
       markup: |
         <a href="#" class="btn btn__warning active">Anchor Tag</a>
@@ -3149,9 +3278,13 @@ input.btn::-moz-focus-inner {
   color: #ffffff;
 }
 .btn__warning:hover,
-.btn__warning:focus,
 .btn__warning.hover {
   background-color: #da6750;
+}
+.btn__warning:focus,
+.btn__warning.focus {
+  background-color: #da6750;
+  outline-color: #d12124;
 }
 .btn__warning:active,
 .btn__warning.active {
@@ -3169,6 +3302,16 @@ input.btn::-moz-focus-inner {
         <a href="#" class="btn btn__disabled">Anchor Tag</a>
         <button class="btn btn__disabled">Button Tag</button>
         <input type="submit" value="Input Tag" class="btn btn__disabled">
+    - name: Default/hovered/active state
+      markup: |
+        <a href="#" class="btn btn__disabled">Anchor Tag</a>
+        <button class="btn btn__disabled">Button Tag</button>
+        <input type="submit" value="Input Tag" class="btn btn__disabled">
+    - name: Focused state
+      markup: |
+        <a href="#" class="btn btn__disabled focus">Anchor Tag</a>
+        <button class="btn btn__disabled focus">Button Tag</button>
+        <input type="submit" value="Input Tag" class="btn btn__disabled focus">
     tags:
     - cf-buttons
 */
@@ -3178,12 +3321,17 @@ input.btn::-moz-focus-inner {
 .btn__disabled:hover,
 .btn__disabled.hover,
 .btn__disabled:focus,
+.btn__disabled.focus,
 .btn__disabled:active,
 .btn__disabled.active {
   background-color: #e3e4e5;
   color: #75787b;
   cursor: default;
   cursor: not-allowed;
+}
+.btn__disabled:focus,
+.btn__disabled.focus {
+  outline-color: #75787b;
 }
 /* topdoc
     name: Super button
@@ -3194,11 +3342,16 @@ input.btn::-moz-focus-inner {
         <a href="#" class="btn btn__super">Anchor Tag</a>
         <button class="btn btn__super">Button Tag</button>
         <input type="submit" value="Input Tag" class="btn btn__super">
-    - name: Hovered/focused state
+    - name: Hovered state
       markup: |
         <a href="#" class="btn btn__super hover">Anchor Tag</a>
         <button class="btn btn__super hover">Button Tag</button>
         <input type="submit" value="Input Tag" class="btn btn__super hover">
+    - name: Focused state
+      markup: |
+        <a href="#" class="btn btn__super focus">Anchor Tag</a>
+        <button class="btn btn__super focus">Button Tag</button>
+        <input type="submit" value="Input Tag" class="btn btn__super focus">
     - name: Active state
       markup: |
         <a href="#" class="btn btn__super active">Anchor Tag</a>
@@ -3466,7 +3619,7 @@ input.btn::-moz-focus-inner {
 .btn__link.focus {
   border-bottom-style: solid;
   background-color: transparent;
-  outline: thin dotted;
+  outline: thin dotted #0072ce;
 }
 .btn__link:active,
 .btn__link.active {
@@ -3477,6 +3630,57 @@ input.btn::-moz-focus-inner {
 .lt-ie8 button.btn__link,
 .lt-ie8 input.btn__link {
   padding: 0;
+}
+/* topdoc
+    name: Secondary button link
+    family: cf-buttons
+    notes:
+      - "Note that the .visited, .hover, .focus, .active classes are for
+         demonstration purposes only and should not be used in production."
+    patterns:
+    - name: Default state
+      markup: |
+        <a href="#" class="btn btn__link btn__secondary">Anchor Tag</a>
+        <button class="btn btn__link btn__secondary">Button Tag</button>
+        <input type="button" value="Input Tag" class="btn btn__link btn__secondary">
+    - name: Hovered state
+      markup: |
+        <a href="#" class="btn btn__link btn__secondary hover">Anchor Tag</a>
+        <button class="btn btn__link btn__secondary hover">Button Tag</button>
+        <input type="button" value="Input Tag" class="btn btn__link btn__secondary hover">
+    - name: Focused state
+      markup: |
+        <a href="#" class="btn btn__link btn__secondary focus">Anchor Tag</a>
+        <button class="btn btn__link btn__secondary focus">Button Tag</button>
+        <input type="button" value="Input Tag" class="btn btn__link btn__secondary focus">
+    - name: Active state
+      markup: |
+        <a href="#" class="btn btn__link btn__secondary active">Anchor Tag</a>
+        <button class="btn btn__link btn__secondary active">Button Tag</button>
+        <input type="button" value="Input Tag" class="btn btn__link btn__secondary active">
+    tags:
+    - cf-buttons
+*/
+.btn__link.btn__secondary,
+.btn__link.btn__secondary:link,
+.btn__link.btn__secondary:visited {
+  border-bottom-color: #75787b;
+  background-color: transparent;
+  color: #75787b;
+}
+.btn__link.btn__secondary:hover,
+.btn__link.btn__secondary.hover {
+  border-bottom-color: #43484e;
+  color: #43484e;
+}
+.btn__link.btn__secondary:focus,
+.btn__link.btn__secondary.focus {
+  outline-color: #75787b;
+}
+.btn__link.btn__secondary:active,
+.btn__link.btn__secondary.active {
+  border-bottom-color: #101820;
+  color: #101820;
 }
 /* topdoc
     name: Destructive action button link
@@ -3522,8 +3726,7 @@ input.btn::-moz-focus-inner {
 }
 .btn__link.btn__warning:focus,
 .btn__link.btn__warning.focus {
-  border-bottom-color: #da6750;
-  outline: thin dotted;
+  outline-color: #d12124;
 }
 .btn__link.btn__warning:active,
 .btn__link.btn__warning.active {
@@ -3564,6 +3767,28 @@ input.btn::-moz-focus-inner {
 }
 .lt-ie9 .form-label-header {
   font-weight: normal !important;
+}
+/* topdoc
+  name: Super input
+  family: cf-forms
+  patterns:
+    - name: .input__super
+      markup: |
+        <input class="input__super" type="text" value="Super input"></input>
+        <button class="btn btn__super">Super</button>
+      notes:
+        - "An input that matches the height of a super button."
+  tags:
+    - cf-forms
+*/
+.input__super[type="text"],
+.input__super[type="search"],
+.input__super[type="email"],
+.input__super[type="url"],
+.input__super[type="tel"],
+.input__super[type="number"] {
+  padding: 0.55555556em;
+  font-size: 1.125em;
 }
 /* topdoc
     name: Input states
@@ -3739,8 +3964,215 @@ textarea.success {
 .form-group + .form-group {
   margin-top: 1.875em;
 }
-.form-group_item {
+.form-group_item + .form-group_item {
+  margin-top: 0.9375em;
+}
+/* topdoc
+  name: Input with button
+  family: cf-forms
+  patterns:
+    - name: Default input and button
+      markup: |
+        <div class="input-with-btn">
+            <div class="input-with-btn_input">
+                <input type="text">
+            </div>
+            <div class="input-with-btn_btn">
+                <button class="btn">Search</button>
+            </div>
+        </div>
+    - name: Super input and button
+      markup: |
+        <div class="input-with-btn">
+            <div class="input-with-btn_input">
+                <input class="input__super" type="text">
+            </div>
+            <div class="input-with-btn_btn">
+                <button class="btn btn__super">Search</button>
+            </div>
+        </div>
+  tags:
+    - cf-forms
+*/
+@media only all and (min-width: 30em) {
+  .input-with-btn {
+    display: block;
+    position: relative;
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+}
+.input-with-btn_input {
   margin-bottom: 0.9375em;
+}
+@media only all and (min-width: 30em) {
+  .input-with-btn_input {
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: solid transparent;
+    border-width: 0 15px;
+    margin-right: -0.25em;
+    vertical-align: top;
+    width: 75%;
+    border-right-width: 0;
+  }
+  .ie .input-with-btn_input {
+    margin-right: -0.26em;
+  }
+  .lt-ie8 .input-with-btn_input {
+    display: inline;
+    margin-right: 0;
+    zoom: 1;
+    behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
+  }
+}
+@media only all and (min-width: 60em) {
+  .input-with-btn_input {
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: solid transparent;
+    border-width: 0 15px;
+    margin-right: -0.25em;
+    vertical-align: top;
+    width: 83.33333333%;
+    border-right-width: 0;
+  }
+  .ie .input-with-btn_input {
+    margin-right: -0.26em;
+  }
+  .lt-ie8 .input-with-btn_input {
+    display: inline;
+    margin-right: 0;
+    zoom: 1;
+    behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
+  }
+}
+.input-with-btn_input input {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+}
+.input-with-btn_btn {
+  margin-bottom: 0.9375em;
+}
+@media only all and (min-width: 30em) {
+  .input-with-btn_btn {
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: solid transparent;
+    border-width: 0 15px;
+    margin-right: -0.25em;
+    vertical-align: top;
+    width: 25%;
+  }
+  .ie .input-with-btn_btn {
+    margin-right: -0.26em;
+  }
+  .lt-ie8 .input-with-btn_btn {
+    display: inline;
+    margin-right: 0;
+    zoom: 1;
+    behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
+  }
+}
+@media only all and (min-width: 60em) {
+  .input-with-btn_btn {
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: solid transparent;
+    border-width: 0 15px;
+    margin-right: -0.25em;
+    vertical-align: top;
+    width: 16.66666667%;
+  }
+  .ie .input-with-btn_btn {
+    margin-right: -0.26em;
+  }
+  .lt-ie8 .input-with-btn_btn {
+    display: inline;
+    margin-right: 0;
+    zoom: 1;
+    behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
+  }
+}
+.input-with-btn_btn .btn {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+}
+.input-with-btn_btn .btn__super {
+  padding-left: 0.83333333em;
+  padding-right: 0.83333333em;
+}
+/* topdoc
+  name: Button inside input
+  family: cf-forms
+  patterns:
+    - name: Default button inside of an default input
+      markup: |
+        <div class="btn-inside-input">
+            <input type="text"
+                   value="This is some really long text to make sure that the button doesn't overlap the content in such a way that this input becomes unusable.">
+            <button class="btn btn__link btn__secondary">
+                Clear
+                <span class="cf-icon cf-icon-delete"></span>
+            </button>
+        </div>
+    - name: Super button inside of a super input
+      markup: |
+        <div class="btn-inside-input">
+            <input class="input__super"
+                   type="text"
+                   value="This is some really long text to make sure that the button doesn't overlap the content in such a way that this input becomes unusable.">
+            <button class="btn btn__super btn__link btn__secondary">
+                Clear
+                <span class="cf-icon cf-icon-delete"></span>
+            </button>
+        </div>
+  tags:
+    - cf-forms
+*/
+.btn-inside-input {
+  position: relative;
+}
+.btn-inside-input input[type="text"],
+.btn-inside-input input[type="search"],
+.btn-inside-input input[type="email"],
+.btn-inside-input input[type="url"],
+.btn-inside-input input[type="tel"],
+.btn-inside-input input[type="number"] {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  padding-right: 5.41666667em;
+}
+.btn-inside-input input[type="text"].input__super,
+.btn-inside-input input[type="search"].input__super,
+.btn-inside-input input[type="email"].input__super,
+.btn-inside-input input[type="url"].input__super,
+.btn-inside-input input[type="tel"].input__super,
+.btn-inside-input input[type="number"].input__super {
+  padding-right: 5em;
+}
+.btn-inside-input .btn {
+  border-bottom-width: 0 !important;
+  position: absolute;
+  right: 1.25em;
+  top: 0;
+}
+.btn-inside-input .btn__super {
+  right: 0.83333333em;
 }
 /* topdoc
   name: EOF
@@ -4052,6 +4484,241 @@ button.expandable_header {
   margin: 0 1em 1.375em;
 }
 /* topdoc
+    name: Expandable groups
+    family: cf-expandables
+    patterns:
+    - name: Standard expandable group
+      markup: |
+        <div class="expandable-group">
+            <div class="expandable-group_header">Expandable group header</div>
+            <div class="expandable expandable__padded">
+                <button class="expandable_header expandable_target">
+                    <span class="expandable_header-left expandable_label">
+                        Expandable Header 1
+                    </span>
+                    <span class="expandable_header-right expandable_link">
+                        <span class="expandable_cue-open">
+                            Show
+                            <span class="cf-icon cf-icon-plus-round"></span>
+                        </span>
+                        <span class="expandable_cue-close">
+                            Hide
+                            <span class="cf-icon cf-icon-minus-round"></span>
+                        </span>
+                    </span>
+                </button>
+                <div class="expandable_content">
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Neque ipsa voluptatibus soluta nobis unde quisquam
+                        temporibus magnam debitis quidem. Ducimus ratione
+                        corporis nesciunt earum vel est quaerat blanditiis
+                        dolore ipsa?
+                    </p>
+                </div>
+            </div>
+            <div class="expandable expandable__padded">
+                <button class="expandable_header expandable_target">
+                    <span class="expandable_header-left expandable_label">
+                        Expandable Header 2
+                    </span>
+                    <span class="expandable_header-right expandable_link">
+                        <span class="expandable_cue-open">
+                            Show
+                            <span class="cf-icon cf-icon-plus-round"></span>
+                        </span>
+                        <span class="expandable_cue-close">
+                            Hide
+                            <span class="cf-icon cf-icon-minus-round"></span>
+                        </span>
+                    </span>
+                </button>
+                <div class="expandable_content">
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Neque ipsa voluptatibus soluta nobis unde quisquam
+                        temporibus magnam debitis quidem. Ducimus ratione
+                        corporis nesciunt earum vel est quaerat blanditiis
+                        dolore ipsa?
+                    </p>
+                </div>
+            </div>
+            <div class="expandable expandable__padded">
+                <button class="expandable_header expandable_target">
+                    <span class="expandable_header-left expandable_label">
+                        Expandable Header 3
+                    </span>
+                    <span class="expandable_header-right expandable_link">
+                        <span class="expandable_cue-open">
+                            Show
+                            <span class="cf-icon cf-icon-plus-round"></span>
+                        </span>
+                        <span class="expandable_cue-close">
+                            Hide
+                            <span class="cf-icon cf-icon-minus-round"></span>
+                        </span>
+                    </span>
+                </button>
+                <div class="expandable_content">
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Neque ipsa voluptatibus soluta nobis unde quisquam
+                        temporibus magnam debitis quidem. Ducimus ratione
+                        corporis nesciunt earum vel est quaerat blanditiis
+                        dolore ipsa?
+                    </p>
+                </div>
+            </div>
+        </div>
+      codenotes:
+        - |
+          Pattern structure
+          -----------------
+          .expandable-group
+            .expandable-group_header
+            .expandable.expandable__padded
+              [...]
+            .expandable.expandable__padded
+              [...]
+            .expandable.expandable__padded
+              [...]
+    - name: Accordion-style group
+      markup: |
+        <div class="expandable-group" data-accordion="true">
+            <div class="expandable-group_header">Expandable group header</div>
+            <div class="expandable expandable__padded">
+                <button class="expandable_header expandable_target">
+                    <span class="expandable_header-left expandable_label">
+                        Expandable Header 1
+                    </span>
+                    <span class="expandable_header-right expandable_link">
+                        <span class="expandable_cue-open">
+                            Show
+                            <span class="cf-icon cf-icon-plus-round"></span>
+                        </span>
+                        <span class="expandable_cue-close">
+                            Hide
+                            <span class="cf-icon cf-icon-minus-round"></span>
+                        </span>
+                    </span>
+                </button>
+                <div class="expandable_content">
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Neque ipsa voluptatibus soluta nobis unde quisquam
+                        temporibus magnam debitis quidem. Ducimus ratione
+                        corporis nesciunt earum vel est quaerat blanditiis
+                        dolore ipsa?
+                    </p>
+                </div>
+            </div>
+            <div class="expandable expandable__padded">
+                <button class="expandable_header expandable_target">
+                    <span class="expandable_header-left expandable_label">
+                        Expandable Header 2
+                    </span>
+                    <span class="expandable_header-right expandable_link">
+                        <span class="expandable_cue-open">
+                            Show
+                            <span class="cf-icon cf-icon-plus-round"></span>
+                        </span>
+                        <span class="expandable_cue-close">
+                            Hide
+                            <span class="cf-icon cf-icon-minus-round"></span>
+                        </span>
+                    </span>
+                </button>
+                <div class="expandable_content">
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Neque ipsa voluptatibus soluta nobis unde quisquam
+                        temporibus magnam debitis quidem. Ducimus ratione
+                        corporis nesciunt earum vel est quaerat blanditiis
+                        dolore ipsa?
+                    </p>
+                </div>
+            </div>
+            <div class="expandable expandable__padded">
+                <button class="expandable_header expandable_target">
+                    <span class="expandable_header-left expandable_label">
+                        Expandable Header 3
+                    </span>
+                    <span class="expandable_header-right expandable_link">
+                        <span class="expandable_cue-open">
+                            Show
+                            <span class="cf-icon cf-icon-plus-round"></span>
+                        </span>
+                        <span class="expandable_cue-close">
+                            Hide
+                            <span class="cf-icon cf-icon-minus-round"></span>
+                        </span>
+                    </span>
+                </button>
+                <div class="expandable_content">
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Neque ipsa voluptatibus soluta nobis unde quisquam
+                        temporibus magnam debitis quidem. Ducimus ratione
+                        corporis nesciunt earum vel est quaerat blanditiis
+                        dolore ipsa?
+                    </p>
+                </div>
+            </div>
+        </div>
+      codenotes:
+        - |
+          <div class="expandable-group" data-accordion="true">
+      notes:
+        - "Accordions can only show one open expandable at a time."
+        - "Add the data-accordion=\"true\" attribute to the expandable group to
+           activate the accordion mode."
+    tags:
+    - cf-expandables
+*/
+.expandable-group {
+  margin-bottom: 1.875em;
+}
+.expandable-group_header {
+  padding: 0.35714286em 1.14285714em;
+  border-bottom: 1px solid #919395;
+  background: #f1f2f2;
+  color: #75787b;
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0.35714286em;
+  font-size: 0.875em;
+  line-height: 1.57142857;
+  margin-bottom: 0;
+}
+.lt-ie9 .expandable-group_header {
+  font-weight: normal !important;
+}
+.expandable-group .expandable {
+  border-bottom: 1px solid #919395;
+  margin-bottom: 0;
+  background: #ffffff;
+}
+.expandable-group .expandable_label {
+  margin-top: 0;
+  margin-bottom: 0.27777778em;
+  font-size: 1.125em;
+  font-family: "AvenirNextLTW01-Medium", Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.22222222;
+  margin-bottom: 0;
+}
+.lt-ie9 .expandable-group .expandable_label {
+  font-weight: normal !important;
+}
+.expandable-group .expandable_content {
+  margin-bottom: 0;
+}
+/* topdoc
   name: EOF
   eof: true
 */
@@ -4074,12 +4741,12 @@ button.expandable_header {
 
         <nav class="pagination">
             <a class="btn pagination_prev" href="#pagination_content">
-                <span class="btn-icon-left cf-icon cf-icon-left"></span>
+                <span class="btn_icon__left cf-icon cf-icon-left"></span>
                 Previous
             </a>
             <a class="btn pagination_next" href="#pagination_content">
                 Next
-                <span class="btn-icon-right cf-icon cf-icon-right"></span>
+                <span class="btn_icon__right cf-icon cf-icon-right"></span>
             </a>
             <form class="pagination_form" action="index.html#pagination_content">
                 <label class="pagination_label"
@@ -4105,7 +4772,7 @@ button.expandable_header {
                         of 149
                     <!-- </span> -->
                 </span>
-                <button class="btn btn-link pagination_submit"
+                <button class="btn btn__link pagination_submit"
                         id="pagination_submit"
                         type="submit">
                     Go
@@ -4131,10 +4798,10 @@ button.expandable_header {
 }
 .pagination_form {
   display: block;
-  padding: 0.25em 1.875em;
+  padding: 0.1875em 1.875em;
   margin: 1em 0 0 0;
-  background: #E3E4E5;
-  color: #75787B;
+  background: #e3e4e5;
+  color: #75787b;
   font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
   font-style: normal;
   font-weight: normal;
@@ -5446,6 +6113,16 @@ html b {
 .search-home .search-field input[type="text"] {
   width: 24em;
   padding: 0.25em 0.5em;
+}
+.search-home .search-indent {
+  padding-left: 20px;
+}
+.search-title-column1 {
+  float: left;
+}
+.search-title-column2 {
+  float: left;
+  padding-left: 5px;
 }
 .search-field {
   /*
