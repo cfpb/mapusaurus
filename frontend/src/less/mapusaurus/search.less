@@ -24,11 +24,11 @@
 }
 
 
-.search-title-column1{
+.search-title-column1 {
     float:left;
 }
 
-.search-title-column2{
+.search-title-column2 {
     float:left;
     padding-left:5px;
 }
@@ -100,7 +100,7 @@
     .search-results-heading {
 
         border-bottom: 1px solid @gray-20;
-        margin-bottom: 2em;
+        //margin-bottom: 2em;
 
         .search-results-heading__title {
             .grid_column(12);
@@ -132,28 +132,56 @@
     }
 
     .search-result-record {
-        margin-bottom: 2em;
+
+        padding: 16px;
+
+        &:hover {
+            background-color: @gray-10;
+        }
 
         .expandable {
             margin-bottom: 0; /* over-rides default */
         }
 
         h4 {
-            margin-bottom: .5em
+            margin-bottom: 4px;
         }
         
-        dl {
+        .search-result-record__cfpb-id {
+            .webfont-medium();
+            font-size: (@base-font-size-px + 2);
+            display: inline-block;
+            margin-right: 2em;
+        }
+
+        .search-result-record__hq {
+            .webfont-medium();
+            color: @gray;
             font-size: (@base-font-size-px - 2);
+            display: inline-block;
+
+            small {
+                font-size: (@base-font-size-px - 6);
+            }
+        }
+
+        dl {
+            
             margin-left: 0; /* over-ride user agent stylesheet */
         }
 
-        dt, dd {
-            display: inline-block;
+        dt {
+            //display: inline-block;
+            .webfont-regular();
+            font-size: (@base-font-size-px - 4);
+            color: @gray;
+            text-transform: uppercase;
+            margin-bottom: 4px;
         }
 
         dd {
-            margin-left: 4px;
-            margin-right: 24px;
+            .webfont-medium();
+            font-size: (@base-font-size-px + 2);
         }
 
         table {
@@ -163,6 +191,8 @@
                 padding-right: 8px;
             }
         }
+
+
 
         .search-result-record__left-col {
             .grid_column(12);
@@ -250,8 +280,22 @@
                 border-left-width: 0; /* nested col hack (cf-grid does not support nested cols?) */
             }
 
+            .search-result-record__center-col {
+                .grid_column(3);
+                text-align: right;
+                border-right-width: 0;
+                dl {
+                    float: right;
+                }
+                dd {
+                    margin-right: 0;
+                }
+
+            }
+
             .search-result-record__right-col {
-                .grid_column(6);
+                .grid_column(3);
+                text-align: right;
                 border-right-width: 0;
                 dl {
                     float: right;

@@ -1,47 +1,47 @@
+{% load humanize %}
 {% for res in institutions %}
     <article class="search-result-record">
 
         <div class="expandable">
-            <div class="expandable_header">
-                <div class="expandable_header-left">
-                    <h4>
-                        <a href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">{{res.name|title}}</a> &nbsp; 
-                        <small>0{{res.agency_id}}-{{res.ffiec_id}}</small>
-                    </h4>
-                </div>
-                <div class="expandable_header-right">
+            <div class="search-result-record__left-col">
+                <h4>
                     <a class="expandable_target" href="#expandable-{{res.id}}">
                         <span class="expandable_cue-open">
-                            Full Details
+                            {{res.name|title}}
                         </span>
                         <span class="expandable_cue-close">
-                            Hide Details
+                            {{res.name|title}}
                         </span>
                     </a>
+                </h4>
+                <div class="search-result-record__cfpb-id">
+                    0{{res.agency_id}}-{{res.ffiec_id}}
+                </div>
+                <div class="search-result-record__hq">
+                    <small>HQ:</small> {{res.zip_code.city|title}}, {{res.zip_code.state|upper}}
                 </div>
             </div>
+
+            <div class="search-result-record__center-col">
+                <dl>
+                    <dt>{{res.year}} Assets:</dt>
+                    <dd>{{res.assets|intcomma}}</dd>
+                </dl>
+            </div>
+
+            <div class="search-result-record__right-col">
+                <dl>
+                    <dt>{{res.year}} LAR Count:</dt>
+                    <dd>{{res.num_loans|intcomma}}</dd>
+                </dl>
+            </div>
+
             <div class="expandable_content" id="expandable-{{res.id}}">
-                <a href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">View Map</a>
+                <a class="btn" href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">View Map</a>
+
             </div><!-- ./expandable_content -->
+
         </div><!-- ./expandable -->
-
-        <div class="search-result-record__left-col">
-            <dl>
-                <dt>{{res.year}} Assets:</dt>
-                <dd>{{res.assets}}</dd>
-
-                <dt>{{res.year}} LAR Count:</dt>
-                <dd>{{res.num_loans}}</dd>
-            </dl>
-        </div>
-
-        <div class="search-result-record__right-col">
-            <dl>
-                <dt>Headquarters:</dt>
-                <dd>{{res.zip_code.city|title}}, {{res.zip_code.state|upper}} {{res.zip_code.zip_code}}</dd>
-            </dl>
-        </div>
-
 
     </article>
 {% endfor %}
