@@ -16,15 +16,24 @@
 
     <div class="search-home">
         <p>&nbsp;</p>
-        <p>Welcome to the Fair Lending HMDA Visualization Toolkit! This is a beta version: we welcome your feedback at
-        <a href="mailto:{{ contact_us_email }}?subject=Visualization%20Toolkit%20Feedback">email@cfpb.gov</a>.</p>
+        <p>Welcome to the Fair Lending HMDA Visualization Toolkit! This is a beta version: we welcome your feedback:
+        <a href="mailto:{{ contact_us_email }}?subject=Visualization%20Toolkit%20Feedback">email us</a>.</p>
 
         <p>Currently, this tool can only show originations and applications from a given lender in a selected MSA in the 2012 HMDA data. Additional functionality will be coming soon.
         <p>&nbsp;</p>
 
         <div class="search-indent">
-            <h3> <div class="circlelabel">1</div> Find an institution with 2012 orginations</h3>
+            <div >
+                <div class="search-title-column1">
+                   <div class="circlelabel">1</div>
+                </div>
+                <div class="search-title-column2">
+                    <h3>  Find an institution with 2012 orginations</h3>
+                </div>
+            </div>
             <p>&nbsp;</p>
+            <p>&nbsp;</p>
+
 
             <form action="{% url 'respondants:search_results' %}" method="GET">
                 <div class="search-field">
