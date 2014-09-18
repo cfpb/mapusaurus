@@ -99,9 +99,6 @@
 
     .search-results-heading {
 
-        border-bottom: 1px solid @gray-20;
-        //margin-bottom: 2em;
-
         .search-results-heading__title {
             .grid_column(12);
         }
@@ -133,14 +130,27 @@
 
     .search-result-record {
 
-        padding: 16px;
-
         &:hover {
             background-color: @gray-10;
         }
 
         .expandable {
             margin-bottom: 0; /* over-rides default */
+        }
+
+        .expandable_header,
+        .expandable_content {
+            padding: 16px 16px 0 16px;
+        }
+
+        .expandable__expanded {
+            .expandable_header {
+                background-color: @gray-10;
+            }
+        }
+
+        .expandable_content {
+            background-color: @gray-5;
         }
 
         h4 {
@@ -155,18 +165,27 @@
         }
 
         .search-result-record__hq {
-            .webfont-medium();
+            
             color: @gray;
-            font-size: (@base-font-size-px - 2);
+            font-size: (@base-font-size-px + 2);
             display: inline-block;
 
             small {
-                font-size: (@base-font-size-px - 6);
+                .webfont-medium();
+                font-size: (@base-font-size-px - 4);
+            }
+        }
+
+        .search-result-record__link {
+            .webfont-medium();
+            font-size: (@base-font-size-px - 2);
+            border-bottom: none; // over-ride default
+            &:visited {
+                color: @pacific;
             }
         }
 
         dl {
-            
             margin-left: 0; /* over-ride user agent stylesheet */
         }
 
@@ -198,7 +217,19 @@
             .grid_column(12);
         }
 
+        .search-result-record__center-col {
+            .grid_column(12);
+        }
+
         .search-result-record__right-col {
+            .grid_column(12);
+        }
+
+        .search-result-record__ec-left {
+            .grid_column(12);
+        }
+
+        .search-result-record__ec-right {
             .grid_column(12);
         }
 
@@ -302,6 +333,22 @@
                 }
                 dd {
                     margin-right: 0;
+                }
+
+            }
+
+
+            .search-result-record__ec-left{
+                .grid_column(9);
+                border-left-width: 0;
+            }
+
+            .search-result-record__ec-right {
+                .grid_column(3);
+                border-right-width: 0;
+                .btn {
+                    width: 80%;
+                    text-align: center;
                 }
 
             }
