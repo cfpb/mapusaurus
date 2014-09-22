@@ -78,6 +78,11 @@
         box-sizing: border-box;
         display: inline-block;
         text-align: right;
+
+        // hide from display, but still allow screen reader access
+        position: absolute !important;
+        clip: rect(1px, 1px, 1px, 1px);
+
     }
 
     label {
@@ -108,7 +113,8 @@
 
     .btn {
         padding: 7px 12px;
-        margin: -4px 0 0 -4px;
+        //margin: -4px 0 0 -4px; //negative top margin is only needed for alignment when input label is shown
+        margin-left: -4px;
         background-color: @gray;
     }
 
@@ -233,11 +239,11 @@
 
         h4 {
             .webfont-regular();
+            color: @pacific;
             font-size: (@base-font-size-px + 6);
+            border-bottom: 1px dotted @pacific;
             margin-bottom: 4px;
-            a {
-                border-bottom: 1px dotted @pacific;
-            }
+            display: inline-block;
         }
         
         .search-result-record__cfpb-id {

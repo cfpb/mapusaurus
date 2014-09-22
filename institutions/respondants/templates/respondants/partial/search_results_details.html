@@ -4,19 +4,10 @@
 
         <div class="expandable">
 
-            <div class="expandable_header">
+            <div class="expandable_header expandable_target">
 
                 <div class="search-result-record__left-col">
-                    <h4>
-                        <a class="expandable_target" href="#expandable-{{res.id}}">
-                            <span class="expandable_cue-open">
-                                {{res.name|title}}
-                            </span>
-                            <span class="expandable_cue-close">
-                                {{res.name|title}}
-                            </span>
-                        </a>
-                    </h4>
+                    <h4>{{res.name|title}}</h4><br>
                     <div class="search-result-record__cfpb-id">
                         0{{res.agency_id}}-{{res.ffiec_id}}
                     </div>

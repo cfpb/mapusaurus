@@ -5962,6 +5962,8 @@ html b {
   box-sizing: border-box;
   display: inline-block;
   text-align: right;
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px);
 }
 .search-results-form label {
   display: inline;
@@ -5978,7 +5980,7 @@ html b {
 }
 .search-results-form .btn {
   padding: 7px 12px;
-  margin: -4px 0 0 -4px;
+  margin-left: -4px;
   background-color: #75787b;
 }
 .search-results-form .search-name-label,
@@ -6131,8 +6133,11 @@ html b {
   font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
   font-style: normal;
   font-weight: normal;
+  color: #0072ce;
   font-size: 22px;
+  border-bottom: 1px dotted #0072ce;
   margin-bottom: 4px;
+  display: inline-block;
 }
 .search-results .search-result-record h4 em,
 .search-results .search-result-record h4 i {
@@ -6153,9 +6158,6 @@ html b {
 .lt-ie9 .search-results .search-result-record h4 strong,
 .lt-ie9 .search-results .search-result-record h4 b {
   font-weight: normal !important;
-}
-.search-results .search-result-record h4 a {
-  border-bottom: 1px dotted #0072ce;
 }
 .search-results .search-result-record .search-result-record__cfpb-id {
   font-family: "AvenirNextLTW01-Medium", Arial, sans-serif;
