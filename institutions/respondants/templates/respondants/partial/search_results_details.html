@@ -27,14 +27,14 @@
 
                 <div class="search-result-record__center-col">
                     <dl>
-                        <dt>{{res.year}} Assets:</dt>
+                        <dt class="assets-definition-term">{{res.year}} Assets:</dt>
                         <dd>{{res.assets|intcomma}}</dd>
                     </dl>
                 </div>
 
                 <div class="search-result-record__right-col">
                     <dl>
-                        <dt>{{res.year}} LAR Count:</dt>
+                        <dt class="year-definition-term">{{res.year}} LAR Count:</dt>
                         <dd>{{res.num_loans|intcomma}}</dd>
                     </dl>
                 </div>
@@ -44,29 +44,30 @@
             <div class="expandable_content" id="expandable-{{res.id}}">
                 
                 <div class="search-result-record__ec-left">
-
                     <dl>
                         <dt>Institution Type</dt>
                         <dd>Depository Institution</dd>
                     </dl>
+                </div>
+                <div class="search-result-record__ec-right">
+                    <p><a class="btn" href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">Select MSA</a></p>
+                </div>
 
+                <div class="search-result-record__ec-left">
                     <dl>
                         <dt>Regulating Agency</dt>
                         <dd>{{res.agency.full_name}}</dd>
                     </dl>
-
-
-
+                    <dl>
+                        <dt>RSSD ID</dt>
+                        <dd>{{res.rssd_id}}</dd>
+                    </dl>
                 </div>
-
                 <div class="search-result-record__ec-right">
-                
-                    <p><a class="btn" href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">Select MSA</a></p>
                     <dl>
                         <dt>More Information</dt>
                         <dd><a href="{% url 'respondants:respondant_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></dd>
                     </dl>
-                    
                 <!--
                     <p><a class="search-result-record__link" href="{% url 'respondants:respondant_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></p>
                 -->

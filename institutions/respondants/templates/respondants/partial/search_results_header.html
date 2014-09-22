@@ -26,30 +26,38 @@
 
         {% if current_sort == 'assets' %}
           <a 
-            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page}}&amp;num_results={{num_results}}&amp;sort=-assets" class="sort-up" title="Sort by assets">{{res.year}} Assets
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-assets" class="sort-up" title="Sort by assets">{{res.year}} 2012 Assets
           </a>
         {% elif current_sort == '-assets' %}
           <a 
-            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page}}&amp;num_results={{num_results}}&amp;sort=assets" class="sort-down" title="Sort by assets">{{res.year}} Assets
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=assets" class="sort-down" title="Sort by assets">{{res.year}} 2012 Assets
           </a>
         {% else %}
           {# not sorted by assets, link should sort down (desc.) #}
           <a 
-            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page}}&amp;num_results={{num_results}}&amp;sort=-assets" class="sort-none" title="Sort by assets">{{res.year}} Assets
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-assets" class="sort-none" title="Sort by assets">{{res.year}} 2012 Assets
           </a>
         {% endif %}
 
       </div>
 
       <div class="search-results-heading__sort-lar">
-        <label>Sort by:
-          <select id="sort" name="sort" onchange="this.form.submit()">
-            <option value="-name" {% if 'name' in current_sort %}selected{% endif %}>Name</option>
-            <option value="-score" {% if 'score' in current_sort %}selected{% endif %}>Relevance</option>
-            <option value="-num_loans" {% if 'num_loans' in current_sort %}selected{% endif %}>Number of Applications</option>
-            <option value="-assets" {% if 'assets' in current_sort %}selected{% endif %}>Corporate Assets</option>
-          </select>
-        </label>
+
+        {% if current_sort == 'num_loans' %}
+          <a 
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-num_loans" class="sort-up" title="Sort by assets">{{res.year}} 2012 LAR Count
+          </a>
+        {% elif current_sort == '-num_loans' %}
+          <a 
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=num_loans" class="sort-down" title="Sort by assets">{{res.year}} 2012 LAR Count
+          </a>
+        {% else %}
+          {# not sorted by num_loans, click on link should sort down (desc.) #}
+          <a 
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-num_loans" class="sort-none" title="Sort by assets">{{res.year}} 2012 LAR Count
+          </a>
+        {% endif %}
+
       </div>
 
     </div>
