@@ -4,6 +4,7 @@ argparse==1.2.1
 django-geojson==2.6.0
 django-haystack==2.1.0
 git+https://github.com/makinacorpus/django-leaflet.git#egg=django-leaflet
+git+https://github.com/cmc333333/topojson.py.git@e86e76705cef03559bd2b90ec0b624dfdf2c8356#egg=topojson
 django-localflavor==1.0
 django-overextends==0.3.2
 djangorestframework==2.3.14
@@ -16,5 +17,4 @@ requests==2.3.0
 simplejson==3.6.3
 six==1.7.3
 sphinx-me==0.3
-topojson==0.1.0
 wsgiref==0.1.2
