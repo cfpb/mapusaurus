@@ -168,8 +168,8 @@
         }
 
         .search-results-heading__second-row {
-            font-size: (@base-font-size-px - 2);
-            padding: 0 8px;
+            //font-size: (@base-font-size-px - 2);
+            padding: 0 12px;
         }
 
         .search-results-heading__pagination {
@@ -190,19 +190,14 @@
 
         }
 
-        .search-results-heading__sort-assets {
+        .search-results-heading__sort-assets,
+        .search-results-heading__sort-lar {
             .grid_column(12);
             a {
                 display: inline-block;
-                padding-right: 20px;
-            }
-
-        }
-
-        .search-results-heading__sort-lar {
-            .grid_column(12);
-            label {
-                display: inline-block;
+                padding-right: 20px; // sort arrow is 16px wide + 4px padding
+                height: 24px; // height of sort arrow image
+                vertical-align: middle;
             }
         }
 
@@ -215,13 +210,15 @@
             background-color: @gray-10;
         }
 
+        margin: 8px 0;
+
         .expandable {
             margin-bottom: 0; /* over-rides default */
         }
 
         .expandable_header,
         .expandable_content {
-            padding: 16px 8px 0 8px;
+            padding: 12px;
         }
 
         .expandable__expanded {
@@ -282,6 +279,17 @@
             color: @gray;
             text-transform: uppercase;
             margin-bottom: 4px;
+
+            //Hide this
+
+        }
+
+        // Hide this two from diplay becuase the colum header now indicated what these numbers are
+        // use clip so screen readers still read contents
+        .assets-definition-term,
+        .year-definition-term {
+            position: absolute !important;
+            clip: rect(1px, 1px, 1px, 1px);
         }
 
         dd {
