@@ -6,8 +6,6 @@
 
 {% block header_content %}
 
-    <form id="search-results-form" role="form" method="get" action="{% url 'respondants:search_results' %}">
-
     {% include "respondants/partial/search_results_form.html" %}
 
 {% endblock %}
@@ -25,6 +23,7 @@
     <div id="search-results" class="search-results">
 
         {% include "respondants/partial/search_results_header.html" %}
+
 
         {% if total_results == 0 %}
             <h3>No results found.</h3>
@@ -46,15 +45,14 @@
 
 {% block footer_content %}
 
-    </form>
+
 
 {% endblock %}
 
 {% block foot_scripts %}
-
+<!--
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
     <script type="text/javascript" src="{% static 'respondants/js/search.js' %}"></script>
-
     <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
-
+-->
 {% endblock %}

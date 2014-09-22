@@ -55,16 +55,18 @@
                         <dd>{{res.agency.full_name}}</dd>
                     </dl>
 
-                    <dl>
-                        <dt>More Information</dt>
-                        <dd><a href="{% url 'respondants:respondant_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></dd>
-                    </dl>
+
 
                 </div>
 
                 <div class="search-result-record__ec-right">
                 
                     <p><a class="btn" href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">Select MSA</a></p>
+                    <dl>
+                        <dt>More Information</dt>
+                        <dd><a href="{% url 'respondants:respondant_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></dd>
+                    </dl>
+                    
                 <!--
                     <p><a class="search-result-record__link" href="{% url 'respondants:respondant_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></p>
                 -->

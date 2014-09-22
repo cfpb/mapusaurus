@@ -3135,7 +3135,7 @@ select[multiple].focus {
   display: inline-block;
   -moz-box-sizing: border-box;
        box-sizing: border-box;
-  padding: 0.58333333em 1.16666667em;
+  padding: 0.5em 1.16666667em;
   border: 0;
   border-radius: 0.33333333em;
   margin: 0;
@@ -3187,8 +3187,8 @@ input.btn::-moz-focus-inner {
 .lt-ie8 button.btn,
 .lt-ie8 input.btn {
   overflow: visible;
-  padding-top: 0.46666667em;
-  padding-bottom: 0.46666667em;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
 }
 /* topdoc
     name: Secondary button
@@ -3599,7 +3599,7 @@ input.btn::-moz-focus-inner {
   padding: 0;
   border-bottom: 1px dotted #0072ce;
   border-radius: 0;
-  margin: 0.58333333em 0;
+  margin: 0.5em 0;
 }
 .btn__link,
 .btn__link:link,
@@ -6088,14 +6088,26 @@ html b {
 .search-home .search-indent {
   padding-left: 20px;
 }
+/*
 .search-title-column1 {
-  float: left;
+    float:left;
 }
+
 .search-title-column2 {
-  float: left;
-  padding-left: 5px;
+    float:left;
+    padding-left:5px;
 }
-.search-field {
+*/
+/* Search input form (gray bar at top of page ) */
+.search-results-form {
+  background-color: #e3e4e5;
+  padding: 4px 12px;
+  white-space: nowrap;
+  /*
+    .grid_column(6);
+    .grid_push(3);
+*/
+  text-align: center;
   /*
     .institution-name {
       font-weight: bold;
@@ -6107,27 +6119,44 @@ html b {
 
     */
 }
-.search-field label {
+.search-results-form .search-results-form__label {
+  height: 28px;
+  padding: 4px 0;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
   display: inline-block;
+  text-align: right;
 }
-.search-field input[disabled] {
+.search-results-form label {
+  display: inline;
+}
+.search-results-form input[disabled] {
   color: #e3e4e5;
 }
-.search-field input[type="text"] {
-  width: 24em;
-  padding: 0.25em 0.5em;
+.search-results-form .search-results-form__text-input {
+  min-width: 20em;
+  padding: 4px 8px;
+  border: 1px solid #919395;
+  margin-top: 0;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
 }
-.search-field .search-name-label,
-.search-field .example-hint {
+.search-results-form .btn {
+  padding: 7px 12px;
+  margin: -3px 0 0 -4px;
+  background-color: #919395;
+}
+.search-results-form .search-name-label,
+.search-results-form .example-hint {
   display: block;
   font-size: small;
 }
-.search-field .example-hint {
+.search-results-form .example-hint {
   color: #babbbd;
   font-style: italic;
   margin-top: 6px;
 }
-.search-field .tt-suggestion {
+.search-results-form .tt-suggestion {
   text-transform: capitalize;
   border-left: 1px solid #babbbd;
   border-right: 1px solid #babbbd;
@@ -6137,12 +6166,8 @@ html b {
   width: 24em;
   /* same width as search input */
 }
-.search-field .tt-suggestion p {
+.search-results-form .tt-suggestion p {
   margin-bottom: 8px;
-}
-.search-results-form {
-  background-color: #e3e4e5;
-  padding: 4px 0;
 }
 .search-results .search-results-heading .search-results-heading__title {
   display: inline-block;

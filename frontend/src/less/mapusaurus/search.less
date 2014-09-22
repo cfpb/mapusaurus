@@ -1,7 +1,7 @@
 
 /* Shrink the default button sizes by a few pixels */
 @btn-font-size: 12px;
-@btn-v-padding: 7px;
+@btn-v-padding: 6px;
 
 .search-home {
     //display: table; 
@@ -23,7 +23,7 @@
 
 }
 
-
+/*
 .search-title-column1 {
     float:left;
 }
@@ -32,21 +32,59 @@
     float:left;
     padding-left:5px;
 }
+*/
 
+/* Search input form (gray bar at top of page ) */
 
-.search-field {
+.search-results-form {
+    background-color: @gray-20;
+    padding: 4px 12px;
+    white-space: nowrap;
+
+/*
+    .grid_column(6);
+    .grid_push(3);
+*/
+    text-align: center;
     
-    label {
+    .search-results-form__label {
+        height: 28px;
+        padding: 4px 0;
+        box-sizing: border-box;
         display: inline-block;
+        text-align: right;
+    }
+
+    label {
+        
+        display: inline;
+        //font-size: 16px;
+        //line-height: 16px; // height of text input field = 18px text + 8px padding + 2px border.
+        //margin: 0;
+        
+        //padding-top: 6px;
+        
+        //min-width: 5em; // labels need width to vertically align with a form
+        
+        //vertical-align: middle;
     }
 
     input[disabled] {
       color: @gray-20;
     }
 
-    input[type="text"] {
-        width: 24em;
-        padding: 0.25em 0.5em;
+    .search-results-form__text-input {
+        min-width: 20em;
+        padding: 4px 8px;
+        border: 1px solid @gray-80;
+        margin-top: 0;
+        box-sizing: border-box;
+    }
+
+    .btn {
+        padding: 7px 12px;
+        margin: -4px 0 0 -4px;
+        background-color: @gray-80;
     }
 
     /*
@@ -86,12 +124,6 @@
         margin-bottom: 8px;
     }
 
-}
-
-
-.search-results-form {
-    background-color: @gray-20;
-    padding: 4px 0;
 }
 
 
