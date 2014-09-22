@@ -5925,16 +5925,46 @@ html b {
 .search-home .search-indent {
   padding-left: 20px;
 }
-/*
-.search-title-column1 {
-    float:left;
+.search-home .search-title-column1 {
+  float: left;
 }
-
-.search-title-column2 {
-    float:left;
-    padding-left:5px;
+.search-home .search-title-column2 {
+  float: left;
+  padding-left: 5px;
 }
-*/
+.search-home .search-field label {
+  display: inline-block;
+}
+.search-home .search-field input[disabled] {
+  color: #e3e4e5;
+}
+.search-home .search-field input[type="text"] {
+  width: 24em;
+  padding: 0.25em 0.5em;
+}
+.search-home .search-field .search-name-label,
+.search-home .search-field .example-hint {
+  display: block;
+  font-size: small;
+}
+.search-home .search-field .example-hint {
+  color: #babbbd;
+  font-style: italic;
+  margin-top: 6px;
+}
+.search-home .search-field .tt-suggestion {
+  text-transform: capitalize;
+  border-left: 1px solid #babbbd;
+  border-right: 1px solid #babbbd;
+  border-bottom: 1px solid #babbbd;
+  padding: 0 4px;
+  background-color: #f8f8f8;
+  width: 24em;
+  /* same width as search input */
+}
+.search-home .search-field .tt-suggestion p {
+  margin-bottom: 8px;
+}
 /* Search input form (gray bar at top of page ) */
 .search-results-form {
   background-color: #f1f2f2;
@@ -6135,9 +6165,7 @@ html b {
   font-weight: normal;
   color: #0072ce;
   font-size: 22px;
-  border-bottom: 1px dotted #0072ce;
   margin-bottom: 4px;
-  display: inline-block;
 }
 .search-results .search-result-record h4 em,
 .search-results .search-result-record h4 i {
@@ -6158,6 +6186,9 @@ html b {
 .lt-ie9 .search-results .search-result-record h4 strong,
 .lt-ie9 .search-results .search-result-record h4 b {
   font-weight: normal !important;
+}
+.search-results .search-result-record h4 a {
+  border-bottom: 1px dotted #0072ce;
 }
 .search-results .search-result-record .search-result-record__cfpb-id {
   font-family: "AvenirNextLTW01-Medium", Arial, sans-serif;

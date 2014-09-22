@@ -7,7 +7,7 @@
             <div class="expandable_header expandable_target">
 
                 <div class="search-result-record__left-col">
-                    <h4>{{res.name|title}}</h4><br>
+                    <h4><a href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">{{res.name|title}}</a></h4>
                     <div class="search-result-record__cfpb-id">
                         0{{res.agency_id}}-{{res.ffiec_id}}
                     </div>
