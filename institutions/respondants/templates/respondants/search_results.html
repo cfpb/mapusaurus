@@ -24,15 +24,13 @@
 
         {% include "respondants/partial/search_results_header.html" %}
 
-
         {% if total_results == 0 %}
             <h3>No results found.</h3>
         {% else %}
             {% include 'respondants/partial/search_results_details.html' %}
         {% endif %}
 
-        {% include 'respondants/partial/search_results_pagination.html' %}
-
+        <hr>
         <p>     
             Notes: Institution data is from the 2012 HMDA Transmittal sheet. <br>
             Assets are as of December 31 of the preceding calendar year.
@@ -44,7 +42,6 @@
 
 
 {% block footer_content %}
-
 
 
 {% endblock %}

@@ -3,6 +3,31 @@
 @btn-font-size: 12px;
 @btn-v-padding: 6px;
 
+
+.sort-none {
+
+    background-image: url("../img/font-awesome/chevron-sort-none.png");
+    background-repeat: no-repeat;
+    background-position: center right; 
+
+}
+
+.sort-down {
+
+    background-image: url("../img/font-awesome/chevron-sort-down.png");
+    background-repeat: no-repeat;
+    background-position: center right; 
+
+}
+
+.sort-up {
+
+    background-image: url("../img/font-awesome/chevron-sort-up.png");
+    background-repeat: no-repeat;
+    background-position: center right; 
+
+}
+
 .search-home {
     //display: table; 
     //margin: 0 auto 320px auto;
@@ -37,8 +62,8 @@
 /* Search input form (gray bar at top of page ) */
 
 .search-results-form {
-    background-color: @gray-20;
-    padding: 4px 12px;
+    background-color: @gray-10;
+    padding: 8px 16px;
     white-space: nowrap;
 
 /*
@@ -76,7 +101,7 @@
     .search-results-form__text-input {
         min-width: 20em;
         padding: 4px 8px;
-        border: 1px solid @gray-80;
+        border: 1px solid @gray;
         margin-top: 0;
         box-sizing: border-box;
     }
@@ -84,7 +109,7 @@
     .btn {
         padding: 7px 12px;
         margin: -4px 0 0 -4px;
-        background-color: @gray-80;
+        background-color: @gray;
     }
 
     /*
@@ -131,6 +156,8 @@
 
     .search-results-heading {
 
+        
+
         .search-results-heading__title {
             .grid_column(12);
         }
@@ -140,18 +167,39 @@
 
         }
 
-        .search-results-heading__num-results {
-            .grid_column(12);
+        .search-results-heading__second-row {
+            font-size: (@base-font-size-px - 2);
+            padding: 0 8px;
         }
 
-        .search-results-heading__num-results-control {
+        .search-results-heading__pagination {
             .grid_column(12);
-            label {
-                display: inline-block;
+
+            .disabled {
+                color: @gray-50;
             }
+
+            .divider {
+                padding: 0 4px;
+            }
+
+            a,
+            a:visited {
+                color: @pacific;
+            }
+
         }
 
-        .search-results-heading__sort-control {
+        .search-results-heading__sort-assets {
+            .grid_column(12);
+            a {
+                display: inline-block;
+                padding-right: 20px;
+            }
+
+        }
+
+        .search-results-heading__sort-lar {
             .grid_column(12);
             label {
                 display: inline-block;
@@ -159,6 +207,7 @@
         }
 
     }
+
 
     .search-result-record {
 
@@ -172,7 +221,7 @@
 
         .expandable_header,
         .expandable_content {
-            padding: 16px 16px 0 16px;
+            padding: 16px 8px 0 8px;
         }
 
         .expandable__expanded {
@@ -186,7 +235,12 @@
         }
 
         h4 {
+            .webfont-regular();
+            font-size: (@base-font-size-px + 6);
             margin-bottom: 4px;
+            a {
+                border-bottom: 1px dotted @pacific;
+            }
         }
         
         .search-result-record__cfpb-id {
@@ -299,20 +353,7 @@
         .search-results-heading {
 
             .search-results-heading__title {
-                .grid_column(10);
-                border-left-width: 0;
-            }
-
-            .search-results-heading__start-over {
-                .grid_column(2);
-                border-right-width: 0;
-                p {
-                    float: right;
-                }
-            }
-
-            .search-results-heading__num-results {
-                .grid_column(6);
+                .grid_column(9);
                 border-left-width: 0;
             }
 
@@ -320,17 +361,26 @@
                 .grid_column(3);
                 border-right-width: 0;
                 text-align: right;
-                label {
+                /*label {
                     float: right;
-                }
+                }*/
             }
 
-            .search-results-heading__sort-control {
+            .search-results-heading__pagination {
+                .grid_column(6);
+                border-left-width: 0;
+            }
+
+            .search-results-heading__sort-assets {
                 .grid_column(3);
                 border-right-width: 0;
-                label {
-                    float: right;
-                }
+                text-align: right;
+            }
+
+            .search-results-heading__sort-lar {
+                .grid_column(3);
+                border-right-width: 0;
+                text-align: right;
             }
 
         }

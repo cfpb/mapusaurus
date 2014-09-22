@@ -1,50 +1,42 @@
 
-{% if total_pages > 1 %}
 
-  <nav class="pagination">
+{% if total_pages >= 1 %}
+
+  <div class="search-results-heading__pagination">
 
     {% if prev_page > 0 %}
 
-      <a class="btn pagination_prev" href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{prev_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">
-          <span class="btn-icon-left cf-icon cf-icon-left"></span>
-          Previous
-      </a>
+      <a href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{prev_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">Previous</a>
 
     {% else %}
 
-      <span class="btn btn__disabled pagination_prev">
-          <span class="btn-icon-left btn__disabled cf-icon cf-icon-left"></span>
+      <span class="disabled">
           Previous
       </span>
 
     {% endif %}
 
-      <div class="pagination_form">
-          &nbsp;
-      </div>
+    <span class="divider">|</span>
+    <strong>{{start_results}} - {{end_results}}</strong> of <strong>{{total_results}}</strong>
+    <span class="divider">|</span> 
+
 
     {% if page_num < total_pages %}
 
-      <a class="btn pagination_next" href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{next_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">
-          Next
-          <span class="btn-icon-right cf-icon cf-icon-right"></span>
-      </a> 
+      <a href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{next_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">Next</a> 
 
     {% else %}
 
-      <span class="btn btn__disabled pagination_next">
-          <span class="btn-icon-right cf-icon cf-icon-right"></span>
-          Next
-      </span>
+      <span class="disabled">Next</span>
 
     {% endif %}
 
-  </nav>
+  </div>
 
 {% elif total_pages == 1 and total_results > 0 %}
+  
 
-  <hr>
-
+  
 {% endif %}
 
 {% comment %}
