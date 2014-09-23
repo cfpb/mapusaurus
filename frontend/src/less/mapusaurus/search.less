@@ -1,7 +1,32 @@
 
 /* Shrink the default button sizes by a few pixels */
 @btn-font-size: 12px;
-@btn-v-padding: 7px;
+@btn-v-padding: 6px;
+
+
+.sort-none {
+
+    background-image: url("../img/font-awesome/chevron-sort-none.png");
+    background-repeat: no-repeat;
+    background-position: center right; 
+
+}
+
+.sort-down {
+
+    background-image: url("../img/font-awesome/chevron-sort-down.png");
+    background-repeat: no-repeat;
+    background-position: center right; 
+
+}
+
+.sort-up {
+
+    background-image: url("../img/font-awesome/chevron-sort-up.png");
+    background-repeat: no-repeat;
+    background-position: center right; 
+
+}
 
 .search-home {
     //display: table; 
@@ -18,35 +43,119 @@
     .search-indent {
         padding-left:20px;
 
+    }
+
+    .search-title-column1 {
+        float:left;
+    }
+
+    .search-title-column2 {
+        float:left;
+        padding-left:5px;
+    }
+
+    .search-field {
+        
+        label {
+            display: inline-block;
+        }
+
+        input[disabled] {
+          color: @gray-20;
+        }
+
+        input[type="text"] {
+            width: 24em;
+            padding: 0.25em 0.5em;
+        }
+
+        .search-name-label,
+        .example-hint {
+            display: block;
+            font-size: small;
+        }
+
+        .example-hint {
+            color: @gray-50;
+            font-style: italic;
+            margin-top: 6px;
+        }
+
+        .tt-suggestion {
+            text-transform: capitalize;
+            border-left: 1px solid @gray-50;
+            border-right: 1px solid @gray-50;
+            border-bottom: 1px solid @gray-50;
+            padding: 0 4px;
+            background-color: @gray-5;
+            width: 24em; /* same width as search input */
+        }
+
+        .tt-suggestion p {
+            margin-bottom: 8px;
+        }
 
     }
 
 }
 
+/* Search input form (gray bar at top of page ) */
 
-.search-title-column1 {
-    float:left;
-}
+.search-results-form {
+    background-color: @gray-10;
+    padding: 8px 16px;
+    white-space: nowrap;
 
-.search-title-column2 {
-    float:left;
-    padding-left:5px;
-}
-
-
-.search-field {
+/*
+    .grid_column(6);
+    .grid_push(3);
+*/
+    text-align: center;
     
-    label {
+    .search-results-form__label {
+        height: 28px;
+        padding: 4px 0;
+        box-sizing: border-box;
         display: inline-block;
+        text-align: right;
+
+        // hide from display, but still allow screen reader access
+        position: absolute !important;
+        clip: rect(1px, 1px, 1px, 1px);
+
+    }
+
+    label {
+        
+        display: inline;
+        //font-size: 16px;
+        //line-height: 16px; // height of text input field = 18px text + 8px padding + 2px border.
+        //margin: 0;
+        
+        //padding-top: 6px;
+        
+        //min-width: 5em; // labels need width to vertically align with a form
+        
+        //vertical-align: middle;
     }
 
     input[disabled] {
       color: @gray-20;
     }
 
-    input[type="text"] {
-        width: 24em;
-        padding: 0.25em 0.5em;
+    .search-results-form__text-input {
+        min-width: 20em;
+        padding: 4px 8px;
+        border: 1px solid @gray;
+        margin-top: 0;
+        box-sizing: border-box;
+    }
+
+    .btn {
+        padding: 7px 12px;
+        //margin: -4px 0 0 -4px; //negative top margin is only needed for alignment when input label is shown
+        margin-left: -4px;
+        background-color: @gray;
     }
 
     /*
@@ -89,15 +198,11 @@
 }
 
 
-.search-results-form {
-    background-color: @gray-20;
-    padding: 4px 0;
-}
-
-
 .search-results {
 
     .search-results-heading {
+
+        
 
         .search-results-heading__title {
             .grid_column(12);
@@ -108,31 +213,59 @@
 
         }
 
-        .search-results-heading__num-results {
-            .grid_column(12);
+        .search-results-heading__second-row {
+            //font-size: (@base-font-size-px - 2);
+            padding: 0 12px;
         }
 
-        .search-results-heading__num-results-control {
+        .search-results-heading__pagination {
             .grid_column(12);
-            label {
-                display: inline-block;
+
+            .disabled {
+                color: @gray-50;
             }
+
+            .divider {
+                padding: 0 4px;
+            }
+
+            a,
+            a:visited {
+                color: @pacific;
+            }
+
         }
 
-        .search-results-heading__sort-control {
+        .search-results-heading__sort-assets,
+        .search-results-heading__sort-lar {
             .grid_column(12);
-            label {
+            a {
                 display: inline-block;
+                padding-right: 20px; // sort arrow is 16px wide + 4px padding
+                height: 24px; // height of sort arrow image
+                vertical-align: middle;
             }
         }
 
     }
+
 
     .search-result-record {
 
         &:hover {
             background-color: @gray-10;
         }
+        margin: 8px 0;
+
+        // The H4 is outside of the expandable in the HTML, but looks like it is inside the expandable 
+        /*
+        margin: -24px 0 8px 0;
+        .search-result-record__title {
+            position: relative;
+            top: 38px;
+            right: -12px
+        }
+        */
 
         .expandable {
             margin-bottom: 0; /* over-rides default */
@@ -140,7 +273,7 @@
 
         .expandable_header,
         .expandable_content {
-            padding: 16px 16px 0 16px;
+            padding: 12px;
         }
 
         .expandable__expanded {
@@ -154,7 +287,17 @@
         }
 
         h4 {
+            .webfont-regular();
+            color: @pacific;
+            font-size: (@base-font-size-px + 6);
             margin-bottom: 4px;
+            z-index: 100;
+
+            a,
+            a:visited {
+                color: @pacific;
+                border-bottom: 1px dotted @pacific;
+            }
         }
         
         .search-result-record__cfpb-id {
@@ -196,6 +339,17 @@
             color: @gray;
             text-transform: uppercase;
             margin-bottom: 4px;
+
+            //Hide this
+
+        }
+
+        // Hide this two from diplay becuase the colum header now indicated what these numbers are
+        // use clip so screen readers still read contents
+        .assets-definition-term,
+        .year-definition-term {
+            position: absolute !important;
+            clip: rect(1px, 1px, 1px, 1px);
         }
 
         dd {
@@ -267,20 +421,7 @@
         .search-results-heading {
 
             .search-results-heading__title {
-                .grid_column(10);
-                border-left-width: 0;
-            }
-
-            .search-results-heading__start-over {
-                .grid_column(2);
-                border-right-width: 0;
-                p {
-                    float: right;
-                }
-            }
-
-            .search-results-heading__num-results {
-                .grid_column(6);
+                .grid_column(9);
                 border-left-width: 0;
             }
 
@@ -288,17 +429,26 @@
                 .grid_column(3);
                 border-right-width: 0;
                 text-align: right;
-                label {
+                /*label {
                     float: right;
-                }
+                }*/
             }
 
-            .search-results-heading__sort-control {
+            .search-results-heading__pagination {
+                .grid_column(6);
+                border-left-width: 0;
+            }
+
+            .search-results-heading__sort-assets {
                 .grid_column(3);
                 border-right-width: 0;
-                label {
-                    float: right;
-                }
+                text-align: right;
+            }
+
+            .search-results-heading__sort-lar {
+                .grid_column(3);
+                border-right-width: 0;
+                text-align: right;
             }
 
         }

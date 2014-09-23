@@ -6,8 +6,6 @@
 
 {% block header_content %}
 
-    <form id="search-results-form" role="form" method="get" action="{% url 'respondants:search_results' %}">
-
     {% include "respondants/partial/search_results_form.html" %}
 
 {% endblock %}
@@ -32,8 +30,7 @@
             {% include 'respondants/partial/search_results_details.html' %}
         {% endif %}
 
-        {% include 'respondants/partial/search_results_pagination.html' %}
-
+        <hr>
         <p>     
             Notes: Institution data is from the 2012 HMDA Transmittal sheet. <br>
             Assets are as of December 31 of the preceding calendar year.
@@ -46,15 +43,13 @@
 
 {% block footer_content %}
 
-    </form>
 
 {% endblock %}
 
 {% block foot_scripts %}
-
+<!--
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
     <script type="text/javascript" src="{% static 'respondants/js/search.js' %}"></script>
-
     <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
-
+-->
 {% endblock %}

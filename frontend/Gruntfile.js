@@ -215,6 +215,7 @@ module.exports = function(grunt) {
    * The 'default' task will run whenever `grunt` is run without specifying a task
    */
   grunt.registerTask('build', ['concat', 'less', 'autoprefixer', 'cssmin', 'uglify', 'copy']);
+  grunt.registerTask('build-less', ['less', 'copy:django']);
   grunt.registerTask('default', ['build']);
 
 };

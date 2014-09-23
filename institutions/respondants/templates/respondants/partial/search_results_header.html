@@ -1,43 +1,67 @@
 <div class="search-results-heading">
-
+  <form role="form" method="get" action="{% url 'respondants:search_results' %}">
   <div class="search-results-heading__title">
     <h1>Search results for &ldquo;{{ query_str }}&rdquo;</h1>
   </div>
-<!---
-  <div class="search-results-heading__start-over">
-    <p><a href="?q=">Start Over</a></p>
+  <div class="search-results-heading__num-results-control">
+    <label>
+      <select id="num_results" name="num_results" onchange="this.form.submit()">
+        <option value="10" {% if num_results = 10 %}selected{% endif %}>Display 10 results</option>
+        <option value="25" {% if num_results = 25 %}selected{% endif %}>Display 25 results</option>
+        <option value="50" {% if num_results = 50 %}selected{% endif %}>Display 50 results</option>
+        <option value="100" {% if num_results = 100 %}selected{% endif %}>Display 100 results</option>
+      </select>
+    </label>
   </div>
----->
   {% if total_results != 0 %}
 
-  <div class="search-results-heading__num-results">
-    <p>Result(s) <strong>{{start_results}} to {{end_results}}</strong> of <strong>{{total_results}}</strong></p>
-  </div>
+    <div class="search-results-heading__second-row">
 
-  <input type="hidden" id="page" name="page" value="{{page_num}}">
+      {% include 'respondants/partial/search_results_pagination.html' %}
 
-  <div class="search-results-heading__num-results-control">
-    <label>Display:
-      <select id="num_results" name="num_results" onchange="this.form.submit()">
-        <option value="10" {% if num_results = 10 %}selected{% endif %}>10</option>
-        <option value="25" {% if num_results = 25 %}selected{% endif %}>25</option>
-        <option value="50" {% if num_results = 50 %}selected{% endif %}>50</option>
-        <option value="100" {% if num_results = 100 %}selected{% endif %}>100</option>
-      </select>
-    </label>
-  </div>
+      <input type="hidden" id="page" name="page" value="{{page_num}}">
+      <input type="hidden" name="q" value="{{ query_str }}">
 
-  <div class="search-results-heading__sort-control">
-    <label>Sort by:
-      <select id="sort" name="sort" onchange="this.form.submit()">
-        <option value="-score" {% if 'score' in current_sort %}selected{% endif %}>Relevance</option>
-        <option value="-num_loans" {% if 'num_loans' in current_sort %}selected{% endif %}>Number of Applications</option>
-        <option value="-assets" {% if 'assets' in current_sort %}selected{% endif %}>Corporate Assets</option>
-      </select>
-    </label>
-  </div>
+      <div class="search-results-heading__sort-assets">
 
+        {% if current_sort == 'assets' %}
+          <a 
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-assets" class="sort-up" title="Sort by assets">{{res.year}} 2012 Assets
+          </a>
+        {% elif current_sort == '-assets' %}
+          <a 
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=assets" class="sort-down" title="Sort by assets">{{res.year}} 2012 Assets
+          </a>
+        {% else %}
+          {# not sorted by assets, link should sort down (desc.) #}
+          <a 
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-assets" class="sort-none" title="Sort by assets">{{res.year}} 2012 Assets
+          </a>
+        {% endif %}
+
+      </div>
+
+      <div class="search-results-heading__sort-lar">
+
+        {% if current_sort == 'num_loans' %}
+          <a 
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-num_loans" class="sort-up" title="Sort by assets">{{res.year}} 2012 LAR Count
+          </a>
+        {% elif current_sort == '-num_loans' %}
+          <a 
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=num_loans" class="sort-down" title="Sort by assets">{{res.year}} 2012 LAR Count
+          </a>
+        {% else %}
+          {# not sorted by num_loans, click on link should sort down (desc.) #}
+          <a 
+            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-num_loans" class="sort-none" title="Sort by assets">{{res.year}} 2012 LAR Count
+          </a>
+        {% endif %}
+
+      </div>
+
+    </div>
 
  {% endif %}
-
+ </form>
 </div><!-- ./search-results-heading -->
