@@ -255,8 +255,17 @@
         &:hover {
             background-color: @gray-10;
         }
-
         margin: 8px 0;
+
+        // The H4 is outside of the expandable in the HTML, but looks like it is inside the expandable 
+        /*
+        margin: -24px 0 8px 0;
+        .search-result-record__title {
+            position: relative;
+            top: 38px;
+            right: -12px
+        }
+        */
 
         .expandable {
             margin-bottom: 0; /* over-rides default */
@@ -282,7 +291,11 @@
             color: @pacific;
             font-size: (@base-font-size-px + 6);
             margin-bottom: 4px;
-            a {
+            z-index: 100;
+
+            a,
+            a:visited {
+                color: @pacific;
                 border-bottom: 1px dotted @pacific;
             }
         }

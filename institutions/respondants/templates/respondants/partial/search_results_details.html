@@ -1,13 +1,13 @@
 {% load humanize %}
 {% for res in institutions %}
     <article class="search-result-record">
+         <div class="expandable">
 
-        <div class="expandable">
-
-            <div class="expandable_header expandable_target">
-
+            <div class="expandable_header">
+            <!-- Expandable turned off for now -->
+            <!--<div class="expandable_header expandable_target">-->
                 <div class="search-result-record__left-col">
-                    <h4><a href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">{{res.name|title}}</a></h4>
+                    <h4 class="search-result-record__title"><a href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">{{res.name|title}}</a></h4>
                     <div class="search-result-record__cfpb-id">
                         0{{res.agency_id}}-{{res.ffiec_id}}
                     </div>
@@ -49,10 +49,12 @@
                         <dt>Regulating Agency</dt>
                         <dd>{{res.agency.full_name}}</dd>
                     </dl>
+                    <!--
                     <dl>
                         <dt>RSSD ID</dt>
                         <dd>{{res.rssd_id}}</dd>
                     </dl>
+                    -->
                 </div>
                 <div class="search-result-record__ec-right">
                     <dl>

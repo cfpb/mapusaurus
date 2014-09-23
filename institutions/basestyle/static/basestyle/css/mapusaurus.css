@@ -6141,6 +6141,14 @@ html b {
 }
 .search-results .search-result-record {
   margin: 8px 0;
+  /*
+        margin: -24px 0 8px 0;
+        .search-result-record__title {
+            position: relative;
+            top: 38px;
+            right: -12px
+        }
+        */
 }
 .search-results .search-result-record:hover {
   background-color: #f1f2f2;
@@ -6166,6 +6174,7 @@ html b {
   color: #0072ce;
   font-size: 22px;
   margin-bottom: 4px;
+  z-index: 100;
 }
 .search-results .search-result-record h4 em,
 .search-results .search-result-record h4 i {
@@ -6187,7 +6196,9 @@ html b {
 .lt-ie9 .search-results .search-result-record h4 b {
   font-weight: normal !important;
 }
-.search-results .search-result-record h4 a {
+.search-results .search-result-record h4 a,
+.search-results .search-result-record h4 a:visited {
+  color: #0072ce;
   border-bottom: 1px dotted #0072ce;
 }
 .search-results .search-result-record .search-result-record__cfpb-id {
