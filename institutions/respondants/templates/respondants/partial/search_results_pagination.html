@@ -1,8 +1,6 @@
 
-
-{% if total_pages >= 1 %}
-
-  <div class="search-results-heading__pagination">
+<div class="search-results-heading__pagination">
+{% if total_pages > 1 %}
 
     {% if prev_page > 0 %}
 
@@ -20,7 +18,6 @@
     <strong>{{start_results}} - {{end_results}}</strong> of <strong>{{total_results}}</strong>
     <span class="divider">|</span> 
 
-
     {% if page_num < total_pages %}
 
       <a href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{next_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">Next</a> 
@@ -31,13 +28,13 @@
 
     {% endif %}
 
-  </div>
-
 {% elif total_pages == 1 and total_results > 0 %}
-  
 
+  {# Just one page, do not show the prev and next buttons #}
+  Results <strong>{{start_results}} - {{end_results}}</strong>
   
 {% endif %}
+</div>
 
 {% comment %}
 Pages:<br>
