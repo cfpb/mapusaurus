@@ -1,5 +1,5 @@
 import re
-
+import math
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from haystack.inputs import AutoQuery, Exact
@@ -126,7 +126,7 @@ def search_results(request):
     if total_results <= num_results:
         total_pages = 1
     else:
-        total_pages = total_results / num_results
+        total_pages = int( math.ceil( float(total_results) / float(num_results) ) )
 
     query = query[start_results:end_results]
 

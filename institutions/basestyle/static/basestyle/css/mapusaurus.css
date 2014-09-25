@@ -6442,7 +6442,7 @@ html b {
     border-width: 0 15px;
     margin-right: -0.25em;
     vertical-align: top;
-    width: 75%;
+    width: 83.33333333%;
     border-left-width: 0;
   }
   .ie .search-results .search-results-heading .search-results-heading__title {
@@ -6463,7 +6463,7 @@ html b {
     border-width: 0 15px;
     margin-right: -0.25em;
     vertical-align: top;
-    width: 25%;
+    width: 16.66666667%;
     border-right-width: 0;
     text-align: right;
     /*label {
