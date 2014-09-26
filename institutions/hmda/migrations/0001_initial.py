@@ -15,57 +15,107 @@ class Migration(SchemaMigration):
             ('respondent_id', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('agency_code', self.gf('django.db.models.fields.CharField')(max_length=1)),
             ('loan_amount_000s', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('action_taken', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('state_code', self.gf('django.db.models.fields.CharField')(max_length=2, db_index=True)),
-            ('county_code', self.gf('django.db.models.fields.CharField')(max_length=3, db_index=True)),
-            ('census_tract', self.gf('django.db.models.fields.CharField')(max_length=6)),
+            ('action_taken', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
+            ('statefp', self.gf('django.db.models.fields.CharField')(max_length=2, db_index=True)),
+            ('countyfp', self.gf('django.db.models.fields.CharField')(max_length=3)),
             ('lender', self.gf('django.db.models.fields.CharField')(max_length=11, db_index=True)),
-            ('geoid', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['geo.StateCensusTract'], to_field='geoid')),
+            ('geoid', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['geo.Geo'])),
         ))
         db.send_create_signal(u'hmda', ['HMDARecord'])
 
+        # Adding index on 'HMDARecord', fields ['statefp', 'countyfp']
+        db.create_index(u'hmda_hmdarecord', ['statefp', 'countyfp'])
+
+        # Adding index on 'HMDARecord', fields ['statefp', 'countyfp', 'lender']
+        db.create_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'lender'])
+
+        # Adding index on 'HMDARecord', fields ['statefp', 'countyfp', 'action_taken', 'lender']
+        db.create_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'action_taken', 'lender'])
+
+        # Adding index on 'HMDARecord', fields ['geoid', 'lender']
+        db.create_index(u'hmda_hmdarecord', ['geoid_id', 'lender'])
+
+        # Adding model 'LendingStats'
+        db.create_table(u'hmda_lendingstats', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('lender', self.gf('django.db.models.fields.CharField')(max_length=11)),
+            ('geoid', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['geo.Geo'])),
+            ('median_per_tract', self.gf('django.db.models.fields.PositiveIntegerField')()),
+        ))
+        db.send_create_signal(u'hmda', ['LendingStats'])
+
+        # Adding unique constraint on 'LendingStats', fields ['lender', 'geoid']
+        db.create_unique(u'hmda_lendingstats', ['lender', 'geoid_id'])
+
+        # Adding index on 'LendingStats', fields ['lender', 'geoid']
+        db.create_index(u'hmda_lendingstats', ['lender', 'geoid_id'])
+
 
     def backwards(self, orm):
+        # Removing index on 'LendingStats', fields ['lender', 'geoid']
+        db.delete_index(u'hmda_lendingstats', ['lender', 'geoid_id'])
+
+        # Removing unique constraint on 'LendingStats', fields ['lender', 'geoid']
+        db.delete_unique(u'hmda_lendingstats', ['lender', 'geoid_id'])
+
+        # Removing index on 'HMDARecord', fields ['geoid', 'lender']
+        db.delete_index(u'hmda_hmdarecord', ['geoid_id', 'lender'])
+
+        # Removing index on 'HMDARecord', fields ['statefp', 'countyfp', 'action_taken', 'lender']
+        db.delete_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'action_taken', 'lender'])
+
+        # Removing index on 'HMDARecord', fields ['statefp', 'countyfp', 'lender']
+        db.delete_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'lender'])
+
+        # Removing index on 'HMDARecord', fields ['statefp', 'countyfp']
+        db.delete_index(u'hmda_hmdarecord', ['statefp', 'countyfp'])
+
         # Deleting model 'HMDARecord'
         db.delete_table(u'hmda_hmdarecord')
 
+        # Deleting model 'LendingStats'
+        db.delete_table(u'hmda_lendingstats')
+
 
     models = {
-        u'geo.statecensustract': {
-            'Meta': {'object_name': 'StateCensusTract'},
-            'aland': ('django.db.models.fields.FloatField', [], {}),
-            'awater': ('django.db.models.fields.FloatField', [], {}),
-            'countyfp': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
-            'funcstat': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-            'geoid': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '11'}),
-            'geojson': ('django.db.models.fields.TextField', [], {}),
+        u'geo.geo': {
+            'Meta': {'object_name': 'Geo', 'index_together': "[('geo_type', 'minlat', 'minlon'), ('geo_type', 'minlat', 'maxlon'), ('geo_type', 'maxlat', 'minlon'), ('geo_type', 'maxlat', 'maxlon'), ('geo_type', 'centlat', 'centlon'), ('geo_type', 'cbsa')]"},
+            'cbsa': ('django.db.models.fields.CharField', [], {'max_length': '5', 'null': 'True'}),
+            'centlat': ('django.db.models.fields.FloatField', [], {}),
+            'centlon': ('django.db.models.fields.FloatField', [], {}),
+            'county': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
+            'csa': ('django.db.models.fields.CharField', [], {'max_length': '3', 'null': 'True'}),
+            'geo_type': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
+            'geoid': ('django.db.models.fields.CharField', [], {'max_length': '20', 'primary_key': 'True'}),
             'geom': ('django.contrib.gis.db.models.fields.MultiPolygonField', [], {'srid': '4269'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'intptlat': ('django.db.models.fields.CharField', [], {'max_length': '11'}),
-            'intptlon': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
-            'maxlat': ('django.db.models.fields.FloatField', [], {'db_index': 'True'}),
-            'maxlon': ('django.db.models.fields.FloatField', [], {'db_index': 'True'}),
-            'minlat': ('django.db.models.fields.FloatField', [], {'db_index': 'True'}),
-            'minlon': ('django.db.models.fields.FloatField', [], {'db_index': 'True'}),
-            'mtfcc': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '7'}),
-            'namelsad': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'statefp': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
-            'tractce': ('django.db.models.fields.CharField', [], {'max_length': '6'})
+            'maxlat': ('django.db.models.fields.FloatField', [], {}),
+            'maxlon': ('django.db.models.fields.FloatField', [], {}),
+            'metdiv': ('django.db.models.fields.CharField', [], {'max_length': '5', 'null': 'True'}),
+            'minlat': ('django.db.models.fields.FloatField', [], {}),
+            'minlon': ('django.db.models.fields.FloatField', [], {}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'state': ('django.db.models.fields.CharField', [], {'max_length': '2', 'null': 'True'}),
+            'tract': ('django.db.models.fields.CharField', [], {'max_length': '6', 'null': 'True'})
         },
         u'hmda.hmdarecord': {
-            'Meta': {'object_name': 'HMDARecord'},
-            'action_taken': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'Meta': {'object_name': 'HMDARecord', 'index_together': "[('statefp', 'countyfp'), ('statefp', 'countyfp', 'lender'), ('statefp', 'countyfp', 'action_taken', 'lender'), ('geoid', 'lender')]"},
+            'action_taken': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'agency_code': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             'as_of_year': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'census_tract': ('django.db.models.fields.CharField', [], {'max_length': '6'}),
-            'county_code': ('django.db.models.fields.CharField', [], {'max_length': '3', 'db_index': 'True'}),
-            'geoid': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['geo.StateCensusTract']", 'to_field': "'geoid'"}),
+            'countyfp': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
+            'geoid': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['geo.Geo']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'lender': ('django.db.models.fields.CharField', [], {'max_length': '11', 'db_index': 'True'}),
             'loan_amount_000s': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'respondent_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
-            'state_code': ('django.db.models.fields.CharField', [], {'max_length': '2', 'db_index': 'True'})
+            'statefp': ('django.db.models.fields.CharField', [], {'max_length': '2', 'db_index': 'True'})
+        },
+        u'hmda.lendingstats': {
+            'Meta': {'unique_together': "[('lender', 'geoid')]", 'object_name': 'LendingStats', 'index_together': "[('lender', 'geoid')]"},
+            'geoid': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['geo.Geo']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'lender': ('django.db.models.fields.CharField', [], {'max_length': '11'}),
+            'median_per_tract': ('django.db.models.fields.PositiveIntegerField', [], {})
         }
     }
 
