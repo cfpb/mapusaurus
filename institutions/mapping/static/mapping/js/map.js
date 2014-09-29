@@ -121,7 +121,7 @@ var Mapusaurus = {
                 Mapusaurus.redrawBubbles);
         }
         //  Selector to change bucket/continuous shading
-        $('#style-selector').on('change', function() {
+        $('#style-eelector').on('change', function() {
             Mapusaurus.layers.tract.setStyle(
                 Mapusaurus[$('#style-selector').val()]);
         });
@@ -130,7 +130,16 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
             Mapusaurus.redrawBubbles();
         });
-
+        $('#action-taken-selector').on('change', function() {
+            var action_taken = $('#action-taken-selector').val();
+            var url = window.location.href;
+            var newParam = "&action_taken=";
+            var newUrl = url.replace(newParam,"");
+            newUrl += newParam + action_taken;
+            window.location.href = newUrl;
+            Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
+            Mapusaurus.redrawBubbles();
+        });
         var defaultLabel = $enforceBoundsEl.contents().text();
         var defaultTitle = $enforceBoundsEl.contents().attr('title');
 
@@ -404,6 +413,9 @@ var Mapusaurus = {
         if (Mapusaurus.urlParam('lender')) {
             params['lender'] = Mapusaurus.urlParam('lender');
         }
+        if (Mapusaurus.urlParam('action_taken')) {
+            params['action_taken'] = Mapusaurus.urlParam('action_taken');
+        }
         $.ajax({
             url: '/batch', data: params, traditional: true,
             success: Mapusaurus.makeBatchSuccessFn(endpoints, counties)
@@ -571,7 +583,7 @@ var Mapusaurus = {
         }
     },
 
-    //  Using the selector, determine which statistic to display.
+    //  Using the eelector, determine which statistic to display.
     minorityPercent: function(tractData) {
         var fieldName = $('#category-selector').val();
         if (fieldName.substring(0, 4) === 'inv_') {
@@ -752,6 +764,12 @@ function setMapHeight() {
     $('#map').css('height', mapHeight);
 }
 
+function setActionTaken() {
+    /*Sets action taken based on parameter. */
+    
+
+}
+
 $(document).ready(function() {
 
     setMapHeight();
@@ -759,8 +777,15 @@ $(document).ready(function() {
     $( window ).resize(function() {
         setMapHeight();
     });
-
-
+    var url = window.location.href;
+    if(url.indexOf("action_taken") == -1)
+    { 
+        window.location.href+="&action_taken=6"
+    }
+    else
+    {
+        $('#action-taken-selector').val(Mapusaurus.urlParam('action_taken'));
+    }
     $('#take-screenshot').click(function(ev) {
         ev.preventDefault();
         vex.dialog.alert({
