@@ -121,7 +121,7 @@ var Mapusaurus = {
                 Mapusaurus.redrawBubbles);
         }
         //  Selector to change bucket/continuous shading
-        $('#style-eelector').on('change', function() {
+        $('#style-selector').on('change', function() {
             Mapusaurus.layers.tract.setStyle(
                 Mapusaurus[$('#style-selector').val()]);
         });
@@ -583,7 +583,7 @@ var Mapusaurus = {
         }
     },
 
-    //  Using the eelector, determine which statistic to display.
+    //  Using the selector, determine which statistic to display.
     minorityPercent: function(tractData) {
         var fieldName = $('#category-selector').val();
         if (fieldName.substring(0, 4) === 'inv_') {
@@ -762,12 +762,6 @@ function setMapHeight() {
     var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
     $('#map-aside').css('height', mapHeight);
     $('#map').css('height', mapHeight);
-}
-
-function setActionTaken() {
-    /*Sets action taken based on parameter. */
-    
-
 }
 
 $(document).ready(function() {
