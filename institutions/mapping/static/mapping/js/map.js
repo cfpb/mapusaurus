@@ -133,12 +133,10 @@ var Mapusaurus = {
         $('#action-taken-selector').on('change', function() {
             var action_taken = $('#action-taken-selector').val();
             var url = window.location.href;
-            var newParam = "&action_taken=";
-            var newUrl = url.replace(newParam,"");
-            newUrl += newParam + action_taken;
+            var newParam = "&action_taken="+action_taken;
+            var regex = /&action_taken=\d/;
+            var newUrl = url.replace(regex, newParam)            
             window.location.href = newUrl;
-            Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
-            Mapusaurus.redrawBubbles();
         });
         var defaultLabel = $enforceBoundsEl.contents().text();
         var defaultTitle = $enforceBoundsEl.contents().attr('title');
