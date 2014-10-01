@@ -772,7 +772,7 @@ function getLarData(actionTakenVal, callback){
         params['action_taken'] = actionTakenVal;
         $.ajax({
             url: endpoint, data: params, traditional: true,
-            success: return console.log('getLarData request successful')
+            success: console.log('getLarData request successful')
         })
         .done( function(data){
             callback(data);
