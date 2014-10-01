@@ -2,6 +2,7 @@
 
 vex.defaultOptions.className = 'vex-theme-plain';
 
+var countiesPlotted = [];
 
 /* The GeoJSON tile layer is excellent, but makes assumptions that we don't
  * want (like refreshing whenever zooming, and that a single logic layer is
@@ -132,11 +133,8 @@ var Mapusaurus = {
         });
         $('#action-taken-selector').on('change', function() {
             var action_taken = $('#action-taken-selector').val();
-            var url = window.location.href;
-            var newParam = "&action_taken="+action_taken;
-            var regex = /&action_taken=\d/;
-            var newUrl = url.replace(regex, newParam)            
-            window.location.href = newUrl;
+            getLarData( action_taken, getLarDone );
+
         });
         var defaultLabel = $enforceBoundsEl.contents().text();
         var defaultTitle = $enforceBoundsEl.contents().attr('title');
@@ -365,6 +363,9 @@ var Mapusaurus = {
             var missingData = _.filter(newTracts, function(geoid) {
                 var geo = Mapusaurus.dataStore.tract[geoid],
                     stateCounty = geo.state + geo.county;
+                    // Push to countiesPlotted so we have easy access to 
+                    // counties in the viewport for dynamic reload
+                    countiesPlotted.push(stateCounty);
                 return !Mapusaurus.statsLoaded[layerName][stateCounty];
             });
             //  convert to state + county strings
@@ -748,6 +749,52 @@ var Mapusaurus = {
         });
     }
 };
+
+// Utility function to get new LAR data based on Action Type parameters using AJAX.
+// Function allows for redraw based on drop-down criteria without page refresh / batch.
+// This could be written as a more modular function later if additional filters
+// and redraw functions are required w/ Filter, FilterVal, and callback as params
+function getLarData(actionTakenVal, callback){
+    var endpoint = '/hmda/volume',
+        params;
+
+    params = {'county': _.uniq(countiesPlotted) };
+
+    // Set the lender parameter based on the current URL param
+    // This could be set as a parameter later if need be
+    if (Mapusaurus.urlParam('lender')) {
+        params['lender'] = Mapusaurus.urlParam('lender');
+    }
+
+    // If our parameter is passed properly, go get data, otherwise
+    // return an error that no parameter is available.
+    if ( actionTakenVal ) {
+        params['action_taken'] = actionTakenVal;
+        $.ajax({
+            url: endpoint, data: params, traditional: true,
+            success: console.log('getLarData request successful')
+        })
+        .done( function(data){
+            callback(data);
+        });
+    } else {
+        console.log('Error: no action taken value');
+    }
+}
+
+function getLarDone(data){
+    _.each( Mapusaurus.dataStore.tract, function(num, key){
+        if( typeof num.layer_loanVolume != 'undefined' ){
+            if( typeof data[key] != 'undefined' ){
+                num.layer_loanVolume.volume = data[key].volume;
+            }
+        } else {
+            data[key] = {};
+            data[key].volume = 0;
+        }      
+    });
+    Mapusaurus.redrawBubbles(Mapusaurus.dataStore.tract);
+}
 
 function setMapHeight() {
     /* Set the map div to the height of the browser window minus the header. */

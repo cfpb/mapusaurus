@@ -97,8 +97,8 @@ LEAFLET_CONFIG = {
     'RESET_VIEW': False,
     'TILES': 'http://tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg',
     'SCALE': 'imperial',
-    'MIN_ZOOM': 9,
-    'MAX_ZOOM': 15
+    'MIN_ZOOM': 7,
+    'MAX_ZOOM': 18
 }
 
 HAYSTACK_CONNECTIONS = {
