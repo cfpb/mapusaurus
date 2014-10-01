@@ -28,7 +28,6 @@ def map(request):
         metro = query.first()
         if metro:
             context['metro'] = metro
-
     context['download_url'] = make_download_url(lender, metro)
     return render(request, 'map.html', context)
 
