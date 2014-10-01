@@ -133,20 +133,8 @@ var Mapusaurus = {
         });
         $('#action-taken-selector').on('change', function() {
             var action_taken = $('#action-taken-selector').val();
-            var url = window.location.href;
-<<<<<<< HEAD
-            var newParam = "&action_taken="+action_taken;
-            var regex = /&action_taken=\d/;
-            var newUrl = url.replace(regex, newParam)            
-            window.location.href = newUrl;
-=======
-            var newParam = "&action_taken=";
-            var newUrl = url.replace(newParam,'');
-            newUrl += newParam + action_taken;
-            window.location.href = newUrl;
-            //Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
-            //Mapusaurus.redrawBubbles();
->>>>>>> 693b631... Added initial bubble redraw function - work required.
+            getLarData( action_taken, getLarDone );
+
         });
         var defaultLabel = $enforceBoundsEl.contents().text();
         var defaultTitle = $enforceBoundsEl.contents().attr('title');
@@ -375,6 +363,9 @@ var Mapusaurus = {
             var missingData = _.filter(newTracts, function(geoid) {
                 var geo = Mapusaurus.dataStore.tract[geoid],
                     stateCounty = geo.state + geo.county;
+                    // Push to countiesPlotted so we have easy access to 
+                    // counties in the viewport for dynamic reload
+                    countiesPlotted.push(stateCounty);
                 return !Mapusaurus.statsLoaded[layerName][stateCounty];
             });
             //  convert to state + county strings
@@ -385,7 +376,6 @@ var Mapusaurus = {
             //  remove any duplicates; we end with what state/counties need to
             //  be retrieved
             missingData = _.uniq(missingData);
-            countiesPlotted.push(missingData);
 
             //  Keep track of what we will be loading
             _.each(missingData, function(stateCounty) {
@@ -509,7 +499,6 @@ var Mapusaurus = {
     /* Makes sure that all bubbles are shown/hidden as needed and have the
      * correct radius. Called after major configuration switches */
     redrawBubbles: function() {
-        console.log('redrawBubbles fired');
         if (Mapusaurus.lockState.locked) {
             _.each(Mapusaurus.lockState.outsideBubbles, function(bubble) {
                 Mapusaurus.layers.loanVolume.removeLayer(bubble);
@@ -533,7 +522,6 @@ var Mapusaurus = {
 
     /* Styles/extras for originations layer */
     makeBubble: function(geoProps) {
-        console.log('makeBubble fired');
         var data = geoProps['layer_loanVolume'],
             style = Mapusaurus.minorityContinuousStyle(
                 geoProps, Mapusaurus.bubbleStyle),
@@ -771,19 +759,9 @@ var Mapusaurus = {
 // and redraw functions are required w/ Filter, FilterVal, and callback as params
 function getLarData(actionTakenVal, callback){
     var endpoint = '/hmda/volume',
-        counties = _.uniq(countiesPlotted);
         params;
 
-    // For the viewport, get all of the 5 character geoIDs representing
-    // counties that have already been drawn, push them to our counties array
-    _.each(Mapusaurus.drawn, function(num, key){
-        if( key.length === 5 ){
-            counties.push(key);
-        } else return false;
-    });
-
-    console.log('counties: ', counties);
-    params = {'county': counties};
+    params = {'county': _.uniq(countiesPlotted) };
 
     // Set the lender parameter based on the current URL param
     // This could be set as a parameter later if need be
@@ -800,7 +778,6 @@ function getLarData(actionTakenVal, callback){
             success: console.log('getLarData request successful')
         })
         .done( function(data){
-            console.log('getLarData Data: ', data);
             callback(data);
         });
     } else {
@@ -810,9 +787,14 @@ function getLarData(actionTakenVal, callback){
 
 function getLarDone(data){
     _.each( Mapusaurus.dataStore.tract, function(num, key){
-        console.log('key: ', key);
-        num.layer_loanVolume.volume = data[key].volume;
-        console.log(num, ' updated!');
+        if( typeof num.layer_loanVolume != 'undefined' ){
+            if( typeof data[key] != 'undefined' ){
+                num.layer_loanVolume.volume = data[key].volume;
+            }
+        } else {
+            data[key] = {};
+            data[key].volume = 0;
+        }      
     });
     Mapusaurus.redrawBubbles(Mapusaurus.dataStore.tract);
 }
