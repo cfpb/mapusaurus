@@ -130,7 +130,16 @@ var Mapusaurus = {
             Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
             Mapusaurus.redrawBubbles();
         });
-
+        $('#action-taken-selector').on('change', function() {
+            var action_taken = $('#action-taken-selector').val();
+            var url = window.location.href;
+            var newParam = "&action_taken=";
+            var newUrl = url.replace(newParam,"");
+            newUrl += newParam + action_taken;
+            window.location.href = newUrl;
+            Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
+            Mapusaurus.redrawBubbles();
+        });
         var defaultLabel = $enforceBoundsEl.contents().text();
         var defaultTitle = $enforceBoundsEl.contents().attr('title');
 
@@ -404,6 +413,9 @@ var Mapusaurus = {
         if (Mapusaurus.urlParam('lender')) {
             params['lender'] = Mapusaurus.urlParam('lender');
         }
+        if (Mapusaurus.urlParam('action_taken')) {
+            params['action_taken'] = Mapusaurus.urlParam('action_taken');
+        }
         $.ajax({
             url: '/batch', data: params, traditional: true,
             success: Mapusaurus.makeBatchSuccessFn(endpoints, counties)
@@ -475,10 +487,8 @@ var Mapusaurus = {
      * is to increase the area of the circle, but the metric we have is
      * radius, so do the proper algebra */
     hmdaStat: function(tractData) {
-        var $selected = $('#bubble-selector option:selected'),
-            fieldName = $selected.val(),
-            scale = $selected.data('scale'),
-            area = scale * tractData[fieldName];
+        //Arbitrary number 1500
+        var area = 1500 * tractData['volume'];
         //  As Pi is just a constant scalar, we can ignore it in this
         //  calculation: a = pi*r*r   or r = sqrt(a/pi)
         return Math.sqrt(area);
@@ -524,7 +534,7 @@ var Mapusaurus = {
         });
         circle.on('mouseover mousemove', function(e){
             new L.Rrose({ offset: new L.Point(0,-10), closeButton: false, autoPan: false })
-              .setContent(data['volume'] + ' loans<br />' + data['num_households'] + ' households')
+              .setContent(data['volume'] + ' records<br />' + data['num_households'] + ' households')
               .setLatLng(e.latlng)
               .openOn(Mapusaurus.map);
         });
@@ -759,8 +769,15 @@ $(document).ready(function() {
     $( window ).resize(function() {
         setMapHeight();
     });
-
-
+    var url = window.location.href;
+    if(url.indexOf("action_taken") == -1)
+    { 
+        window.location.href+="&action_taken=5"
+    }
+    else
+    {
+        $('#action-taken-selector').val(Mapusaurus.urlParam('action_taken'));
+    }
     $('#take-screenshot').click(function(ev) {
         ev.preventDefault();
         vex.dialog.alert({

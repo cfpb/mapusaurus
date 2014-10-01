@@ -20,11 +20,12 @@ def loan_originations(request_dict):
 
     counties = request_dict.get('county', [])
     lender = request_dict.get('lender', [])
-
+    action_taken = request_dict.get('action_taken', [])
+    
     if counties and all(len(c) == 5 for c in counties) and lender:
         query = HMDARecord.objects.filter(
             # actions 7-8 are preapprovals to ignore
-            lender=lender[0], action_taken__lte=6
+            lender=lender[0], action_taken__lte=action_taken[0]
         ).filter(state_county_filter(counties)).values(
             'geoid', 'geoid__census2010households__total'
         ).annotate(volume=Count('geoid'))

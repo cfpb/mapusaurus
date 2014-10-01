@@ -55,7 +55,7 @@ class ViewsTest(TestCase):
 
     def test_volume(self):
         resp = self.client.get(reverse('hmda:volume'),
-                               {'county': '11222', 'lender': '11111111111'})
+                               {'county': '11222', 'lender': '11111111111', 'action_taken': '6'})
         resp = json.loads(resp.content)
         self.assertEqual(len(resp), 2)
         self.assertTrue('1122233300' in resp)
@@ -68,7 +68,8 @@ class ViewsTest(TestCase):
     def test_volume_multiple(self):
         resp = self.client.get(reverse('hmda:volume'),
                                {'county': ['11222', '11223'],
-                                'lender': '11111111111'})
+                                'lender': '11111111111',
+                                'action_taken': '6'})
         resp = json.loads(resp.content)
         self.assertEqual(len(resp), 3)
         self.assertTrue('1122233300' in resp)
