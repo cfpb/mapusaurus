@@ -408,8 +408,6 @@ var Mapusaurus = {
         });
         endpoints = _.uniq(endpoints);
         counties = _.uniq(counties);
-        console.log('counties ', counties);
-        console.log('missing stats: ', missingStats);
         params = {'endpoint': endpoints, 'county': counties};
         if (Mapusaurus.urlParam('lender')) {
             params['lender'] = Mapusaurus.urlParam('lender');
@@ -427,7 +425,6 @@ var Mapusaurus = {
      *  requests made, this returns a closure to handle the results of a batch
      *  load */
     makeBatchSuccessFn: function(endpoints, counties) {
-        console.log('counties: ', counties);
         return function(data) {
             var toDraw = {};
             _.each(_.keys(Mapusaurus.statsLoaded), function(layerName) {
@@ -775,13 +772,13 @@ function getLarData(actionTakenVal, callback){
         params['action_taken'] = actionTakenVal;
         $.ajax({
             url: endpoint, data: params, traditional: true,
-            success: console.log('getLarData request successful')
+            success: return console.log('getLarData request successful')
         })
         .done( function(data){
             callback(data);
         });
     } else {
-        return console.log('Error: no action taken value');
+        console.log('Error: no action taken value');
     }
 }
 
