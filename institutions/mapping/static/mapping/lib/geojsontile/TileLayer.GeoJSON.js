@@ -23,12 +23,23 @@ L.TileLayer.Ajax = L.TileLayer.extend({
     },
     // Load the requested tile via AJAX
     _loadTile: function (tile, tilePoint) {
+
         this._adjustTilePoint(tilePoint);
         var layer = this;
         var req = new XMLHttpRequest();
         this._requests.push(req);
+
+        //timeout added to track wsgi crash on demo. May remove later if fix is found
+        req.timeout = 7000;
+        req.ontimeout = function () {
+                            console.log("_loadTile Timed Out!!!");
+                            console.log(tilePoint);
+                        }
+
         req.onreadystatechange = this._xhrHandler(req, layer, tile, tilePoint);
+
         req.open('GET', this.getTileUrl(tilePoint), true);
+
         req.send();
     },
     _reset: function () {
