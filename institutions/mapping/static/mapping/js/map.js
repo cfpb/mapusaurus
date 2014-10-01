@@ -534,7 +534,7 @@ var Mapusaurus = {
         });
         circle.on('mouseover mousemove', function(e){
             new L.Rrose({ offset: new L.Point(0,-10), closeButton: false, autoPan: false })
-              .setContent(data['volume'] + ' loans<br />' + data['num_households'] + ' households')
+              .setContent(data['volume'] + ' records<br />' + data['num_households'] + ' households')
               .setLatLng(e.latlng)
               .openOn(Mapusaurus.map);
         });
@@ -772,7 +772,7 @@ $(document).ready(function() {
     var url = window.location.href;
     if(url.indexOf("action_taken") == -1)
     { 
-        window.location.href+="&action_taken=6"
+        window.location.href+="&action_taken=5"
     }
     else
     {
