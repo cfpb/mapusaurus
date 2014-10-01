@@ -2,6 +2,7 @@
 
 vex.defaultOptions.className = 'vex-theme-plain';
 
+var countiesPlotted = [];
 
 /* The GeoJSON tile layer is excellent, but makes assumptions that we don't
  * want (like refreshing whenever zooming, and that a single logic layer is
@@ -133,10 +134,19 @@ var Mapusaurus = {
         $('#action-taken-selector').on('change', function() {
             var action_taken = $('#action-taken-selector').val();
             var url = window.location.href;
+<<<<<<< HEAD
             var newParam = "&action_taken="+action_taken;
             var regex = /&action_taken=\d/;
             var newUrl = url.replace(regex, newParam)            
             window.location.href = newUrl;
+=======
+            var newParam = "&action_taken=";
+            var newUrl = url.replace(newParam,'');
+            newUrl += newParam + action_taken;
+            window.location.href = newUrl;
+            //Mapusaurus.layers.tract.setStyle(Mapusaurus.pickStyle);
+            //Mapusaurus.redrawBubbles();
+>>>>>>> 693b631... Added initial bubble redraw function - work required.
         });
         var defaultLabel = $enforceBoundsEl.contents().text();
         var defaultTitle = $enforceBoundsEl.contents().attr('title');
@@ -375,6 +385,7 @@ var Mapusaurus = {
             //  remove any duplicates; we end with what state/counties need to
             //  be retrieved
             missingData = _.uniq(missingData);
+            countiesPlotted.push(missingData);
 
             //  Keep track of what we will be loading
             _.each(missingData, function(stateCounty) {
@@ -407,6 +418,8 @@ var Mapusaurus = {
         });
         endpoints = _.uniq(endpoints);
         counties = _.uniq(counties);
+        console.log('counties ', counties);
+        console.log('missing stats: ', missingStats);
         params = {'endpoint': endpoints, 'county': counties};
         if (Mapusaurus.urlParam('lender')) {
             params['lender'] = Mapusaurus.urlParam('lender');
@@ -424,6 +437,7 @@ var Mapusaurus = {
      *  requests made, this returns a closure to handle the results of a batch
      *  load */
     makeBatchSuccessFn: function(endpoints, counties) {
+        console.log('counties: ', counties);
         return function(data) {
             var toDraw = {};
             _.each(_.keys(Mapusaurus.statsLoaded), function(layerName) {
@@ -495,6 +509,7 @@ var Mapusaurus = {
     /* Makes sure that all bubbles are shown/hidden as needed and have the
      * correct radius. Called after major configuration switches */
     redrawBubbles: function() {
+        console.log('redrawBubbles fired');
         if (Mapusaurus.lockState.locked) {
             _.each(Mapusaurus.lockState.outsideBubbles, function(bubble) {
                 Mapusaurus.layers.loanVolume.removeLayer(bubble);
@@ -518,6 +533,7 @@ var Mapusaurus = {
 
     /* Styles/extras for originations layer */
     makeBubble: function(geoProps) {
+        console.log('makeBubble fired');
         var data = geoProps['layer_loanVolume'],
             style = Mapusaurus.minorityContinuousStyle(
                 geoProps, Mapusaurus.bubbleStyle),
@@ -748,6 +764,58 @@ var Mapusaurus = {
         });
     }
 };
+
+// Utility function to get new LAR data based on Action Type parameters using AJAX.
+// Function allows for redraw based on drop-down criteria without page refresh / batch.
+// This could be written as a more modular function later if additional filters
+// and redraw functions are required w/ Filter, FilterVal, and callback as params
+function getLarData(actionTakenVal, callback){
+    var endpoint = '/hmda/volume',
+        counties = _.uniq(countiesPlotted);
+        params;
+
+    // For the viewport, get all of the 5 character geoIDs representing
+    // counties that have already been drawn, push them to our counties array
+    _.each(Mapusaurus.drawn, function(num, key){
+        if( key.length === 5 ){
+            counties.push(key);
+        } else return false;
+    });
+
+    console.log('counties: ', counties);
+    params = {'county': counties};
+
+    // Set the lender parameter based on the current URL param
+    // This could be set as a parameter later if need be
+    if (Mapusaurus.urlParam('lender')) {
+        params['lender'] = Mapusaurus.urlParam('lender');
+    }
+
+    // If our parameter is passed properly, go get data, otherwise
+    // return an error that no parameter is available.
+    if ( actionTakenVal ) {
+        params['action_taken'] = actionTakenVal;
+        $.ajax({
+            url: endpoint, data: params, traditional: true,
+            success: console.log('getLarData request successful')
+        })
+        .done( function(data){
+            console.log('getLarData Data: ', data);
+            callback(data);
+        });
+    } else {
+        return console.log('Error: no action taken value');
+    }
+}
+
+function getLarDone(data){
+    _.each( Mapusaurus.dataStore.tract, function(num, key){
+        console.log('key: ', key);
+        num.layer_loanVolume.volume = data[key].volume;
+        console.log(num, ' updated!');
+    });
+    Mapusaurus.redrawBubbles(Mapusaurus.dataStore.tract);
+}
 
 function setMapHeight() {
     /* Set the map div to the height of the browser window minus the header. */
