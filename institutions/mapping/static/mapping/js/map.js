@@ -134,6 +134,7 @@ var Mapusaurus = {
         $('#action-taken-selector').on('change', function() {
             var action_taken = $('#action-taken-selector').val();
             getLarData( action_taken, getLarDone );
+            window.location.hash ='&action_taken=' + action_taken;
 
         });
         var defaultLabel = $enforceBoundsEl.contents().text();
@@ -412,9 +413,9 @@ var Mapusaurus = {
         if (Mapusaurus.urlParam('lender')) {
             params['lender'] = Mapusaurus.urlParam('lender');
         }
-        if (Mapusaurus.urlParam('action_taken')) {
-            params['action_taken'] = Mapusaurus.urlParam('action_taken');
-        }
+        if ( $('#action-taken-selector').val() ) {
+            params['action_taken'] = $('#action-taken-selector').val();
+        } else params['action_taken'] = 5;
         $.ajax({
             url: '/batch', data: params, traditional: true,
             success: Mapusaurus.makeBatchSuccessFn(endpoints, counties)
@@ -814,10 +815,11 @@ $(document).ready(function() {
     $( window ).resize(function() {
         setMapHeight();
     });
-    var url = window.location.href;
+    var url = window.location.hash;
     if(url.indexOf("action_taken") == -1)
     { 
-        window.location.href+="&action_taken=5"
+        window.location.hash = '&action_taken=5';
+        $('#action-taken-selector').val(5);
     }
     else
     {
