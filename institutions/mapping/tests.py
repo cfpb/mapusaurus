@@ -26,16 +26,16 @@ class ViewTest(TestCase):
 
     def test_home(self):
         resp = self.client.get(reverse('map'))
-        self.assertFalse('lenderinfo' in resp.content)
+        self.assertFalse('lender-info' in resp.content)
         resp = self.client.get(reverse('map'), {'some': 'thing'})
-        self.assertFalse('lenderinfo' in resp.content)
+        self.assertFalse('lender-info' in resp.content)
         resp = self.client.get(reverse('map'), {'lender': 'thing'})
-        self.assertFalse('lenderinfo' in resp.content)
+        self.assertFalse('lender-info' in resp.content)
         resp = self.client.get(reverse('map'), {'lender': '123456789'})
-        self.assertFalse('lenderinfo' in resp.content)
+        self.assertFalse('lender-info' in resp.content)
 
         resp = self.client.get(reverse('map'), {'lender': '122-333'})
-        self.assertTrue('lenderinfo' in resp.content)
+        self.assertTrue('lender-info' in resp.content)
         self.assertTrue('Some Bank' in resp.content)
         self.assertTrue('123 Avenue St.' in resp.content)
         self.assertTrue('1970' in resp.content)
