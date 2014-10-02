@@ -34,7 +34,7 @@ class ViewTest(TestCase):
         resp = self.client.get(reverse('map'), {'lender': '123456789'})
         self.assertFalse('lenderinfo' in resp.content)
 
-        resp = self.client.get(reverse('map'), {'lender': '122333'})
+        resp = self.client.get(reverse('map'), {'lender': '122-333'})
         self.assertTrue('lenderinfo' in resp.content)
         self.assertTrue('Some Bank' in resp.content)
         self.assertTrue('123 Avenue St.' in resp.content)
@@ -56,7 +56,7 @@ class ViewTest(TestCase):
     def test_make_download_url(self):
         self.assertEqual(None, make_download_url(None, None))
         url = make_download_url(self.respondent, None)
-        self.assertTrue('22333' in url)
+        self.assertTrue('22-333' in url)
         self.assertTrue('1' in url)
         self.assertFalse('msamd' in url)
 
