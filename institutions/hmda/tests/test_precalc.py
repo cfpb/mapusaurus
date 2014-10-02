@@ -2,6 +2,8 @@ from django.test import TestCase
 from mock import Mock
 
 from geo.models import Geo
+from hmda.management.commands.calculate_loan_stats import (
+     calculate_median_loans, Command)
 from hmda.models import HMDARecord, LendingStats
 from respondants.models import Institution
 
@@ -74,3 +76,23 @@ class PrecalcTest(TestCase):
         self.non_city_tract1.delete()
         self.non_city_tract2.delete()
         self.metro.delete()
+
+    def test_calculate_median_loans(self):
+        lender_id = str(self.respondent.agency_id) + self.respondent.ffiec_id
+        # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4;             avg: 4, med: 3
+        self.assertEqual(3, calculate_median_loans(lender_id, self.metro))
+        # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4; 7 in 5, 16 in 6; avg:6, med:7
+        self.assertEqual(7, calculate_median_loans(lender_id, None))
+
+    def test_saves_stats(self):
+        lender_id = str(self.respondent.agency_id) + self.respondent.ffiec_id
+        command = Command()
+        command.stdout = Mock()
+        command.handle()
+
+        found = False
+        for stats in LendingStats.objects.all():
+            if stats.geoid_id == '99999' and stats.lender == lender_id:
+                found = True
+                self.assertEqual(stats.median_per_tract, 3)
+        self.assertTrue(found)

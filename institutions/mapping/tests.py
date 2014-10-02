@@ -25,16 +25,16 @@ class ViewTest(TestCase):
 
     def test_home(self):
         resp = self.client.get(reverse('map'))
-        self.assertFalse('lender-info' in resp.content)
+        self.assertFalse('lenderinfo' in resp.content)
         resp = self.client.get(reverse('map'), {'some': 'thing'})
-        self.assertFalse('lender-info' in resp.content)
+        self.assertFalse('lenderinfo' in resp.content)
         resp = self.client.get(reverse('map'), {'lender': 'thing'})
-        self.assertFalse('lender-info' in resp.content)
+        self.assertFalse('lenderinfo' in resp.content)
         resp = self.client.get(reverse('map'), {'lender': '123456789'})
-        self.assertFalse('lender-info' in resp.content)
+        self.assertFalse('lenderinfo' in resp.content)
 
-        resp = self.client.get(reverse('map'), {'lender': '122-333'})
-        self.assertTrue('lender-info' in resp.content)
+        resp = self.client.get(reverse('map'), {'lender': '122333'})
+        self.assertTrue('lenderinfo' in resp.content)
         self.assertTrue('Some Bank' in resp.content)
         self.assertTrue('123 Avenue St.' in resp.content)
         self.assertTrue('1970' in resp.content)
@@ -55,7 +55,7 @@ class ViewTest(TestCase):
     def test_make_download_url(self):
         self.assertEqual(None, make_download_url(None, None))
         url = make_download_url(self.respondent, None)
-        self.assertTrue('22-333' in url)
+        self.assertTrue('22333' in url)
         self.assertTrue('1' in url)
         self.assertFalse('msamd' in url)
 
@@ -77,4 +77,24 @@ class ViewTest(TestCase):
         self.assertTrue('msamd+IN+("98989","78787")' in unquote(url))
 
         div1.delete()
-        div2.delete() 
+        div2.delete()
+
+    @patch('mapping.views.LendingStats')
+    @patch('mapping.views.calculate_median_loans')
+    def test_lookup_median(self, calc, LendingStats):
+        lender_str = str(self.respondent.agency_id) + self.respondent.ffiec_id
+        # No lender
+        self.assertEqual(None, lookup_median(None, None))
+        # All of the US
+        lookup_median(self.respondent, None)
+        self.assertEqual(calc.call_args[0], (lender_str, None))
+        # Entry in the db
+        mock_obj = Mock()
+        mock_obj.median_per_tract = 9898
+        LendingStats.objects.filter.return_value.first.return_value = mock_obj
+        self.assertEqual(9898, lookup_median(self.respondent, self.metro))
+        # No entry in db
+        LendingStats.objects.filter.return_value.first.return_value = None
+        lookup_median(self.respondent, self.metro)
+        self.assertEqual(calc.call_args[0], (lender_str, self.metro))
+        div2.delete()  
