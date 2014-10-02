@@ -5,6 +5,7 @@ from django.test import TestCase
 from mock import Mock, patch
 
 from geo.models import Geo
+from mapping.views import lookup_median, make_download_url
 from mapping.views import make_download_url
 from respondants.models import Institution
 
@@ -77,4 +78,23 @@ class ViewTest(TestCase):
         self.assertTrue('msamd+IN+("98989","78787")' in unquote(url))
 
         div1.delete()
-        div2.delete() 
+        div2.delete()
+
+    @patch('mapping.views.LendingStats')
+    @patch('mapping.views.calculate_median_loans')
+    def test_lookup_median(self, calc, LendingStats):
+        lender_str = str(self.respondent.agency_id) + self.respondent.ffiec_id
+        # No lender
+        self.assertEqual(None, lookup_median(None, None))
+        # All of the US
+        lookup_median(self.respondent, None)
+        self.assertEqual(calc.call_args[0], (lender_str, None))
+        # Entry in the db
+        mock_obj = Mock()
+        mock_obj.median_per_tract = 9898
+        LendingStats.objects.filter.return_value.first.return_value = mock_obj
+        self.assertEqual(9898, lookup_median(self.respondent, self.metro))
+        # No entry in db
+        LendingStats.objects.filter.return_value.first.return_value = None
+        lookup_median(self.respondent, self.metro)
+        self.assertEqual(calc.call_args[0], (lender_str, self.metro))
