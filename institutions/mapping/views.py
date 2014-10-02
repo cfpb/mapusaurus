@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from geo.models import Geo
 from hmda.models import LendingStats
+from hmda.management.commands.calculate_loan_stats import (calculate_median_loans)
 from respondants.models import Institution
 
 
@@ -29,6 +30,14 @@ def map(request):
         if metro:
             context['metro'] = metro
     context['download_url'] = make_download_url(lender, metro)
+    context['median_loans'] = lookup_median(lender, metro) or 0
+    if context['median_loans']:
+        # 50000 is an arbitrary constant; should be altered if we want to
+        # change how big the median circle size is
+        context['scaled_median_loans'] = 50000 / context['median_loans']
+    else:
+        context['scaled_median_loans'] = 0
+
     return render(request, 'map.html', context)
 
 
@@ -56,3 +65,13 @@ def make_download_url(lender, metro):
         base_url = 'https://api.consumerfinance.gov/data/hmda/slice/'
         return base_url + 'hmda_lar.csv?' + query
 
+def lookup_median(lender, metro):
+    """Look up median. If not present, calculate it."""
+    if lender:
+        lender_str = str(lender.agency_id) + lender.ffiec_id
+        if metro:
+            stat = LendingStats.objects.filter(
+                lender=lender_str, geoid=metro.geoid).first()
+            if stat:
+                return stat.median_per_tract
+        return calculate_median_loans(lender_str, metro)

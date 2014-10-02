@@ -486,8 +486,10 @@ var Mapusaurus = {
      * is to increase the area of the circle, but the metric we have is
      * radius, so do the proper algebra */
     hmdaStat: function(tractData) {
-        //Arbitrary number 1500
-        var area = 1500 * tractData['volume'];
+        var $selected = $('#action-taken-selector option:selected'),
+            fieldName = $selected.val(),
+            scale = $selected.data('scale'),
+            area = scale * tractData['volume'];
         //  As Pi is just a constant scalar, we can ignore it in this
         //  calculation: a = pi*r*r   or r = sqrt(a/pi)
         return Math.sqrt(area);
