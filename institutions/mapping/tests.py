@@ -98,4 +98,3 @@ class ViewTest(TestCase):
         LendingStats.objects.filter.return_value.first.return_value = None
         lookup_median(self.respondent, self.metro)
         self.assertEqual(calc.call_args[0], (lender_str, self.metro))
-        div2.delete()  
