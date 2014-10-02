@@ -132,7 +132,19 @@ var Mapusaurus = {
             Mapusaurus.redrawBubbles();
         });
         $('#action-taken-selector').on('change', function() {
-            var action_taken = $('#action-taken-selector').val();
+            var action_taken_value = $('#action-taken-selector').val();
+            var action_taken; 
+            switch (action_taken_value) {
+                case "all-apps-5": 
+                    action_taken = [1,2,3,4,5];
+                    break; 
+                case "all-apps-6": 
+                    action_taken = [1,2,3,4,5,6];
+                    break; 
+                case "originations-1": 
+                    action_taken = [1];
+                    break; 
+            }
             getLarData( action_taken, getLarDone );
 
         });
@@ -817,14 +829,7 @@ $(document).ready(function() {
         setMapHeight();
     });
     var url = window.location.href;
-    if(url.indexOf("action_taken") == -1)
-    { 
-        window.location.href+="&action_taken=5"
-    }
-    else
-    {
-        $('#action-taken-selector').val(Mapusaurus.urlParam('action_taken'));
-    }
+    
     $('#take-screenshot').click(function(ev) {
         ev.preventDefault();
         vex.dialog.alert({
