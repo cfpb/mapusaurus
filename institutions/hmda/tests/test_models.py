@@ -18,7 +18,7 @@ class HMDARecordTest(TestCase):
             purchaser_type='1', rate_spread='0123', hoepa_status='1', lien_status='1',
             sequence_number='1', population='1', minority_population='1',
             ffieic_median_family_income='1000', tract_to_msamd_income='1000',
-            number_of_owner_occuied_units='1', number_of_1_to_4_family_units='1',
+            number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
             application_date_indicator=1)
         record.geoid_id = '11222333000'
         record.save()
@@ -36,7 +36,7 @@ class HMDARecordTest(TestCase):
             purchaser_type='1', rate_spread='0123', hoepa_status='1', lien_status='1',
             sequence_number='1', population='1', minority_population='1',
             ffieic_median_family_income='1000', tract_to_msamd_income='1000',
-            number_of_owner_occuied_units='1', number_of_1_to_4_family_units='1',
+            number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
             application_date_indicator=1)
         record.auto_fields()
         self.assertEqual(record.lender, '201-345-789')
