@@ -55,8 +55,8 @@ class PrecalcTest(TestCase):
                 number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
                 application_date_indicator=1)
 
-                record.geoid_id = geoid
-                return record; 
+            record.geoid_id = geoid
+            return record; 
 
         self.hmdas = []
         self.hmdas.append(mkrecord(self.city_tract1, self.respondent.ffiec_id, str(self.respondent.agency_id)))

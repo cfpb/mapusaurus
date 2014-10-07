@@ -26,9 +26,9 @@ class ViewsTest(TestCase):
 
         def mkrecord(action_taken, agency_code, county_code, geoid):
             record = HMDARecord(
-                as_of_year=2014, respondent_id='01-345-789', agency_code=agency_code,
+                as_of_year=2014, respondent_id='1111111111', agency_code=agency_code,
                 loan_type=1, property_type=1, loan_purpose=1, owner_occupancy=1,
-                loan_amount_000s=55, preapproval='1', action_taken=action_taken,
+                loan_amount_000s=222, preapproval='1', action_taken=action_taken,
                 msamd='01234', state_code='11', county_code=county_code,
                 census_tract_number ='01234', applicant_ethnicity='1',
                 co_applicant_ethnicity='1', applicant_race_1='1', co_applicant_race_1='1',
