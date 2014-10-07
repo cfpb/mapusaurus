@@ -40,38 +40,42 @@ class PrecalcTest(TestCase):
             name='City', geoid='99999', geo_type=Geo.METRO_TYPE,
             **tract_params)
         
-        def mkrecord(geoid, respondent_id, agency_code):
-            record = HMDARecord(
-                as_of_year=2014, respondent_id=respondent_id, agency_code=agency_code,
-                loan_type=1, property_type=1, loan_purpose=1, owner_occupancy=1,
-                loan_amount_000s=55, preapproval='1', action_taken=1,
-                msamd='01234', state_code='11', county_code='1i1',
-                census_tract_number ='01234', applicant_ethnicity='1',
-                co_applicant_ethnicity='1', applicant_race_1='1', co_applicant_race_1='1',
-                applicant_sex='1', co_applicant_sex='1', applicant_income_000s='1000',
-                purchaser_type='1', rate_spread='0123', hoepa_status='1', lien_status='1',
-                sequence_number='1', population='1', minority_population='1',
-                ffieic_median_family_income='1000', tract_to_msamd_income='1000',
-                number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
-                application_date_indicator=1)
 
-            record.geoid_id = geoid
-            return record; 
-
+        hmda_params = {
+            'as_of_year': 2010, 'respondent_id': self.respondent.ffiec_id,
+            'agency_code': str(self.respondent.agency_id), 'loan_type': 1,
+            'property_type': 1, 'loan_purpose': 1, 'owner_occupancy': 1,
+            'loan_amount_000s': 100, 'preapproval': '1', 'action_taken': 1, 
+            'msamd': '01234', 'state_code': '11', 'county_code': '111',
+            'census_tract_number': '01234', 'applicant_ethnicity': '1',
+            'co_applicant_ethnicity': '1', 'applicant_race_1':'1', 'co_applicant_race_1':'1',
+            'applicant_sex': '1', 'co_applicant_sex': '1', 'applicant_income_000s': '1000',
+            'purchaser_type': '1', 'rate_spread': '0123', 'hoepa_status': '1', 'lien_status': '1',
+            'sequence_number': '1', 'population': '1', 'minority_population': '1',
+            'ffieic_median_family_income' :'1000', 'tract_to_msamd_income': '1000',
+            'number_of_owner_occupied_units': '1', 'number_of_1_to_4_family_units': '1',
+            'application_date_indicator':1}
         self.hmdas = []
-        self.hmdas.append(mkrecord(self.city_tract1, self.respondent.ffiec_id, str(self.respondent.agency_id)))
+        self.hmdas.append(HMDARecord.objects.create(
+            geoid=self.city_tract1, **hmda_params))
         for i in range(3):
-            self.hmdas.append(append(mkrecord(self.city_tract2, self.respondent.ffiec_id, str(self.respondent.agency_id)))
+            self.hmdas.append(HMDARecord.objects.create(
+                geoid=self.city_tract2, **hmda_params))
         for i in range(8):
-            self.hmdas.append(mkrecord(self.city_tract3, self.respondent.ffiec_id, str(self.respondent.agency_id)))        
+            self.hmdas.append(HMDARecord.objects.create(
+                geoid=self.city_tract3, **hmda_params))
         for i in range(7):
-            self.hmdas.append(mkrecord(self.non_city_tract1, self.respondent.ffiec_id, str(self.respondent.agency_id)))
+            self.hmdas.append(HMDARecord.objects.create(
+                geoid=self.non_city_tract1, **hmda_params))
         for i in range(11):
-            self.hmdas.append(mkrecord(self.non_city_tract1, self.respondent.ffiec_id, str(self.respondent.agency_id)))
- 
+            self.hmdas.append(HMDARecord.objects.create(
+                geoid=self.non_city_tract2, **hmda_params))
+
+        hmda_params['respondent_id'] = 'other'
         # these should not affect the results, since they are another lender
         for i in range(3):
-            self.hmdas.append(mkrecord(geoid=self.city_tract2, 'other', str(self.respondent.agency_id)))
+            self.hmdas.append(HMDARecord.objects.create(
+                geoid=self.city_tract2, **hmda_params))
 
     def tearDown(self):
         for hmda in self.hmdas:
