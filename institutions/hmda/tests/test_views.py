@@ -24,11 +24,11 @@ class ViewsTest(TestCase):
         stats.geoid_id = '1222233300'
         stats.save()
 
-        def mkrecord(action_taken, agency_code, countyfp, geoid):
+        def mkrecord(action_taken, agency_code, county_code, geoid):
             record = HMDARecord(
                 as_of_year=2014, respondent_id='1111111111',
                 agency_code=agency_code, loan_amount_000s=222,
-                action_taken=action_taken, statefp='11', countyfp=countyfp)
+                action_taken=action_taken, state_code='11', county_code=countyfp)
             record.geoid_id = geoid
             record.save()
 

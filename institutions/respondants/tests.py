@@ -285,8 +285,8 @@ class InstitutionIndexTests(TestCase):
             zip_code=self.zipcode)
         self.hmda = HMDARecord.objects.create(
             as_of_year=2005, respondent_id='9876543210', agency_code='9',
-            loan_amount_000s=100, action_taken=4, statefp='00',
-            countyfp='000', lender='998765433210', geoid=Geo.objects.all()[0])
+            loan_amount_000s=100, action_taken=4, state_code='00',
+            county_code='000', lender='998765433210', geoid=Geo.objects.all()[0])
 
     def tearDown(self):
         self.hmda.delete()

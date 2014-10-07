@@ -42,8 +42,8 @@ class PrecalcTest(TestCase):
         hmda_params = {
             'as_of_year': 2010, 'respondent_id': self.respondent.ffiec_id,
             'agency_code': str(self.respondent.agency_id),
-            'loan_amount_000s': 100, 'action_taken': 1, 'statefp': '11',
-            'countyfp': '111'}
+            'loan_amount_000s': 100, 'action_taken': 1, 'state_code': '11',
+            'county_code': '111'}
         self.hmdas = []
         self.hmdas.append(HMDARecord.objects.create(
             geoid=self.city_tract1, **hmda_params))
