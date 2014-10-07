@@ -39,8 +39,8 @@ class ViewsTest(TestCase):
                 number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
                 application_date_indicator=1)
         
-        record.geoid_id = geoid
-        record.save()
+                record.geoid_id = geoid
+                record.save()
 
         mkrecord(1, '1', '222', '1122233300')
         mkrecord(1, '1', '222', '1122233300')
