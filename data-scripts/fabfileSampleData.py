@@ -11,27 +11,27 @@ ffiec = "http://www.ffiec.gov/hmdarawdata/OTHER/"
 def load_transmittal(working_dir):
     """Download and run the load_transmittal command"""
     with lcd(working_dir):
-        local("wget %s2014HMDAInstitutionRecords.zip" % ffiec)
-        local("unzip 2014HMDAInstitutionRecords.zip")
-        local("rm 2014HMDAInstitutionRecords.zip")
+        local("wget %s2012HMDAInstitutionRecords.zip" % ffiec)
+        local("unzip 2012HMDAInstitutionRecords.zip")
+        local("rm 2012HMDAInstitutionRecords.zip")
     with lcd("../institutions"):
         local("python manage.py load_transmittal "
-              + working_dir + "/2014HMDAInstitutionRecords.txt")
+              + working_dir + "/2012HMDAInstitutionRecords.txt")
     with lcd(working_dir):
-        local("rm 2014HMDAInstitutionRecords.txt")
+        local("rm 2012HMDAInstitutionRecords.txt")
 
 
 def load_reporter_panel(working_dir):
     """Download and run the load_reporter_panel command"""
     with lcd(working_dir):
-        local("wget %s2014HMDAReporterPanel.zip" % ffiec)
-        local("unzip 2014HMDAReporterPanel.zip")
-        local("rm 2014HMDAReporterPanel.zip")
+        local("wget %s2012HMDAReporterPanel.zip" % ffiec)
+        local("unzip 2012HMDAReporterPanel.zip")
+        local("rm 2012HMDAReporterPanel.zip")
     with lcd("../institutions"):
         local("python manage.py load_reporter_panel "
-              + working_dir + "/2014HMDAReporterPanel.dat")
+              + working_dir + "/2012HMDAReporterPanel.dat")
     with lcd(working_dir):
-        local("rm 2014HMDAReporterPanel.dat")
+        local("rm 2012HMDAReporterPanel.dat")
 
 
 def load_respondants(working_dir):
@@ -44,9 +44,9 @@ def load_respondants(working_dir):
 
 def load_state_shapefiles(working_dir):
     """For all states, download shape files and load them into the db"""
-    base_url = "ftp://ftp2.census.gov/geo/tiger/TIGER2014/TRACT/"
-    file_tpl = "tl_2014_%02d_tract.zip"
-	codes = [6, 12, 13, 17]
+    base_url = "ftp://ftp2.census.gov/geo/tiger/TIGER2012/TRACT/"
+    file_tpl = "tl_2012_%02d_tract.zip"
+    codes = [6, 12, 13, 17]
     for i in codes:
         filename = file_tpl % i
         with lcd(working_dir):
@@ -66,9 +66,9 @@ def load_state_shapefiles(working_dir):
 def load_other_geos(working_dir):
     """In addition to tracts, we need to load counties, metros, and more."""
     for geo_type in ('county', 'cbsa', 'metdiv'):
-        filename = "tl_2014_us_" + geo_type + ".zip"
+        filename = "tl_2012_us_" + geo_type + ".zip"
         with lcd(working_dir):
-            local("wget ftp://ftp2.census.gov/geo/tiger/TIGER2014/"
+            local("wget ftp://ftp2.census.gov/geo/tiger/TIGER2012/"
                   + geo_type.upper() + "/" + filename)
             local("unzip " + filename)
         with lcd("../institutions"):
@@ -101,7 +101,7 @@ def load_summary_ones(working_dir):
 def load_hmda(working_dir):
     """Download HMDA data and then load it into the db"""
     base_url = "http://www.ffiec.gov/hmdarawdata/LAR/National/"
-    filename = "2014HMDALAR - National.zip"
+    filename = "2012HMDALAR - National.zip"
     with lcd(working_dir):
         local("wget '" + base_url + filename + "'")
         local("unzip '" + filename + "'")
