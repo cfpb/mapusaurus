@@ -209,6 +209,8 @@ var Mapusaurus = {
         });
         Mapusaurus.updateDataWithoutGeos(tracts);
         Mapusaurus.fetchMissingStats(tracts, /* force */ tilesToLoad === 0);
+        var action_taken = $('#action-taken-selector').val();
+        getLarData( action_taken, getLarDone );
         
     },
     /* Keep expected functionality with double clicking */
@@ -817,8 +819,11 @@ $(document).ready(function() {
     });
 
     // Hash parameters handler - action_taken + coordinates + etc
-    if ( !_.isEmpty( getHashParams ) ) {
-        $('action-taken-selector').val( getHashParams.action_taken.values );
+    var currentParams = getHashParams();
+    if ( !_.isEmpty( currentParams ) ) {
+        $('#action-taken-selector').val( currentParams.action_taken.values );
+        var action_taken = $('#action-taken-selector').val();
+        getLarData( action_taken, getLarDone );
     }
 
     $('#take-screenshot').click(function(ev) {
