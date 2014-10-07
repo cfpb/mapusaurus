@@ -39,11 +39,22 @@ class PrecalcTest(TestCase):
         self.metro = Geo.objects.create(
             name='City', geoid='99999', geo_type=Geo.METRO_TYPE,
             **tract_params)
+        
+
         hmda_params = {
             'as_of_year': 2010, 'respondent_id': self.respondent.ffiec_id,
-            'agency_code': str(self.respondent.agency_id),
-            'loan_amount_000s': 100, 'action_taken': 1, 'statefp': '11',
-            'countyfp': '111'}
+            'agency_code': str(self.respondent.agency_id), 'loan_type': 1,
+            'property_type': 1, 'loan_purpose': 1, 'owner_occupancy': 1,
+            'loan_amount_000s': 100, 'preapproval': '1', 'action_taken': 1, 
+            'msamd': '01234', 'state_code': '11', 'county_code': '111',
+            'census_tract_number': '01234', 'applicant_ethnicity': '1',
+            'co_applicant_ethnicity': '1', 'applicant_race_1':'1', 'co_applicant_race_1':'1',
+            'applicant_sex': '1', 'co_applicant_sex': '1', 'applicant_income_000s': '1000',
+            'purchaser_type': '1', 'rate_spread': '0123', 'hoepa_status': '1', 'lien_status': '1',
+            'sequence_number': '1', 'population': '1', 'minority_population': '1',
+            'ffieic_median_family_income' :'1000', 'tract_to_msamd_income': '1000',
+            'number_of_owner_occupied_units': '1', 'number_of_1_to_4_family_units': '1',
+            'application_date_indicator':1}
         self.hmdas = []
         self.hmdas.append(HMDARecord.objects.create(
             geoid=self.city_tract1, **hmda_params))

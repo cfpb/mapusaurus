@@ -24,11 +24,21 @@ class ViewsTest(TestCase):
         stats.geoid_id = '1222233300'
         stats.save()
 
-        def mkrecord(action_taken, agency_code, countyfp, geoid):
+        def mkrecord(action_taken, agency_code, county_code, geoid):
             record = HMDARecord(
-                as_of_year=2014, respondent_id='1111111111',
-                agency_code=agency_code, loan_amount_000s=222,
-                action_taken=action_taken, statefp='11', countyfp=countyfp)
+                as_of_year=2014, respondent_id='1111111111', agency_code=agency_code,
+                loan_type=1, property_type=1, loan_purpose=1, owner_occupancy=1,
+                loan_amount_000s=222, preapproval='1', action_taken=action_taken,
+                msamd='01234', state_code='11', county_code=county_code,
+                census_tract_number ='01234', applicant_ethnicity='1',
+                co_applicant_ethnicity='1', applicant_race_1='1', co_applicant_race_1='1',
+                applicant_sex='1', co_applicant_sex='1', applicant_income_000s='1000',
+                purchaser_type='1', rate_spread='0123', hoepa_status='1', lien_status='1',
+                sequence_number='1', population='1', minority_population='1',
+                ffieic_median_family_income='1000', tract_to_msamd_income='1000',
+                number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
+                application_date_indicator=1)
+        
             record.geoid_id = geoid
             record.save()
 
