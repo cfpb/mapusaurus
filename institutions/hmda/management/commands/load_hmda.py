@@ -22,8 +22,8 @@ class Command(BaseCommand):
         self.stdout.write("Filtering by states "
                           + ", ".join(list(sorted(geo_states))))
         known_hmda = set(
-            row['state_code'] for row in
-            HMDARecord.objects.values('state_code').distinct())
+            row['statefp'] for row in
+            HMDARecord.objects.values('statefp').distinct())
         self.stdout.write("Already have data for "
                           + ", ".join(list(sorted(known_hmda))))
 
@@ -41,7 +41,7 @@ class Command(BaseCommand):
                     property_type=row[4], loan_purpose=int(row[5]), 
                     owner_occupancy=int(row[6]), loan_amount_000s=int(row[7]),
                     preapproval=row[8], action_taken=int(row[9]), 
-                    msamd=row[10], state_code=row[11], county_code=row[12], 
+                    msamd=row[10], statefp=row[11], countyfp=row[12], 
                     census_tract_number=row[13], applicant_ethnicity=row[14],
                     co_applicant_ethnicity=row[15], applicant_race_1=row[16],
                     applicant_race_2=row[17], applicant_race_3=row[18],

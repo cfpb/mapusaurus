@@ -22,8 +22,8 @@ class Migration(SchemaMigration):
             ('preapproval', self.gf('django.db.models.fields.CharField')(max_length=1)),
             ('action_taken', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
             ('msamd', self.gf('django.db.models.fields.CharField')(max_length=5)),
-            ('state_code', self.gf('django.db.models.fields.CharField')(max_length=2, db_index=True)),
-            ('county_code', self.gf('django.db.models.fields.CharField')(max_length=3)),
+            ('statefp', self.gf('django.db.models.fields.CharField')(max_length=2, db_index=True)),
+            ('countyfp', self.gf('django.db.models.fields.CharField')(max_length=3)),
             ('census_tract_number', self.gf('django.db.models.fields.CharField')(max_length=7)),
             ('applicant_ethnicity', self.gf('django.db.models.fields.CharField')(max_length=1)),
             ('co_applicant_ethnicity', self.gf('django.db.models.fields.CharField')(max_length=1)),
@@ -61,14 +61,14 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'hmda', ['HMDARecord'])
 
-        # Adding index on 'HMDARecord', fields ['state_code', 'county_code']
-        db.create_index(u'hmda_hmdarecord', ['state_code', 'county_code'])
+        # Adding index on 'HMDARecord', fields ['statefp', 'countyfp']
+        db.create_index(u'hmda_hmdarecord', ['statefp', 'countyfp'])
 
-        # Adding index on 'HMDARecord', fields ['state_code', 'county_code', 'lender']
-        db.create_index(u'hmda_hmdarecord', ['state_code', 'county_code', 'lender'])
+        # Adding index on 'HMDARecord', fields ['statefp', 'countyfp', 'lender']
+        db.create_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'lender'])
 
-        # Adding index on 'HMDARecord', fields ['state_code', 'county_code', 'action_taken', 'lender']
-        db.create_index(u'hmda_hmdarecord', ['state_code', 'county_code', 'action_taken', 'lender'])
+        # Adding index on 'HMDARecord', fields ['statefp', 'countyfp', 'action_taken', 'lender']
+        db.create_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'action_taken', 'lender'])
 
         # Adding index on 'HMDARecord', fields ['geoid', 'lender']
         db.create_index(u'hmda_hmdarecord', ['geoid_id', 'lender'])
@@ -99,14 +99,14 @@ class Migration(SchemaMigration):
         # Removing index on 'HMDARecord', fields ['geoid', 'lender']
         db.delete_index(u'hmda_hmdarecord', ['geoid_id', 'lender'])
 
-        # Removing index on 'HMDARecord', fields ['state_code', 'county_code', 'action_taken', 'lender']
-        db.delete_index(u'hmda_hmdarecord', ['state_code', 'county_code', 'action_taken', 'lender'])
+        # Removing index on 'HMDARecord', fields ['statefp', 'countyfp', 'action_taken', 'lender']
+        db.delete_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'action_taken', 'lender'])
 
-        # Removing index on 'HMDARecord', fields ['state_code', 'county_code', 'lender']
-        db.delete_index(u'hmda_hmdarecord', ['state_code', 'county_code', 'lender'])
+        # Removing index on 'HMDARecord', fields ['statefp', 'countyfp', 'lender']
+        db.delete_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'lender'])
 
-        # Removing index on 'HMDARecord', fields ['state_code', 'county_code']
-        db.delete_index(u'hmda_hmdarecord', ['state_code', 'county_code'])
+        # Removing index on 'HMDARecord', fields ['statefp', 'countyfp']
+        db.delete_index(u'hmda_hmdarecord', ['statefp', 'countyfp'])
 
         # Deleting model 'HMDARecord'
         db.delete_table(u'hmda_hmdarecord')
@@ -136,7 +136,7 @@ class Migration(SchemaMigration):
             'tract': ('django.db.models.fields.CharField', [], {'max_length': '6', 'null': 'True'})
         },
         u'hmda.hmdarecord': {
-            'Meta': {'object_name': 'HMDARecord', 'index_together': "[('state_code', 'county_code'), ('state_code', 'county_code', 'lender'), ('state_code', 'county_code', 'action_taken', 'lender'), ('geoid', 'lender')]"},
+            'Meta': {'object_name': 'HMDARecord', 'index_together': "[('statefp', 'countyfp'), ('statefp', 'countyfp', 'lender'), ('statefp', 'countyfp', 'action_taken', 'lender'), ('geoid', 'lender')]"},
             'action_taken': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'agency_code': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             'applicant_ethnicity': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
@@ -157,7 +157,7 @@ class Migration(SchemaMigration):
             'co_applicant_race_4': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True', 'blank': 'True'}),
             'co_applicant_race_5': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True', 'blank': 'True'}),
             'co_applicant_sex': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'county_code': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
+            'countyfp': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
             'denial_reason_1': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True', 'blank': 'True'}),
             'denial_reason_2': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True', 'blank': 'True'}),
             'denial_reason_3': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True', 'blank': 'True'}),
@@ -183,7 +183,7 @@ class Migration(SchemaMigration):
             'rate_spread': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
             'respondent_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'sequence_number': ('django.db.models.fields.CharField', [], {'max_length': '7'}),
-            'state_code': ('django.db.models.fields.CharField', [], {'max_length': '2', 'db_index': 'True'}),
+            'statefp': ('django.db.models.fields.CharField', [], {'max_length': '2', 'db_index': 'True'}),
             'tract_to_msamd_income': ('django.db.models.fields.CharField', [], {'max_length': '6'})
         },
         u'hmda.lendingstats': {

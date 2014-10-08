@@ -46,7 +46,7 @@ class PrecalcTest(TestCase):
             'agency_code': str(self.respondent.agency_id), 'loan_type': 1,
             'property_type': 1, 'loan_purpose': 1, 'owner_occupancy': 1,
             'loan_amount_000s': 100, 'preapproval': '1', 'action_taken': 1, 
-            'msamd': '01234', 'state_code': '11', 'county_code': '111',
+            'msamd': '01234', 'statefp': '11', 'countyfp': '111',
             'census_tract_number': '01234', 'applicant_ethnicity': '1',
             'co_applicant_ethnicity': '1', 'applicant_race_1':'1', 'co_applicant_race_1':'1',
             'applicant_sex': '1', 'co_applicant_sex': '1', 'applicant_income_000s': '1000',

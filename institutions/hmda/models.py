@@ -143,8 +143,8 @@ class HMDARecord(models.Model):
     preapproval = models.CharField(choices=PREAPROVAL_CHOICES, max_length=1, help_text="A code representing the pre-approval status of the application.")
     action_taken = models.PositiveIntegerField(choices=ACTION_TAKEN_CHOICES, db_index=True, help_text="A code representing the action taken on the loan or application, such as whether an application was approved or denied. Loan originated means the application resulted in a mortgage. Loan purchased means that the lender bought the loan on the secondary market.")
     msamd = models.CharField(max_length=5, help_text="A code representing the Metropolitan Statistical Area/Metropolitian Division (MSA/MD) the property is located in. An MSA is a region with relatively high population density at its core (usually a single large city) and close economic ties throughout. Larger MSAs are divided into MDs.")
-    state_code = models.CharField(max_length=2, db_index=True, help_text="A two-digit code representing the state the property is located in.")
-    county_code = models.CharField(max_length=3, help_text="A three-digit code representing the county of the property. This code is only unique when combined with the state code.")
+    statefp = models.CharField(max_length=2, db_index=True, help_text="A two-digit code representing the state the property is located in.")
+    countyfp = models.CharField(max_length=3, help_text="A three-digit code representing the county of the property. This code is only unique when combined with the state code.")
     census_tract_number = models.CharField(max_length=7, help_text="The number of the census tract for the property. This code is only unique when combined with the state and county codes.")
     applicant_ethnicity = models.CharField(choices=ETHNICITY_CHOICES, max_length=1, help_text="A code representing the ethnicity of the primary applicant.")
     co_applicant_ethnicity = models.CharField(choices=ETHNICITY_CHOICES, max_length=1, help_text="A code representing the ethnicity of the co-applicant.")
@@ -183,9 +183,9 @@ class HMDARecord(models.Model):
                               db_index=True)
 
     class Meta:
-        index_together = [("state_code", "county_code"),
-                          ("state_code", "county_code", "lender"),
-                          ("state_code", "county_code", "action_taken", "lender"),
+        index_together = [("statefp", "countyfp"),
+                          ("statefp", "countyfp", "lender"),
+                          ("statefp", "countyfp", "action_taken", "lender"),
                           ("geoid", "lender")]
 
     def auto_fields(self):
