@@ -44,8 +44,8 @@ def load_respondants(working_dir):
 
 def load_state_shapefiles(working_dir):
     """For all states, download shape files and load them into the db"""
-    base_url = "ftp://ftp2.census.gov/geo/tiger/TIGER2012/TRACT/"
-    file_tpl = "tl_2012_%02d_tract.zip"
+    base_url = "ftp://ftp2.census.gov/geo/tiger/TIGER2013/TRACT/"
+    file_tpl = "tl_2013_%02d_tract.zip"
     codes = [6, 12, 13, 17]
     for i in codes:
         filename = file_tpl % i
@@ -66,9 +66,9 @@ def load_state_shapefiles(working_dir):
 def load_other_geos(working_dir):
     """In addition to tracts, we need to load counties, metros, and more."""
     for geo_type in ('county', 'cbsa', 'metdiv'):
-        filename = "tl_2012_us_" + geo_type + ".zip"
+        filename = "tl_2013_us_" + geo_type + ".zip"
         with lcd(working_dir):
-            local("wget ftp://ftp2.census.gov/geo/tiger/TIGER2012/"
+            local("wget ftp://ftp2.census.gov/geo/tiger/TIGER2013/"
                   + geo_type.upper() + "/" + filename)
             local("unzip " + filename)
         with lcd("../institutions"):
