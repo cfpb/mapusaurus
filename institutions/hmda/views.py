@@ -21,7 +21,6 @@ def loan_originations(request_dict):
     counties = request_dict.get('county', [])
     lender = request_dict.get('lender', [])
     action_taken = request_dict.get('action_taken', [])
-    import pdb; pdb.set_trace()
     if counties and all(len(c) == 5 for c in counties) and lender:
         query = HMDARecord.objects.filter(
             # actions 7-8 are preapprovals to ignore
