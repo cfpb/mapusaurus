@@ -46,7 +46,7 @@ def load_state_shapefiles(working_dir):
     """For all states, download shape files and load them into the db"""
     base_url = "ftp://ftp2.census.gov/geo/tiger/TIGER2013/TRACT/"
     file_tpl = "tl_2013_%02d_tract.zip"
-    codes = [6, 12, 13, 17]
+    codes = ["06", "12", "13", "17"]
     for i in codes:
         filename = file_tpl % i
         with lcd(working_dir):
