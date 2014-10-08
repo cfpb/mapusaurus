@@ -37,8 +37,27 @@ class Command(BaseCommand):
                     self.stdout.write("Record %d 000,000" % (i // 1000000))
                 record = HMDARecord(
                     as_of_year=int(row[0]), respondent_id=row[1],
-                    agency_code=row[2], loan_amount_000s=int(row[7]),
-                    action_taken=row[9], statefp=row[11], countyfp=row[12])
+                    agency_code=row[2], loan_type=int(row[3]), 
+                    property_type=row[4], loan_purpose=int(row[5]), 
+                    owner_occupancy=int(row[6]), loan_amount_000s=int(row[7]),
+                    preapproval=row[8], action_taken=int(row[9]), 
+                    msamd=row[10], statefp=row[11], countyfp=row[12], 
+                    census_tract_number=row[13], applicant_ethnicity=row[14],
+                    co_applicant_ethnicity=row[15], applicant_race_1=row[16],
+                    applicant_race_2=row[17], applicant_race_3=row[18],
+                    applicant_race_4=row[19], applicant_race_5=row[20],
+                    co_applicant_race_1=row[21], co_applicant_race_2=row[22],
+                    co_applicant_race_3=row[23], co_applicant_race_4=row[24],
+                    co_applicant_race_5=row[25], applicant_sex=int(row[26]), 
+                    co_applicant_sex=int(row[27]), applicant_income_000s=row[28],
+                    purchaser_type=row[29], denial_reason_1=row[30],
+                    denial_reason_2=row[31], denial_reason_3=row[32],
+                    rate_spread=row[33], hoepa_status=row[34],
+                    lien_status=row[35], edit_status=row[36],
+                    sequence_number=row[37], population=row[38],
+                    minority_population=row[39], ffieic_median_family_income=row[40],
+                    tract_to_msamd_income=row[41], number_of_owner_occupied_units=row[42], 
+                    number_of_1_to_4_family_units=row[43], application_date_indicator=row[44]) 
                 censustract = row[11] + row[12] + row[13].replace('.', '')
                 record.geoid_id = errors.in_2010.get(censustract, censustract)
                 record.auto_fields()
