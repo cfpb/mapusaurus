@@ -136,18 +136,8 @@ var Mapusaurus = {
         });
         $('#action-taken-selector').on('change', function() {
             var action_taken_value = $('#action-taken-selector').val();
-            var action_taken; 
-            switch (action_taken_value) {
-                case "all-apps-5": 
-                    action_taken = [1,2,3,4,5];
-                    break; 
-                case "all-apps-6": 
-                    action_taken = [1,2,3,4,5,6];
-                    break; 
-                case "originations-1": 
-                    action_taken = [1];
-                    break; 
-            }
+            var action_taken = getActionTaken( action_taken_value );
+            //window.location.hash ='&action_taken=' + action_taken_value;
             getLarData( action_taken, getLarDone );
 
         });
@@ -223,7 +213,11 @@ var Mapusaurus = {
         });
         Mapusaurus.updateDataWithoutGeos(tracts);
         Mapusaurus.fetchMissingStats(tracts, /* force */ tilesToLoad === 0);
-        
+        var action_taken_value = $('#action-taken-selector').val();
+        var action_taken = getActionTaken( action_taken_value );
+
+        //window.location.hash ='&action_taken=' + action_taken_value;
+        getLarData( action_taken, getLarDone );      
     },
     /* Keep expected functionality with double clicking */
     dblclickToZoom: function(feature, layer) {
@@ -836,10 +830,10 @@ $(document).ready(function() {
     });
 
     // Hash parameters handler - action_taken + coordinates + etc
-    var currentParams = getHashParams();
-    if ( !_.isEmpty( currentParams ) ) {
-        $('#action-taken-selector').val( currentParams.action_taken.values );
-    }
+    // var currentParams = getHashParams();
+    // if ( !_.isEmpty( currentParams ) ) {
+    //     $('#action-taken-selector').val( currentParams.action_taken.values );
+    // }
 
     $('#take-screenshot').click(function(ev) {
         ev.preventDefault();
@@ -853,6 +847,23 @@ $(document).ready(function() {
 });
 
 /* Parameter helper functions */
+function getActionTaken( value ){
+    var actionTaken;
+
+    switch (value) {
+        case 'all-apps-5': 
+            actionTaken = [1,2,3,4,5];
+            break; 
+        case 'all-apps-6': 
+            actionTaken = [1,2,3,4,5,6];
+            break; 
+        case 'originations-1': 
+            actionTaken = [1];
+            break; 
+    }
+    return actionTaken;
+}
+
 
 // Create a parameter from scratch (automatically builds object)
 function addParam( paramName, values ){
