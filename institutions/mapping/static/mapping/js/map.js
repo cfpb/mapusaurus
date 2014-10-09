@@ -854,70 +854,69 @@ $(document).ready(function() {
 
 /* Parameter helper functions */
 
-    // Create a parameter from scratch (automatically builds object)
-    function addParam( paramName, values ){
-        var params = getHashParams();
-        params[paramName].values = values;
-        params[paramName].comparator = '=';
-        updateUrlHash(params);
+// Create a parameter from scratch (automatically builds object)
+function addParam( paramName, values ){
+    var params = getHashParams();
+    params[paramName].values = values;
+    params[paramName].comparator = '=';
+    updateUrlHash(params);
+}
+
+// Return the hash parameters from the current URL. [source](http://goo.gl/mebsOI)
+function getHashParams(){
+
+    var hashParams = {};
+    var e,
+        a = /\+/g,  // Regex for replacing addition symbol with a space
+        r = /([^!&;=<>]+)(!?[=><]?)([^&;]*)/g,
+        d = function (s) { return decodeURIComponent(s.replace(a, ' ')); },
+        q = window.location.hash.substring(1).replace(/^!\/?/, '');
+
+    while (e = r.exec(q)) {
+      hashParams[d(e[1])] = {
+        values: d(e[3]),
+        comparator: d(e[2])
+      };
     }
 
-    // Return the hash parameters from the current URL. [source](http://goo.gl/mebsOI)
-    function getHashParams(){
+    return hashParams;
 
-        var hashParams = {};
-        var e,
-            a = /\+/g,  // Regex for replacing addition symbol with a space
-            r = /([^!&;=<>]+)(!?[=><]?)([^&;]*)/g,
-            d = function (s) { return decodeURIComponent(s.replace(a, ' ')); },
-            q = window.location.hash.substring(1).replace(/^!\/?/, '');
+  }
 
-        while (e = r.exec(q)) {
-          hashParams[d(e[1])] = {
-            values: d(e[3]),
-            comparator: d(e[2])
-          };
-        }
+// The `generateUrlHash` method builds and returns a URL hash from a set of object parameters
+function updateUrlHash(params) {
+    var newHash,
+    hashParams = [];
 
-        return hashParams;
+    // Loop through params, stringify them and push them into the temp array.
+    function buildHashParam( param, name ) {
+        //console.log('name: ', name);
+        //console.log("param: ", param);
 
-      }
-
-    // The `generateUrlHash` method builds and returns a URL hash from a set of object parameters
-    function updateUrlHash(params) {
-        var newHash,
-        hashParams = [];
-
-        // Loop through params, stringify them and push them into the temp array.
-        function buildHashParam( param, name ) {
-            //console.log('name: ', name);
-            //console.log("param: ", param);
-
-          hashParams.push( name + '=' + param.values );
-
-        }
-
-        _.forEach( params, buildHashParam );
-        //console.log('Hash Params: ', hashParams);
-        newHash = '&' + hashParams.join('&');
-        window.location.hash = newHash;
+      hashParams.push( name + '=' + param.values );
 
     }
 
-    // removes a specific parameter from the hash 
-    function removeParam (params, removedParam) {
-        //using a copy of the params means that the select obj
-        //is still available on query.params for share url generation
-        var paramsCopy = $.extend(true, {}, params);
-        try {
-          delete paramsCopy[removedParam];
-        } catch (e) {
-          //nested property doesn't exist
-        }
-        delete paramsCopy.select;
-        return paramsCopy;
+    _.forEach( params, buildHashParam );
+    //console.log('Hash Params: ', hashParams);
+    newHash = '&' + hashParams.join('&');
+    window.location.hash = newHash;
+
+}
+
+// removes a specific parameter from the hash 
+function removeParam (params, removedParam) {
+    //using a copy of the params means that the select obj
+    //is still available on query.params for share url generation
+    var paramsCopy = $.extend(true, {}, params);
+    try {
+      delete paramsCopy[removedParam];
+    } catch (e) {
+      //nested property doesn't exist
     }
->>>>>>> Removed doc.ready LAR call, added console handler
+    delete paramsCopy.select;
+    return paramsCopy;
+}
 
 /* Map Tabs */
 
