@@ -48,7 +48,7 @@ def load_state_shapefiles(working_dir):
     file_tpl = "tl_2013_%02d_tract.zip"
     codes = ["06", "12", "13", "17"]
     for i in codes:
-        filename = file_tpl % i
+        filename = file_tpl % int(i)
         with lcd(working_dir):
             with settings(warn_only=True):
                 result = local("wget " + base_url + filename, capture=True)
