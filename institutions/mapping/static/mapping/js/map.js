@@ -1,5 +1,8 @@
 'use strict';
 
+// Handle Internet Explorer console command for AJAX if it's missing:
+if (!window.console) console = {log: function() {}};
+
 vex.defaultOptions.className = 'vex-theme-plain';
 
 var countiesPlotted = [];
@@ -788,6 +791,9 @@ function getLarData(actionTakenVal, callback){
             url: endpoint, data: params, traditional: true,
             success: console.log('getLarData request successful')
         })
+        .fail( function(data){
+            console.log('There was an error with your request', params );
+        })
         .done( function(data){
             callback(data);
         });
@@ -828,8 +834,13 @@ $(document).ready(function() {
     $( window ).resize(function() {
         setMapHeight();
     });
-    var url = window.location.href;
-    
+
+    // Hash parameters handler - action_taken + coordinates + etc
+    var currentParams = getHashParams();
+    if ( !_.isEmpty( currentParams ) ) {
+        $('#action-taken-selector').val( currentParams.action_taken.values );
+    }
+
     $('#take-screenshot').click(function(ev) {
         ev.preventDefault();
         vex.dialog.alert({
@@ -838,8 +849,75 @@ $(document).ready(function() {
         });
         Mapusaurus.takeScreenshot();
     });
+
 });
 
+/* Parameter helper functions */
+
+    // Create a parameter from scratch (automatically builds object)
+    function addParam( paramName, values ){
+        var params = getHashParams();
+        params[paramName].values = values;
+        params[paramName].comparator = '=';
+        updateUrlHash(params);
+    }
+
+    // Return the hash parameters from the current URL. [source](http://goo.gl/mebsOI)
+    function getHashParams(){
+
+        var hashParams = {};
+        var e,
+            a = /\+/g,  // Regex for replacing addition symbol with a space
+            r = /([^!&;=<>]+)(!?[=><]?)([^&;]*)/g,
+            d = function (s) { return decodeURIComponent(s.replace(a, ' ')); },
+            q = window.location.hash.substring(1).replace(/^!\/?/, '');
+
+        while (e = r.exec(q)) {
+          hashParams[d(e[1])] = {
+            values: d(e[3]),
+            comparator: d(e[2])
+          };
+        }
+
+        return hashParams;
+
+      }
+
+    // The `generateUrlHash` method builds and returns a URL hash from a set of object parameters
+    function updateUrlHash(params) {
+        var newHash,
+        hashParams = [];
+
+        // Loop through params, stringify them and push them into the temp array.
+        function buildHashParam( param, name ) {
+            //console.log('name: ', name);
+            //console.log("param: ", param);
+
+          hashParams.push( name + '=' + param.values );
+
+        }
+
+        _.forEach( params, buildHashParam );
+        //console.log('Hash Params: ', hashParams);
+        newHash = '&' + hashParams.join('&');
+        window.location.hash = newHash;
+
+    }
+
+    // removes a specific parameter from the hash 
+    function removeParam (params, removedParam) {
+        //using a copy of the params means that the select obj
+        //is still available on query.params for share url generation
+        var paramsCopy = $.extend(true, {}, params);
+        try {
+          delete paramsCopy[removedParam];
+        } catch (e) {
+          //nested property doesn't exist
+        }
+        delete paramsCopy.select;
+        return paramsCopy;
+    }
+>>>>>>> Removed doc.ready LAR call, added console handler
 
 /* Map Tabs */
 
