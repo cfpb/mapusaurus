@@ -165,6 +165,20 @@ module.exports = function(grunt) {
             src: ['frontend/src/img/font-awesome/*'],
             dest: 'frontend/dist/img/font-awesome/',
             filter: 'isFile'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['frontend/bower_components/leaflet/dist/leaflet.js'],
+            dest: 'frontend/dist/js/',
+            filter: 'isFile'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['frontend/bower_components/leaflet/dist/leaflet.css'],
+            dest: 'frontend/dist/css/',
+            filter: 'isFile'
           }
         ]
       },
