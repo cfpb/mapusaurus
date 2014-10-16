@@ -46,11 +46,12 @@ def load_state_shapefiles(working_dir):
     """For all states, download shape files and load them into the db"""
     base_url = "ftp://ftp2.census.gov/geo/tiger/TIGER2013/TRACT/"
     file_tpl = "tl_2013_%02d_tract.zip"
-    codes = ["06", "12", "13", "17"]
+    codes = [06, 12, 13, 17]
     for i in codes:
-        filename = file_tpl % int(i)
+        filename = file_tpl % i
         with lcd(working_dir):
             with settings(warn_only=True):
+                print "Getting " + base_url + filename
                 result = local("wget " + base_url + filename, capture=True)
             if result.failed:
                 continue
@@ -126,4 +127,4 @@ def load_all(working_dir="/tmp"):
     load_other_geos(working_dir)
     load_summary_ones(working_dir)
     load_hmda(working_dir)
-    precache_hmda()
+    # ../dateprecache_hmda()
