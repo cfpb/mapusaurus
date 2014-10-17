@@ -3,8 +3,10 @@ Mapusaurus
 
 ## Description 
 
-This small piece of software loads institution data from HMDA, and maps HMDA
+Mapusaurus loads institution data from HMDA, and maps HMDA
 reporter ids to National Information Center ids for easy identification. 
+
+Mapusaurus is a Python/Django application. Additional requirements are defined below.
 
 
 ## Data
@@ -48,7 +50,7 @@ etc. Then:
 ```
 ## Download Sample Test Data in One Shot
 
-We have a fabric script to download sample data for development enviornments. To run
+We have a fabric script to download sample data for development environments. To run
 it, we assume you've already set up your database, python environment, etc.
 etc. Then:
 
@@ -98,7 +100,7 @@ Here are some separate instructions for running the geo application.
 ```
 
 Currently, we load census tract, county, CBSA, and metropolitan division files.
-You can download them from the census' FTP site:
+You can download them from the census.gov FTP site:
 
 ```
 ftp://ftp2.census.gov/geo/tiger/TIGER2013/TRACT/
@@ -179,7 +181,7 @@ and download the zip file. Unzip it and then:
 ```
 
 Note that this process takes several minutes (though you will receive progress
-notifications). This import can be ran repeatedly (if additional geos are
+notifications). This import can be run repeatedly (if additional geos are
 added later, for example).
 
 Warning: At the moment, the import assumes a single year of information.
