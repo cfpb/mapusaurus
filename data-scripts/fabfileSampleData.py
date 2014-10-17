@@ -107,11 +107,11 @@ def load_hmda(working_dir):
         local("wget '" + base_url + filename + "'")
         local("unzip '" + filename + "'")
         local("rm '" + filename + "'")
-    with lcd("../institutions"):
-        local("python manage.py load_hmda '" + working_dir + "/"
-              + filename.replace("zip", "csv") + "'")
-    with lcd(working_dir):
+        local('split -l 500000 -d "'+ filename.replace("zip", "csv") + '" hmda_csv_')
         local("rm '" + filename.replace("zip", "csv") + "'")
+    with lcd("../institutions"):
+        local("python manage.py load_hmda '" + working_dir + "'" )
+
 
 
 def precache_hmda():
