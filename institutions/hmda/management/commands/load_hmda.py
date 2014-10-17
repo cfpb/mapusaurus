@@ -22,7 +22,7 @@ class Command(BaseCommand):
         ### default is False
         if len(args) > 1:
             if  "delete_file:true" in args[1]:
-                delete_file = False
+                delete_file = True
                 print "CSV File(s) will not be removed"
 
 
