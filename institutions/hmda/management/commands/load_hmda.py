@@ -61,13 +61,13 @@ class Command(BaseCommand):
 
         db.reset_queries()
 
-        def records(f):
+        def records(csv_file):
             """A generator returning a new Record with each call. Required as
             there are too many to instantiate in memory at once"""
 
-            datafile = open(f, 'r')
+            datafile = open(csv_file, 'r')
             i = 0
-            print "Processing " + f
+            print "Processing " + csv_file
             for row in reader(datafile):
 
                 if i % 25000 == 0:
@@ -108,7 +108,7 @@ class Command(BaseCommand):
             datafile.close()
 
             if delete_file:
-                os.remove(f)
+                os.remove(csv_file)
 
 
 
