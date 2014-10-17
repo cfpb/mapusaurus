@@ -6,7 +6,7 @@
 
 {% block head_styles %}
     {% leaflet_css %}
-    <link rel="stylesheet" href="{% static 'mapping/lib/rrose/leaflet.rrose.css' %}" />
+    <link rel="stylesheet" href="{% static 'mapping/css/vendor.css' %}" />
 
 {% endblock %}
 
@@ -51,10 +51,9 @@
 
     {% leaflet_js %}
 
+    <script type="text/javascript" src="{% static 'mapping/js/map-vendor.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/js/map.min.js' %}"></script>
 
-    <script type="text/javascript" src="{% static 'mapping/js/map.js' %}"></script>
-    <img id="key-image" class="hidden" src="{% static 'mapping/images/key-image.png' %}" />
-
-    <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
+    <script type="text/javascript" src="{% static 'respondants/js/metro-search.min.js' %}"></script>
 
 {% endblock %}
