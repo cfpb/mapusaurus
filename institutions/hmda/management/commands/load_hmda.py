@@ -8,7 +8,7 @@ from hmda.models import HMDARecord
 
 
 class Command(BaseCommand):
-    args = "<path/to/20XXHMDALAR - National.csv> <delete_file:false>"
+    args = "<path/to/20XXHMDALAR - National.csv> <delete_file:true>"
     help = """ Load HMDA data (for all states)."""
 
     def handle(self, *args, **options):
@@ -16,12 +16,12 @@ class Command(BaseCommand):
             raise CommandError("Needs a first argument, " + Command.args)
 
 
-        delete_file = True
+        delete_file = False
 
         ### if delete_file argument, remove csv file after processing
         ### default is False
         if len(args) > 1:
-            if  "delete_file:false" in args[1]:
+            if  "delete_file:true" in args[1]:
                 delete_file = False
                 print "CSV File(s) will not be removed"
 
