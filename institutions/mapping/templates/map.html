@@ -52,16 +52,9 @@
     {% leaflet_js %}
 
 
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
-    <script type="text/javascript" src="{% static 'mapping/lib/rrose/rrose-src.js' %}"></script>
-    <script type="text/javascript" src="{% static 'mapping/lib/geojsontile/TileLayer.GeoJSON.js' %}"></script>
-
-
     <script type="text/javascript" src="{% static 'mapping/js/map.js' %}"></script>
     <img id="key-image" class="hidden" src="{% static 'mapping/images/key-image.png' %}" />
 
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
     <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
 
 {% endblock %}

@@ -19,10 +19,16 @@ module.exports = function(grunt) {
     concat: {
       main: {
         src: [
-          'frontend/bower_components/normalize.css/normalize.css'/*,
-          'frontend/bower_components/font-awesome/css/font-awesome.min.css'*/
+          'frontend/bower_components/normalize.css/normalize.css',
+          'frontend/bower_components/font-awesome/css/font-awesome.min.css'
         ],
-        dest: 'frontend/dist/css/vendor.min.css',
+        dest: 'frontend/dist/basestyle/css/vendor.css',
+      },
+      map: {
+        src: [
+          'frontend/bower_components/leaflet-rrose/leaflet.rrose.css'
+        ],
+        dest: 'frontend/dist/map/css/vendor.css',
       }
     },
 
@@ -39,11 +45,11 @@ module.exports = function(grunt) {
           paths: ['frontend/src/less'],
           compress: false,
           sourceMap: true,
-          sourceMapFilename: 'frontend/dist/css/mapusaurus_sourcemap.css.map',
+          sourceMapFilename: 'frontend/dist/basestyle/css/mapusaurus_sourcemap.css.map',
           sourceMapURL: '/static/basestyle/css/mapusaurus_sourcemap.css.map'
         },
         files: {
-          'frontend/dist/css/<%= pkg.name %>.css': ['frontend/src/less/<%= pkg.name %>.less']
+          'frontend/dist/basestyle/css/<%= pkg.name %>.css': ['frontend/src/less/<%= pkg.name %>.less']
         }
       }
     },
@@ -63,7 +69,7 @@ module.exports = function(grunt) {
       multiple_files: {
         // Prefix all CSS files found in `src/static/css` and overwrite.
         expand: true,
-        src: 'frontend/dist/css/<%= pkg.name %>.css'
+        src: 'frontend/dist/basestyle/css/<%= pkg.name %>.css'
       },
     },
 
@@ -78,7 +84,7 @@ module.exports = function(grunt) {
     cssmin: {
       minify: {
         files: {
-          'frontend/dist/css/<%= pkg.name %>.min.css': ['frontend/dist/css/<%= pkg.name %>.css']
+          'frontend/dist/basestyle/css/<%= pkg.name %>.min.css': ['frontend/dist/basestyle/css/<%= pkg.name %>.css']
         }
       }
     },
@@ -100,34 +106,33 @@ module.exports = function(grunt) {
         src: [
           'frontend/bower_components/jquery/dist/jquery.js',
           'frontend/bower_components/jquery.easing/js/jquery.easing.js',
+          'frontend/bower_components/typeahead/dist/typeahead.bundle.js',
           'frontend/bower_components/cf-expandables/src/js/cf-expandables.js'
         ],
-        dest: 'frontend/dist/js/vendor.min.js'
+        dest: 'frontend/dist/basestyle/js/vendor.min.js'
       },
-      main: {
-        src: ['frontend/src/js/<%= pkg.name %>.js'],
-        dest: 'frontend/dist/js/<%= pkg.name %>.min.js'
-      }
-      
+      vendor_map: {
+        src: [
+          'frontend/bower_components/underscore/underscore.js',
+          'frontend/bower_components/topojson/topojson.js',
+          'frontend/bower_components/rrose/rrose-src.js',
+          'frontend/bower_components/leafet-tilelayer-geojson/TileLayer.GeoJSON.js'
+        ],
+        dest: 'frontend/dist/map/js/map-vendor.min.js'
+      },
+      search: {
+        src: ['frontend/src/js/search.js'],
+        dest: 'frontend/dist/search/js/search.min.js'
+      },
+      metro_search: {
+        src: ['frontend/src/js/metro-search.js'],
+        dest: 'frontend/dist/search/js/metro-search.min.js'
+      },
+      map: {
+        src: ['frontend/src/js/map.js'],
+        dest: 'frontend/dist/map/js/map.min.js'
+      },
     },
-
-/*
-    topdoc: {
-      demo: {
-        options: {
-          source: 'demo/static/css/',
-          destination: 'demo/',
-          template: 'node_modules/cf-component-demo/' + ( grunt.option('tpl') || 'raw' ) + '/',
-          templateData: {
-            family: '<%= pkg.name %>',
-            title: '<%= pkg.name %> demo',
-            repo: '<%= pkg.homepage %>',
-            ltIE8Source: 'static/css/main.lt-ie8.min.css',
-            custom: '<%= grunt.file.read("demo/custom.html") %>'
-          }
-        }
-      },
-*/
 
 
     /**
@@ -141,43 +146,36 @@ module.exports = function(grunt) {
             expand: true,
             flatten: true,
             src: ['frontend/bower_components/font-awesome/fonts/*'],
-            dest: 'frontend/dist/fonts/',
+            dest: 'frontend/dist/basestyle/fonts/',
             filter: 'isFile'
           },
           {
             expand: true,
             flatten: true,
             src: ['frontend/bower_components/cf-icons/src/fonts/*'],
-            dest: 'frontend/dist/fonts/',
+            dest: 'frontend/dist/basestyle/fonts/',
             filter: 'isFile'
           },
           /* Source images that where manually downloaded to the src/img folder */
           {
             expand: true,
             flatten: true,
-            src: ['frontend/src/img/*'],
-            dest: 'frontend/dist/img/',
+            src: ['frontend/src/img/logo_210.png'],
+            dest: 'frontend/dist/basestyle/img/',
             filter: 'isFile'
           },
           {
             expand: true,
             flatten: true,
             src: ['frontend/src/img/font-awesome/*'],
-            dest: 'frontend/dist/img/font-awesome/',
+            dest: 'frontend/dist/basestyle/img/font-awesome/',
             filter: 'isFile'
           },
           {
             expand: true,
             flatten: true,
-            src: ['frontend/bower_components/leaflet/dist/leaflet.js'],
-            dest: 'frontend/dist/js/',
-            filter: 'isFile'
-          },
-          {
-            expand: true,
-            flatten: true,
-            src: ['frontend/bower_components/leaflet/dist/leaflet.css'],
-            dest: 'frontend/dist/css/',
+            src: ['frontend/src/img/key-image.png'],
+            dest: 'frontend/dist/map/img/',
             filter: 'isFile'
           }
         ]
@@ -187,9 +185,16 @@ module.exports = function(grunt) {
           /* Copy the front/dist folder into the Django application's static assets folder */
           {
             expand: true,
-            cwd: 'frontend/dist/',
+            cwd: 'frontend/dist/basestyle/',
             src: ['**'],
             dest: 'institutions/basestyle/static/basestyle/',
+            filter: 'isFile'
+          },
+          {
+            expand: true,
+            cwd: 'frontend/dist/search/',
+            src: ['**'],
+            dest: 'institutions/respondants/static/respondants/',
             filter: 'isFile'
           }
         ]
