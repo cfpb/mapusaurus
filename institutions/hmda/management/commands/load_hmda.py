@@ -8,7 +8,7 @@ from hmda.models import HMDARecord
 
 
 class Command(BaseCommand):
-    args = "<path/to/20XXHMDALAR - National.csv>"
+    args = "<path/to/20XXHMDALAR - National.csv> <delete_file:false>"
     help = """ Load HMDA data (for all states)."""
 
     def handle(self, *args, **options):
@@ -16,22 +16,29 @@ class Command(BaseCommand):
             raise CommandError("Needs a first argument, " + Command.args)
 
 
-        working_directory = args[0]
+        delete_file = True
 
-        #if os.path.isfile(args[0]):
-            #temp = os.path.split(args[0])
-            #working_directory = temp[0]
-            #hmda_file = temp[1]
-        #else:
-            #raise Exception("File Not Valid: " + args[0])
+        ### if delete_file argument, remove csv file after processing
+        ### default is False
+        if len(args) > 1:
+            if  "delete_file:false" in args[1]:
+                delete_file = False
+                print "CSV File(s) will not be removed"
+
 
         csv_files = []
-        for file in os.listdir(working_directory):
-            if os.path.isfile(os.path.join(working_directory,file)) and 'hmda_csv_' in file:
-                #print "CSV File: " + os.path.join(working_directory, file)
-                csv_files.append(os.path.join(working_directory, file))
 
+        if os.path.isfile(args[0]):
+            csv_files.append(args[0]);
+        elif os.path.isdir(args[0]):
+            working_directory = args[0]
 
+            for file in os.listdir(working_directory):
+                if os.path.isfile(os.path.join(working_directory,file)) and 'hmda_csv_' in file:
+                    #print "CSV File: " + os.path.join(working_directory, file)
+                    csv_files.append(os.path.join(working_directory, file))
+        else:
+            raise Exception("Not a file or Directory! " + args[0])
 
 
         geo_states = set(
@@ -99,7 +106,9 @@ class Command(BaseCommand):
                 i += 1
 
             datafile.close()
-            os.remove(f)
+
+            if delete_file:
+                os.remove(f)
 
 
 
