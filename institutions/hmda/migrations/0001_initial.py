@@ -67,6 +67,9 @@ class Migration(SchemaMigration):
         # Adding index on 'HMDARecord', fields ['statefp', 'countyfp', 'lender']
         db.create_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'lender'])
 
+        # Adding index on 'HMDARecord', fields ['statefp', 'countyfp', 'action_taken', 'lender']
+        db.create_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'action_taken', 'lender'])
+
         # Adding index on 'HMDARecord', fields ['geoid', 'lender']
         db.create_index(u'hmda_hmdarecord', ['geoid_id', 'lender'])
 
@@ -95,6 +98,9 @@ class Migration(SchemaMigration):
 
         # Removing index on 'HMDARecord', fields ['geoid', 'lender']
         db.delete_index(u'hmda_hmdarecord', ['geoid_id', 'lender'])
+
+        # Removing index on 'HMDARecord', fields ['statefp', 'countyfp', 'action_taken', 'lender']
+        db.delete_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'action_taken', 'lender'])
 
         # Removing index on 'HMDARecord', fields ['statefp', 'countyfp', 'lender']
         db.delete_index(u'hmda_hmdarecord', ['statefp', 'countyfp', 'lender'])
@@ -130,7 +136,7 @@ class Migration(SchemaMigration):
             'tract': ('django.db.models.fields.CharField', [], {'max_length': '6', 'null': 'True'})
         },
         u'hmda.hmdarecord': {
-            'Meta': {'object_name': 'HMDARecord', 'index_together': "[('statefp', 'countyfp'), ('statefp', 'countyfp', 'lender'), ('geoid', 'lender')]"},
+            'Meta': {'object_name': 'HMDARecord', 'index_together': "[('statefp', 'countyfp'), ('statefp', 'countyfp', 'lender'), ('statefp', 'countyfp', 'action_taken', 'lender'), ('geoid', 'lender')]"},
             'action_taken': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'agency_code': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             'applicant_ethnicity': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
