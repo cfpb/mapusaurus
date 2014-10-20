@@ -8,7 +8,7 @@ from hmda.models import HMDARecord
 
 
 class Command(BaseCommand):
-    args = "<path/to/20XXHMDALAR - National.csv> <delete_file:true>"
+    args = "<path/to/20XXHMDALAR - National.csv> <delete_file:true/false> <filterhmda>"
     help = """ Load HMDA data (for all states)."""
 
     def handle(self, *args, **options):
@@ -17,13 +17,24 @@ class Command(BaseCommand):
 
 
         delete_file = False
+        filter_hmda = False
 
         ### if delete_file argument, remove csv file after processing
         ### default is False
+        ### if filter_hmda is passed in, setup known_hmda & geo_states
+        ### else load all HMDA records without filtering
         if len(args) > 1:
-            if  "delete_file:true" in args[1]:
-                delete_file = True
-                print "CSV File(s) will not be removed"
+            for arg in args:
+                if  "delete_file:" in arg:
+                    tmp_delete_flag= arg.split(":")
+                    if tmp_delete_flag[1] == "true":
+                        delete_file = True
+
+                        print "************* CSV File(s) WiLL BE REMOVED AFTER PROCESSING ***********"
+
+                if "filterhmda" in arg:
+                    filter_hmda = True
+
 
 
         csv_files = []
@@ -42,24 +53,27 @@ class Command(BaseCommand):
 
 
         geo_states = set(
-            row['state'] for row in
-            Geo.objects.filter(geo_type=Geo.TRACT_TYPE).values('state').distinct()
-        )
+                row['state'] for row in
+                Geo.objects.filter(geo_type=Geo.TRACT_TYPE).values('state').distinct()
+            )
 
         db.reset_queries()
 
         self.stdout.write("Filtering by states "
-                          + ", ".join(list(sorted(geo_states))))
+                              + ", ".join(list(sorted(geo_states))))
 
-        #todo: hmda query has huge data leak. look into table structure and figure out why.
-        known_hmda = set(
-            row['statefp'] for row in
-            HMDARecord.objects.values('statefp').distinct())
+        if filter_hmda:
 
-        self.stdout.write("Already have data for "
-                         + ", ".join(list(sorted(known_hmda))))
 
-        db.reset_queries()
+            #todo: hmda query has huge data leak. look into table structure and figure out why.
+            known_hmda = set(
+                row['statefp'] for row in
+                HMDARecord.objects.values('statefp').distinct())
+
+            self.stdout.write("Already have data for "
+                             + ", ".join(list(sorted(known_hmda))))
+
+            db.reset_queries()
 
         def records(csv_file):
             """A generator returning a new Record with each call. Required as
@@ -99,10 +113,15 @@ class Command(BaseCommand):
                 censustract = row[11] + row[12] + row[13].replace('.', '')
                 record.geoid_id = errors.in_2010.get(censustract, censustract)
                 record.auto_fields()
-                if (row[11] not in known_hmda and row[11] in geo_states
-                        and 'NA' not in record.geoid_id):
+                if filter_hmda:
 
-                    yield record
+                    if (row[11] not in known_hmda and row[11] in geo_states
+                            and 'NA' not in record.geoid_id):
+
+                        yield record
+                else:
+                    if row[11] in geo_states and 'NA' not in record.geoid_id:
+                        yield record
                 i += 1
 
             datafile.close()
@@ -115,15 +134,16 @@ class Command(BaseCommand):
 
         window = []         # Need to materialize records for bulk_create
         until_insert = 1000
-        for f in csv_files:
+        for csv_file in csv_files:
 
-            for record in records(f):
+            for record in records(csv_file):
                 if until_insert > 0:
                     until_insert -= 1
                     window.append(record)
                 else:
                     HMDARecord.objects.bulk_create(window)
                     db.reset_queries()
+                    record = None
                     until_insert = 1000
                     window[:] = []
 
