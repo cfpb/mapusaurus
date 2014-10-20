@@ -124,7 +124,7 @@ def load_hmda(working_dir):
         local('split -l 500000 -d "'+ filename.replace("zip", "csv") + '" hmda_csv_')
         local("rm '" + filename.replace("zip", "csv") + "'")
     with lcd("../institutions"):
-        local("python manage.py load_hmda '" + working_dir + "'" )
+        local("python manage.py load_hmda '" + working_dir + "' delete_file:true" )
 
 
 def precache_hmda():
