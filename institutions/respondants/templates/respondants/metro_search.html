@@ -31,11 +31,15 @@
 
         <form action="{% url 'map' %}" method="GET">
             <div class="search-field">
-                <label for="geoid">Select an MSA:</label><br/>
-                <input type="text" id="geoid">
+                <label for="geoid">Select an MSA:</label><br>
+                <input type="text" id="geoid"><br>
+                <input type="radio" name="template" value="leaflet" checked>Leaflet Map
+                <input type="radio" name="template" value="mapbox">Mapbox Map
+                <br>
                 <input type="hidden" name="lender" value="{{institution.agency_id}}{{institution.ffiec_id}}">
                 <input type="hidden" id="msa-field" name="metro">
                 <button type="submit" id="metro-search__submit" class="btn btn__disabled" disabled>Select</button>
+                
             </div>
         </form>
 
