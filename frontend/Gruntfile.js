@@ -111,6 +111,10 @@ module.exports = function(grunt) {
         src: ['frontend/src/js/map.js'],
         dest: 'frontend/dist/map/js/map.min.js'
       },
+      map_layout: {
+        src: ['frontend/src/js/map-layout.js'],
+        dest: 'frontend/dist/map/js/map-layout.min.js'
+      },
     },
 
 
