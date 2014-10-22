@@ -2,7 +2,7 @@ from fabric.api import lcd, local, settings
 
 
 states = [
-    ("California", "ca"),("Georgia", "ga"), ("Illinois", "il"), ("Florida","fl")]
+    ("California", "ca"), ("Wisconsin", "wi"), ("Indiana", "in"), ("Georgia", "ga"), ("Illinois", "il"), ("Florida","fl")]
 
 
 ffiec = "http://www.ffiec.gov/hmdarawdata/OTHER/"
@@ -11,27 +11,27 @@ ffiec = "http://www.ffiec.gov/hmdarawdata/OTHER/"
 def load_transmittal(working_dir):
     """Download and run the load_transmittal command"""
     with lcd(working_dir):
-        local("wget %s2014HMDAInstitutionRecords.zip" % ffiec)
-        local("unzip 2014HMDAInstitutionRecords.zip")
-        local("rm 2014HMDAInstitutionRecords.zip")
+        local("wget %s2013HMDAInstitutionRecords.zip" % ffiec)
+        local("unzip 2013HMDAInstitutionRecords.zip")
+        local("rm 2013HMDAInstitutionRecords.zip")
     with lcd("../institutions"):
         local("python manage.py load_transmittal "
-              + working_dir + "/2014HMDAInstitutionRecords.txt")
+              + working_dir + "/2013HMDAInstitutionRecords.txt")
     with lcd(working_dir):
-        local("rm 2014HMDAInstitutionRecords.txt")
+        local("rm 2013HMDAInstitutionRecords.txt")
 
 
 def load_reporter_panel(working_dir):
     """Download and run the load_reporter_panel command"""
     with lcd(working_dir):
-        local("wget %s2014HMDAReporterPanel.zip" % ffiec)
-        local("unzip 2014HMDAReporterPanel.zip")
-        local("rm 2014HMDAReporterPanel.zip")
+        local("wget %s2013HMDAReporterPanel.zip" % ffiec)
+        local("unzip 2013HMDAReporterPanel.zip")
+        local("rm 2013HMDAReporterPanel.zip")
     with lcd("../institutions"):
         local("python manage.py load_reporter_panel "
-              + working_dir + "/2014HMDAReporterPanel.dat")
+              + working_dir + "/2013HMDAReporterPanel.dat")
     with lcd(working_dir):
-        local("rm 2014HMDAReporterPanel.dat")
+        local("rm 2013HMDAReporterPanel.dat")
 
 
 def load_respondants(working_dir):
@@ -46,11 +46,12 @@ def load_state_shapefiles(working_dir):
     """For all states, download shape files and load them into the db"""
     base_url = "ftp://ftp2.census.gov/geo/tiger/TIGER2014/TRACT/"
     file_tpl = "tl_2014_%02d_tract.zip"
-	codes = [6, 12, 13, 17]
+    codes = [06, 12, 13, 17, 18, 55]
     for i in codes:
         filename = file_tpl % i
         with lcd(working_dir):
             with settings(warn_only=True):
+                print "Getting " + base_url + filename
                 result = local("wget " + base_url + filename, capture=True)
             if result.failed:
                 continue
@@ -101,16 +102,16 @@ def load_summary_ones(working_dir):
 def load_hmda(working_dir):
     """Download HMDA data and then load it into the db"""
     base_url = "http://www.ffiec.gov/hmdarawdata/LAR/National/"
-    filename = "2014HMDALAR - National.zip"
+    filename = "2013HMDALAR - National.zip"
     with lcd(working_dir):
         local("wget '" + base_url + filename + "'")
         local("unzip '" + filename + "'")
         local("rm '" + filename + "'")
-    with lcd("../institutions"):
-        local("python manage.py load_hmda '" + working_dir + "/"
-              + filename.replace("zip", "csv") + "'")
-    with lcd(working_dir):
+        local('split -l 500000 -d "'+ filename.replace("zip", "csv") + '" hmda_csv_')
         local("rm '" + filename.replace("zip", "csv") + "'")
+    with lcd("../institutions"):
+        local("python manage.py load_hmda '" + working_dir + "' delete_file:true filterhmda" )
+
 
 
 def precache_hmda():
@@ -126,4 +127,4 @@ def load_all(working_dir="/tmp"):
     load_other_geos(working_dir)
     load_summary_ones(working_dir)
     load_hmda(working_dir)
-    precache_hmda()
+    # ../dateprecache_hmda()

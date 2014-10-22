@@ -5715,6 +5715,9 @@ html b {
   color: #ffffff;
   background-color: #0072ce;
 }
+.map-aside__notes {
+  padding: 15px;
+}
 .hidden {
   display: block;
 }

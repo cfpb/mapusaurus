@@ -1,5 +1,7 @@
 'use strict';
 
+if (!window.console) console = {log: function() {}};
+
 var countiesPlotted = [];
 
 /* The GeoJSON tile layer is excellent, but makes assumptions that we don't
@@ -131,18 +133,8 @@ var Mapusaurus = {
         });
         $('#action-taken-selector').on('change', function() {
             var action_taken_value = $('#action-taken-selector').val();
-            var action_taken; 
-            switch (action_taken_value) {
-                case "all-apps-5": 
-                    action_taken = [1,2,3,4,5];
-                    break; 
-                case "all-apps-6": 
-                    action_taken = [1,2,3,4,5,6];
-                    break; 
-                case "originations-1": 
-                    action_taken = [1];
-                    break; 
-            }
+            var action_taken = getActionTaken( action_taken_value );
+            //window.location.hash ='&action_taken=' + action_taken_value;
             getLarData( action_taken, getLarDone );
 
         });
@@ -170,23 +162,6 @@ var Mapusaurus = {
             Mapusaurus.lockState.geoid = mainEl.data('geoid').toString();
             Mapusaurus.enforceBounds();
         }
-        
-        /*
-        L.control.search({
-            url: '/shapes/search/?auto=1&q={s}',
-            autoCollapse: true,
-            animateLocation: false,
-            circleLocation: false,
-            markerIcon: null,
-            filterJSON: function(rawjson) {
-                var results = {};
-                _.each(rawjson.geos, function(geo) {
-                    results[geo.name] = L.latLng(geo.centlat, geo.centlon);
-                });
-                return results;
-            },
-        }).addTo(map);
-        */
     },
 
     /* check if a tile is encoded w/ topojson. If so, convert it to geojson */
@@ -218,7 +193,11 @@ var Mapusaurus = {
         });
         Mapusaurus.updateDataWithoutGeos(tracts);
         Mapusaurus.fetchMissingStats(tracts, /* force */ tilesToLoad === 0);
-        
+        var action_taken_value = $('#action-taken-selector').val();
+        var action_taken = getActionTaken( action_taken_value );
+
+        //window.location.hash ='&action_taken=' + action_taken_value;
+        getLarData( action_taken, getLarDone );      
     },
     /* Keep expected functionality with double clicking */
     dblclickToZoom: function(feature, layer) {
@@ -271,7 +250,6 @@ var Mapusaurus = {
         //  are behind metros)
         Mapusaurus.layers.tract.bringToBack();
     },
-
 
     /* Indicates what the colors mean */
     addKey: function(map) {
@@ -712,6 +690,9 @@ function getLarData(actionTakenVal, callback){
             url: endpoint, data: params, traditional: true,
             success: console.log('getLarData request successful')
         })
+        .fail( function(data){
+            console.log('There was an error with your request', params );
+        })
         .done( function(data){
             callback(data);
         });
@@ -732,4 +713,87 @@ function getLarDone(data){
         }      
     });
     Mapusaurus.redrawBubbles(Mapusaurus.dataStore.tract);
+}
+
+/* Parameter helper functions */
+function getActionTaken( value ){
+    var actionTaken;
+
+    switch (value) {
+        case 'all-apps-5': 
+            actionTaken = [1,2,3,4,5];
+            break; 
+        case 'all-apps-6': 
+            actionTaken = [1,2,3,4,5,6];
+            break; 
+        case 'originations-1': 
+            actionTaken = [1];
+            break; 
+    }
+    return actionTaken;
+}
+
+
+// Create a parameter from scratch (automatically builds object)
+function addParam( paramName, values ){
+    var params = getHashParams();
+    params[paramName].values = values;
+    params[paramName].comparator = '=';
+    updateUrlHash(params);
+}
+
+// Return the hash parameters from the current URL. [source](http://goo.gl/mebsOI)
+function getHashParams(){
+
+    var hashParams = {};
+    var e,
+        a = /\+/g,  // Regex for replacing addition symbol with a space
+        r = /([^!&;=<>]+)(!?[=><]?)([^&;]*)/g,
+        d = function (s) { return decodeURIComponent(s.replace(a, ' ')); },
+        q = window.location.hash.substring(1).replace(/^!\/?/, '');
+
+    while (e = r.exec(q)) {
+      hashParams[d(e[1])] = {
+        values: d(e[3]),
+        comparator: d(e[2])
+      };
+    }
+
+    return hashParams;
+
+  }
+
+// The `generateUrlHash` method builds and returns a URL hash from a set of object parameters
+function updateUrlHash(params) {
+    var newHash,
+    hashParams = [];
+
+    // Loop through params, stringify them and push them into the temp array.
+    function buildHashParam( param, name ) {
+        //console.log('name: ', name);
+        //console.log("param: ", param);
+
+      hashParams.push( name + '=' + param.values );
+
+    }
+
+    _.forEach( params, buildHashParam );
+    //console.log('Hash Params: ', hashParams);
+    newHash = '&' + hashParams.join('&');
+    window.location.hash = newHash;
+
+}
+
+// removes a specific parameter from the hash 
+function removeParam (params, removedParam) {
+    //using a copy of the params means that the select obj
+    //is still available on query.params for share url generation
+    var paramsCopy = $.extend(true, {}, params);
+    try {
+      delete paramsCopy[removedParam];
+    } catch (e) {
+      //nested property doesn't exist
+    }
+    delete paramsCopy.select;
+    return paramsCopy;
 }
