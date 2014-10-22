@@ -111,7 +111,7 @@ def geojson(request, zoom, xtile, ytile):
                       maxlon__gte=minlon, maxlon__lte=maxlon)
     query = query | Q(centlat__gte=minlat, centlat__lte=maxlat,
                       centlon__gte=minlon, centlon__lte=maxlon)
-    import pdb; pdb.set_trace();
+    
     shapes = Geo.objects.filter(geo_type__in=geo_types).filter(query)
 
     # We already have the json strings per model pre-computed, so just place
