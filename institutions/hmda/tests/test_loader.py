@@ -5,7 +5,7 @@ from mock import Mock, patch
 
 from hmda.management.commands.load_hmda import Command
 from hmda.models import HMDARecord
-import subprocess
+ 
 
 class LoadHmdaTest(TestCase):
     fixtures = ['dummy_tracts']
