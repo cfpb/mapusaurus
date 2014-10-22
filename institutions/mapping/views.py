@@ -44,6 +44,39 @@ def map(request):
     else:
         return render(request, 'map.html', context)
 
+def mapAlt(request):
+    """Display the map. If lender info is present, provide it to the
+    template"""
+    lender = request.GET.get('lender', '')
+    metro = request.GET.get('metro')
+    context = {}
+    if lender and len(lender) > 1 and lender[0].isdigit():
+        query = Institution.objects.filter(agency_id=int(lender[0]))
+        query = query.filter(ffiec_id=lender[1:])
+        query = query.select_related('agency', 'zip_code')
+        lender = query.first()
+        if lender:
+            context['lender'] = lender
+    else:
+        lender = None
+    if metro:
+        query = Geo.objects.filter(geo_type=Geo.METRO_TYPE,
+                                   geoid=metro)
+        metro = query.first()
+        if metro:
+            context['metro'] = metro
+    context['download_url'] = make_download_url(lender, metro)
+    context['median_loans'] = lookup_median(lender, metro) or 0
+    if context['median_loans']:
+        # 50000 is an arbitrary constant; should be altered if we want to
+        # change how big the median circle size is
+        context['scaled_median_loans'] = 50000 / context['median_loans']
+    else:
+        context['scaled_median_loans'] = 0
+
+    return render(request, 'map2.html', context)
+>>>>>>> Added alternate mapping view, route
+
 def make_download_url(lender, metro):
     """Create a link to CFPB's HMDA explorer, either linking to all of this
     lender's records, or to just those relevant for an MSA. MSA's are broken
