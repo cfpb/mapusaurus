@@ -5,7 +5,7 @@ from mock import Mock, patch
 
 from hmda.management.commands.load_hmda import Command
 from hmda.models import HMDARecord
-
+import subprocess
 
 class LoadHmdaTest(TestCase):
     fixtures = ['dummy_tracts']
@@ -43,5 +43,31 @@ class LoadHmdaTest(TestCase):
         # 1122233300 got replaced
         self.assertTrue('9988877766' in geos)
         self.assertFalse('1122233300' in geos)
+
+        HMDARecord.objects.all().delete()
+
+    def test_multi_files(self):
+
+        command = Command()
+        command.stdout = Mock()
+
+        main_csv_directory = os.path.abspath( os.path.join("hmda", "tests") )
+
+        main_csv_directory = main_csv_directory + "/"
+
+        command.handle(main_csv_directory , "delete_file:false", "filterhmda" )
+
+        lenders = set(r.lender for r in HMDARecord.objects.all())
+        geos = set(r.geoid_id for r in HMDARecord.objects.all())
+
+        self.assertEqual(3, len(lenders))
+        self.assertTrue(('5' + '0000000319') in lenders)
+        self.assertTrue(('5' + '0000000435') in lenders)
+        self.assertTrue(('3' + '0000001281') in lenders)
+        self.assertEqual(4, len(geos))
+        self.assertTrue('1122233300' in geos)
+        self.assertTrue('1122233400' in geos)
+        self.assertTrue('1122333300' in geos)
+        self.assertTrue('1222233300' in geos)
 
         HMDARecord.objects.all().delete()
