@@ -74,8 +74,7 @@ def mapAlt(request):
     else:
         context['scaled_median_loans'] = 0
 
-    return render(request, 'map2.html', context)
->>>>>>> Added alternate mapping view, route
+    return render(request, 'map_alt.html', context)
 
 def make_download_url(lender, metro):
     """Create a link to CFPB's HMDA explorer, either linking to all of this

@@ -1,0 +1,86 @@
+<div id="map-aside-header__tabpanels" class="tabpanels">
+
+    {% if lender %}
+        <div id="map-aside__lender-details" class="map-aside__lender-details">
+                <div id="lender-info"><!-- lender-info ID is in a test, it needs to be changed in the test -->
+                    <h3>Lender Details</h3>
+                    <h4>{{ lender.name}}</h4>
+                    <dl>
+                        <dt>Regulating Agency:</dt>
+                            <dd>{{ lender.agency.acronym }}</dd>
+                        <dt>Lender ID:</dt>
+                            <dd>0{{ lender.agency_id }}-{{ lender.ffiec_id }}</dd>
+                        <!--<dt>RSSID ID:</dt>
+                            <dd>{{ lender.rss_id }}</dd>-->
+                        <dt>Address:</dt>
+                            <dd>{{ lender.mailing_address }}<br />
+                                {{lender.zip_code.city}}, {{lender.zip_code.state}}
+                                {{lender.zip_code.zip_code }}
+                            </dd>
+                        <dt>HMDA Year:</dt>
+                            <dd>{{ lender.year }}</dd>
+                    </dl>
+                </div>
+        </div><!-- /.tabpanel -->
+    {% endif %}
+
+    {% if metro %}
+        <div id="map-aside__msa-details" class="map-aside__msa-details">
+            <h3>MSA Details</h3>
+            <h4>{{ metro.name }}</h4>
+            <!--
+            <dl>
+                <dt>Population (2012):</dt>
+                    <dd></dd>
+                <dt>Counties:</dt>
+                    <dd></dd>
+            </dl>
+            -->
+        </div>
+    {% endif %}
+
+
+
+
+    <div id="map-aside__download-export">
+        <!--
+        <div class="map-aside__export">
+            <h3>Export Map</h3>
+            <p>Export the current map view as a PNG file:</p>
+            <p style="text-align:center"><a class="btn" id="take-screenshot">
+                Export Map
+                <span class="btn_icon__right fa fa-picture-o"></span>
+            </a></p>
+        </div>
+        -->
+        {% if download_url %}
+            <div class="map-aside__download">
+                <h3>Download Data</h3>
+                <p>Download the loan application records (LAR) for the current Lender/MSA/Year combination:</p>
+                <p style="text-align:center"><a target="_blank" id="download-data" class="btn" href="{{ download_url }}" >
+                    Download CSV
+                    <!--<span class="btn_icon__right fa fa-download"></span>-->
+                </a></p>
+            </div>
+        {% endif %}
+    </div><!-- /.tabpanel -->
+
+
+    <div id="map-aside__msa-search" class="map-aside__msa-search">
+
+        <h3>MSA Search</h3>
+
+        <form action="{% url 'mapAlt' %}" method="GET">
+            
+                <label for="geoid">Search and select a city:</label>
+                <input type="text" id="geoid">
+                <input type="hidden" name="lender" value="{{ lender.agency_id }}{{ lender.ffiec_id }}">
+                <input type="hidden" id="msa-field" name="metro">
+                <button type="submit" id="metro-search__submit" class="btn btn__disabled" disabled>Go to MSA</button>
+            
+        </form>
+
+    </div><!-- /.tabpanel -->
+
+
+</div><!-- /.map-aside-header__tablist -->

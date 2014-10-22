@@ -1,0 +1,215 @@
+{% extends "basestyle/map_layout.html" %}
+{% load staticfiles %}
+
+{% block title %}Fair Lending HMDA Visualization Toolkit{% endblock %}
+
+{% block head_styles %}
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link rel="stylesheet" href="{% static 'mapping/lib/leaflet-search/css/leaflet-search.css' %}" />
+    <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex.css' %}" />
+    <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex-theme-plain.css' %}" />
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.js'></script>
+
+{% endblock %}
+
+{% block head_scripts %}
+
+{% endblock %}
+
+{% block sidebar_content %}
+
+    <div class="map_aside__tabpanels tabpanels">
+
+        {% include 'partial/map_lender_info.html'%}
+
+        {% include 'partial/map_actions_alt.html'%}
+
+    </div>
+
+{% endblock %}
+
+
+{% block main_content %}
+
+    <div id="map"
+        {% if metro %} 
+            data-cent-lat="{{metro.centlat}}"
+            data-cent-lon="{{metro.centlon}}"
+            data-geoid="{{metro.geoid}}"
+        {% endif %}
+        style="height: 3000px;"
+    >
+    
+    </div>
+
+
+
+    {% include 'partial/map_key.html'%}
+
+{% endblock %}
+
+{% block foot_scripts %}
+    
+    <script>
+        L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
+        
+        var map = L.mapbox.map('map')
+
+        {% if metro %}
+            map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 9);
+        {% else %}
+            map.setView([40, -74.50], 9);
+        {% endif %}
+
+        var layers = {
+            Contig: L.mapbox.tileLayer('cfpb.iqa4te29'),
+            PlaceNames: L.mapbox.tileLayer('cfpb.1mkotj4i')
+        };
+
+        var baseLayers = {
+            'Contiguous US': layers.Contig
+        };
+        var overlays = {
+            'County Names': layers.PlaceNames
+        }
+        layers.Contig.addTo(map);
+        layers.PlaceNames.addTo(map);
+        L.control.layers(baseLayers, overlays).addTo(map);
+
+
+
+
+
+
+
+
+
+        /* Map Tabs */
+
+    (function( $ ) {
+      $.fn.mapusaurusTabs = function() {
+
+        var tabList = this.find('> ul');
+        var tabPanel = $('#map-aside-header__tabpanels > div');
+
+        //console.log(tabList);
+        //console.log(tabPanel);
+
+        // Hide all the inactive tab panels. They are not hidden by CSS for 508 compliance
+        tabPanel.hide();
+        tabPanel.first().show().addClass('active');
+
+        // Set the first tab to dark green
+
+        tabList.find('a').first().addClass('active');
+        
+        //set the default aria attributes to the tab list
+        tabList.attr('role', 'tablist');
+        tabList.find('li').attr('role', 'presentation');
+        tabList.find('a').attr('role', 'tab').attr('aria-selected', 'false').attr('aria-expanded', 'false').attr('tabindex', '-1');
+        tabList.find('a').first().attr('aria-selected', 'true').attr('aria-expanded', 'true').attr('tabindex', '0');
+
+        // add the default aria attributes to the tab panel
+        tabPanel.attr('role', 'tabpanel').attr('aria-hidden', 'true').attr('tabindex', '-1');
+        tabPanel.first().attr('aria-hidden', 'false').attr('tabindex', '0');
+
+        // create IDs for each anchor for the area-labelledby
+        tabList.find('a').each(function() {
+          var tabID = $( this ).attr('href').substring(1);
+          //console.log(tabID);
+          $(this).attr('id','tablist-' + tabID).attr('aria-controls', tabID);
+        });
+
+        tabPanel.each(function() {
+          //console.log( index + ': ' + $( this ).attr('href').substring(1) );
+          var tabID = 'tablist-' + $( this ).attr('id');
+          //console.log(tabID);
+          $(this).attr('aria-labelledby',tabID).addClass('tabpanel');
+        });
+
+
+        // Attach a click handler to all tab anchor elements
+        this.find('> ul a').click(function(event) {
+          // prevent the anchor link from modifing the url. We don't want the brower scrolling down to the anchor.
+          event.preventDefault();
+          // The entire tabset, the parent of the clicked tab
+          var $thisTabList = $(this).closest('.tabs');
+          var $thisTabPanels = $('#map-aside-header__tabpanels');
+          //console.log('$thisTabset:');
+          //console.log($thisTabset);
+
+          var thisTabID = $(this).attr('href');
+
+          //console.log('thisTabID: ' + thisTabID);
+
+          //var $thisTabContent = $thisTabset.find(thisTabID);
+
+          //console.log('$thisTabContent:');
+          //console.log($thisTabContent);
+
+          // remove all the active classes on the tabs and panels
+          $thisTabList.find('.active').removeClass('active');
+          $thisTabPanels.find('.active').removeClass('active');
+          // set the aria roles to the default settings for all
+          //$thisTabset.find('> ul > li > a').attr('aria-selected', 'false').attr('aria-expanded', 'false').attr('tabindex', '-1');
+          // hide all the tab panels
+          $thisTabPanels.find('.tabpanel').hide().attr('aria-hidden', 'true').attr('tabindex', '-1');
+          
+          
+          // show the panel
+          $(thisTabID).addClass('active').show().attr('aria-hidden', 'false').attr('tabindex', '0');
+          //highlight the clicked tab
+          $(this).addClass('active').attr('aria-selected', 'true').attr('aria-expanded', 'true').attr('tabindex', '0');
+          $(this).focus();
+        });
+
+        //set keydown events on tabList item for navigating tabs
+        $(tabList).delegate('a', 'keydown',
+          function (e) {
+            switch (e.which) {
+              case 37: case 38:
+                if ($(this).parent().prev().length!==0) {
+                  $(this).parent().prev().find('>a').click();
+                } else {
+                  $(tabList).find('li:last>a').click();
+                }
+                break;
+              case 39: case 40:
+                if ($(this).parent().next().length!==0) {
+                  $(this).parent().next().find('>a').click();
+                } else {
+                  $(tabList).find('li:first>a').click();
+                }
+                break;
+            }
+          }
+        );
+
+
+      };
+
+      // auto-init
+      $(function(){
+        $('.tabs').mapusaurusTabs();
+        map.invalidateSize();
+      });
+
+    })( jQuery );
+
+        
+    </script>
+    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
+    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
+    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/canvg.js"></script> 
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
+    <script type="text/javascript" src="{% static 'mapping/lib/geojsontile/TileLayer.GeoJSON.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/lib/leaflet-search/js/leaflet-search.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/lib/vex/js/vex.combined.min.js' %}"></script>
+    <img id="key-image" class="hidden" src="{% static 'mapping/images/key-image.png' %}" />
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
+
+{% endblock %}
