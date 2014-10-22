@@ -187,6 +187,15 @@ added later, for example).
 Warning: At the moment, the import assumes a single year of information.
 That's a todo.
 
+Alternatively, the load_hmda script can read a directory of CSV files and load them one by one.
+There is also the option of removing these files after they are processed.
+
+```
+    split -l 50000 -d  "/path/to/2012HMDALAR\ -\ National.csv" hmda_csv_
+    python manage.py load_hmda /path/to/2012HMDALAR/  delete_files:true
+```
+
+
 You will most likely want to pre-calculate the median number of loans for a
 particular lender X city pair -- this speeds up map loading quite a bit.
 
