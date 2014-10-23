@@ -1,17 +1,14 @@
 {% extends "basestyle/map_layout.html" %}
-{% load leaflet_tags %}
 {% load staticfiles %}
 
 {% block title %}{{ lender.name}} : {{ metro.name }} : Map : Fair Lending HMDA Visualization Toolkit{% endblock %}
 
 {% block head_styles %}
-    {% leaflet_css %}
-    <link rel="stylesheet" href="{% static 'mapping/css/vendor.css' %}" />
-
+  <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css' rel='stylesheet' />
 {% endblock %}
 
 {% block head_scripts %}
-
+  <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.js'></script>
 {% endblock %}
 
 {% block sidebar_content %}
@@ -28,7 +25,6 @@
 
 
 {% block main_content %}
-
     <div id="map-container"
         {% if metro %} 
             data-cent-lat="{{metro.centlat}}"
@@ -36,24 +32,24 @@
             data-geoid="{{metro.geoid}}"
         {% endif %}
     >
-            
-    {% leaflet_map "map" callback="Mapusaurus.initialize" %}
-
+      <div id="map"></div>
     </div>
-
-
-    {% include 'partial/map_key.html'%}
 
 
 {% endblock %}
 
 {% block foot_scripts %}
-
-    {% leaflet_js %}
-
-    <script type="text/javascript" src="{% static 'mapping/js/map-vendor.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'mapping/js/map.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'respondants/js/metro-search.min.js' %}"></script>
+    <script>
+      $(document).ready(function() {
+        // wrap the mapbox in a doc ready so the #map div height is set before mapbox starts to render the tiles
+        var lat_centriod = {{metro.centlat}};
+        var lon_centriod = {{metro.centlon}};
 
+        L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
+        var map = L.mapbox.map('map', 'cfpb.iqa4te29')
+            .setView([lat_centriod, lon_centriod], 9);
+      });
+    </script>
+    <script type="text/javascript" src="{% static 'respondants/js/metro-search.min.js' %}"></script>
 {% endblock %}

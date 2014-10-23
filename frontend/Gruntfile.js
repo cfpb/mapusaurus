@@ -19,10 +19,16 @@ module.exports = function(grunt) {
     concat: {
       main: {
         src: [
-          'frontend/bower_components/normalize.css/normalize.css'/*,
-          'frontend/bower_components/font-awesome/css/font-awesome.min.css'*/
+          'frontend/bower_components/normalize.css/normalize.css',
+          'frontend/bower_components/font-awesome/css/font-awesome.min.css'
         ],
-        dest: 'frontend/dist/css/vendor.min.css',
+        dest: 'frontend/dist/basestyle/css/vendor.css',
+      },
+      map: {
+        src: [
+          'frontend/bower_components/leaflet-rrose/leaflet.rrose.css'
+        ],
+        dest: 'frontend/dist/map/css/vendor.css',
       }
     },
 
@@ -39,35 +45,14 @@ module.exports = function(grunt) {
           paths: ['frontend/src/less'],
           compress: false,
           sourceMap: true,
-          sourceMapFilename: 'frontend/dist/css/mapusaurus_sourcemap.css.map',
+          sourceMapFilename: 'frontend/dist/basestyle/css/mapusaurus_sourcemap.css.map',
           sourceMapURL: '/static/basestyle/css/mapusaurus_sourcemap.css.map'
         },
         files: {
-          'frontend/dist/css/<%= pkg.name %>.css': ['frontend/src/less/<%= pkg.name %>.less']
+          'frontend/dist/basestyle/css/<%= pkg.name %>.css': ['frontend/src/less/<%= pkg.name %>.less']
         }
       }
     },
-
-    /**
-     * Autoprefixer: https://github.com/nDmitry/grunt-autoprefixer
-     * 
-     * Add vendor-specific css prefixes. Do not put the prefixes in your CSS code.
-     *
-     */
-    autoprefixer: {
-      options: {
-        // Options we might want to enable in the future.
-        diff: false,
-        map: false
-      },
-      multiple_files: {
-        // Prefix all CSS files found in `src/static/css` and overwrite.
-        expand: true,
-        src: 'frontend/dist/css/<%= pkg.name %>.css'
-      },
-    },
-
-
 
     /**
      * CSSMin: https://github.com/gruntjs/grunt-contrib-cssmin
@@ -78,7 +63,7 @@ module.exports = function(grunt) {
     cssmin: {
       minify: {
         files: {
-          'frontend/dist/css/<%= pkg.name %>.min.css': ['frontend/dist/css/<%= pkg.name %>.css']
+          'frontend/dist/basestyle/css/<%= pkg.name %>.min.css': ['frontend/dist/basestyle/css/<%= pkg.name %>.css']
         }
       }
     },
@@ -100,34 +85,37 @@ module.exports = function(grunt) {
         src: [
           'frontend/bower_components/jquery/dist/jquery.js',
           'frontend/bower_components/jquery.easing/js/jquery.easing.js',
+          'frontend/bower_components/typeahead/dist/typeahead.bundle.js',
           'frontend/bower_components/cf-expandables/src/js/cf-expandables.js'
         ],
-        dest: 'frontend/dist/js/vendor.min.js'
+        dest: 'frontend/dist/basestyle/js/vendor.min.js'
       },
-      main: {
-        src: ['frontend/src/js/<%= pkg.name %>.js'],
-        dest: 'frontend/dist/js/<%= pkg.name %>.min.js'
-      }
-      
+      vendor_map: {
+        src: [
+          'frontend/bower_components/underscore/underscore.js',
+          'frontend/bower_components/topojson/topojson.js',
+          'frontend/bower_components/rrose/rrose-src.js',
+          'frontend/bower_components/leafet-tilelayer-geojson/TileLayer.GeoJSON.js'
+        ],
+        dest: 'frontend/dist/map/js/map-vendor.min.js'
+      },
+      search: {
+        src: ['frontend/src/js/search.js'],
+        dest: 'frontend/dist/search/js/search.min.js'
+      },
+      metro_search: {
+        src: ['frontend/src/js/metro-search.js'],
+        dest: 'frontend/dist/search/js/metro-search.min.js'
+      },
+      map: {
+        src: ['frontend/src/js/map.js'],
+        dest: 'frontend/dist/map/js/map.min.js'
+      },
+      map_layout: {
+        src: ['frontend/src/js/map-layout.js'],
+        dest: 'frontend/dist/map/js/map-layout.min.js'
+      },
     },
-
-/*
-    topdoc: {
-      demo: {
-        options: {
-          source: 'demo/static/css/',
-          destination: 'demo/',
-          template: 'node_modules/cf-component-demo/' + ( grunt.option('tpl') || 'raw' ) + '/',
-          templateData: {
-            family: '<%= pkg.name %>',
-            title: '<%= pkg.name %> demo',
-            repo: '<%= pkg.homepage %>',
-            ltIE8Source: 'static/css/main.lt-ie8.min.css',
-            custom: '<%= grunt.file.read("demo/custom.html") %>'
-          }
-        }
-      },
-*/
 
 
     /**
@@ -141,29 +129,36 @@ module.exports = function(grunt) {
             expand: true,
             flatten: true,
             src: ['frontend/bower_components/font-awesome/fonts/*'],
-            dest: 'frontend/dist/fonts/',
+            dest: 'frontend/dist/basestyle/fonts/',
             filter: 'isFile'
           },
           {
             expand: true,
             flatten: true,
             src: ['frontend/bower_components/cf-icons/src/fonts/*'],
-            dest: 'frontend/dist/fonts/',
+            dest: 'frontend/dist/basestyle/fonts/',
             filter: 'isFile'
           },
           /* Source images that where manually downloaded to the src/img folder */
           {
             expand: true,
             flatten: true,
-            src: ['frontend/src/img/*'],
-            dest: 'frontend/dist/img/',
+            src: ['frontend/src/img/logo_210.png'],
+            dest: 'frontend/dist/basestyle/img/',
             filter: 'isFile'
           },
           {
             expand: true,
             flatten: true,
             src: ['frontend/src/img/font-awesome/*'],
-            dest: 'frontend/dist/img/font-awesome/',
+            dest: 'frontend/dist/basestyle/img/font-awesome/',
+            filter: 'isFile'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['frontend/src/img/choropleth-key.svg'],
+            dest: 'frontend/dist/basestyle/img/',
             filter: 'isFile'
           }
         ]
@@ -173,11 +168,26 @@ module.exports = function(grunt) {
           /* Copy the front/dist folder into the Django application's static assets folder */
           {
             expand: true,
-            cwd: 'frontend/dist/',
+            cwd: 'frontend/dist/basestyle/',
             src: ['**'],
             dest: 'institutions/basestyle/static/basestyle/',
             filter: 'isFile'
+          },
+          {
+            expand: true,
+            cwd: 'frontend/dist/search/',
+            src: ['**'],
+            dest: 'institutions/respondants/static/respondants/',
+            filter: 'isFile'
+          },
+          {
+            expand: true,
+            cwd: 'frontend/dist/map/',
+            src: ['**'],
+            dest: 'institutions/mapping/static/mapping/',
+            filter: 'isFile'
           }
+
         ]
       }
     },
@@ -200,7 +210,6 @@ module.exports = function(grunt) {
    */
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-autoprefixer');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -214,7 +223,7 @@ module.exports = function(grunt) {
   /**
    * The 'default' task will run whenever `grunt` is run without specifying a task
    */
-  grunt.registerTask('build', ['concat', 'less', 'autoprefixer', 'cssmin', 'uglify', 'copy']);
+  grunt.registerTask('build', ['concat', 'less', 'cssmin', 'uglify', 'copy']);
   grunt.registerTask('build-less', ['less', 'copy:django']);
   grunt.registerTask('default', ['build']);
 

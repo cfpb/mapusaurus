@@ -1,9 +1,6 @@
 'use strict';
 
-// Handle Internet Explorer console command for AJAX if it's missing:
 if (!window.console) console = {log: function() {}};
-
-vex.defaultOptions.className = 'vex-theme-plain';
 
 var countiesPlotted = [];
 
@@ -165,23 +162,6 @@ var Mapusaurus = {
             Mapusaurus.lockState.geoid = mainEl.data('geoid').toString();
             Mapusaurus.enforceBounds();
         }
-        
-        /*
-        L.control.search({
-            url: '/shapes/search/?auto=1&q={s}',
-            autoCollapse: true,
-            animateLocation: false,
-            circleLocation: false,
-            markerIcon: null,
-            filterJSON: function(rawjson) {
-                var results = {};
-                _.each(rawjson.geos, function(geo) {
-                    results[geo.name] = L.latLng(geo.centlat, geo.centlon);
-                });
-                return results;
-            },
-        }).addTo(map);
-        */
     },
 
     /* check if a tile is encoded w/ topojson. If so, convert it to geojson */
@@ -270,7 +250,6 @@ var Mapusaurus = {
         //  are behind metros)
         Mapusaurus.layers.tract.bringToBack();
     },
-
 
     /* Indicates what the colors mean */
     addKey: function(map) {
@@ -684,80 +663,6 @@ var Mapusaurus = {
         } else if (Mapusaurus.isMetro(geo)) {
             Mapusaurus.layers.metro.addData(geo);
         }
-    },
-
-    /* Uses canvg to draw the svg map onto a canvas, which can then be opened
-     * in a separate window. Some offset addition is requires to make sure we
-     * are grabbing the right viewport */
-    takeScreenshot: function() {
-        var offscreen = document.createElement('canvas'),
-            ctx = offscreen.getContext('2d'),
-            svgEl = $('svg')[0],
-            $map = $('#map'),
-            $tiles = $(Mapusaurus.map.getPanes().tilePane).find('img'),
-            offset = Mapusaurus.map.containerPointToLayerPoint([0, 0]),
-            serializer = new XMLSerializer(),
-            allImages = [],
-            keyImage = $('#key-image'),
-            keyXOffset = $map.width() - keyImage[0].width - 10;
-        offscreen.width = $map.width();
-        offscreen.height = $map.height();
-        offset.x = svgEl.viewBox.baseVal.x - offset.x;
-        offset.y = svgEl.viewBox.baseVal.y - offset.y;
-        /* Some gymnastics are needed to get around crossOrigin tainting.
-         * Leaflet does not load images with the crossOrigin attribute, so we
-         * load each image and draw them to the offscreen canvas. Used
-         * deferred so we can wait for all the images to load. Note that this
-         * technique does not work in IE 8/9, but we check this via the
-         * XDomainRequest guard. Todo: try to implement it via ajax */
-        if (window.XDomainRequest === undefined) {
-            allImages = $tiles.map(function(idx, tile) {
-                var img = new Image(),
-                    deferred = $.Deferred();
-                img.setAttribute('crossOrigin', 'anonymous');
-                img.onload = function () {
-                    deferred.resolve({tile: tile, img: img});
-                };
-                img.src = tile.src;
-                return deferred.promise();
-            });
-        }
-        /* Finally, draw all the tiles, then the SVG, then the key */
-        $.when.apply(null, allImages).then(function() {
-            var $ssPlaceholder = $('#screenshot-placeholder'),
-                replacementText = 'Right-click and select Save Image As...';
-            //  draw each tile
-            _.each(arguments, function(tileXImg) {
-                var pos = $(tileXImg.tile).position();
-                ctx.drawImage(tileXImg.img, pos.left, pos.top);
-            });
-            //  svg
-            canvg(offscreen, serializer.serializeToString(svgEl), {
-                  ignoreDimensions: true, offsetY: offset.y,
-                  offsetX: offset.x, ignoreClear: true});
-            //  key
-            ctx.drawImage(keyImage[0], keyXOffset, 10);
-            ctx.fillText($('#category-selector option:selected').text(),
-                         keyXOffset + 20, 100);
-            ctx.fillText($('#bubble-selector:visible option:selected').text(),
-                         keyXOffset + 20, 120);
-
-            //  Closed the popup before we could edit it
-            if ($ssPlaceholder.length === 0) {
-                vex.dialog.alert({
-                    message: ('<h2>Export Map</h2>' +
-                              '<p>' + replacementText + '</p>' + 
-                              '<img width="400" height="150" src="' +
-                              offscreen.toDataURL() + '" />')
-                });
-            //  Did not close popup; edit it in place
-            } else {
-                $ssPlaceholder.text(replacementText);
-                $('<img width="400" height="150" />').attr(
-                    'src',
-                    offscreen.toDataURL()).appendTo($ssPlaceholder.parent());
-            }
-        });
     }
 };
 
@@ -809,42 +714,6 @@ function getLarDone(data){
     });
     Mapusaurus.redrawBubbles(Mapusaurus.dataStore.tract);
 }
-
-function setMapHeight() {
-    /* Set the map div to the height of the browser window minus the header. */
-    var viewportHeight = $(window).height();
-    var warningBannerHeight = $('#warning-banner').outerHeight();
-    var headerHeight = $('#header').outerHeight();
-    var mapHeaderHeight = $('#map-header').outerHeight();
-    var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
-    $('#map-aside').css('height', mapHeight);
-    $('#map').css('height', mapHeight);
-}
-
-$(document).ready(function() {
-
-    setMapHeight();
-
-    $( window ).resize(function() {
-        setMapHeight();
-    });
-
-    // Hash parameters handler - action_taken + coordinates + etc
-    // var currentParams = getHashParams();
-    // if ( !_.isEmpty( currentParams ) ) {
-    //     $('#action-taken-selector').val( currentParams.action_taken.values );
-    // }
-
-    $('#take-screenshot').click(function(ev) {
-        ev.preventDefault();
-        vex.dialog.alert({
-            message: ('<h2>Export Map</h2>' +
-                      '<p id="screenshot-placeholder">Loading map...</p>')
-        });
-        Mapusaurus.takeScreenshot();
-    });
-
-});
 
 /* Parameter helper functions */
 function getActionTaken( value ){
@@ -928,114 +797,3 @@ function removeParam (params, removedParam) {
     delete paramsCopy.select;
     return paramsCopy;
 }
-
-/* Map Tabs */
-
-    (function( $ ) {
-      $.fn.mapusaurusTabs = function() {
-
-        var tabList = this.find('> ul');
-        var tabPanel = $('#map-aside-header__tabpanels > div');
-
-        //console.log(tabList);
-        //console.log(tabPanel);
-
-        // Hide all the inactive tab panels. They are not hidden by CSS for 508 compliance
-        tabPanel.hide();
-        tabPanel.first().show().addClass('active');
-
-        // Set the first tab to dark green
-
-        tabList.find('a').first().addClass('active');
-        
-        //set the default aria attributes to the tab list
-        tabList.attr('role', 'tablist');
-        tabList.find('li').attr('role', 'presentation');
-        tabList.find('a').attr('role', 'tab').attr('aria-selected', 'false').attr('aria-expanded', 'false').attr('tabindex', '-1');
-        tabList.find('a').first().attr('aria-selected', 'true').attr('aria-expanded', 'true').attr('tabindex', '0');
-
-        // add the default aria attributes to the tab panel
-        tabPanel.attr('role', 'tabpanel').attr('aria-hidden', 'true').attr('tabindex', '-1');
-        tabPanel.first().attr('aria-hidden', 'false').attr('tabindex', '0');
-
-        // create IDs for each anchor for the area-labelledby
-        tabList.find('a').each(function() {
-          var tabID = $( this ).attr('href').substring(1);
-          //console.log(tabID);
-          $(this).attr('id','tablist-' + tabID).attr('aria-controls', tabID);
-        });
-
-        tabPanel.each(function() {
-          //console.log( index + ': ' + $( this ).attr('href').substring(1) );
-          var tabID = 'tablist-' + $( this ).attr('id');
-          //console.log(tabID);
-          $(this).attr('aria-labelledby',tabID).addClass('tabpanel');
-        });
-
-
-        // Attach a click handler to all tab anchor elements
-        this.find('> ul a').click(function(event) {
-          // prevent the anchor link from modifing the url. We don't want the brower scrolling down to the anchor.
-          event.preventDefault();
-          // The entire tabset, the parent of the clicked tab
-          var $thisTabList = $(this).closest('.tabs');
-          var $thisTabPanels = $('#map-aside-header__tabpanels');
-          //console.log('$thisTabset:');
-          //console.log($thisTabset);
-
-          var thisTabID = $(this).attr('href');
-
-          //console.log('thisTabID: ' + thisTabID);
-
-          //var $thisTabContent = $thisTabset.find(thisTabID);
-
-          //console.log('$thisTabContent:');
-          //console.log($thisTabContent);
-
-          // remove all the active classes on the tabs and panels
-          $thisTabList.find('.active').removeClass('active');
-          $thisTabPanels.find('.active').removeClass('active');
-          // set the aria roles to the default settings for all
-          //$thisTabset.find('> ul > li > a').attr('aria-selected', 'false').attr('aria-expanded', 'false').attr('tabindex', '-1');
-          // hide all the tab panels
-          $thisTabPanels.find('.tabpanel').hide().attr('aria-hidden', 'true').attr('tabindex', '-1');
-          
-          
-          // show the panel
-          $(thisTabID).addClass('active').show().attr('aria-hidden', 'false').attr('tabindex', '0');
-          //highlight the clicked tab
-          $(this).addClass('active').attr('aria-selected', 'true').attr('aria-expanded', 'true').attr('tabindex', '0');
-          $(this).focus();
-        });
-
-        //set keydown events on tabList item for navigating tabs
-        $(tabList).delegate('a', 'keydown',
-          function (e) {
-            switch (e.which) {
-              case 37: case 38:
-                if ($(this).parent().prev().length!==0) {
-                  $(this).parent().prev().find('>a').click();
-                } else {
-                  $(tabList).find('li:last>a').click();
-                }
-                break;
-              case 39: case 40:
-                if ($(this).parent().next().length!==0) {
-                  $(this).parent().next().find('>a').click();
-                } else {
-                  $(tabList).find('li:first>a').click();
-                }
-                break;
-            }
-          }
-        );
-
-
-      };
-
-      // auto-init
-      $(function(){
-        $('.tabs').mapusaurusTabs();
-      });
-
-    })( jQuery );

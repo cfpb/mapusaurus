@@ -11,7 +11,8 @@ $(document).ready(function() {
             filter: function(resp) { return resp.institutions;}
         }
     }),
-        searchNameBox = $('#search_name');
+    
+    searchNameBox = $('#search_name');
     search.initialize();
 
     searchNameBox.typeahead({

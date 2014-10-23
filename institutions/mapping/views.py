@@ -13,6 +13,7 @@ def map(request):
     template"""
     lender = request.GET.get('lender', '')
     metro = request.GET.get('metro')
+    template = request.GET.get('template', 'leaflet')
     context = {}
     if lender and len(lender) > 1 and lender[0].isdigit():
         query = Institution.objects.filter(agency_id=int(lender[0]))
@@ -38,8 +39,10 @@ def map(request):
     else:
         context['scaled_median_loans'] = 0
 
-    return render(request, 'map.html', context)
-
+    if template == 'mapbox':
+        return render(request, 'mapbox.html', context)
+    else:
+        return render(request, 'map.html', context)
 
 def make_download_url(lender, metro):
     """Create a link to CFPB's HMDA explorer, either linking to all of this
