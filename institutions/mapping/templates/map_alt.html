@@ -1,13 +1,11 @@
 {% extends "basestyle/map_layout.html" %}
 {% load staticfiles %}
 
-{% block title %}Fair Lending HMDA Visualization Toolkit{% endblock %}
+{% block title %}Fair Lending HMDA Visualization Toolkit - {{ lender.name}} : {{ metro.name }} : Map{% endblock %}
 
 {% block head_styles %}
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <link rel="stylesheet" href="{% static 'mapping/lib/leaflet-search/css/leaflet-search.css' %}" />
-    <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex.css' %}" />
-    <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex-theme-plain.css' %}" />
+    <link rel="stylesheet" href="{% static 'mapping/css/vendor.css' %}" />
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css' rel='stylesheet' />
     <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.js'></script>
 
@@ -31,14 +29,13 @@
 
 
 {% block main_content %}
-<div id="map-container" style="height: 1200px">
+<div id="map-container">
     <div id="map"
         {% if metro %} 
             data-cent-lat="{{metro.centlat}}"
             data-cent-lon="{{metro.centlon}}"
             data-geoid="{{metro.geoid}}"
         {% endif %}
-        style="height: 100%"
     >
     {% include 'partial/map_key.html'%}    
     </div>
@@ -52,6 +49,7 @@
     <script>
     $(document).ready(function(){
         $('.tabs').mapusaurusTabs();
+        setMapHeight();
         
         L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
         
@@ -63,6 +61,8 @@
             map.setView([40, -74.50], 9);
         {% endif %}
 
+
+        // Create mapbox layers\
         var layers = {
             Base: L.mapbox.tileLayer('cfpb.fi6hia4i'),
             PctMinority: L.mapbox.tileLayer('cfpb.g0seb3xr'),
@@ -70,6 +70,8 @@
             PlaceNames: L.mapbox.tileLayer('cfpb.1mkotj4i')
         };
 
+        // Base layers and overlays objects are used to determine which are
+        // radio vs. checkboxes in leaflet (for automated selection)
         var baseLayers = {
             'Contiguous US': layers.Base
         };
@@ -78,18 +80,95 @@
             'Percentage Hispanic': layers.PctHispanic,
             'County Names': layers.PlaceNames
         }
+
+        // To view layers on the map on page load, you must add them
         layers.Base.addTo(map);
         layers.PctMinority.addTo(map);
         layers.PlaceNames.addTo(map);
+
+        // Add a layer control that allows users to select layers
         L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
-    });
-        
 
-    $(function(){
-
+        //Add the legend as a control to Mapbox
+        map.legendControl.addLegend(document.getElementById('key').innerHTML, {position: 'topright'});
     });
 
-    /* Map Tabs */
+    function setMapHeight() {
+        /* Set the map div to the height of the browser window minus the header. */
+        var viewportHeight = $(window).height();
+        var warningBannerHeight = $('#warning-banner').outerHeight();
+        var headerHeight = $('#header').outerHeight();
+        var mapHeaderHeight = $('#map-header').outerHeight();
+        var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
+        $('#map-aside').css('height', mapHeight);
+        $('#map').css('height', mapHeight);
+    }
+
+    /* 
+        AJAX DATA FOR CIRCLES BELOW
+    */    
+
+    /* Parameter helper functions */
+    function getActionTaken( value ){
+        var actionTaken;
+
+        switch (value) {
+            case 'all-apps-5': 
+                actionTaken = [1,2,3,4,5];
+                break; 
+            case 'all-apps-6': 
+                actionTaken = [1,2,3,4,5,6];
+                break; 
+            case 'originations-1': 
+                actionTaken = [1];
+                break; 
+        }
+        return actionTaken;
+    }
+
+    function getCountiesInView(){
+        var data = Mapusaurus.dataStore.tract
+    }
+
+    function getBubbleData(){
+
+    }
+
+    function getLarData(actionTakenVal, callback){
+        var endpoint = '/hmda/volume',
+            params;
+
+        params = {'county': _.uniq(countiesPlotted) };
+
+        // Set the lender parameter based on the current URL param
+        // This could be set as a parameter later if need be
+        if (Mapusaurus.urlParam('lender')) {
+            params['lender'] = Mapusaurus.urlParam('lender');
+        }
+
+        // If our parameter is passed properly, go get data, otherwise
+        // return an error that no parameter is available.
+        if ( actionTakenVal ) {
+            params['action_taken'] = actionTakenVal;
+            $.ajax({
+                url: endpoint, data: params, traditional: true,
+                success: console.log('getLarData request successful')
+            })
+            .fail( function(data){
+                console.log('There was an error with your request', params );
+            })
+            .done( function(data){
+                callback(data);
+            });
+        } else {
+            console.log('Error: no action taken value');
+        }
+    }
+
+
+    /* 
+        MAP TABS BELOW
+    */    
 
     (function( $ ) {
       $.fn.mapusaurusTabs = function() {
@@ -193,26 +272,14 @@
 
       };
 
-      // auto-init
-      $(function(){
-
-      });
 
     })( jQuery );
 
         
     </script>
-    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
-    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
-    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/canvg.js"></script> 
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
-    <script type="text/javascript" src="{% static 'mapping/lib/geojsontile/TileLayer.GeoJSON.js' %}"></script>
-    <script type="text/javascript" src="{% static 'mapping/lib/leaflet-search/js/leaflet-search.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'mapping/lib/vex/js/vex.combined.min.js' %}"></script>
-    <img id="key-image" class="hidden" src="{% static 'mapping/images/key-image.png' %}" />
-
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
-    <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
+    <script type="text/javascript" src="/static/mapping/js/map-vendor.min.js"></script>
+    <script type="text/javascript" src="/static/mapping/js/map.min.js"></script>
+    <script type="text/javascript" src="/static/mapping/js/map-layout.min.js"></script>
+    <script type="text/javascript" src="/static/respondants/js/metro-search.min.js"></script>
 
 {% endblock %}
