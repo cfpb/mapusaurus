@@ -51,7 +51,11 @@ def tractCentroids(request, northEastLat, northEastLon, southWestLat, southWestL
 def getCensusTractCentroids(request, northEastLat, northEastLon, southWestLat, southWestLon):
     """ """
     geoTypeId = 3
-    maxlat, minlon, minlat, maxlon = northEastLat, northEastLon, southWestLat, southWestLon
+    try:
+        maxlat, minlon, minlat, maxlon = float(northEastLat), float(northEastLon), float(southWestLat), float(southWestLon)
+    except ValueError:
+        return HttpResponseBadRequest(
+                "Bad or missing values: northEastLat, northEastLon, southWestLat, southWestLon")
     # check that any of the four points or center are inside the boundary
     query = Q(minlat__gte=minlat, minlat__lte=maxlat,
               minlon__gte=minlon, minlon__lte=maxlon)
