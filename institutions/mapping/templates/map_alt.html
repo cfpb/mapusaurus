@@ -31,27 +31,28 @@
 
 
 {% block main_content %}
-
+<div id="map-container" style="height: 1200px">
     <div id="map"
         {% if metro %} 
             data-cent-lat="{{metro.centlat}}"
             data-cent-lon="{{metro.centlon}}"
             data-geoid="{{metro.geoid}}"
         {% endif %}
-        style="height: 3000px;"
+        style="height: 100%"
     >
-    
+    {% include 'partial/map_key.html'%}    
     </div>
+</div>
 
-
-
-    {% include 'partial/map_key.html'%}
 
 {% endblock %}
 
 {% block foot_scripts %}
     
     <script>
+    $(document).ready(function(){
+        $('.tabs').mapusaurusTabs();
+        
         L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
         
         var map = L.mapbox.map('map')
@@ -63,29 +64,32 @@
         {% endif %}
 
         var layers = {
-            Contig: L.mapbox.tileLayer('cfpb.iqa4te29'),
+            Base: L.mapbox.tileLayer('cfpb.fi6hia4i'),
+            PctMinority: L.mapbox.tileLayer('cfpb.g0seb3xr'),
+            PctHispanic: L.mapbox.tileLayer('cfpb.rn1dobt9'),
             PlaceNames: L.mapbox.tileLayer('cfpb.1mkotj4i')
         };
 
         var baseLayers = {
-            'Contiguous US': layers.Contig
+            'Contiguous US': layers.Base
         };
         var overlays = {
+            'Percentage Minority': layers.PctMinority,
+            'Percentage Hispanic': layers.PctHispanic,
             'County Names': layers.PlaceNames
         }
-        layers.Contig.addTo(map);
+        layers.Base.addTo(map);
+        layers.PctMinority.addTo(map);
         layers.PlaceNames.addTo(map);
-        L.control.layers(baseLayers, overlays).addTo(map);
+        L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
+    });
+        
 
+    $(function(){
 
+    });
 
-
-
-
-
-
-
-        /* Map Tabs */
+    /* Map Tabs */
 
     (function( $ ) {
       $.fn.mapusaurusTabs = function() {
@@ -191,8 +195,7 @@
 
       // auto-init
       $(function(){
-        $('.tabs').mapusaurusTabs();
-        map.invalidateSize();
+
       });
 
     })( jQuery );
