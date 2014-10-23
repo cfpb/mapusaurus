@@ -44,7 +44,21 @@ class Geo(models.Model):
                           ("geo_type", "centlat", "centlon"),
                           ("geo_type", "cbsa")]
 
-    def as_geojson(self):
+    def tract_centroids_as_geojson(self):
+        """Convert this model into a geojson string"""
+        geojson = {'type': 'Feature',
+                   'properties': {
+                       'geoid': self.geoid,
+                       'geoType': self.geo_type,
+                       'state': self.state,
+                       'county': self.county,
+                       'cbsa': self.cbsa,
+                       'centlat': self.centlat,
+                       'centlon': self.centlon}}
+        geojson = json.dumps(geojson)
+        return geojson
+
+    def tract_shape_as_geojson(self):
         """Convert this model into a geojson string"""
         geojson = {'type': 'Feature',
                    'geometry': '$_$',   # placeholder

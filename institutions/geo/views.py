@@ -44,6 +44,36 @@ def topotile(request, zoom, xtile, ytile):
     return HttpResponse(json.dumps(topo_dict),
                         content_type='application/json')
 
+def tractCentroids(request, northEastLat, northEastLon, southWestLat, southWestLon):
+    census_dict = json.loads(getCensusTractCentroids(request, northEastLat, northEastLon, southWestLat, southWestLon))
+    return HttpResponse(json.dumps(census_dict), content_type='application/json')
+    
+def getCensusTractCentroids(request, northEastLat, northEastLon, southWestLat, southWestLon):
+    """ """
+    geoTypeId = 3
+    try:
+        maxlat, minlon, minlat, maxlon = float(northEastLat), float(northEastLon), float(southWestLat), float(southWestLon)
+    except ValueError:
+        return HttpResponseBadRequest(
+                "Bad or missing values: northEastLat, northEastLon, southWestLat, southWestLon")
+    # check that any of the four points or center are inside the boundary
+    query = Q(minlat__gte=minlat, minlat__lte=maxlat,
+              minlon__gte=minlon, minlon__lte=maxlon)
+    query = query | Q(minlat__gte=minlat, minlat__lte=maxlat,
+                      maxlon__gte=minlon, maxlon__lte=maxlon)
+    query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
+                      minlon__gte=minlon, minlon__lte=maxlon)
+    query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
+                      maxlon__gte=minlon, maxlon__lte=maxlon)
+    query = query | Q(centlat__gte=minlat, centlat__lte=maxlat,
+                      centlon__gte=minlon, centlon__lte=maxlon)
+    censusgeos = Geo.objects.filter(geo_type = geoTypeId).filter(query)
+    # We already have the json strings per model pre-computed, so just place
+    # them inside a static response
+    response = '{"crs": {"type": "link", "properties": {"href": '
+    response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
+    response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
+    return response % ', '.join(geo.tract_centroids_as_geojson() for geo in censusgeos)
 
 def geojson(request, zoom, xtile, ytile):
     """A geojson tile which will load the types of geos requested, defaulting
@@ -67,14 +97,13 @@ def geojson(request, zoom, xtile, ytile):
 
     minlon, maxlon = to_lon(zoom, xtile), to_lon(zoom, xtile + 1)
     minlat, maxlat = to_lat(zoom, ytile + 1), to_lat(zoom, ytile)
-
+   
     try:
         minlat, maxlat = float(minlat), float(maxlat)
         minlon, maxlon = float(minlon), float(maxlon)
     except ValueError:
         return HttpResponseBadRequest(
             "Bad or missing: one of minlat, maxlat, minlon, maxlon")
-
     # check that any of the four points or center are inside the boundary
     query = Q(minlat__gte=minlat, minlat__lte=maxlat,
               minlon__gte=minlon, minlon__lte=maxlon)
@@ -86,7 +115,7 @@ def geojson(request, zoom, xtile, ytile):
                       maxlon__gte=minlon, maxlon__lte=maxlon)
     query = query | Q(centlat__gte=minlat, centlat__lte=maxlat,
                       centlon__gte=minlon, centlon__lte=maxlon)
-
+    
     shapes = Geo.objects.filter(geo_type__in=geo_types).filter(query)
 
     # We already have the json strings per model pre-computed, so just place
@@ -94,7 +123,7 @@ def geojson(request, zoom, xtile, ytile):
     response = '{"crs": {"type": "link", "properties": {"href": '
     response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
     response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
-    return response % ', '.join(shape.as_geojson() for shape in shapes)
+    return response % ', '.join(shape.tract_shape_as_geojson() for shape in shapes)
 
 
 class GeoSerializer(serializers.ModelSerializer):
