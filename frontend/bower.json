@@ -17,14 +17,6 @@
     "leafet-tilelayer-geojson": "git+https://github.com/glenrobertson/leaflet-tilelayer-geojson",
     "topojson": "git+https://github.com/mbostock/topojson#1.6.18",
     "typeahead": "git+https://github.com/twitter/typeahead.js#0.10.5"
-  },
-  "version": ".9",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "components",
-    "bower_components",
-    "test",
-    "tests"
-  ]
+  }
+
 }

@@ -94,7 +94,7 @@ module.exports = function(grunt) {
         src: [
           'frontend/bower_components/underscore/underscore.js',
           'frontend/bower_components/topojson/topojson.js',
-          'frontend/bower_components/rrose/rrose-src.js',
+          'frontend/bower_components/leaflet-rrose/rrose-src.js',
           'frontend/bower_components/leafet-tilelayer-geojson/TileLayer.GeoJSON.js'
         ],
         dest: 'frontend/dist/map/js/map-vendor.min.js'
