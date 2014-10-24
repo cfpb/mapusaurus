@@ -52,7 +52,7 @@ def getCensusTractCentroids(request, northEastLat, northEastLon, southWestLat, s
     """ """
     geoTypeId = 3
     try:
-        maxlat, minlon, minlat, maxlon = float(northEastLat), float(northEastLon), float(southWestLat), float(southWestLon)
+        maxlat, minlon, minlat, maxlon = float(northEastLat), float(southWestLon), float(southWestLat), float(northEastLon)
     except ValueError:
         return HttpResponseBadRequest(
                 "Bad or missing values: northEastLat, northEastLon, southWestLat, southWestLon")

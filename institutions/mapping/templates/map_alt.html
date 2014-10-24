@@ -1,11 +1,11 @@
 {% extends "basestyle/map_layout.html" %}
 {% load staticfiles %}
 
-{% block title %}Fair Lending HMDA Visualization Toolkit - {{ lender.name}} : {{ metro.name }} : Map{% endblock %}
+{% block title %}Fair Lending HMDA Visualization Toolkit{% endblock %}
 
 {% block head_styles %}
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <link rel="stylesheet" href="{% static 'mapping/css/vendor.css' %}" />
+    <link rel="stylesheet" href="{% static 'mapping/lib/leaflet-search/css/leaflet-search.css' %}" />
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css' rel='stylesheet' />
     <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.js'></script>
 
@@ -29,13 +29,14 @@
 
 
 {% block main_content %}
-<div id="map-container">
+<div id="map-container" style="height: 1200px">
     <div id="map"
         {% if metro %} 
             data-cent-lat="{{metro.centlat}}"
             data-cent-lon="{{metro.centlon}}"
             data-geoid="{{metro.geoid}}"
         {% endif %}
+        style="height: 100%"
     >
     {% include 'partial/map_key.html'%}    
     </div>
@@ -47,22 +48,16 @@
 {% block foot_scripts %}
     
     <script>
-    $(document).ready(function(){
-        $('.tabs').mapusaurusTabs();
-        setMapHeight();
-        
         L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
         
         var map = L.mapbox.map('map')
 
         {% if metro %}
-            map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 9);
+            map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 11);
         {% else %}
-            map.setView([40, -74.50], 9);
+            map.setView([40, -74.50], 11);
         {% endif %}
 
-
-        // Create mapbox layers\
         var layers = {
             Base: L.mapbox.tileLayer('cfpb.fi6hia4i'),
             PctMinority: L.mapbox.tileLayer('cfpb.g0seb3xr'),
@@ -70,8 +65,6 @@
             PlaceNames: L.mapbox.tileLayer('cfpb.1mkotj4i')
         };
 
-        // Base layers and overlays objects are used to determine which are
-        // radio vs. checkboxes in leaflet (for automated selection)
         var baseLayers = {
             'Contiguous US': layers.Base
         };
@@ -80,18 +73,17 @@
             'Percentage Hispanic': layers.PctHispanic,
             'County Names': layers.PlaceNames
         }
-
-        // To view layers on the map on page load, you must add them
         layers.Base.addTo(map);
         layers.PctMinority.addTo(map);
         layers.PlaceNames.addTo(map);
-
-        // Add a layer control that allows users to select layers
         L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
 
-        //Add the legend as a control to Mapbox
-        map.legendControl.addLegend(document.getElementById('key').innerHTML, {position: 'topright'});
+    $(document).ready(function(){
+        $('.tabs').mapusaurusTabs();
+        setMapHeight();
+        
     });
+        
 
     function setMapHeight() {
         /* Set the map div to the height of the browser window minus the header. */
@@ -105,10 +97,148 @@
     }
 
     /* 
-        AJAX DATA FOR CIRCLES BELOW
+        CIRCLE DRAW DATA CALLS / HELPERS
     */    
 
-    /* Parameter helper functions */
+    var dataStore = {};
+    dataStore.tracts = {};
+    dataStore.counties = [];
+
+
+    function getTractsInBounds( bounds, callback ){
+        var endpoint = '/shapes/tractCentroids/',
+            neLat,neLon,swLat,swLon;
+        
+        // Get the bounds from the current map to 6 decimal places (view restriction)    
+        neLat = bounds._northEast.lat.toFixed(6);
+        neLon = bounds._northEast.lng.toFixed(6);
+        swLat = bounds._southWest.lat.toFixed(6);
+        swLon = bounds._southWest.lng.toFixed(6);
+        
+        // Create the appropriate URL path to return values
+        endpoint += neLat + '/' + neLon + '/' + swLat + '/' + swLon;
+        console.log('Endpoint: ', endpoint);
+
+        $.ajax({
+            url: endpoint, traditional: true,
+            success: console.log('getTractData successful')
+        })
+        .fail( function(data){
+            console.log('There was an error with your request', params );
+        })
+        .done( function(data){
+            console.log( 'getTractsinBounds Data: ', data);
+            callback(data);
+        }); 
+
+    }
+
+    function createDataObj( data ){
+        //Empty out the county store to redraw
+        dataStore.counties = [];
+
+        console.log( 'tract data: ', data );
+        
+        //Loop through features to create the geoid object
+        _.each( data.features, function( feature ){
+            var geoid = feature.properties.geoid;
+            dataStore.tracts[geoid] = feature.properties;
+
+            //Store the counties each time so you get all your data in a single run through
+            var county5char = feature.properties.state + feature.properties.county;
+            dataStore.counties.push( county5char );
+        });
+    }
+
+    function getBubbleData(){
+
+    }
+
+    function getLarData( actionTakenVal, counties, callback ){
+        var endpoint = '/hmda/volume',
+            params;
+
+        params = {'county': getUniques( counties )};
+
+        // Set the lender parameter based on the current URL param
+        // This could be set as a parameter later if need be
+        if ( urlParam('lender')) {
+            params['lender'] = urlParam('lender');
+        }
+
+        // If our parameter is passed properly, go get data, otherwise
+        // return an error that no parameter is available.
+        if ( actionTakenVal ) {
+            params['action_taken'] = actionTakenVal;
+            $.ajax({
+                url: endpoint, data: params, traditional: true,
+                success: console.log('getLarData request successful')
+            })
+            .fail( function(data){
+                console.log('There was an error with your request', params );
+            })
+            .done( function(data){
+                console.log(data);
+                callback(data);
+            });
+        } else {
+            console.log('Error: no action taken value');
+        }
+    }
+
+    function addLarToDataStore( data ){
+        _.each( dataStore.tracts, function(num, key){
+            console.log('num: ', num);
+            console.log('key: ', key);
+            // if( typeof num.layer_loanVolume != 'undefined' ){
+            //     if( typeof data[key] != 'undefined' ){
+            //         num.layer_loanVolume.volume = data[key].volume;
+            //     }
+            // } else {
+            //     data[key] = {};
+            //     data[key].volume = 0;
+            // }      
+        });
+    }
+
+    function getMinorityData(counties, callback){
+        var endpoint = '/census/race-summary',
+            params;
+
+        params = {'county': getUniques( counties ) };    
+
+        $.ajax({
+            url: endpoint, data: params, traditional: true,
+            success: console.log('getLarData request successful', data)
+        })
+        .fail( function(data){
+            console.log('There was an error with your request', params );
+        })
+        .done( function(data){
+            callback(data);
+        });        
+    }
+
+    /* 
+        UTILITY FUNCTIONS
+
+    */
+    function urlParam(field) {
+        var url = window.location.search.replace('?', ''),
+            keyValueStrs = url.split('&'),
+            pairs = _.map(keyValueStrs, function(keyValueStr) {
+                return keyValueStr.split('=');
+            }),
+            params = _.reduce(pairs, function(soFar, pair) {
+                if (pair.length === 2) {
+                    soFar[pair[0]] = pair[1];
+                }
+                return soFar;
+            }, {});
+        return params[field];
+    }
+
+    // Parameter helper function
     function getActionTaken( value ){
         var actionTaken;
 
@@ -126,184 +256,131 @@
         return actionTaken;
     }
 
-    function getTractsInBounds( bounds, callback ){
-        var endpoint = '/shapes/tractCentroids/',
-            nelat,nelon,swlat,swlon;
-
+    function getUniques( arr ){
+        return _.uniq( arr );
     }
 
-    function getCountiesInView(){
-        var data = Mapusaurus.dataStore.tract
-    }
+    /* 
+        MAP TABS - SEPARATE LATER
+    */
 
-    function getBubbleData(){
+    (function( $ ) {
+      $.fn.mapusaurusTabs = function() {
 
-    }
+        var tabList = this.find('> ul');
+        var tabPanel = $('#map-aside-header__tabpanels > div');
 
-    function getLarData( actionTakenVal, counties, callback ){
-        var endpoint = '/hmda/volume',
-            params;
+        //console.log(tabList);
+        //console.log(tabPanel);
 
-        params = {'county': counties };
+        // Hide all the inactive tab panels. They are not hidden by CSS for 508 compliance
+        tabPanel.hide();
+        tabPanel.first().show().addClass('active');
 
-        // Set the lender parameter based on the current URL param
-        // This could be set as a parameter later if need be
-        if (Mapusaurus.urlParam('lender')) {
-            params['lender'] = Mapusaurus.urlParam('lender');
-        }
+        // Set the first tab to dark green
 
-        // If our parameter is passed properly, go get data, otherwise
-        // return an error that no parameter is available.
-        if ( actionTakenVal ) {
-            params['action_taken'] = actionTakenVal;
-            $.ajax({
-                url: endpoint, data: params, traditional: true,
-                success: console.log('getLarData request successful')
-            })
-            .fail( function(data){
-                console.log('There was an error with your request', params );
-            })
-            .done( function(data){
-                callback(data);
-            });
-        } else {
-            console.log('Error: no action taken value');
-        }
-    }
+        tabList.find('a').first().addClass('active');
+        
+        //set the default aria attributes to the tab list
+        tabList.attr('role', 'tablist');
+        tabList.find('li').attr('role', 'presentation');
+        tabList.find('a').attr('role', 'tab').attr('aria-selected', 'false').attr('aria-expanded', 'false').attr('tabindex', '-1');
+        tabList.find('a').first().attr('aria-selected', 'true').attr('aria-expanded', 'true').attr('tabindex', '0');
 
-    function getMinorityData(counties, callback){
-        var endpoint = '/census/race-summary',
-            params;
+        // add the default aria attributes to the tab panel
+        tabPanel.attr('role', 'tabpanel').attr('aria-hidden', 'true').attr('tabindex', '-1');
+        tabPanel.first().attr('aria-hidden', 'false').attr('tabindex', '0');
 
-        params = {'county': counties};    
+        // create IDs for each anchor for the area-labelledby
+        tabList.find('a').each(function() {
+          var tabID = $( this ).attr('href').substring(1);
+          //console.log(tabID);
+          $(this).attr('id','tablist-' + tabID).attr('aria-controls', tabID);
+        });
 
-        $.ajax({
-            url: endpoint, data: params, traditional: true,
-            success: console.log('getLarData request successful')
-        })
-        .fail( function(data){
-            console.log('There was an error with your request', params );
-        })
-        .done( function(data){
-            callback(data);
-        });        
-    }
+        tabPanel.each(function() {
+          //console.log( index + ': ' + $( this ).attr('href').substring(1) );
+          var tabID = 'tablist-' + $( this ).attr('id');
+          //console.log(tabID);
+          $(this).attr('aria-labelledby',tabID).addClass('tabpanel');
+        });
 
 
-    </script>
-    <!-- NEED SCRIPTS -->
+        // Attach a click handler to all tab anchor elements
+        this.find('> ul a').click(function(event) {
+          // prevent the anchor link from modifing the url. We don't want the brower scrolling down to the anchor.
+          event.preventDefault();
+          // The entire tabset, the parent of the clicked tab
+          var $thisTabList = $(this).closest('.tabs');
+          var $thisTabPanels = $('#map-aside-header__tabpanels');
+          //console.log('$thisTabset:');
+          //console.log($thisTabset);
 
+          var thisTabID = $(this).attr('href');
 
-    <script>
-        /* 
-            MAP TABS BELOW
-        */    
+          //console.log('thisTabID: ' + thisTabID);
 
-        (function( $ ) {
-          $.fn.mapusaurusTabs = function() {
+          //var $thisTabContent = $thisTabset.find(thisTabID);
 
-            var tabList = this.find('> ul');
-            var tabPanel = $('#map-aside-header__tabpanels > div');
+          //console.log('$thisTabContent:');
+          //console.log($thisTabContent);
 
-            //console.log(tabList);
-            //console.log(tabPanel);
+          // remove all the active classes on the tabs and panels
+          $thisTabList.find('.active').removeClass('active');
+          $thisTabPanels.find('.active').removeClass('active');
+          // set the aria roles to the default settings for all
+          //$thisTabset.find('> ul > li > a').attr('aria-selected', 'false').attr('aria-expanded', 'false').attr('tabindex', '-1');
+          // hide all the tab panels
+          $thisTabPanels.find('.tabpanel').hide().attr('aria-hidden', 'true').attr('tabindex', '-1');
+          
+          
+          // show the panel
+          $(thisTabID).addClass('active').show().attr('aria-hidden', 'false').attr('tabindex', '0');
+          //highlight the clicked tab
+          $(this).addClass('active').attr('aria-selected', 'true').attr('aria-expanded', 'true').attr('tabindex', '0');
+          $(this).focus();
+        });
 
-            // Hide all the inactive tab panels. They are not hidden by CSS for 508 compliance
-            tabPanel.hide();
-            tabPanel.first().show().addClass('active');
-
-            // Set the first tab to dark green
-
-            tabList.find('a').first().addClass('active');
-            
-            //set the default aria attributes to the tab list
-            tabList.attr('role', 'tablist');
-            tabList.find('li').attr('role', 'presentation');
-            tabList.find('a').attr('role', 'tab').attr('aria-selected', 'false').attr('aria-expanded', 'false').attr('tabindex', '-1');
-            tabList.find('a').first().attr('aria-selected', 'true').attr('aria-expanded', 'true').attr('tabindex', '0');
-
-            // add the default aria attributes to the tab panel
-            tabPanel.attr('role', 'tabpanel').attr('aria-hidden', 'true').attr('tabindex', '-1');
-            tabPanel.first().attr('aria-hidden', 'false').attr('tabindex', '0');
-
-            // create IDs for each anchor for the area-labelledby
-            tabList.find('a').each(function() {
-              var tabID = $( this ).attr('href').substring(1);
-              //console.log(tabID);
-              $(this).attr('id','tablist-' + tabID).attr('aria-controls', tabID);
-            });
-
-            tabPanel.each(function() {
-              //console.log( index + ': ' + $( this ).attr('href').substring(1) );
-              var tabID = 'tablist-' + $( this ).attr('id');
-              //console.log(tabID);
-              $(this).attr('aria-labelledby',tabID).addClass('tabpanel');
-            });
-
-
-            // Attach a click handler to all tab anchor elements
-            this.find('> ul a').click(function(event) {
-              // prevent the anchor link from modifing the url. We don't want the brower scrolling down to the anchor.
-              event.preventDefault();
-              // The entire tabset, the parent of the clicked tab
-              var $thisTabList = $(this).closest('.tabs');
-              var $thisTabPanels = $('#map-aside-header__tabpanels');
-              //console.log('$thisTabset:');
-              //console.log($thisTabset);
-
-              var thisTabID = $(this).attr('href');
-
-              //console.log('thisTabID: ' + thisTabID);
-
-              //var $thisTabContent = $thisTabset.find(thisTabID);
-
-              //console.log('$thisTabContent:');
-              //console.log($thisTabContent);
-
-              // remove all the active classes on the tabs and panels
-              $thisTabList.find('.active').removeClass('active');
-              $thisTabPanels.find('.active').removeClass('active');
-              // set the aria roles to the default settings for all
-              //$thisTabset.find('> ul > li > a').attr('aria-selected', 'false').attr('aria-expanded', 'false').attr('tabindex', '-1');
-              // hide all the tab panels
-              $thisTabPanels.find('.tabpanel').hide().attr('aria-hidden', 'true').attr('tabindex', '-1');
-              
-              
-              // show the panel
-              $(thisTabID).addClass('active').show().attr('aria-hidden', 'false').attr('tabindex', '0');
-              //highlight the clicked tab
-              $(this).addClass('active').attr('aria-selected', 'true').attr('aria-expanded', 'true').attr('tabindex', '0');
-              $(this).focus();
-            });
-
-            //set keydown events on tabList item for navigating tabs
-            $(tabList).delegate('a', 'keydown',
-              function (e) {
-                switch (e.which) {
-                  case 37: case 38:
-                    if ($(this).parent().prev().length!==0) {
-                      $(this).parent().prev().find('>a').click();
-                    } else {
-                      $(tabList).find('li:last>a').click();
-                    }
-                    break;
-                  case 39: case 40:
-                    if ($(this).parent().next().length!==0) {
-                      $(this).parent().next().find('>a').click();
-                    } else {
-                      $(tabList).find('li:first>a').click();
-                    }
-                    break;
+        //set keydown events on tabList item for navigating tabs
+        $(tabList).delegate('a', 'keydown',
+          function (e) {
+            switch (e.which) {
+              case 37: case 38:
+                if ($(this).parent().prev().length!==0) {
+                  $(this).parent().prev().find('>a').click();
+                } else {
+                  $(tabList).find('li:last>a').click();
                 }
-              }
-            );
+                break;
+              case 39: case 40:
+                if ($(this).parent().next().length!==0) {
+                  $(this).parent().next().find('>a').click();
+                } else {
+                  $(tabList).find('li:first>a').click();
+                }
+                break;
+            }
+          }
+        );
 
 
-          };
+      };
 
+      // auto-init
+      $(function(){
 
-        })( jQuery );
+      });
+
+    })( jQuery );
 
         
     </script>
+    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
+    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
+    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/canvg.js"></script> 
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="{% static 'mapping/js/metro-search.js' %}"></script>
+
 {% endblock %}
