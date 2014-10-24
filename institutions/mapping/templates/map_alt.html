@@ -77,10 +77,16 @@
         layers.PctMinority.addTo(map);
         layers.PlaceNames.addTo(map);
         L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
+        map.legendControl.addLegend(document.getElementById('key').innerHTML, {position: 'topright'});
 
     $(document).ready(function(){
         $('.tabs').mapusaurusTabs();
         setMapHeight();
+
+        $( window ).resize(function() {
+            setMapHeight();
+        });
+
         
     });
         
@@ -170,6 +176,7 @@
         // return an error that no parameter is available.
         if ( actionTakenVal ) {
             params['action_taken'] = actionTakenVal;
+            console.log('params: ', params);
             $.ajax({
                 url: endpoint, data: params, traditional: true,
                 success: console.log('getLarData request successful')
@@ -188,16 +195,16 @@
 
     function addLarToDataStore( data ){
         _.each( dataStore.tracts, function(num, key){
-            console.log('num: ', num);
+            //console.log('num: ', num);
             console.log('key: ', key);
-            // if( typeof num.layer_loanVolume != 'undefined' ){
-            //     if( typeof data[key] != 'undefined' ){
-            //         num.layer_loanVolume.volume = data[key].volume;
-            //     }
-            // } else {
-            //     data[key] = {};
-            //     data[key].volume = 0;
-            // }      
+            num.layer_loanVolume = {};
+            if( typeof data[key] != 'undefined' ){
+                num.layer_loanVolume = data[key];
+            } else {
+                console.log(' no data available ');
+                num.layer_loanVolume.volume = 0;
+            }
+
         });
     }
 
@@ -209,13 +216,27 @@
 
         $.ajax({
             url: endpoint, data: params, traditional: true,
-            success: console.log('getLarData request successful', data)
+            success: console.log('getLarData request successful')
         })
         .fail( function(data){
             console.log('There was an error with your request', params );
         })
         .done( function(data){
             callback(data);
+        });        
+    }
+
+    function addMinorityToDataStore( data ){
+        _.each( dataStore.tracts, function(num, key){
+            //console.log('num: ', num);
+            console.log('key: ', key);
+            num.layer_minority = {};
+            if( typeof data[key] != 'undefined' ){
+                num.layer_minority = data[key];
+            } else {
+                console.log(' no data available for tract ', num);
+            }
+
         });        
     }
 
