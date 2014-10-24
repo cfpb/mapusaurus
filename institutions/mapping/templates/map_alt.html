@@ -5,9 +5,9 @@
 
 {% block head_styles %}
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <link rel="stylesheet" href="{% static 'mapping/lib/leaflet-search/css/leaflet-search.css' %}" />
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css' rel='stylesheet' />
     <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.js'></script>
+    <link rel="stylesheet" href="{% static 'mapping/css/vendor.css' %}" />
 
 {% endblock %}
 
@@ -80,6 +80,7 @@
         map.legendControl.addLegend(document.getElementById('key').innerHTML, {position: 'topright'});
 
     $(document).ready(function(){
+        $('.tabs').show();
         $('.tabs').mapusaurusTabs();
         setMapHeight();
 
@@ -115,11 +116,12 @@
         var endpoint = '/shapes/tractCentroids/',
             neLat,neLon,swLat,swLon;
         
-        // Get the bounds from the current map to 6 decimal places (view restriction)    
-        neLat = bounds._northEast.lat.toFixed(6);
-        neLon = bounds._northEast.lng.toFixed(6);
-        swLat = bounds._southWest.lat.toFixed(6);
-        swLon = bounds._southWest.lng.toFixed(6);
+        // Get the bounds from the current map to 6 decimal places (to work with Django view)
+        // with manually entered padding   
+        neLat = (bounds._northEast.lat + .5).toFixed(6);
+        neLon = (bounds._northEast.lng + .5).toFixed(6);
+        swLat = (bounds._southWest.lat - .5).toFixed(6);
+        swLon = (bounds._southWest.lng - .5).toFixed(6);
         
         // Create the appropriate URL path to return values
         endpoint += neLat + '/' + neLon + '/' + swLat + '/' + swLon;
@@ -142,6 +144,7 @@
     function createDataObj( data ){
         //Empty out the county store to redraw
         dataStore.counties = [];
+        dataStore.tractList = [];
 
         console.log( 'tract data: ', data );
         
@@ -149,6 +152,7 @@
         _.each( data.features, function( feature ){
             var geoid = feature.properties.geoid;
             dataStore.tracts[geoid] = feature.properties;
+            dataStore.tractList.push( geoid );
 
             //Store the counties each time so you get all your data in a single run through
             var county5char = feature.properties.state + feature.properties.county;
@@ -160,11 +164,44 @@
 
     }
 
-    function getLarData( actionTakenVal, counties, callback ){
+    function getLarDataByCounty( actionTakenVal, counties, callback ){
         var endpoint = '/hmda/volume',
             params;
 
         params = {'county': getUniques( counties )};
+
+        // Set the lender parameter based on the current URL param
+        // This could be set as a parameter later if need be
+        if ( urlParam('lender')) {
+            params['lender'] = urlParam('lender');
+        }
+
+        // If our parameter is passed properly, go get data, otherwise
+        // return an error that no parameter is available.
+        if ( actionTakenVal ) {
+            params['action_taken'] = actionTakenVal;
+            console.log('params: ', params);
+            $.ajax({
+                url: endpoint, data: params, traditional: true,
+                success: console.log('getLarData request successful')
+            })
+            .fail( function(data){
+                console.log('There was an error with your request', params );
+            })
+            .done( function(data){
+                console.log(data);
+                callback(data);
+            });
+        } else {
+            console.log('Error: no action taken value');
+        }
+    }
+
+    function getLarDataByTract( actionTakenVal, tracts, callback ){
+        var endpoint = '/hmda/volume',
+            params;
+
+        params = {'geoid': tracts };
 
         // Set the lender parameter based on the current URL param
         // This could be set as a parameter later if need be
@@ -389,7 +426,7 @@
 
       // auto-init
       $(function(){
-
+        $('.tabs').mapusaurusTabs();
       });
 
     })( jQuery );
