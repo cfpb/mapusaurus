@@ -105,7 +105,7 @@
     }
 
     /* 
-        CIRCLE DRAW DATA CALLS / HELPERS
+        GET THE DATA THE PAGE NEEDS TO LOAD
     */    
 
     var dataStore = {};
@@ -161,6 +161,7 @@
         });
     }
 
+    // The function we'll use to get all the stuff we need after page is loaded.
     function getBubbleData(){
 
     }
@@ -280,7 +281,115 @@
         });        
     }
 
+    /*
+        STYLE THE CIRCLES BASED ON MINORITY
+    */
+
+    var baseStyle = { fillOpacity: 0.9, weight: 1, className: 'lar-circle' },
+        //  population-less tracts
+        noStyle = {stroke: false, fill: false};
+    
+    function minorityContinuousStyle(geoProps, baseStyle) {
+        return minorityStyle(
+            geoProps, 
+            function(minorityPercent, bucket) {
+                return (minorityPercent - bucket.lowerBound) / bucket.span;
+            },
+            baseStyle
+        );
+    }
+
+    function minorityBucketedStyle(geoProps) {
+        return minorityStyle(geoProps, function() { return 0.5; },
+                                        baseStyle);
+    }
+
+    //  Shared function for minority styling; called by the two previous fns
+    function minorityStyle(geoProps, percentFn, baseStyle) {
+        var geoid = geoProps.geoid,
+            tract = dataStore.tracts[geoid];
+        // Different styles for when the tract has zero pop, or
+        // we have percentages of minorities
+        if (tract['layer_minority']['total_pop'] === 0) {
+            return noStyle;
+        } else {
+            var perc = minorityPercent(tract['layer_minority']),
+                bucket = toBucket(perc),
+                // convert given percentage to percents within bucket's bounds
+                bucketPercent = percentFn(perc, bucket);
+            return $.extend({}, baseStyle, {
+                fillColor: colorFromPercent(bucketPercent,
+                                           bucket.colors)
+            });
+        }
+    }
+    //  Using the selector, determine which statistic to display.
+    function minorityPercent(tractData) {
+        var fieldName = $('#category-selector').val();
+        if (fieldName.substring(0, 4) === 'inv_') {
+            return 1 - tractData[fieldName.substr(4)];
+        } else {
+            return tractData[fieldName];
+        }
+    }
+
+    var colorRanges = [
+        {
+            span: 0.5,
+            lowerBound: 0,
+            colors: {
+                lowR: 107,
+                lowG: 40,
+                lowB: 10,
+                highR: 250,
+                highG: 186,
+                highB: 106
+            }
+        },
+        {
+            span: 0.5,
+            lowerBound: 0.5,
+            colors: {
+                lowR: 124,
+                lowG: 198,
+                lowB: 186,
+                highR: 12,
+                highG: 48,
+                highB: 97
+            }
+        }
+    ]
+
+    function toBucket(percent) {
+        var i,
+            len = colorRanges.length;
+        for (i = 0; i < len - 1; i++) {
+            //  Next bucket is too far
+            if (colorRanges[i + 1].lowerBound > percent) {
+                return colorRanges[i];
+            }
+        } 
+        return colorRanges[len - 1];  //  last color
+    };
+
+    /* Given low and high colors and a percent, figure out the RGB of said
+     * percent in that scale */
+    function colorFromPercent(percent, c) {
+        var diffR = (c.highR - c.lowR) * percent,
+            diffG = (c.highG - c.lowG) * percent,
+            diffB = (c.highB - c.lowB) * percent;
+        return 'rgb(' + (c.lowR + diffR).toFixed() + ', ' +
+               (c.lowG + diffG).toFixed() + ', ' +
+               (c.lowB + diffB).toFixed() + ')';
+    }
+
+    /* 
+        DRAW CIRCLES
+    */
+
     function redrawCircles( geoData ){
+        // Remove circles currently on the page (TODO: Add as LayerGroup and transition)
+        $('.lar-circle').remove(); 
         _.each(geoData, function(geo) {
             var bubble = drawCircle(geo);
         });
@@ -288,10 +397,11 @@
 
     function drawCircle(geo){
         var data = geo['layer_loanVolume'],
-            //style = Mapusaurus.minorityContinuousStyle(
-            //    geoProps, Mapusaurus.bubbleStyle),
+            style = minorityContinuousStyle(
+               geo, baseStyle),
             circle = L.circle([geo.centlat, geo.centlon],
-                              hmdaStat(data), {className: 'lar-circle'} );
+                              hmdaStat(data), style );
+            console.log('Circle Style: ', style);
         //  We will use the geoid when redrawing
         circle.geoid = geo.geoid;
         //  keep expected functionality with double clicking
@@ -309,6 +419,11 @@
             map.closePopup();
         });
         circle.addTo(map);
+    }
+
+    function styleCircle(geo){
+        var data = geo['layer_minority'];
+
     }
 
     /* 
