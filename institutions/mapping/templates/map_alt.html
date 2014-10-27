@@ -78,6 +78,7 @@
         layers.PlaceNames.addTo(map);
         L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
         map.legendControl.addLegend(document.getElementById('key').innerHTML, {position: 'topright'});
+        layers.loanVolume = L.layerGroup([]);
 
     $(document).ready(function(){
         $('.tabs').show();
@@ -197,11 +198,11 @@
         }
     }
 
-    function getLarDataByTract( actionTakenVal, tracts, callback ){
+    function getLarDataByTract( actionTakenVal, tractList, callback ){
         var endpoint = '/hmda/volume',
             params;
 
-        params = {'geoid': tracts };
+        params = {'geoid': tractList};
 
         // Set the lender parameter based on the current URL param
         // This could be set as a parameter later if need be
@@ -235,21 +236,23 @@
             //console.log('num: ', num);
             console.log('key: ', key);
             num.layer_loanVolume = {};
+            console.log('num', num);
             if( typeof data[key] != 'undefined' ){
                 num.layer_loanVolume = data[key];
             } else {
                 console.log(' no data available ');
+                console.log(' TRACT WITHOUT DATA: ', key, num);
                 num.layer_loanVolume.volume = 0;
             }
 
         });
     }
 
-    function getMinorityData(counties, callback){
+    function getMinorityData(tractList, callback){
         var endpoint = '/census/race-summary',
             params;
 
-        params = {'county': getUniques( counties ) };    
+        params = {'geoid': tractList };    
 
         $.ajax({
             url: endpoint, data: params, traditional: true,
@@ -277,10 +280,54 @@
         });        
     }
 
+    function redrawCircles( geoData ){
+        _.each(geoData, function(geo) {
+            var bubble = drawCircle(geo);
+        });
+    }
+
+    function drawCircle(geo){
+        var data = geo['layer_loanVolume'],
+            //style = Mapusaurus.minorityContinuousStyle(
+            //    geoProps, Mapusaurus.bubbleStyle),
+            circle = L.circle([geo.centlat, geo.centlon],
+                              hmdaStat(data), {className: 'lar-circle'} );
+        //  We will use the geoid when redrawing
+        circle.geoid = geo.geoid;
+        //  keep expected functionality with double clicking
+        // circle.on('dblclick', function(ev) {
+        //     Mapusaurus.map.setZoomAround(
+        //         ev.latlng, Mapusaurus.map.getZoom() + 1);
+        // });
+        circle.on('mouseover mousemove', function(e){
+            new L.popup()
+              .setContent(data['volume'] + ' records<br />' + data['num_households'] + ' households')
+              .setLatLng(e.latlng)
+              .openOn(map);
+        });
+        circle.on('mouseout', function(){ 
+            map.closePopup();
+        });
+        circle.addTo(map);
+    }
+
     /* 
         UTILITY FUNCTIONS
 
     */
+
+    //Scales statistical data to the appropriate level
+    function hmdaStat(tractData) {
+        var $selected = $('#action-taken-selector option:selected'),
+            fieldName = $selected.val(),
+            scale = $selected.data('scale'),
+            area = scale * tractData['volume'];
+        //  As Pi is just a constant scalar, we can ignore it in this
+        //  calculation: a = pi*r*r   or r = sqrt(a/pi)
+        return Math.sqrt(area);
+    }
+
+
     function urlParam(field) {
         var url = window.location.search.replace('?', ''),
             keyValueStrs = url.split('&'),
