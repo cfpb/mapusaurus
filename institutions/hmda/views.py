@@ -17,11 +17,29 @@ def volume_per_100_households(volume, num_households):
 def loan_originations(request_dict):
     """Get loan originations for a given lender, county combination. This
     ignores year for the moment."""
-
+    geoid = request_dict.get('geoid', [])
     counties = request_dict.get('county', [])
     lender = request_dict.get('lender', [])
     action_taken = request_dict.get('action_taken', [])
-    if counties and all(len(c) == 5 for c in counties) and lender:
+    if geoid and lender and action_taken:
+        query = HMDARecord.objects.filter(
+            # actions 7-8 are preapprovals to ignore
+            property_type__in=[1,2], owner_occupancy=1, lien_status=1,
+            lender=lender[0], action_taken__in=action_taken
+        ).filter(geoid_id__in=geoid).values(
+            'geoid', 'geoid__census2010households__total'
+        ).annotate(volume=Count('geoid'))
+        data = {}
+        for row in query:
+            data[row['geoid']] = {
+                'volume': row['volume'],
+                'num_households': row['geoid__census2010households__total'],
+                'volume_per_100_households': volume_per_100_households(
+                    row['volume'], row['geoid__census2010households__total'])
+            }
+        return data
+
+    elif counties and all(len(c) == 5 for c in counties) and lender:
         query = HMDARecord.objects.filter(
             # actions 7-8 are preapprovals to ignore
             property_type__in=[1,2], owner_occupancy=1, lien_status=1,
@@ -40,7 +58,7 @@ def loan_originations(request_dict):
         return data
     else:
         return HttpResponseBadRequest(
-            "Missing one of county or lender")
+            "Missing one of lender, action_taken and county or geoid.")
 
 
 def loan_originations_http(request):

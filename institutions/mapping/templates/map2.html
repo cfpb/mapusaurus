@@ -1,0 +1,72 @@
+{% extends "basestyle/map_layout.html" %}
+{% load leaflet_tags %}
+{% load staticfiles %}
+
+{% block title %}Fair Lending HMDA Visualization Toolkit{% endblock %}
+
+{% block head_styles %}
+    {% leaflet_css %}
+    <link rel="stylesheet" href="{% static 'mapping/lib/rrose/leaflet.rrose.css' %}" />
+    <link rel="stylesheet" href="{% static 'mapping/lib/leaflet-search/css/leaflet-search.css' %}" />
+    <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex.css' %}" />
+    <link rel="stylesheet" href="{% static 'mapping/lib/vex/css/vex-theme-plain.css' %}" />
+    
+{% endblock %}
+
+{% block head_scripts %}
+
+{% endblock %}
+
+{% block sidebar_content %}
+
+    <div class="map_aside__tabpanels tabpanels">
+
+        {% include 'partial/map_lender_info.html'%}
+
+        {% include 'partial/map_actions.html'%}
+
+    </div>
+
+{% endblock %}
+
+
+{% block main_content %}
+
+    <div id="map-container"
+        {% if metro %} 
+            data-cent-lat="{{metro.centlat}}"
+            data-cent-lon="{{metro.centlon}}"
+            data-geoid="{{metro.geoid}}"
+        {% endif %}
+    >
+            
+    {% leaflet_map "map" callback="Mapusaurus.initialize" %}
+
+    </div>
+
+
+    {% include 'partial/map_key.html'%}
+
+
+{% endblock %}
+
+{% block foot_scripts %}
+
+    {% leaflet_js %}
+    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
+    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
+    <script type="text/javascript" src="//canvg.googlecode.com/svn/trunk/canvg.js"></script> 
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
+    <script type="text/javascript" src="{% static 'mapping/lib/rrose/rrose-src.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/lib/geojsontile/TileLayer.GeoJSON.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/lib/leaflet-search/js/leaflet-search.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/lib/vex/js/vex.combined.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/js/map.js' %}"></script>
+    <img id="key-image" class="hidden" src="{% static 'mapping/images/key-image.png' %}" />
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
+
+{% endblock %}

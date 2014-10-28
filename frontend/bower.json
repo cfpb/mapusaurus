@@ -2,20 +2,21 @@
   "name": "mapusaurus",
   "dependencies": {
     "jquery": "1.11.0",
-    "underscore": "git@github.com:jashkenas/underscore.git#1.7.0",
+    "underscore": "git+https://github.com/jashkenas/underscore.git#1.7.0",
     "font-awesome": "4.2.0",
     "normalize-css": "3.0.1",
-    "cf-core": "git://github.com/cfpb/cf-core#0.5.0",
-    "cf-icons": "git://github.com/cfpb/cf-icons.git#0.4.0",
-    "cf-grid": "git://github.com/cfpb/cf-grid.git#0.9.0",   
-    "cf-buttons": "git://github.com/cfpb/cf-buttons.git#1.3.0",
-    "cf-forms": "git://github.com/cfpb/cf-forms.git#1.1.0",
-    "cf-expandables": "git://github.com/cfpb/cf-expandables.git#0.5.0",
-    "cf-pagination": "git://github.com/cfpb/cf-pagination.git#0.4.0",
-    "leaflet": "git@github.com:Leaflet/Leaflet.git#0.7.3",
-    "leaflet-rrose": "git@github.com:erictheise/rrose.git#0.1.0",
-    "leafet-tilelayer-geojson": "git@github.com:glenrobertson/leaflet-tilelayer-geojson.git",
-    "topojson": "git@github.com:mbostock/topojson.git#1.6.18",
-    "typeahead": "git@github.com:twitter/typeahead.js.git#0.10.5"
+    "cf-core": "git+https://github.com/cfpb/cf-core#0.5.0",
+    "cf-icons": "git+https://github.com/cfpb/cf-icons#0.4.0",
+    "cf-grid": "git+https://github.com/cfpb/cf-grid#0.9.0",
+    "cf-buttons": "git+https://github.com/cfpb/cf-buttons#1.3.0",
+    "cf-forms": "git+https://github.com/cfpb/cf-forms#1.1.0",
+    "cf-expandables": "git+https://github.com/cfpb/cf-expandables#0.5.0",
+    "cf-pagination": "git+https://github.com/cfpb/cf-pagination#0.4.0",
+    "leaflet": "git+https://github.com/Leaflet/Leaflet#0.7.3",
+    "leaflet-rrose": "git+https://github.com/erictheise/rrose#0.1.0",
+    "leafet-tilelayer-geojson": "git+https://github.com/glenrobertson/leaflet-tilelayer-geojson",
+    "topojson": "git+https://github.com/mbostock/topojson#1.6.18",
+    "typeahead": "git+https://github.com/twitter/typeahead.js#0.10.5"
   }
+
 }
