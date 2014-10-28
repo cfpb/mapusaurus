@@ -89,6 +89,23 @@
             setMapHeight();
         });
 
+        //Let the application do its thing 
+        //TODO: Chain these using deferreds to avoid callback hell
+        getTractsInBounds( map.getBounds(), function(){
+            createDataObj(rawGeo, function(){
+                getLarDataByTract( getActionTaken( $('#action-taken-selector option:selected').val() ) , dataStore.tractList, function(){
+                    addLarToDataStore(rawLar, function(){
+                        getMinorityData( dataStore.tractList, function(){
+                            addMinorityToDataStore( rawMinority, function(){
+                                redrawCircles(dataStore.tracts);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+
         
     });
         
@@ -108,41 +125,75 @@
         GET THE DATA THE PAGE NEEDS TO LOAD
     */    
 
-    var dataStore = {};
+    var rawGeo, rawLar, rawMinority,
+    dataStore = {};
     dataStore.tracts = {};
     dataStore.counties = [];
 
 
+    // function loadAll() {
+    //     var myPromises = [loadA(), loadB()];
+
+    //     Q.all(myPromises, callback()
+    //     {
+
+    //     });
+
+    //     loadA().then(resultOfA, loadB(resultofA));
+
+
+    //     Q.spread(loadA, loadB, function (a, b) {
+
+    //     });
+    // }
+
+    // function loadB() {
+    //     return Q(asdfasdflasdf);
+    // }
+    
+    // function loadA(){
+    //     var deferred = Q.defer();
+
+
+    //     ajax.get(asdfasdf, callback() {
+    //         deferred.resolve(blah);
+    //     };
+
+
+    //     return deferred.promise;
+    // }
+
     function getTractsInBounds( bounds, callback ){
+        // var d = new $.Deferred();
         var endpoint = '/shapes/tractCentroids/',
-            neLat,neLon,swLat,swLon;
+            neLat,neLon,swLat,swLon,
+            padding = .05;
         
         // Get the bounds from the current map to 6 decimal places (to work with Django view)
         // with manually entered padding   
-        neLat = (bounds._northEast.lat + .5).toFixed(6);
-        neLon = (bounds._northEast.lng + .5).toFixed(6);
-        swLat = (bounds._southWest.lat - .5).toFixed(6);
-        swLon = (bounds._southWest.lng - .5).toFixed(6);
+        neLat = (bounds._northEast.lat + padding).toFixed(6);
+        neLon = (bounds._northEast.lng + padding).toFixed(6);
+        swLat = (bounds._southWest.lat - padding).toFixed(6);
+        swLon = (bounds._southWest.lng - padding).toFixed(6);
         
         // Create the appropriate URL path to return values
         endpoint += neLat + '/' + neLon + '/' + swLat + '/' + swLon;
-        console.log('Endpoint: ', endpoint);
 
         $.ajax({
-            url: endpoint, traditional: true,
-            success: console.log('getTractData successful')
+            url: endpoint, traditional: true
         })
         .fail( function(data){
-            console.log('There was an error with your request', params );
         })
         .done( function(data){
-            console.log( 'getTractsinBounds Data: ', data);
-            callback(data);
-        }); 
+            rawGeo = data;
+            if( typeof callback === 'function' && callback() ){
+                callback(data);
+            }
+        });
 
     }
 
-    function createDataObj( data ){
+    function createDataObj( data, callback ){
         //Empty out the county store to redraw
         dataStore.counties = [];
         dataStore.tractList = [];
@@ -159,43 +210,9 @@
             var county5char = feature.properties.state + feature.properties.county;
             dataStore.counties.push( county5char );
         });
-    }
 
-    // The function we'll use to get all the stuff we need after page is loaded.
-    function getBubbleData(){
-
-    }
-
-    function getLarDataByCounty( actionTakenVal, counties, callback ){
-        var endpoint = '/hmda/volume',
-            params;
-
-        params = {'county': getUniques( counties )};
-
-        // Set the lender parameter based on the current URL param
-        // This could be set as a parameter later if need be
-        if ( urlParam('lender')) {
-            params['lender'] = urlParam('lender');
-        }
-
-        // If our parameter is passed properly, go get data, otherwise
-        // return an error that no parameter is available.
-        if ( actionTakenVal ) {
-            params['action_taken'] = actionTakenVal;
-            console.log('params: ', params);
-            $.ajax({
-                url: endpoint, data: params, traditional: true,
-                success: console.log('getLarData request successful')
-            })
-            .fail( function(data){
-                console.log('There was an error with your request', params );
-            })
-            .done( function(data){
-                console.log(data);
-                callback(data);
-            });
-        } else {
-            console.log('Error: no action taken value');
+        if( typeof callback === 'function' && callback() ){
+            callback;
         }
     }
 
@@ -225,28 +242,30 @@
             })
             .done( function(data){
                 console.log(data);
-                callback(data);
+                rawLar = data;
+                if( typeof callback === 'function' && callback() ){
+                    callback(data);
+                }
             });
         } else {
             console.log('Error: no action taken value');
         }
     }
 
-    function addLarToDataStore( data ){
+    function addLarToDataStore( data, callback ){
         _.each( dataStore.tracts, function(num, key){
             //console.log('num: ', num);
-            console.log('key: ', key);
             num.layer_loanVolume = {};
-            console.log('num', num);
             if( typeof data[key] != 'undefined' ){
                 num.layer_loanVolume = data[key];
             } else {
-                console.log(' no data available ');
-                console.log(' TRACT WITHOUT DATA: ', key, num);
                 num.layer_loanVolume.volume = 0;
             }
-
+            
         });
+        if( typeof callback === 'function' && callback() ){
+            callback;
+        }
     }
 
     function getMinorityData(tractList, callback){
@@ -263,26 +282,33 @@
             console.log('There was an error with your request', params );
         })
         .done( function(data){
-            callback(data);
+            rawMinority = data;
+            if( typeof callback === 'function' && callback() ){
+                callback(data);
+            }
         });        
     }
 
-    function addMinorityToDataStore( data ){
+    function addMinorityToDataStore( data, callback ){
         _.each( dataStore.tracts, function(num, key){
             //console.log('num: ', num);
-            console.log('key: ', key);
             num.layer_minority = {};
             if( typeof data[key] != 'undefined' ){
                 num.layer_minority = data[key];
             } else {
                 console.log(' no data available for tract ', num);
             }
-
-        });        
+        });  
+        if( typeof callback === 'function' && callback() ){
+            callback;
+        }      
     }
+    /*
+        END GET DATA SECTION
+    */
 
     /*
-        STYLE THE CIRCLES BASED ON MINORITY
+        ---- STYLE THE CIRCLES BASED ON MINORITY ----
     */
 
     var baseStyle = { fillOpacity: 0.9, weight: 1, className: 'lar-circle' },
@@ -383,16 +409,22 @@
                (c.lowB + diffB).toFixed() + ')';
     }
 
+    /*
+        END STYLE SECTION
+    */
+
     /* 
-        DRAW CIRCLES
+        ---- DRAW CIRCLES ----
     */
 
     function redrawCircles( geoData ){
         // Remove circles currently on the page (TODO: Add as LayerGroup and transition)
+        $('#bubbles_loading').show();
         $('.lar-circle').remove(); 
         _.each(geoData, function(geo) {
             var bubble = drawCircle(geo);
         });
+        $('#bubbles_loading').hide();
     }
 
     function drawCircle(geo){
@@ -401,7 +433,7 @@
                geo, baseStyle),
             circle = L.circle([geo.centlat, geo.centlon],
                               hmdaStat(data), style );
-            console.log('Circle Style: ', style);
+            // console.log('Circle Style: ', style);
         //  We will use the geoid when redrawing
         circle.geoid = geo.geoid;
         //  keep expected functionality with double clicking
@@ -421,13 +453,12 @@
         circle.addTo(map);
     }
 
-    function styleCircle(geo){
-        var data = geo['layer_minority'];
-
-    }
+    /*
+        END STYLE SECTION
+    */
 
     /* 
-        UTILITY FUNCTIONS
+        ---- UTILITY FUNCTIONS ----
 
     */
 
@@ -481,7 +512,11 @@
     }
 
     /* 
-        MAP TABS - SEPARATE LATER
+        END UTILITY FUNCTIONS
+    */
+
+    /* 
+        ---- MAP TABS - SEPARATE LATER ----
     */
 
     (function( $ ) {
