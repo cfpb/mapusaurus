@@ -126,9 +126,9 @@
         $('#bubbles_loading').show();
         getTractsInBounds( map.getBounds(), function(){
             createDataObj(rawGeo, function(){
-                getLarDataByTract( getActionTaken( $('#action-taken-selector option:selected').val() ) , dataStore.tractList, function(){
+                getLarDataByCounty( getActionTaken( $('#action-taken-selector option:selected').val() ) , dataStore.counties, function(){
                     addLarToDataStore(rawLar, function(){
-                        getMinorityData( dataStore.tractList, function(){
+                        getMinorityData( dataStore.counties, function(){
                             addMinorityToDataStore( rawMinority, function(){
                                 redrawCircles(dataStore.tracts);
                             });
@@ -212,6 +212,41 @@
         }
     }
 
+    function getLarDataByCounty( actionTakenVal, counties, callback ){
+        var endpoint = '/hmda/volume',
+            params;
+
+        params = {'county': getUniques( counties )};
+
+        // Set the lender parameter based on the current URL param
+        // This could be set as a parameter later if need be
+        if ( urlParam('lender')) {
+            params['lender'] = urlParam('lender');
+        }
+
+        // If our parameter is passed properly, go get data, otherwise
+        // return an error that no parameter is available.
+        if ( actionTakenVal ) {
+            params['action_taken'] = actionTakenVal;
+            console.log('params: ', params);
+            $.ajax({
+                url: endpoint, data: params, traditional: true,
+                success: console.log('getLarData request successful')
+            })
+            .fail( function(data){
+                console.log('There was an error with your request', params );
+            })
+            .done( function(data){
+                console.log('larbyCountyData: ', data);
+                rawLar = data;
+                if( typeof callback === 'function' && callback() ){
+                    callback;
+                }
+            });
+        } else {
+            console.log('Error: no action taken value');
+        }
+    }
     function getLarDataByTract( actionTakenVal, tractList, callback ){
         var endpoint = '/hmda/volume',
             params;
@@ -264,11 +299,11 @@
         }
     }
 
-    function getMinorityData(tractList, callback){
+    function getMinorityData(counties, callback){
         var endpoint = '/census/race-summary',
             params;
 
-        params = {'geoid': tractList };    
+        params = {'county': getUniques( counties )};    
 
         $.ajax({
             url: endpoint, data: params, traditional: true,
