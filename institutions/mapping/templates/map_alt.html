@@ -77,8 +77,14 @@
         layers.PctMinority.addTo(map);
         layers.PlaceNames.addTo(map);
         L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
-        map.legendControl.addLegend(document.getElementById('key').innerHTML, {position: 'topright'});
+        //map.legendControl.addLegend(document.getElementById('key').innerHTML, {position: 'topright'});
         layers.loanVolume = L.layerGroup([]);
+        var key = L.control();
+        key.onAdd = function() {
+            return L.DomUtil.get('key');
+        };
+        key.setPosition('topright');
+        key.addTo(map);
 
     $(document).ready(function(){
         $('.tabs').show();
@@ -92,10 +98,24 @@
         //Let the application do its thing 
         runIt();
 
-        map.on('moveend', function(e){
-            runIt();
-        });
+        map.on('moveend', _.debounce(runIt, 500) );
+        $('#action-taken-selector').on('change', _.debounce(runIt, 500) );
 
+        $('#category-selector').on('change', function(e) {
+            val = $('#category-selector option:selected').val();
+            console.log('value change: ', val);
+            if( val === 'hispanic_perc'){
+                map.removeLayer(layers.PctMinority);
+                map.addLayer(layers.PctHispanic);
+                redrawCircles(dataStore.tracts);
+            } else if( val === 'inv_non_hisp_white_only_perc') {
+                map.removeLayer(layers.PctHispanic);
+                map.addLayer(layers.PctMinority);
+                redrawCircles(dataStore.tracts);
+            } else {
+                console.log('These layers do not exist right now');
+            }
+        });
 
         
     });
@@ -138,39 +158,6 @@
     dataStore = {};
     dataStore.tracts = {};
     dataStore.counties = [];
-
-
-    // function loadAll() {
-    //     var myPromises = [loadA(), loadB()];
-
-    //     Q.all(myPromises, callback()
-    //     {
-
-    //     });
-
-    //     loadA().then(resultOfA, loadB(resultofA));
-
-
-    //     Q.spread(loadA, loadB, function (a, b) {
-
-    //     });
-    // }
-
-    // function loadB() {
-    //     return Q(asdfasdflasdf);
-    // }
-    
-    // function loadA(){
-    //     var deferred = Q.defer();
-
-
-    //     ajax.get(asdfasdf, callback() {
-    //         deferred.resolve(blah);
-    //     };
-
-
-    //     return deferred.promise;
-    // }
 
     function getTractsInBounds( bounds, callback ){
         // var d = new $.Deferred();
