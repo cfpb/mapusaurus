@@ -90,7 +90,20 @@
         });
 
         //Let the application do its thing 
-        //TODO: Chain these using deferreds to avoid callback hell
+        runIt();
+
+        map.on('moveend', function(e){
+            runIt();
+        });
+
+
+        
+    });
+    
+    // Go get the data and draw the circles
+    // TODO: Chain these using deferreds to avoid callback hell    
+    function runIt(){
+        $('#bubbles_loading').show();
         getTractsInBounds( map.getBounds(), function(){
             createDataObj(rawGeo, function(){
                 getLarDataByTract( getActionTaken( $('#action-taken-selector option:selected').val() ) , dataStore.tractList, function(){
@@ -104,11 +117,7 @@
                 });
             });
         });
-
-
-        
-    });
-        
+    }
 
     function setMapHeight() {
         /* Set the map div to the height of the browser window minus the header. */
@@ -296,7 +305,7 @@
             if( typeof data[key] != 'undefined' ){
                 num.layer_minority = data[key];
             } else {
-                console.log(' no data available for tract ', num);
+                console.log(' no data available for tract ');
             }
         });  
         if( typeof callback === 'function' && callback() ){
