@@ -8,7 +8,7 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
     url(r'^$', RedirectView.as_view(url='/institutions/')),
-    url(r'^batch', include('batch.urls')),
+    url(r'^api/', include('api.urls')),
     url(r'^institutions/', include('respondants.urls',
                                    namespace='respondants')),
     url(r'^admin/', include(admin.site.urls)),
