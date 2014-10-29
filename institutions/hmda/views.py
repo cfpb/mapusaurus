@@ -10,7 +10,6 @@ from rest_framework.renderers import JSONRenderer
 def loan_originations(request):
     """Get loan originations for a given lender, county combination. This
     ignores year for the moment."""
-    import pdb; pdb.set_trace();
     northEastLat, northEastLon, southWestLat, southWestLon = request.GET.get('neLat'), request.GET.get('neLon', []), request.GET.get('swLat', []), request.GET.get('swLon', [])
     geoids = get_censustract_geoids(request, northEastLat, northEastLon, southWestLat, southWestLon)
     lender = request.GET.get('lender', [])
