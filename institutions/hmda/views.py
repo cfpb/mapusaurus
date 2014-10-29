@@ -14,11 +14,12 @@ def loan_originations(request):
     geoids = get_censustract_geoids(request, northEastLat, northEastLon, southWestLat, southWestLon)
     lender = request.GET.get('lender', [])
     action_taken = request.GET.getlist('action_taken', [])
+    import pdb; pdb.set_trace();
     if geoids and lender and action_taken:
         query = HMDARecord.objects.filter(
             # actions 7-8 are preapprovals to ignore
             property_type__in=[1,2], owner_occupancy=1, lien_status=1,
-            lender=lender[0], action_taken__in=action_taken
+            lender=lender, action_taken__in=action_taken
         ).filter(geoid_id__in=geoids).values(
             'geoid', 'geoid__census2010households__total'
         ).annotate(volume=Count('geoid'))
