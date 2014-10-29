@@ -13,8 +13,8 @@ def loan_originations(request):
     northEastLat, northEastLon, southWestLat, southWestLon = request.GET.get('neLat'), request.GET.get('neLon', []), request.GET.get('swLat', []), request.GET.get('swLon', [])
     geoids = get_censustract_geoids(request, northEastLat, northEastLon, southWestLat, southWestLon)
     lender = request.GET.get('lender', [])
-    action_taken = request.GET.getlist('action_taken', [])
-    import pdb; pdb.set_trace();
+    action_taken_param = request.GET.get('action_taken', [])
+    action_taken = action_taken_param.split(',')
     if geoids and lender and action_taken:
         query = HMDARecord.objects.filter(
             # actions 7-8 are preapprovals to ignore
