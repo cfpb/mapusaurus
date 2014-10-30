@@ -57,28 +57,7 @@ def load_respondants(working_dir):
     load_reporter_panel(working_dir)
 
 
-def load_state_shapefiles(working_dir):
-    """For all states, download shape files and load them into the db"""
-    base_url = "ftp://ftp2.census.gov/geo/tiger/TIGER2014/TRACT/"
-    file_tpl = "tl_2014_%02d_tract.zip"
-    for i in range(1, 70):
-        filename = file_tpl % i
-        with lcd(working_dir):
-            with settings(warn_only=True):
-                print base_url + filename
-                result = local("wget " + base_url + filename, capture=True)
-            if result.failed:
-                continue
-            local("unzip " + filename)
-            local("rm " + filename)
-        with lcd("../institutions"):
-            local("python manage.py load_geos_from " + working_dir + "/"
-                  + filename.replace("zip", "shp"))
-        with lcd(working_dir):
-            local("rm " + filename.replace("zip", "*"))
-
-
-def load_other_geos(working_dir):
+def load_geos(working_dir):
     """In addition to tracts, we need to load counties, metros, and more."""
     for geo_type in ('county', 'cbsa', 'metdiv'):
         filename = "tl_2014_us_" + geo_type + ".zip"
@@ -95,7 +74,7 @@ def load_other_geos(working_dir):
         local("python manage.py set_tract_csa_cbsa")
 
 
-def load_summary_ones(working_dir):
+def load_census(working_dir):
     """For all states, download census files and load them into the db"""
     url_tpl = "http://www2.census.gov/census_2010/04-Summary_File_1/%s/"
     url_tpl += "%s2010.sf1.zip"
@@ -126,7 +105,7 @@ def load_hmda(working_dir):
     with lcd("../institutions"):
         local("python manage.py load_hmda '" + working_dir + "' delete_file:true" )
         local("sudo su postgres")
-        local("reindex flc_demo)
+        local("reindex flc_demo")
 
 def precache_hmda():
     """We precache median loan amount per lender x metro"""
@@ -137,8 +116,7 @@ def precache_hmda():
 def load_all(working_dir="/tmp"):
     """Download and import all data for the app"""
     load_respondants(working_dir)
-    load_state_shapefiles(working_dir)
-    load_other_geos(working_dir)
-    load_summary_ones(working_dir)
+    load_geos(working_dir)
+    load_census(working_dir)
     load_hmda(working_dir)
     precache_hmda()
