@@ -96,9 +96,10 @@
         });
 
         //Let the application do its thing 
-        runIt();
+        //runIt();
 
-        map.on('moveend', _.debounce(runIt, 500) );
+        //map.on('moveend', _.debounce(runIt, 500) );
+
         $('#action-taken-selector').on('change', _.debounce(runIt, 500) );
 
         $('#category-selector').on('change', function(e) {
@@ -154,10 +155,83 @@
         GET THE DATA THE PAGE NEEDS TO LOAD
     */    
 
-    var rawGeo, rawLar, rawMinority,
+    var rawGeo, rawLar, rawMinority, rawData,
     dataStore = {};
     dataStore.tracts = {};
     dataStore.counties = [];
+
+    function getAllData( bounds, actionTakenVal, callback ){
+        var endpoint = '/api/all/',
+            params,
+            padding = .05;
+
+        params = {
+             // Get the bounds from the current map to 6 decimal places (to work with Django view)
+            // with manually entered padding   
+            neLat: (bounds._northEast.lat + padding).toFixed(6),
+            neLon: (bounds._northEast.lng + padding).toFixed(6),
+            swLat: (bounds._southWest.lat - padding).toFixed(6),
+            swLon: (bounds._southWest.lng - padding).toFixed(6),
+            year: 2013           
+        };
+
+        // Check to see if another year has been requested
+        if ( urlParam('year') ){
+            params.year = urlParam('year');
+        }
+
+        // Set the lender parameter based on the current URL param
+        if ( urlParam('lender') ){
+            params['lender'] = urlParam('lender');
+        } else {
+            console.log(' Lender parameter is required.');
+            return false;
+        }
+
+        // If actionTaken, go get data, otherwise
+        // let the user know about the default value
+        if ( actionTakenVal ) {
+            params['action_taken'] = actionTakenVal;
+        } else {
+            console.log('No action taken value - default (1-5) will be used.');
+        }
+
+        console.log('params: ', params);
+        $.ajax({
+            url: endpoint, data: params, traditional: true,
+            success: console.log('get API All Data request successful')
+        })
+        .fail( function(data){
+            console.log('There was an error with your API request', params );
+        })
+        .done( function(data){
+            console.log(data);
+            rawData = data;
+            if( typeof callback === 'function' && callback() ){
+                callback(data);
+            }
+        });
+    }
+
+    function createAllDataObj( callback ){
+        
+        // For each top-level data element returned (minority, loanVolume)
+        _.each( rawData.minority, function(val, key){
+            // Loop through each tract and merge the dataset (this could be done server side as well if faster)
+                console.log('each loop Key: ', key);
+                // Make sure the tracts object exists before writing to it.
+                if( typeof dataStore.tracts[key] != 'undefined' ){
+                    console.log( 'tract data object exists' );   
+                } else {
+                    dataStore.tracts[key] = {};
+                } 
+                dataStore.tracts[key] = _.extend(val, rawData.loanVolume[key]);     
+        });
+
+        if( typeof callback === 'function' && callback() ){
+            callback;
+        }
+    }
 
     function getTractsInBounds( bounds, callback ){
         // var d = new $.Deferred();
