@@ -105,7 +105,7 @@ def load_hmda(working_dir):
     with lcd("../institutions"):
         local("python manage.py load_hmda '" + working_dir + "' delete_file:true" )
         local("sudo su postgres")
-        local("reindex flc_demo)
+        local("reindex flc_demo")
 
 def precache_hmda():
     """We precache median loan amount per lender x metro"""
