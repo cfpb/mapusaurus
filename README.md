@@ -37,29 +37,6 @@ Postgres 9.1.13
 
 There's also a requirements.txt file in the repository root directory.  
 
-## Download All the Data in One Shot
-
-We have a fabric script to download *all* of the data (tens of gigs). To run
-it, we assume you've already set up your database, python environment, etc.
-etc. Then:
-
-```bash
-    cd ~/mapusaurus/data-scripts
-    sudo pip install fabric
-    fab load_all:working_dir=/tmp
-```
-## Download Sample Test Data in One Shot
-
-We have a fabric script to download sample data for development environments. To run
-it, we assume you've already set up your database, python environment, etc.
-etc. Then:
-
-```bash
-    cd ~/mapusaurus/institutions
-    sudo pip install fabric
-    fab -f ../data-scripts/fabfileSampleData.py load_all:working_dir=/tmp
-```
-
 ## Loading the data
 
 This uses South. 
