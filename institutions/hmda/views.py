@@ -15,11 +15,12 @@ def loan_originations(request):
     lender = request.GET.get('lender', [])
     action_taken_param = request.GET.get('action_taken', [])
     action_taken = action_taken_param.split(',')
+    year = request.GET.get('year', [])
     if geoids and lender and action_taken:
         query = HMDARecord.objects.filter(
             # actions 7-8 are preapprovals to ignore
             property_type__in=[1,2], owner_occupancy=1, lien_status=1,
-            lender=lender, action_taken__in=action_taken
+            lender=lender, as_of_year=year, action_taken__in=action_taken
         ).filter(geoid_id__in=geoids).values(
             'geoid', 'geoid__census2010households__total'
         ).annotate(volume=Count('geoid'))
