@@ -29,14 +29,13 @@
 
 
 {% block main_content %}
-<div id="map-container" style="height: 1200px">
+<div id="map-container">
     <div id="map"
         {% if metro %} 
             data-cent-lat="{{metro.centlat}}"
             data-cent-lon="{{metro.centlon}}"
             data-geoid="{{metro.geoid}}"
         {% endif %}
-        style="height: 100%"
     >
     {% include 'partial/map_key.html'%}    
     </div>
@@ -48,6 +47,9 @@
 {% block foot_scripts %}
     
     <script>
+    
+        setMapHeight();
+        
         L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
         
         var map = L.mapbox.map('map')
@@ -88,9 +90,9 @@
         key.addTo(map);
 
     $(document).ready(function(){
-        $('.tabs').show();
+
         $('.tabs').mapusaurusTabs();
-        setMapHeight();
+        $('.tabs').show();
 
         $( window ).resize(function() {
             setMapHeight();
@@ -120,7 +122,6 @@
                 console.log('These layers do not exist right now');
             }
         });
-
         
     });
     
