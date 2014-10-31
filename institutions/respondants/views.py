@@ -47,7 +47,7 @@ def search_home(request):
 def select_metro(request, agency_id, respondent):
     """Once an institution is selected, search for a metro"""
     institution = get_object_or_404(Institution, ffiec_id=respondent,
-                                    agency_id=int(agency_id), year=2012)
+                                    agency_id=int(agency_id), year=2013)
     import pdb; pdb.set_trace();
     return render(request, 'respondants/metro_search.html', {
         'institution': institution
@@ -91,7 +91,7 @@ def search_results(request):
         current_sort = 'score'
 
     if lender_id:
-        query = query.filter(lender_id=Exact(lender_id), year=2012)
+        query = query.filter(lender_id=Exact(lender_id), year=2013)
     elif query_str and request.GET.get('auto'):
         query = query.filter(text_auto=AutoQuery(query_str))
     elif query_str:
