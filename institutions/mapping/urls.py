@@ -2,6 +2,5 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns(
     '',
-    url(r'^$', 'mapping.views.map', name='map'),
-    url(r'^alt/', 'mapping.views.mapAlt', name='mapAlt')
+    url(r'^$', 'mapping.views.map', name='map')
 )
