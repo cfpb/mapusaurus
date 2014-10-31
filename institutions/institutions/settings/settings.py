@@ -50,7 +50,7 @@ INSTALLED_APPS = (
     'geo',
     'censusdata',
     'hmda',
-    'batch',
+    'api',
 )
 
 MIDDLEWARE_CLASSES = (

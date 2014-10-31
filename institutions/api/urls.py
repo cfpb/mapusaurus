@@ -3,5 +3,5 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns(
     '',
-    url('^$', 'batch.views.batch', name='batch')
+    url(r'^all/', 'api.views.all', name='all'),
 )

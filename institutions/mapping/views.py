@@ -8,12 +8,12 @@ from hmda.management.commands.calculate_loan_stats import (calculate_median_loan
 from respondants.models import Institution
 
 
+
 def map(request):
     """Display the map. If lender info is present, provide it to the
     template"""
     lender = request.GET.get('lender', '')
     metro = request.GET.get('metro')
-    template = request.GET.get('template', 'leaflet')
     context = {}
     if lender and len(lender) > 1 and lender[0].isdigit():
         query = Institution.objects.filter(agency_id=int(lender[0]))
@@ -39,42 +39,7 @@ def map(request):
     else:
         context['scaled_median_loans'] = 0
 
-    if template == 'mapbox':
-        return render(request, 'mapbox.html', context)
-    else:
-        return render(request, 'map.html', context)
-
-def mapAlt(request):
-    """Display the map. If lender info is present, provide it to the
-    template"""
-    lender = request.GET.get('lender', '')
-    metro = request.GET.get('metro')
-    context = {}
-    if lender and len(lender) > 1 and lender[0].isdigit():
-        query = Institution.objects.filter(agency_id=int(lender[0]))
-        query = query.filter(ffiec_id=lender[1:])
-        query = query.select_related('agency', 'zip_code')
-        lender = query.first()
-        if lender:
-            context['lender'] = lender
-    else:
-        lender = None
-    if metro:
-        query = Geo.objects.filter(geo_type=Geo.METRO_TYPE,
-                                   geoid=metro)
-        metro = query.first()
-        if metro:
-            context['metro'] = metro
-    context['download_url'] = make_download_url(lender, metro)
-    context['median_loans'] = lookup_median(lender, metro) or 0
-    if context['median_loans']:
-        # 50000 is an arbitrary constant; should be altered if we want to
-        # change how big the median circle size is
-        context['scaled_median_loans'] = 50000 / context['median_loans']
-    else:
-        context['scaled_median_loans'] = 0
-
-    return render(request, 'map_alt.html', context)
+    return render(request, 'map.html', context)
 
 def make_download_url(lender, metro):
     """Create a link to CFPB's HMDA explorer, either linking to all of this
