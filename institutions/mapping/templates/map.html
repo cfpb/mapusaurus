@@ -1,7 +1,7 @@
 {% extends "basestyle/map_layout.html" %}
 {% load staticfiles %}
 
-{% block title %}Fair Lending HMDA Visualization Toolkit{% endblock %}
+{% block title %}Fair Lending HMDA Visualization Toolkit - {{lender}}{% endblock %}
 
 {% block head_styles %}
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
@@ -53,6 +53,8 @@
         L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
         
         var map = L.mapbox.map('map')
+        map.options.maxZoom = 12;
+        map.options.minZoom = 9;
 
         {% if metro %}
             map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 11);
