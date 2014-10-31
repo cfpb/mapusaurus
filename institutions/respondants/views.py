@@ -48,7 +48,6 @@ def select_metro(request, agency_id, respondent):
     """Once an institution is selected, search for a metro"""
     institution = get_object_or_404(Institution, ffiec_id=respondent,
                                     agency_id=int(agency_id), year=2013)
-    import pdb; pdb.set_trace();
     return render(request, 'respondants/metro_search.html', {
         'institution': institution
     })
