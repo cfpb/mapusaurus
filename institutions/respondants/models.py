@@ -97,7 +97,7 @@ class Institution(models.Model):
         return formatted
 
     class Meta:
-        unique_together = ('ffiec_id', 'agency', 'year')
+        unique_together = ('ffiec_id', 'agency')
         index_together = [['ffiec_id', 'agency', 'year']]
 
     def __unicode__(self):
