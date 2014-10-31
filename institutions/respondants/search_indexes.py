@@ -20,7 +20,7 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
         an "extra" annotation"""
         subquery_tail = """
             FROM hmda_hmdarecord
-            WHERE hmda_hmdarecord.lender
+            WHERE year = 2013 AND hmda_hmdarecord.lender
                     = CAST(respondants_institution.agency_id AS VARCHAR(1))
                       || respondants_institution.ffiec_id"""
         return self.get_model().objects.extra(
