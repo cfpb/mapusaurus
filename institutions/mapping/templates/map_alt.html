@@ -127,7 +127,7 @@
     // Go get the data and draw the circles
     // TODO: Chain these using deferreds to avoid callback hell    
     function init(){
-        $.when( getTractsInBounds( getBoundParams() ), getTractData( getBoundParams(), '1,2,3,4,5') ).done( function(data1, data2){
+        $.when( getTractsInBounds( getBoundParams() ), getTractData( getBoundParams(), getActionTaken( $('#action-taken-selector option:selected').val() ))).done( function(data1, data2){
             rawGeo = data1[0];
             rawData = data2[0];
             createTractDataObj(); 
@@ -404,11 +404,6 @@
         );
     }
 
-    function minorityBucketedStyle(geoProps) {
-        return minorityStyle(geoProps, function() { return 0.5; },
-                                        baseStyle);
-    }
-
     //  Shared function for minority styling; called by the two previous fns
     function minorityStyle(geoProps, percentFn, baseStyle) {
         var geoid = geoProps.geoid,
@@ -443,6 +438,10 @@
                 bucketPercent = percentFn(perc, bucket);
             return colorFromPercent(bucketPercent, bucket.colors);
         }    
+    }
+
+    function percentFn(minorityPercent, bucket) {
+                return (minorityPercent - bucket.lowerBound) / bucket.span;
     }
 
     //  Using the selector, determine which statistic to display.
@@ -526,12 +525,10 @@
 
     function updateCircles(){
         //TODO: Figure out best way to update colors of existing, not redraw to reduce lag
-        _.each(layers.Centroids._layers, function(val, key){
-            console.log('val: ', val);
-            val.options.fillColor = updateMinorityCircleFill(val.geoid);
+        layers.Centroids.eachLayer( function(layer){
+            layer.setStyle({fillColor: updateMinorityCircleFill(layer.geoid) });
         });
         console.log("color update complete.");
-        //TODO: Get the updateMinorityCircleFillfunction to work properyly.
     }
 
     function drawCircle(geo){
