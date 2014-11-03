@@ -2,7 +2,7 @@ from django.db import models
 from django.template import defaultfilters
 from localflavor.us.models import USStateField
 
-from respondants.managers import AgencyManager
+from respondents.managers import AgencyManager
 
 
 class ZipcodeCityState(models.Model):
@@ -57,7 +57,7 @@ class ParentInstitution(models.Model):
 
 
 class Institution(models.Model):
-    """ An institution's (aka respondant) details. These can change per year.
+    """ An institution's (aka respondent) details. These can change per year.
     """
 
     year = models.SmallIntegerField()
@@ -97,7 +97,7 @@ class Institution(models.Model):
         return formatted
 
     class Meta:
-        unique_together = ('ffiec_id', 'agency')
+        unique_together = ('ffiec_id', 'agency', 'year')
         index_together = [['ffiec_id', 'agency', 'year']]
 
     def __unicode__(self):

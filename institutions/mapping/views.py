@@ -5,7 +5,7 @@ from django.shortcuts import render
 from geo.models import Geo
 from hmda.models import LendingStats
 from hmda.management.commands.calculate_loan_stats import (calculate_median_loans)
-from respondants.models import Institution
+from respondents.models import Institution
 
 
 

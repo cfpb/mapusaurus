@@ -1,5 +1,5 @@
 from django.db.utils import IntegrityError
-from respondants.models import ZipcodeCityState
+from respondents.models import ZipcodeCityState
 
 def create_zipcode(zip_code, city, state):
 

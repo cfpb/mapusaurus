@@ -12,21 +12,21 @@
 
         <h1>MDA Panel and Transmittal Sheet (TS) data</h1>
 
-        {% with institution=respondant %}
-            {% include 'respondants/partial/rp_institution_details.html' %}
+        {% with institution=respondent %}
+            {% include 'respondents/partial/rp_institution_details.html' %}
         {% endwith %}
 
-        {% if respondant.top_holder %}
+        {% if respondent.top_holder %}
             <h4>Top Holder:</h4>
-            {% with non_reporter=respondant.top_holder %}
-                {% include 'respondants/partial/rp_non_reporting_details.html' %}
+            {% with non_reporter=respondent.top_holder %}
+                {% include 'respondents/partial/rp_non_reporting_details.html' %}
             {% endwith %}
         {% endif %}
 
         {% if non_reporting_parent %}
             <h4>Non-reporting parent</h4>
             {% with non_reporter=non_reporting_parent %}
-                {% include 'respondants/partial/rp_non_reporting_details.html'%}
+                {% include 'respondents/partial/rp_non_reporting_details.html'%}
             {% endwith %}
         {% endif %}
 
@@ -35,7 +35,7 @@
             {% for p in parents %}
                 {% with institution=p %}
                     <h4>Parent:</h4>
-                    {% include 'respondants/partial/rp_institution_details.html' %}
+                    {% include 'respondents/partial/rp_institution_details.html' %}
                 {% endwith %}
             {% endfor %}
         {% endif %}

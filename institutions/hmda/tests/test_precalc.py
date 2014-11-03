@@ -5,7 +5,7 @@ from geo.models import Geo
 from hmda.management.commands.calculate_loan_stats import (
      calculate_median_loans, Command)
 from hmda.models import HMDARecord, LendingStats
-from respondants.models import Institution
+from respondents.models import Institution
 
 
 class PrecalcTest(TestCase):

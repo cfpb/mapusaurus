@@ -35,7 +35,7 @@
             <p>&nbsp;</p>
 
 
-            <form action="{% url 'respondants:search_results' %}" method="GET">
+            <form action="{% url 'respondents:search_results' %}" method="GET">
                 <div class="search-field">
                     <label for="search_name" class="search-name-label">Search by name or lender ID
                         (<a target="new" href="http://www.ffiec.gov/nicpubweb/nicweb/SearchForm.aspx">Need a Lender ID?</a> <span class="cf-icon cf-icon-external-link"></span>)
@@ -54,6 +54,6 @@
 
 {% block foot_scripts %}
 
-    <script type="text/javascript" src="{% static 'respondants/js/search.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'respondents/js/search.min.js' %}"></script>
 
 {% endblock %}

@@ -6,14 +6,14 @@
 
 {% block header_content %}
 
-    {% include "respondants/partial/search_results_form.html" %}
+    {% include "respondents/partial/search_results_form.html" %}
 
 {% endblock %}
 
 
 {% block sidebar_content %}
 
-    {% include "respondants/partial/search_results_sidebar.html" %}
+    {% include "respondents/partial/search_results_sidebar.html" %}
 
 {% endblock %}
 
@@ -22,12 +22,12 @@
 
     <div id="search-results" class="search-results">
 
-        {% include "respondants/partial/search_results_header.html" %}
+        {% include "respondents/partial/search_results_header.html" %}
 
         {% if total_results == 0 %}
             <h3>No results found.</h3>
         {% else %}
-            {% include 'respondants/partial/search_results_details.html' %}
+            {% include 'respondents/partial/search_results_details.html' %}
         {% endif %}
 
         <hr>
@@ -49,7 +49,7 @@
 {% block foot_scripts %}
 <!--
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
-    <script type="text/javascript" src="{% static 'respondants/js/search.js' %}"></script>
-    <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
+    <script type="text/javascript" src="{% static 'respondents/js/search.js' %}"></script>
+    <script type="text/javascript" src="{% static 'respondents/js/metro-search.js' %}"></script>
 -->
 {% endblock %}

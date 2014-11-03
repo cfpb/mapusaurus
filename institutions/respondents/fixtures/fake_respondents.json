@@ -1,6 +1,6 @@
 [
   {
-    "model": "respondants.zipcodecitystate",
+    "model": "respondents.zipcodecitystate",
     "pk": 11111,
     "fields": {
       "zip_code": "11111",
@@ -9,7 +9,7 @@
     }
   },
   {
-    "model": "respondants.institution",
+    "model": "respondents.institution",
     "pk": 1234567,
     "fields": {
       "year": 1970,
