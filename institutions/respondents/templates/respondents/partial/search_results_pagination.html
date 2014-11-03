@@ -4,7 +4,7 @@
 
     {% if prev_page > 0 %}
 
-      <a href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{prev_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">Previous</a>
+      <a href="{% url 'respondents:search_results' %}?q={{query_str}}&amp;page={{prev_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">Previous</a>
 
     {% else %}
 
@@ -20,7 +20,7 @@
 
     {% if page_num < total_pages %}
 
-      <a href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{next_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">Next</a> 
+      <a href="{% url 'respondents:search_results' %}?q={{query_str}}&amp;page={{next_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">Next</a> 
 
     {% else %}
 

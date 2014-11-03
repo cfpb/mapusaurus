@@ -14,7 +14,7 @@ from respondents.models import Institution
 def respondent(request, agency_id, respondent):
     respondent = get_object_or_404(Institution, ffiec_id=respondent,
                                    agency_id=int(agency_id))
-    context = {'respondent': respondant}
+    context = {'respondent': respondent}
 
     parents = [respondent]
 
@@ -32,7 +32,7 @@ def respondent(request, agency_id, respondent):
 
     return render(
         request,
-        'respondents/respondant_profile.html',
+        'respondents/respondent_profile.html',
         context
     )
 

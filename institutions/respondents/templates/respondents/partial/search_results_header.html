@@ -1,5 +1,5 @@
 <div class="search-results-heading">
-  <form role="form" method="get" action="{% url 'respondants:search_results' %}">
+  <form role="form" method="get" action="{% url 'respondents:search_results' %}">
   <div class="search-results-heading__title">
     <h1>Search results for &ldquo;{{ query_str }}&rdquo;</h1>
   </div>
@@ -17,7 +17,7 @@
 
     <div class="search-results-heading__second-row">
 
-      {% include 'respondants/partial/search_results_pagination.html' %}
+      {% include 'respondents/partial/search_results_pagination.html' %}
 
       <input type="hidden" id="page" name="page" value="{{page_num}}">
       <input type="hidden" name="q" value="{{ query_str }}">
@@ -26,16 +26,16 @@
 
         {% if current_sort == 'assets' %}
           <a 
-            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-assets" class="sort-up" title="Sort by assets">{{res.year}} 2012 Assets
+            href="{% url 'respondents:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-assets" class="sort-up" title="Sort by assets">{{res.year}} 2012 Assets
           </a>
         {% elif current_sort == '-assets' %}
           <a 
-            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=assets" class="sort-down" title="Sort by assets">{{res.year}} 2012 Assets
+            href="{% url 'respondents:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=assets" class="sort-down" title="Sort by assets">{{res.year}} 2012 Assets
           </a>
         {% else %}
           {# not sorted by assets, link should sort down (desc.) #}
           <a 
-            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-assets" class="sort-none" title="Sort by assets">{{res.year}} 2012 Assets
+            href="{% url 'respondents:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-assets" class="sort-none" title="Sort by assets">{{res.year}} 2012 Assets
           </a>
         {% endif %}
 
@@ -45,16 +45,16 @@
 
         {% if current_sort == 'num_loans' %}
           <a 
-            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-num_loans" class="sort-up" title="Sort by LAR Count">{{res.year}} 2012 LAR Count
+            href="{% url 'respondents:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-num_loans" class="sort-up" title="Sort by LAR Count">{{res.year}} 2012 LAR Count
           </a>
         {% elif current_sort == '-num_loans' %}
           <a 
-            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=num_loans" class="sort-down" title="Sort by LAR Count">{{res.year}} 2012 LAR Count
+            href="{% url 'respondents:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=num_loans" class="sort-down" title="Sort by LAR Count">{{res.year}} 2012 LAR Count
           </a>
         {% else %}
           {# not sorted by num_loans, click on link should sort down (desc.) #}
           <a 
-            href="{% url 'respondants:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-num_loans" class="sort-none" title="Sort by LAR Count">{{res.year}} 2012 LAR Count
+            href="{% url 'respondents:search_results' %}?q={{query_str}}&amp;page={{page_num}}&amp;num_results={{num_results}}&amp;sort=-num_loans" class="sort-none" title="Sort by LAR Count">{{res.year}} 2012 LAR Count
           </a>
         {% endif %}
 

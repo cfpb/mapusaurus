@@ -57,7 +57,7 @@ class ParentInstitution(models.Model):
 
 
 class Institution(models.Model):
-    """ An institution's (aka respondant) details. These can change per year.
+    """ An institution's (aka respondent) details. These can change per year.
     """
 
     year = models.SmallIntegerField()
