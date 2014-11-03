@@ -1,0 +1,59 @@
+{% extends "basestyle/one_column_layout.html" %}
+{% load static %}
+
+{% block title %}Find an Lender (HMDA respondent){% endblock %}
+
+{% block head_styles %}
+
+{% endblock %}
+
+
+{% block main_content %}
+
+        
+
+
+
+    <div class="search-home">
+        <p>&nbsp;</p>
+        <p>Welcome to the Fair Lending HMDA Visualization Toolkit! This is a beta version: we welcome your feedback:
+        <a href="mailto:{{ contact_us_email }}?subject=Visualization%20Toolkit%20Feedback">email us</a>.</p>
+
+        <p>Currently, this tool can only show originations and applications from a given lender in a selected MSA in the 2012 HMDA data. Additional functionality will be coming soon.
+        <p>&nbsp;</p>
+
+        <div class="search-indent">
+            <div >
+                <div class="search-title-column1">
+                   <div class="circlelabel">1</div>
+                </div>
+                <div class="search-title-column2">
+                    <h3>  Find an institution with 2012 originations</h3>
+                </div>
+            </div>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+
+
+            <form action="{% url 'respondants:search_results' %}" method="GET">
+                <div class="search-field">
+                    <label for="search_name" class="search-name-label">Search by name or lender ID
+                        (<a target="new" href="http://www.ffiec.gov/nicpubweb/nicweb/SearchForm.aspx">Need a Lender ID?</a> <span class="cf-icon cf-icon-external-link"></span>)
+                    </label>
+                    <input type="text" id="search_name" name="q" />
+                    <button type="submit" class="btn active">Search</button>
+                    <span class="example-hint">ex: 09-9992222111; 9992222111-09; First Federal Savings</span>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+
+{% endblock %}
+
+
+{% block foot_scripts %}
+
+    <script type="text/javascript" src="{% static 'respondants/js/search.min.js' %}"></script>
+
+{% endblock %}

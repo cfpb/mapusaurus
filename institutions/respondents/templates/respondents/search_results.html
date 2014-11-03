@@ -1,0 +1,55 @@
+{% extends "basestyle/one_column_layout.html" %}
+{% load staticfiles %}
+
+{% block title %}Search Results for: &ldquo;{{ query_str }}&rdquo;{% endblock %}
+
+
+{% block header_content %}
+
+    {% include "respondants/partial/search_results_form.html" %}
+
+{% endblock %}
+
+
+{% block sidebar_content %}
+
+    {% include "respondants/partial/search_results_sidebar.html" %}
+
+{% endblock %}
+
+
+{% block main_content %}
+
+    <div id="search-results" class="search-results">
+
+        {% include "respondants/partial/search_results_header.html" %}
+
+        {% if total_results == 0 %}
+            <h3>No results found.</h3>
+        {% else %}
+            {% include 'respondants/partial/search_results_details.html' %}
+        {% endif %}
+
+        <hr>
+        <p>     
+            Notes: Institution data is from the 2012 HMDA Transmittal sheet. <br>
+            Assets are as of December 31 of the preceding calendar year.
+        </p>
+
+    </div>
+
+{% endblock %}
+
+
+{% block footer_content %}
+
+
+{% endblock %}
+
+{% block foot_scripts %}
+<!--
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="{% static 'respondants/js/search.js' %}"></script>
+    <script type="text/javascript" src="{% static 'respondants/js/metro-search.js' %}"></script>
+-->
+{% endblock %}
