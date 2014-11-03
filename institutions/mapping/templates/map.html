@@ -94,10 +94,10 @@
         var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctNonWhite];
 
         layers.Base.addTo(map);
-        layers.Boundaries.addTo(map);
         layers.CountyLabels.addTo(map);
         layers.Water.addTo(map);
         layers.PctMinority.addTo(map);
+        layers.Boundaries.addTo(map);
         layers.Centroids.addTo(map);
         L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
 
@@ -418,9 +418,10 @@
         ---- STYLE THE CIRCLES BASED ON MINORITY ----
     */
 
-    var baseStyle = { fillOpacity: 0.9, weight: 1, className: 'lar-circle' },
-        //  population-less tracts
-        noStyle = {stroke: false, fill: false};
+    var baseStyle = { fillOpacity: 0.9, weight: 0.5, className: 'lar-circle', fillColor: '#333' };
+    
+    //  population-less tracts
+    var noStyle = {stroke: false, weight: 0, fill: false};
     
     function minorityContinuousStyle(geoProps, baseStyle) {
         return minorityStyle(
@@ -438,7 +439,7 @@
             tract = dataStore.tracts[geoid];
         // Different styles for when the tract has zero pop, or
         // we have percentages of minorities
-        if (tract['total_pop'] === 0) {
+        if (tract['total_pop'] === 0 || tract.volume === 0 ) {
             return noStyle;
         } else {
             var perc = minorityPercent(tract),
@@ -457,7 +458,7 @@
         var tract = dataStore.tracts[geoid];
         // Different styles for when the tract has zero pop, or
         // we have percentages of minorities
-        if (tract['total_pop'] === 0) {
+        if (tract['total_pop'] === 0 || tract.volume === 0 ){
             return noStyle;
         } else {
             var perc = minorityPercent(tract),
@@ -596,7 +597,11 @@
             area = scale * tractData['volume'];
         //  As Pi is just a constant scalar, we can ignore it in this
         //  calculation: a = pi*r*r   or r = sqrt(a/pi)
-        return Math.sqrt(area);
+        if( area === 0 ){
+            return 0;
+        } else {
+            return Math.sqrt(area);
+        }
     }
 
     function layerUpdate( layer ){
@@ -607,6 +612,8 @@
             map.removeLayer(minorityLayers[i]);
         };
         map.addLayer( layer );
+        layers.Water.bringToFront();
+        layers.Boundaries.bringToFront();
         updateCircles();
     }
 
