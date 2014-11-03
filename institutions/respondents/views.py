@@ -8,17 +8,17 @@ from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from respondants.models import Institution
+from respondents.models import Institution
 
 
-def respondant(request, agency_id, respondent):
-    respondant = get_object_or_404(Institution, ffiec_id=respondent,
+def respondent(request, agency_id, respondent):
+    respondent = get_object_or_404(Institution, ffiec_id=respondent,
                                    agency_id=int(agency_id))
-    context = {'respondant': respondant}
+    context = {'respondent': respondant}
 
-    parents = [respondant]
+    parents = [respondent]
 
-    p = respondant.parent
+    p = respondent.parent
     while p:
         parents.append(p)
         p = p.parent
@@ -32,14 +32,14 @@ def respondant(request, agency_id, respondent):
 
     return render(
         request,
-        'respondants/respondant_profile.html',
+        'respondents/respondant_profile.html',
         context
     )
 
 
 def search_home(request):
     """Search for an institution"""
-    return render(request, 'respondants/search_home.html', {
+    return render(request, 'respondents/search_home.html', {
         'contact_us_email': settings.CONTACT_US_EMAIL
     })
 
@@ -48,7 +48,7 @@ def select_metro(request, agency_id, respondent):
     """Once an institution is selected, search for a metro"""
     institution = get_object_or_404(Institution, ffiec_id=respondent,
                                     agency_id=int(agency_id))
-    return render(request, 'respondants/metro_search.html', {
+    return render(request, 'respondents/metro_search.html', {
         'institution': institution
     })
 
@@ -157,4 +157,4 @@ def search_results(request):
          'page_num': page, 'total_results': total_results,
          'next_page': next_page, 'prev_page': prev_page,
          'total_pages': total_pages, 'current_sort': current_sort},
-        template_name='respondants/search_results.html')
+        template_name='respondents/search_results.html')

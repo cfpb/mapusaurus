@@ -133,8 +133,8 @@ class HMDARecord(models.Model):
        https://www.ffiec.gov/hmdarawdata/FORMATS/2012HMDALARRecordFormat.pdf
     """
     as_of_year = models.PositiveIntegerField(help_text="The reporting year of the HMDA record.")
-    respondent_id = models.CharField(max_length=10, help_text="A code representing the bank or other financial institution that is reporting the loan or application.")
-    agency_code = models.CharField(max_length=1, choices=AGENCY_CHOICES, help_text="A code representing the federal agency to which the HMDA-reporting institution submits its HMDA data.")
+    respondent_id = models.ForeignKey('respondents.Institution', to_field='ffiec_id')
+    agency_code = models.ForeignKey('respondents.Institution', to_field='agency')
     loan_type = models.PositiveIntegerField(choices=LOAN_TYPE_CHOICES, help_text="A code representing the type of loan applied for. Many loans are insured or guaranteed by government programs offered by Federal Housing Administration (FHA), the Department of Veterans Affairs (VA), or the Department of Agriculture's Rural Housing Service (RHS) or Farm Service Agency (FSA). All other loans are classified as conventional.")
     property_type = models.CharField(choices=PROPERTY_TYPE_CHOICES, max_length=1, help_text="A code representing the type of the property.")
     loan_purpose = models.PositiveIntegerField(choices=LOAN_PURPOSE_CHOICES, help_text="A code representing the purpose of the loan (home purchase, refinance, or home improvement).")
