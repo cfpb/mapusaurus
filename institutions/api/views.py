@@ -10,9 +10,12 @@ def all(request):
     """This endpoint allows multiple statistical queries to be made in a
     single HTTP request"""
     try:
+
         hmda = loan_originations_as_json(request)
+
         minority = race_summary_as_json(request)
         responses = {'minority' : minority, 'loanVolume': hmda }
         return HttpResponse(json.dumps(responses), content_type='application/json')
-    except KeyError:
+    except:
         return HttpResponseBadRequest("invalid endpoint")
+
