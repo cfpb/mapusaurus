@@ -5,12 +5,10 @@ from django.http import HttpResponseNotFound
 from django.test import TestCase
 from mock import Mock, patch
 
-from batch import views
-from batch.utils import use_GET_in
-
+from utils import use_GET_in, state_county_filter
 
 class ConversionTest(TestCase):
-    """Tests batch.conversions"""
+
     def test_use_GET_in(self):
         fn, request = Mock(), Mock()
         request.GET.lists.return_value = [('param1', [0]), ('param2', [-1])]
@@ -29,29 +27,27 @@ class ConversionTest(TestCase):
 
 
 class ViewsTests(TestCase):
-    """Tests batch.views"""
-    def test_batch_user_errors(self):
-        resp = self.client.get(reverse('batch'))
+
+    def test_api_all_user_errors(self):
+        resp = self.client.get(reverse('all'))
         self.assertEqual(resp.status_code, 400)
 
-        resp = self.client.get(reverse('batch'), {})
+        resp = self.client.get(reverse('all'), {'neLat':'42.048794',
+                                    'neLon':'-87.430698',
+                                    'swLat':'',
+                                    'swLon':'-88.225583',
+                                    'year':'2013',
+                                    'action_taken':'1,2,3,4,5',
+                                    'lender':'736-4045996'})
+
         self.assertEqual(resp.status_code, 400)
 
-        resp = self.client.get(reverse('batch'), {'thing': 5})
+        resp = self.client.get(reverse('all'),   {'neLat':'42.048794',
+                                    'neLon':'-87.430698',
+                                    'swLat':'41.597775',
+                                    'swLon':'',
+                                    'year':'2013',
+                                    'action_taken':'1,2,3,4,5',
+                                    'lender':'736-4045996'})
         self.assertEqual(resp.status_code, 400)
 
-        resp = self.client.get(reverse('batch'),
-                               {'endpoint': ['minority', 'xxx']})
-        self.assertEqual(resp.status_code, 400)
-
-    @patch.dict('batch.views.ENDPOINTS', other=Mock())
-    def test_batch_user(self):
-        views.ENDPOINTS['other'].return_value = {'some': 3}
-        data = {"endpoint": ["other"], "a": ["1", "5"], "b": "8"}
-        resp = self.client.get(reverse('batch'), data)
-        self.assertEqual(resp.status_code, 200)
-        resp = json.loads(resp.content)
-        self.assertEqual(resp, {"other": {'some': 3}})
-        args = views.ENDPOINTS['other'].call_args[0][0]
-        self.assertEqual(args['a'], ['1', '5'])
-        self.assertEqual(args['b'], ['8'])
