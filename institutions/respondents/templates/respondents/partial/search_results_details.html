@@ -7,9 +7,9 @@
             <!-- Expandable turned off for now -->
             <!--<div class="expandable_header expandable_target">-->
                 <div class="search-result-record__left-col">
-                    <h4 class="search-result-record__title"><a href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">{{res.name}}</a></h4>
+                    <h4 class="search-result-record__title"><a href="{% url 'respondents:select_metro' res.agency_id res.ffiec_id %}">{{res.name}}</a></h4>
                     <div class="search-result-record__cfpb-id">
-                        <a href="{% url 'respondants:respondant_profile' res.agency_id res.ffiec_id %}">0{{res.agency_id}}-{{res.ffiec_id}}</a>
+                        <a href="{% url 'respondents:respondant_profile' res.agency_id res.ffiec_id %}">0{{res.agency_id}}-{{res.ffiec_id}}</a>
                     </div>
                     <div class="search-result-record__hq">
                         <small>HQ:</small> {{res.zip_code.city|title}}, {{res.zip_code.state|upper}}
@@ -41,7 +41,7 @@
                     </dl>
                 </div>
                 <div class="search-result-record__ec-right">
-                    <p><a class="btn" href="{% url 'respondants:select_metro' res.agency_id res.ffiec_id %}">Select MSA</a></p>
+                    <p><a class="btn" href="{% url 'respondents:select_metro' res.agency_id res.ffiec_id %}">Select MSA</a></p>
                 </div>
 
                 <div class="search-result-record__ec-left">
@@ -59,10 +59,10 @@
                 <div class="search-result-record__ec-right">
                     <dl>
                         <dt>More Information</dt>
-                        <dd><a href="{% url 'respondants:respondant_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></dd>
+                        <dd><a href="{% url 'respondents:respondant_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></dd>
                     </dl>
                 <!--
-                    <p><a class="search-result-record__link" href="{% url 'respondants:respondant_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></p>
+                    <p><a class="search-result-record__link" href="{% url 'respondents:respondant_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></p>
                 -->
                 <!--
                 <form action="{% url 'map' %}" method="GET">

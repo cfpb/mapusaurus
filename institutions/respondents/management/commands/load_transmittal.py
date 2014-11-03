@@ -1,7 +1,7 @@
 import csv
 from django.core.management.base import BaseCommand
-from respondants.models import Institution, Agency
-from respondants.zipcode_utils import create_zipcode
+from respondents.models import Institution, Agency
+from respondents.zipcode_utils import create_zipcode
 
 
 class Command(BaseCommand):

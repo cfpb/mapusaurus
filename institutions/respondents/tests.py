@@ -7,11 +7,11 @@ from mock import Mock, patch
 
 from geo.models import Geo
 from hmda.models import HMDARecord
-from respondants import views, zipcode_utils
-from respondants.models import Agency, Institution, ZipcodeCityState
-from respondants.management.commands import load_reporter_panel
-from respondants.management.commands import load_transmittal
-from respondants.search_indexes import InstitutionIndex
+from respondents import views, zipcode_utils
+from respondents.models import Agency, Institution, ZipcodeCityState
+from respondents.management.commands import load_reporter_panel
+from respondents.management.commands import load_transmittal
+from respondents.search_indexes import InstitutionIndex
 
 
 class ZipcodeUtilsTests(TestCase):
@@ -39,7 +39,7 @@ class ReporterPanelLoadingTests(TestCase):
         reporter_line = "201400000555471                                                                   0312328543920FIRST FAKE BK NA                                                      TERRE HAUTE              CA                    0001208595FIRST FC                      TERRE HAUTE              CAUNITED STATES                           0000693345001234000018"
         reporter_row = load_reporter_panel.parse_line(reporter_line)
         self.assertEqual('2014', reporter_row.year)
-        self.assertEqual('0000055547', reporter_row.respondant_id)
+        self.assertEqual('0000055547', reporter_row.respondent_id)
         self.assertEqual(1, reporter_row.agency_code)
         self.assertEqual('', reporter_row.parent_id)
 
@@ -74,7 +74,7 @@ class ViewTest(TestCase):
 
     def test_select_metro(self):
         results = self.client.get(
-            reverse('respondants:select_metro',
+            reverse('respondents:select_metro',
                     kwargs={'agency_id': '0', 'respondent': '0987654321'}))
         self.assertEqual(404, results.status_code)
 
@@ -86,26 +86,26 @@ class ViewTest(TestCase):
             zip_code=zipcode)
 
         results = self.client.get(
-            reverse('respondants:select_metro',
+            reverse('respondents:select_metro',
                     kwargs={'agency_id': '9', 'respondent': '9879879870'}))
         self.assertEqual(200, results.status_code)
 
         inst.delete()
         zipcode.delete()
 
-    @patch('respondants.views.SearchQuerySet')
+    @patch('respondents.views.SearchQuerySet')
     def test_search_empty(self, SQS):
         SQS = SQS.return_value.models.return_value.load_all.return_value
-        self.client.get(reverse('respondants:search_results'))
+        self.client.get(reverse('respondents:search_results'))
         self.assertFalse(SQS.filter.called)
 
-        self.client.get(reverse('respondants:search_results'), {'q': ''})
+        self.client.get(reverse('respondents:search_results'), {'q': ''})
         self.assertFalse(SQS.filter.called)
 
-        self.client.get(reverse('respondants:search_results'), {'q': '     '})
+        self.client.get(reverse('respondents:search_results'), {'q': '     '})
         self.assertFalse(SQS.filter.called)
 
-    @patch('respondants.views.SearchQuerySet')
+    @patch('respondents.views.SearchQuerySet')
     def test_search_name(self, SQS):
         SQS = SQS.return_value.models.return_value.load_all.return_value
         result1, result2 = Mock(), Mock()
@@ -116,7 +116,7 @@ class ViewTest(TestCase):
         result2.object.name = 'Bank & Loan'
         result2.object.agency_id = 2
         result2.object.ffiec_id = '1122334455'
-        resp = self.client.get(reverse('respondants:search_results'),
+        resp = self.client.get(reverse('respondents:search_results'),
                                {'q': 'Bank'})
         self.assertTrue('Bank' in str(SQS.filter.call_args))
         self.assertTrue('content' in str(SQS.filter.call_args))
@@ -124,20 +124,20 @@ class ViewTest(TestCase):
         self.assertTrue('Bank &amp; Loan' in resp.content)
         self.assertRaises(ValueError, json.loads, resp.content)
 
-    @patch('respondants.views.SearchQuerySet')
+    @patch('respondents.views.SearchQuerySet')
     def test_search_autocomplete(self, SQS):
         SQS = SQS.return_value.models.return_value.load_all.return_value
         result = Mock()
         SQS.filter.return_value = [result]
         result.object.name, result.object.id = 'Some Bank', 1234
         result.object.agency_id, result.object.ffiec_id = 3, '3232434354'
-        self.client.get(reverse('respondants:search_results'),
+        self.client.get(reverse('respondents:search_results'),
                         {'q': 'Bank', 'auto': '1'})
         self.assertTrue('Bank' in str(SQS.filter.call_args))
         self.assertFalse('content' in str(SQS.filter.call_args))
         self.assertTrue('text_auto' in str(SQS.filter.call_args))
 
-    @patch('respondants.views.SearchQuerySet')
+    @patch('respondents.views.SearchQuerySet')
     def test_search_id(self, SQS):
         SQS = SQS.return_value.models.return_value.load_all.return_value
         result = Mock()
@@ -145,14 +145,14 @@ class ViewTest(TestCase):
         result.object.name, result.object.id = 'Some Bank', 1234
         result.object.agency_id, result.object.ffiec_id = 3, '1234543210'
 
-        resp = self.client.get(reverse('respondants:search_results'),
+        resp = self.client.get(reverse('respondents:search_results'),
                                {'q': '01234567'})
         self.assertTrue('01234567' in str(SQS.filter.call_args))
         self.assertTrue('content' in str(SQS.filter.call_args))
         self.assertTrue('Some Bank' in resp.content)
         self.assertRaises(ValueError, json.loads, resp.content)
 
-        resp = self.client.get(reverse('respondants:search_results'),
+        resp = self.client.get(reverse('respondents:search_results'),
                                {'q': '012345-7899'})
         self.assertTrue('012345-7899' in str(SQS.filter.call_args))
         self.assertFalse('content' in str(SQS.filter.call_args))
@@ -162,7 +162,7 @@ class ViewTest(TestCase):
 
         for q in ['11234567-99', '01-1234567-99', '1234567-99-01',
                   'Some Bank (01-1234567-99)']:
-            resp = self.client.get(reverse('respondants:search_results'),
+            resp = self.client.get(reverse('respondents:search_results'),
                                    {'q': q})
             self.assertTrue('11234567-99' in str(SQS.filter.call_args))
             self.assertFalse('content' in str(SQS.filter.call_args))
@@ -170,7 +170,7 @@ class ViewTest(TestCase):
             self.assertTrue('Some Bank' in resp.content)
             self.assertRaises(ValueError, json.loads, resp.content)
 
-        resp = self.client.get(reverse('respondants:search_results'),
+        resp = self.client.get(reverse('respondents:search_results'),
                                {'q': 'Some Bank (01-123457-99)'})
         self.assertTrue('01-123457-99' in str(SQS.filter.call_args))
         self.assertTrue('content' in str(SQS.filter.call_args))
@@ -178,14 +178,14 @@ class ViewTest(TestCase):
         self.assertTrue('Some Bank' in resp.content)
         self.assertRaises(ValueError, json.loads, resp.content)
 
-    @patch('respondants.views.SearchQuerySet')
+    @patch('respondents.views.SearchQuerySet')
     def test_search_json(self, SQS):
         SQS = SQS.return_value.models.return_value.load_all.return_value
         result = Mock()
         SQS.filter.return_value = [result]
         result.object = Institution(name='Some Bank')
 
-        resp = self.client.get(reverse('respondants:search_results'),
+        resp = self.client.get(reverse('respondents:search_results'),
                                {'q': 'Bank'},
                                HTTP_ACCEPT='application/json')
         resp = json.loads(resp.content)
@@ -193,7 +193,7 @@ class ViewTest(TestCase):
         inst = resp['institutions'][0]
         self.assertEqual('Some Bank', inst['name'])
 
-    @patch('respondants.views.SearchQuerySet')
+    @patch('respondents.views.SearchQuerySet')
     def test_search_num_loans(self, SQS):
         SQS = SQS.return_value.models.return_value.load_all.return_value
         result = Mock()
@@ -206,7 +206,7 @@ class ViewTest(TestCase):
         self.assertEqual(len(results.data['institutions']), 1)
         self.assertEqual(45, results.data['institutions'][0].num_loans)
 
-    @patch('respondants.views.SearchQuerySet')
+    @patch('respondents.views.SearchQuerySet')
     def test_search_sort(self, SQS):
         load_all = SQS.return_value.models.return_value.load_all.return_value
 
@@ -225,7 +225,7 @@ class ViewTest(TestCase):
             views.search_results(request)
             self.assertTrue(load_all.order_by.called)
 
-    @patch('respondants.views.SearchQuerySet')
+    @patch('respondents.views.SearchQuerySet')
     def test_search_pagination(self, SQS):
         request = RequestFactory().get('/', data={'q': 'Bank'})
         results = views.search_results(request)
@@ -244,7 +244,7 @@ class ViewTest(TestCase):
         results = views.search_results(request)
         self.assertEqual(results.data['page_num'], 1)
 
-    @patch('respondants.views.SearchQuerySet')
+    @patch('respondents.views.SearchQuerySet')
     def test_search_num_results(self, SQS):
         request = RequestFactory().get('/', data={'q': 'Bank'})
         results = views.search_results(request)
@@ -264,7 +264,7 @@ class ViewTest(TestCase):
     def test_landing_email_addy(self):
         old_email = settings.CONTACT_US_EMAIL
         settings.CONTACT_US_EMAIL = 'someotherexample@domain.com'
-        results = self.client.get(reverse('respondants:search_home'))
+        results = self.client.get(reverse('respondents:search_home'))
         self.assertTrue('someotherexample@domain.com' in results.content)
         settings.CONTACT_US_EMAIL = old_email
 
