@@ -1,6 +1,6 @@
 [
     {
-        "model": "respondants.agency",
+        "model": "respondents.agency",
         "pk": 1,
         "fields": {
             "acronym": "OCC",
@@ -8,7 +8,7 @@
         }
     },
     {
-        "model": "respondants.agency",
+        "model": "respondents.agency",
         "pk": 2,
         "fields": {
             "acronym": "FRS",
@@ -16,7 +16,7 @@
         }
     },
     {
-        "model": "respondants.agency",
+        "model": "respondents.agency",
         "pk": 3,
         "fields": {
             "acronym": "FDIC",
@@ -24,7 +24,7 @@
         }
     },
     {
-        "model": "respondants.agency",
+        "model": "respondents.agency",
         "pk": 5,
         "fields": {
             "acronym": "NCUA",
@@ -32,7 +32,7 @@
         }
     },
     {
-        "model": "respondants.agency",
+        "model": "respondents.agency",
         "pk": 7,
         "fields": {
             "acronym": "HUD",
@@ -40,7 +40,7 @@
         }
     },
     {
-        "model": "respondants.agency",
+        "model": "respondents.agency",
         "pk": 9,
         "fields": {
             "acronym": "CFPB",

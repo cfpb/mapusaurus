@@ -46,7 +46,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'basestyle',
     'mapping',
-    'respondants',
+    'respondents',
     'geo',
     'censusdata',
     'hmda',

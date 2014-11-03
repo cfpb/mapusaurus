@@ -1,6 +1,6 @@
 from haystack import indexes
 
-from respondants.models import Institution
+from respondents.models import Institution
 
 
 class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
@@ -21,8 +21,8 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
         subquery_tail = """
             FROM hmda_hmdarecord
             WHERE hmda_hmdarecord.lender
-                    = CAST(respondants_institution.agency_id AS VARCHAR(1))
-                      || respondants_institution.ffiec_id"""
+                    = CAST(respondents_institution.agency_id AS VARCHAR(1))
+                      || respondents_institution.ffiec_id"""
         return self.get_model().objects.extra(
             select={"num_loans": "SELECT COUNT(*) " + subquery_tail},
             where=["SELECT COUNT(*) > 0 " + subquery_tail])
