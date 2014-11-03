@@ -597,11 +597,7 @@
             area = scale * tractData['volume'];
         //  As Pi is just a constant scalar, we can ignore it in this
         //  calculation: a = pi*r*r   or r = sqrt(a/pi)
-        if( area === 0 ){
-            return 0;
-        } else {
             return Math.sqrt(area);
-        }
     }
 
     function layerUpdate( layer ){
