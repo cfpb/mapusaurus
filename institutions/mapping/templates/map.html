@@ -64,9 +64,15 @@
 
         var layers = {
             Base: L.mapbox.tileLayer('cfpb.fi6hia4i'),
-            PctMinority: L.mapbox.tileLayer('cfpb.g0seb3xr'),
-            PctHispanic: L.mapbox.tileLayer('cfpb.rn1dobt9'),
-            PlaceNames: L.mapbox.tileLayer('cfpb.1mkotj4i'),
+            Water: L.mapbox.tileLayer('cfpb.FL_WATER_all_US'),
+            Boundaries: L.mapbox.tileLayer('cfpb.FL_BORDERS_all_US'),
+            CountyLabels: L.mapbox.tileLayer('cfpb.1mkotj4i'),
+            MSALabels: L.mapbox.tileLayer('cfpb.FL_MSA_labels'),
+            PctMinority: L.mapbox.tileLayer('cfpb.FL_TRACT_per-min_US'),
+            PctHispanic: L.mapbox.tileLayer('cfpb.FL_TRACT_per-hsp_US'),
+            PctBlack: L.mapbox.tileLayer('cfpb.FL_TRACT_per-blk_US'),
+            PctAsian: L.mapbox.tileLayer('cfpb.FL_TRACT_per-asn_US'),
+            PctNonWhite: L.mapbox.tileLayer('cfpb.FL_TRACT_pct_nhwht_US'),
             Centroids: L.layerGroup([])
         };
 
@@ -74,16 +80,28 @@
             'Contiguous US': layers.Base
         };
         var overlays = {
+            'Water': layers.Water,
+            'Boundaries': layers.Boundaries,
+            'MSA Labels': layers.MSALabels,
             'Percentage Minority': layers.PctMinority,
             'Percentage Hispanic': layers.PctHispanic,
-            'County Names': layers.PlaceNames
-        }
+            'Percentage Black': layers.PctBlack,
+            'Percentage Asian': layers.PctAsian,
+            'Percentage Non-white': layers.PctNonWhite,
+            'County Labels': layers.CountyLabels
+        };
+
+        var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctNonWhite];
+
         layers.Base.addTo(map);
+        layers.Boundaries.addTo(map);
+        layers.CountyLabels.addTo(map);
+        layers.Water.addTo(map);
         layers.PctMinority.addTo(map);
-        layers.PlaceNames.addTo(map);
         layers.Centroids.addTo(map);
         L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
-        //map.legendControl.addLegend(document.getElementById('key').innerHTML, {position: 'topright'});
+
+        // Add the HTML Template key as a key in the top right
         var key = L.control();
         key.onAdd = function() {
             return L.DomUtil.get('key');
@@ -111,18 +129,25 @@
         // When minority changes, redraw the circles with appropriate styles
         $('#category-selector').on('change', function(e) {
             val = $('#category-selector option:selected').val();
-            console.log('value change: ', val);
-            if( val === 'hispanic_perc'){
-                map.removeLayer(layers.PctMinority);
-                map.addLayer(layers.PctHispanic);
-                updateCircles();
-            } else if( val === 'inv_non_hisp_white_only_perc') {
-                map.removeLayer(layers.PctHispanic);
-                map.addLayer(layers.PctMinority);
-                updateCircles();
-            } else {
-                console.log('These layers do not exist right now');
+
+            switch( val ){
+                case 'inv_non_hisp_white_only_perc':
+                    layerUpdate( layers.PctMinority );
+                    break;
+                case 'hispanic_perc':
+                    layerUpdate( layers.PctHispanic );
+                    break;
+                case 'non_hisp_black_only_perc':
+                    layerUpdate( layers.PctBlack );
+                    break;
+                case 'non_hisp_asian_only_perc':
+                    layerUpdate( layers.PctAsian );
+                    break;
+                case 'non_hisp_white_only_perc':
+                    layerUpdate( layers.PctNonWhite );
+                    break;
             }
+           
         });
         
     });
@@ -574,6 +599,16 @@
         return Math.sqrt(area);
     }
 
+    function layerUpdate( layer ){
+        if ( !layer ){
+            console.log('The layer you\'ve requested does not exist.');
+        }
+        for (var i = minorityLayers.length - 1; i >= 0; i--) {
+            map.removeLayer(minorityLayers[i]);
+        };
+        map.addLayer( layer );
+        updateCircles();
+    }
 
     function urlParam(field) {
         var url = window.location.search.replace('?', ''),
