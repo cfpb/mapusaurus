@@ -53,34 +53,4 @@ class ViewsTest(TestCase):
         Census2010Households.objects.all().delete()
         HMDARecord.objects.all().delete()
 
-    def test_volume_400(self):
-        resp = self.client.get(reverse('hmda:volume'))
-        self.assertEqual(400, resp.status_code)
-        resp = self.client.get(reverse('hmda:volume'), {'state': '1'})
-        self.assertEqual(400, resp.status_code)
-        resp = self.client.get(reverse('hmda:volume'), {'county': '03111'})
-        self.assertEqual(400, resp.status_code)
-        resp = self.client.get(reverse('hmda:volume'), {'lender': '3'})
-        self.assertEqual(400, resp.status_code)
 
-    def test_volume(self):
-        resp = self.client.get(reverse('hmda:volume'),
-                               {'county': '11222', 'lender': '11111111111'})
-        resp = json.loads(resp.content)
-        self.assertEqual(len(resp), 2)
-        self.assertTrue('1122233300' in resp)
-        self.assertEqual(resp['1122233300']['volume'], 2)
-        self.assertEqual(resp['1122233300']['volume_per_100_households'], 2.0)
-        self.assertTrue('1122233400' in resp)
-        self.assertEqual(resp['1122233400']['volume'], 1)
-        self.assertEqual(resp['1122233400']['volume_per_100_households'], 0.1)
-
-    def test_volume_multiple(self):
-        resp = self.client.get(reverse('hmda:volume'),
-                               {'county': ['11222', '11223'],
-                                'lender': '11111111111'})
-        resp = json.loads(resp.content)
-        self.assertEqual(len(resp), 3)
-        self.assertTrue('1122233300' in resp)
-        self.assertTrue('1122233400' in resp)
-        self.assertTrue('1122333300' in resp)

@@ -31,21 +31,25 @@ class ViewsTest(TestCase):
         stats.geoid_id = '1222233300'
         stats.save()
 
+
+
+
     def tearDown(self):
         Census2010RaceStats.objects.all().delete()
 
-    def test_race_summary_400s(self):
-        resp = self.client.get(reverse('censusdata:race_summary'))
-        self.assertEqual(400, resp.status_code)
-        resp = self.client.get(reverse('censusdata:race_summary'),
-                               {'state': '1'})
-        self.assertEqual(400, resp.status_code)
+
 
     def test_race_summary(self):
         resp = self.client.get(reverse('censusdata:race_summary'),
-                               {'county': '11222'})
+                               {'neLat':'0',
+                                    'neLon':'1',
+                                    'swLat':'0',
+                                    'swLon':'1',
+                                    'year':'2013',
+                                    'action_taken':'1,2,3,4,5',
+                                    'lender':'736-4045996'})
         resp = json.loads(resp.content)
-        self.assertEqual(len(resp), 2)
+        self.assertEqual(len(resp), 4)
         self.assertTrue('1122233300' in resp)
         self.assertEqual(resp['1122233300']['total_pop'], 10)
         self.assertEqual(resp['1122233300']['hispanic'], 1)
