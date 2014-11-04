@@ -18,13 +18,13 @@ The data you can load is:
 
 Both are available from the FFIEC. 
 
-Here are the 2012 files:
+Here are the 2013 files:
 
 Transmittal sheet:
-http://www.ffiec.gov/hmdarawdata/OTHER/2012HMDAInstitutionRecords.zip
+http://www.ffiec.gov/hmdarawdata/OTHER/2013HMDAInstitutionRecords.zip
 
 Reporter panel:
-http://www.ffiec.gov/hmdarawdata/OTHER/2012HMDAReporterPanel.zip
+http://www.ffiec.gov/hmdarawdata/OTHER/2013HMDAReporterPanel.zip
 
 ## Requirements 
 
@@ -154,7 +154,7 @@ http://www.ffiec.gov/hmda/hmdaflat.htm
 ```
 and download the zip file. Unzip it and then:
 ```
-    python manage.py load_hmda /path/to/2012HMDALAR\ -\ National.csv
+    python manage.py load_hmda /path/to/2013HMDALAR\ -\ National.csv
 ```
 
 Note that this process takes several minutes (though you will receive progress
@@ -168,8 +168,8 @@ Alternatively, the load_hmda script can read a directory of CSV files and load t
 There is also the option of removing these files after they are processed.
 
 ```
-    split -l 50000 -d  "/path/to/2012HMDALAR\ -\ National.csv" hmda_csv_
-    python manage.py load_hmda /path/to/2012HMDALAR/  delete_file:true
+    split -l 50000 -d  "/path/to/2013HMDALAR\ -\ National.csv" hmda_csv_
+    python manage.py load_hmda /path/to/2013HMDALAR/  delete_file:true
 ```
 
 

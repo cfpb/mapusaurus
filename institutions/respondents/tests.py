@@ -51,7 +51,7 @@ class LoadTransmittalTests(TestCase):
     def test_handle(self, mock_open):
         # Only care inside a "with"
         mock_open = mock_open.return_value.__enter__.return_value
-        line = "2012\t0000055547\t1\tTAXIDHERE\tFIRST FAKE BK NA\t"
+        line = "2013\t0000055547\t1\tTAXIDHERE\tFIRST FAKE BK NA\t"
         line += "1122 S 3RD ST\tTERRE HAUTE\tCA\t90210\t"
         line += "FIRST FAKE CORPORATION\tONE ADDR\tTERRE HAUTE\tCA\t90210\t"
         line += "FIRST FAKE BK NA\tTERRE HAUTE\tCA\t121212\t0\t3\t3657\tN"

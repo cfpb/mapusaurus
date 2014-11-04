@@ -46,7 +46,7 @@ def make_download_url(lender, metro):
     lender's records, or to just those relevant for an MSA. MSA's are broken
     into divisions in that tool, so make sure the query uses the proper ids"""
     if lender:
-        where = 'as_of_year=2012 AND agency_code=%d AND respondent_id="%s"'
+        where = 'as_of_year=2013 AND agency_code=%d AND respondent_id="%s"'
         where = where % (lender.agency_id, lender.ffiec_id)
         if metro:
             divisions = [div.metdiv for div in
