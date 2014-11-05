@@ -41,8 +41,8 @@
 			precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2)),
 			returnObj = {
 				'zoom': { values: zoom, comparator: '='},
-				'lat': { values: center.lat.toFixed(3), comparator: '=' },
-				'lon': { values: center.lng.toFixed(3), comparator: '=' }
+				'lat': { values: center.lat.toFixed(precision), comparator: '=' },
+				'lon': { values: center.lng.toFixed(precision), comparator: '=' }
 			};
 			return returnObj; 	
 	};
