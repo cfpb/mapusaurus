@@ -130,7 +130,7 @@ APPLICATION_DATE_INDICATOR_CHOICES = (
 class HMDARecord(models.Model):
     """  
        HMDA Loan Application Register Format
-       https://www.ffiec.gov/hmdarawdata/FORMATS/2012HMDALARRecordFormat.pdf
+       https://www.ffiec.gov/hmdarawdata/FORMATS/2013HMDALARRecordFormat.pdf
     """
     as_of_year = models.PositiveIntegerField(help_text="The reporting year of the HMDA record.")
     respondent_id = models.CharField(max_length=10, help_text="A code representing the bank or other financial institution that is reporting the loan or application.")
