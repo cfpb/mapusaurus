@@ -176,7 +176,7 @@ module.exports = function(grunt) {
             expand: true,
             cwd: 'frontend/dist/search/',
             src: ['**'],
-            dest: 'institutions/respondants/static/respondants/',
+            dest: 'institutions/respondents/static/respondents/',
             filter: 'isFile'
           },
           {
