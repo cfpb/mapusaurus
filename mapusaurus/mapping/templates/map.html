@@ -188,8 +188,8 @@
 
         // When the user changes the action taken data selector, re-initialize
         $('#action-taken-selector').on('change', function(){
-            init();
             addParam( 'action', $('#action-taken-selector option:selected').val() );
+            init();
         })
 
 
@@ -541,7 +541,6 @@
         layers.Boundaries.bringToFront();
         layers.CountyLabels.bringToFront();
         addParam( 'category', $('#category-selector option:selected').val() );
-        addParam( 'action', $('#action-taken-selector option:selected').val() );
         updateCircles();
     }
 
