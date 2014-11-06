@@ -4,7 +4,7 @@ python:
   - "2.7"
 install:
   - |
-    echo "DATABASES = {'default': {'ENGINE': 'django.contrib.gis.db.backends.postgis', 'NAME': 'travisdb', 'USER': 'postgres'}}" > mapusaurus/mapusarus/settings/local_settings.py
+    echo "DATABASES = {'default': {'ENGINE': 'django.contrib.gis.db.backends.postgis', 'NAME': 'travisdb', 'USER': 'postgres'}}" > mapusaurus/mapusaurus/settings/local_settings.py
   - pip install -r requirements.txt --use-mirrors
 before_script:
   - psql -c 'CREATE DATABASE travisdb;' -U postgres
