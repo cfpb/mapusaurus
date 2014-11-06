@@ -204,10 +204,13 @@
         $('#bubbles_loading').show();
 
         // Create the appropriate URL path to return values
-        var endpoint = '/shapes/tractCentroids/' + bounds.neLat + '/' + bounds.neLon + '/' + bounds.swLat + '/' + bounds.swLon;
-        
+        var endpoint = '/api/tractCentroids/', 
+            params = { neLat: bounds.neLat,
+                       neLon: bounds.neLon,
+                       swLat: bounds.swLat,
+                       swLon: bounds.swLon };
         return $.ajax({
-            url: endpoint, traditional: true,
+            url: endpoint, data: params, traditional: true,
             success: console.log('tract Get successful')
         });
 
@@ -304,7 +307,7 @@
     }
 
     function getLarDataByCounty( actionTakenVal, counties, callback ){
-        var endpoint = '/hmda/volume',
+        var endpoint = '/api/hmda',
             params;
 
         params = {'county': getUniques( counties )};
@@ -339,7 +342,7 @@
         }
     }
     function getLarDataByTract( actionTakenVal, tractList, callback ){
-        var endpoint = '/hmda/volume',
+        var endpoint = '/api/hmda',
             params;
 
         params = {'geoid': tractList};
@@ -391,7 +394,7 @@
     }
 
     function getMinorityData(counties, callback){
-        var endpoint = '/census/race-summary',
+        var endpoint = '/api/census',
             params;
 
         params = {'county': getUniques( counties )};    

@@ -7,18 +7,12 @@ from geo.views import get_censustract_geoids
 
 def race_summary(request):
     """Race summary statistics"""
-    northEastLat = request.GET.get('neLat')
-    northEastLon = request.GET.get('neLon', [])
-    southWestLat = request.GET.get('swLat', [])
-    southWestLon = request.GET.get('swLon', [])
-
-    geoids = get_censustract_geoids(request, northEastLat, northEastLon, southWestLat, southWestLon)
+    geoids = get_censustract_geoids(request)
     if geoids:
         query = Census2010RaceStats.objects.filter(geoid_id__in=geoids)
         return query
     else:
         return HttpResponseBadRequest("Missing geoid or county")
-
 
 def race_summary_as_json(request_dict):
     records = race_summary(request_dict)
@@ -37,8 +31,6 @@ def race_summary_as_json(request_dict):
             'non_hisp_asian_only_perc': stats.non_hisp_asian_only_perc
         }
     return data
-
-
 
 def race_summary_http(request):
     return HttpResponse(json.dumps(race_summary_as_json(request)))

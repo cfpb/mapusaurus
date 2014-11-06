@@ -14,12 +14,11 @@ from rest_framework.response import Response
 from topojson import topojson
 from geo.models import Geo
 
-def censustract_data(request, northEastLat, northEastLon, southWestLat, southWestLon):
-    censustract_dict = json.loads(get_censustract_json(request, northEastLat, northEastLon, southWestLat, southWestLon))
-    return HttpResponse(json.dumps(censustract_dict), content_type='application/json')
+def tract_centroids_as_json(request):
+    return json.loads(tract_centroids_in_json_format(request))
 
-def get_censustract_json(request, northEastLat, northEastLon, southWestLat, southWestLon):
-    censusgeos = get_censustract_geos(request, northEastLat, northEastLon, southWestLat, southWestLon)
+def tract_centroids_in_json_format(request):
+    censusgeos = get_censustract_geos(request)
     # We already have the json strings per model pre-computed, so just place
     # them inside a static response
     response = '{"crs": {"type": "link", "properties": {"href": '
@@ -27,13 +26,17 @@ def get_censustract_json(request, northEastLat, northEastLon, southWestLat, sout
     response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
     return response % ', '.join(geo.tract_centroids_as_geojson() for geo in censusgeos)
 
-def get_censustract_geoids(request, northEastLat, northEastLon, southWestLat, southWestLon):
-    geos = get_censustract_geos(request, northEastLat, northEastLon, southWestLat, southWestLon)
+def get_censustract_geoids(request):
+    geos = get_censustract_geos(request)
     return geos.values_list('geoid', flat=True)
 
-def get_censustract_geos(request, northEastLat, northEastLon, southWestLat, southWestLon):
+def get_censustract_geos(request):
     """ """
     geoTypeId = 3
+    northEastLat = request.GET.get('neLat')
+    northEastLon = request.GET.get('neLon')
+    southWestLat = request.GET.get('swLat')
+    southWestLon = request.GET.get('swLon')
     try:
         maxlat, minlon, minlat, maxlon = float(northEastLat), float(southWestLon), float(southWestLat), float(northEastLon)
     except ValueError:

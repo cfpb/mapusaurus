@@ -10,15 +10,10 @@ from rest_framework.renderers import JSONRenderer
 def loan_originations(request):
     """Get loan originations for a given lender, county combination. This
     ignores year for the moment."""
-    northEastLat = request.GET.get('neLat')
-    northEastLon = request.GET.get('neLon', [])
-    southWestLat = request.GET.get('swLat', [])
-    southWestLon = request.GET.get('swLon', [])
+    lender = request.GET.get('lender')
+    action_taken_param = request.GET.get('action_taken')
 
-    geoids = get_censustract_geoids(request, northEastLat, northEastLon, southWestLat, southWestLon)
- 
-    lender = request.GET.get('lender', [])
-    action_taken_param = request.GET.get('action_taken', [])
+    geoids = get_censustract_geoids(request)
     action_taken = action_taken_param.split(',')
     if geoids and lender and action_taken:
         query = HMDARecord.objects.filter(
@@ -41,8 +36,6 @@ def loan_originations_as_json(request):
             'num_households': row['geoid__census2010households__total'],
         }
     return data
-
-
 
 def loan_originations_http(request):
     return HttpResponse(json.dumps(loan_originations_as_json(request)))
