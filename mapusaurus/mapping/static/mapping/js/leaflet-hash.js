@@ -219,6 +219,15 @@ function updateUrlHash(params) {
 
 }
 
+// Create a parameter from scratch (automatically builds object)
+function addParam( paramName, values ){
+    var params = getHashParams();
+    params[paramName] = {};
+    params[paramName].values = values;
+    params[paramName].comparator = '=';
+    updateUrlHash(params);
+}
+
 /* 
     END HASH PARSING FUNCTIONS
 */
