@@ -15,6 +15,9 @@ from topojson import topojson
 from geo.models import Geo
 
 def tract_centroids_as_json(request):
+    return json.loads(tract_centroids_in_json_format(request))
+
+def tract_centroids_in_json_format(request):
     censusgeos = get_censustract_geos(request)
     # We already have the json strings per model pre-computed, so just place
     # them inside a static response

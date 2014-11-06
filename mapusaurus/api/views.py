@@ -29,5 +29,5 @@ def census(request):
 
 def tractCentroids(request):
     """This endpoints returns census tract centroids used to determine circle position on map"""
-    return HttpResponse(json.dumps(json.loads(tract_centroids_as_json(request))), content_type='application/json')
+    return HttpResponse(json.dumps(tract_centroids_as_json(request)), content_type='application/json')
 
