@@ -1,7 +1,7 @@
 import json
 
 from django.http import HttpResponse, HttpResponseBadRequest
-from geo.views import censustract_data 
+from geo.views import tract_centroids_as_json 
 from censusdata.views import race_summary_as_json
 from hmda.views import loan_originations_as_json
 
@@ -18,4 +18,16 @@ def all(request):
         return HttpResponse(json.dumps(responses), content_type='application/json')
     except:
         return HttpResponseBadRequest("invalid endpoint")
+
+def hmda(request):
+    """This endpoint returns hmda data using params from the request"""
+    return loan_originations_as_json(request)
+
+def census(request):
+    """This endpoint returns census data used for circle coloring over tracts"""
+    return race_summary_as_json(request)
+
+def tractCentroids(request):
+    """This endpoints returns census tract centroids used to determine circle position on map"""
+    return tract_centroids_as_json(request)
 
