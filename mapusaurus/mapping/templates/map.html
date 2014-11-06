@@ -46,6 +46,11 @@
 {% block foot_scripts %}
     
     <script>
+
+        /* 
+          ---- MAPBOX / LEAFLET CODE ----
+        */
+        
         // Size the map container for the window size
         setMapHeight();
         
@@ -65,8 +70,8 @@
         
         // Using our modified Leaflet-Hash plugin, check to see if we need to move the map somewhere else.
         var hash = new L.Hash(map),
-        var hashCheck = hash.parseHash(hash),
-        var loadParams = getHashParams();
+            hashCheck = hash.parseHash(hash),
+            loadParams = getHashParams();
 
         // If the hash already has parameters, change the view to be those exact coordinates
         if( typeof hashCheck.params != 'undefined') {
@@ -78,8 +83,12 @@
         map.options.minZoom = 9;
         map.options.inertia = false;
 
+        // When the user has stopped moving the map, run init, with a slight delay
+        map.on('moveend', _.debounce(init, 650) );
+
         // Initialize all of our layers
         var layers = {
+            MBBase: L.mapbox.tileLayer('cfpb.k55b27gd'),
             Base: L.mapbox.tileLayer('cfpb.fi6hia4i'),
             Water: L.mapbox.tileLayer('cfpb.FL_WATER_all_US'),
             Boundaries: L.mapbox.tileLayer('cfpb.FL_BORDERS_all_US'),
@@ -95,6 +104,7 @@
 
         // Baselayers are created here and show up in our layer selector on the screen as radio buttons
         var baseLayers = {
+            'Mapbox Base': layers.MBBase,
             'Contiguous US': layers.Base
         };
 
@@ -116,10 +126,10 @@
 
         // Add all our primary default layers to the map up front
         layers.Base.addTo(map);
-        layers.CountyLabels.addTo(map);
         layers.PctMinority.addTo(map);
         layers.Water.addTo(map);
         layers.Boundaries.addTo(map);
+        layers.CountyLabels.addTo(map);
 
         // Create a layer for our circles
         layers.Centroids.addTo(map);
@@ -132,6 +142,7 @@
         // Make sure water and boundaries are above everything else
         layers.Water.bringToFront();
         layers.Boundaries.bringToFront();
+        layers.CountyLabels.bringToFront();
 
         // Add the HTML Template key as a key in the top right
         var key = L.control();
@@ -141,25 +152,43 @@
         key.setPosition('topright');
         key.addTo(map);
 
+    /* 
+      END MAPBOX / LEAFLET CODE
+    */
+
     // When the DOM is loaded, do the following:
     $(document).ready(function(){
-        // var hashParams = getParams();
-        // if( typeof hashParams.pos != 'undefined' ){
-        //     map.
-        // }
+
         $('.tabs').show();
 
         $( window ).resize(function() {
             setMapHeight();
         });
 
+        // Check to see if we have any parameters for category-selector
+        if( typeof loadParams.category != 'undefined'){
+            $('#category-selector option:selected').val( loadParams.category.values );
+            console.log("loadParams cat values: ", loadParams.category.values );
+        } else {
+            addParam( 'category', 'inv_non_hisp_white_only_perc' );
+        }
+
+        // Check to see if we have any parameters for action-taken
+        if( typeof loadParams.action != 'undefined'){
+            $('#action-taken-selector').val( loadParams.action.values );
+        } else {
+            addParam( 'action', 'all-apps-5' );
+        }
+
+        // When the user changes the action taken data selector, re-initialize
+        $('#action-taken-selector').on('change', function(){
+            init();
+            addParam( 'action', $('#action-taken-selector option:selected').val() );
+        })
+
+
         //Let the application do its thing 
         init();
-
-        // When the user has stopped moving the map, run init, with a slight delay
-        map.on('moveend', _.debounce(init, 250) );
-        // When the user changes the action taken data selector, re-initialize
-        $('#action-taken-selector').on('change', _.debounce(init, 250) );
 
         // When minority changes, redraw the circles with appropriate styles
         $('#category-selector').on('change', function(e) {
@@ -233,6 +262,8 @@
         return $.ajax({
             url: endpoint, data: params, traditional: true,
             success: console.log('tract Get successful')
+        }).fail( function( status ){
+            console.log( 'no data was available at' + endpoint + '. status: ' + status );
         });
 
         if( typeof callback === 'function' && callback() ){
@@ -274,7 +305,9 @@
         return $.ajax({
             url: endpoint, data: params, traditional: true,
             success: console.log('get API All Data request successful')
-        });
+        }).fail( function( status ){
+            console.log( 'no data was available at' + endpoint + '. status: ' + status );
+        });;
 
         if( typeof callback === 'function' && callback() ){
             callback;
@@ -317,7 +350,6 @@
     function redrawCircles( geoData ){
         // Remove circles currently on the page (TODO: Add as LayerGroup and transition)
         $('#bubbles_loading').show();
-        $('.lar-circle').remove(); 
         layers.Centroids.clearLayers();
         _.each(geoData, function(geo) {
             var bubble = drawCircle(geo);
@@ -419,7 +451,7 @@
 
     //  Using the selector, determine which statistic to display.
     function minorityPercent(tractData) {
-        var fieldName = $('#category-selector').val();
+        var fieldName = $('#category-selector option:selected').val();
         if (fieldName.substring(0, 4) === 'inv_') {
             return 1 - tractData[fieldName.substr(4)];
         } else {
@@ -508,6 +540,9 @@
         map.addLayer( layer );
         layers.Water.bringToFront();
         layers.Boundaries.bringToFront();
+        layers.CountyLabels.bringToFront();
+        addParam( 'category', $('#category-selector option:selected').val() );
+        addParam( 'action', $('#action-taken-selector option:selected').val() );
         updateCircles();
     }
 
