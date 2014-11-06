@@ -136,7 +136,7 @@ Warning: currently, data will not be updated in place; to re-import, you'll
 need to delete everything from the `censusdata_census2010*` tables.
 
 
-## HMDA
+## HMDA Data
 
 The 'hmda' app loads HMDA data to the census tracts found in the 'geo'
 application. As such, 'hmda' relies on 'geo'. In fact, 'hmda' will only store
