@@ -1,0 +1,51 @@
+
+<div class="search-results-heading__pagination">
+{% if total_pages > 1 %}
+
+    {% if prev_page > 0 %}
+
+      <a href="{% url 'respondents:search_results' %}?q={{query_str}}&amp;page={{prev_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">Previous</a>
+
+    {% else %}
+
+      <span class="disabled">
+          Previous
+      </span>
+
+    {% endif %}
+
+    <span class="divider">|</span>
+    <strong>{{start_results}} - {{end_results}}</strong> of <strong>{{total_results}}</strong>
+    <span class="divider">|</span> 
+
+    {% if page_num < total_pages %}
+
+      <a href="{% url 'respondents:search_results' %}?q={{query_str}}&amp;page={{next_page}}&amp;num_results={{num_results}}&amp;sort={{sort}}">Next</a> 
+
+    {% else %}
+
+      <span class="disabled">Next</span>
+
+    {% endif %}
+
+{% elif total_pages == 1 and total_results > 0 %}
+
+  {# Just one page, do not show the prev and next buttons #}
+  Results <strong>{{start_results}} - {{end_results}}</strong>
+  
+{% endif %}
+</div>
+
+{% comment %}
+Pages:<br>
+page_num: {{page_num}}<br>
+prev_page: {{prev_page}}<br>
+next_page: {{next_page}}<br>
+total_pages: {{total_pages}}<br>
+<br>
+Results:<br>
+num_results (per page): {{num_results}}<br>
+start_results: {{start_results}}<br>
+end_results: {{end_results}}<br>
+total_results: {{total_results}}<br>
+{% endcomment %}

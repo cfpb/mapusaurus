@@ -1,0 +1,31 @@
+{% extends "basestyle/base.html" %}
+
+{% block body %}
+
+    {% include "basestyle/common/predecisional_banner.html" %}
+    
+    {% include "basestyle/common/header.html" %}
+
+    {% block header_content %}{% endblock %}
+
+    <div class="wrap">
+
+        <aside id="sidebar-content" class="sidebar-content" role="complementary">
+
+            {% block sidebar_content %}{% endblock %}
+
+        </aside>
+
+        <main id="main-content" class="main-content main-content__two-column" role="main">
+
+            {% block main_content %}{% endblock %}
+
+        </main>
+
+    </div><!-- ./wrap -->
+
+    {% block footer_content %}{% endblock %}
+
+    {% include "basestyle/common/footer.html" %}
+
+{% endblock %}

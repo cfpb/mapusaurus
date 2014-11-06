@@ -1,0 +1,74 @@
+[
+  {
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "1122233300",
+      "geo_type": 3,
+      "name": "333",
+      "state": "11",
+      "county": "222",
+      "tract": "33300",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1,
+      "centlat": 0.0,
+      "centlon": 0.0
+    }
+  },
+  {
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "1122233400",
+      "geo_type": 3,
+      "name": "334",
+      "state": "11",
+      "county": "222",
+      "tract": "33400",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1,
+      "centlat": 0.0,
+      "centlon": 0.0
+    }
+  },
+  {
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "1122333300",
+      "geo_type": 3,
+      "name": "333",
+      "state": "11",
+      "county": "223",
+      "tract": "33300",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1,
+      "centlat": 0.0,
+      "centlon": 0.0
+    }
+  },
+  {
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "1222233300",
+      "geo_type": 3,
+      "name": "333",
+      "state": "12",
+      "county": "222",
+      "tract": "33300",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1,
+      "centlat": 0.0,
+      "centlon": 0.0
+    }
+  }
+]

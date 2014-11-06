@@ -1,0 +1,50 @@
+[
+    {
+        "model": "respondents.agency",
+        "pk": 1,
+        "fields": {
+            "acronym": "OCC",
+            "full_name": "Office of the Comptroller of the Currency"
+        }
+    },
+    {
+        "model": "respondents.agency",
+        "pk": 2,
+        "fields": {
+            "acronym": "FRS",
+            "full_name": "Federal Reserve System"
+        }
+    },
+    {
+        "model": "respondents.agency",
+        "pk": 3,
+        "fields": {
+            "acronym": "FDIC",
+            "full_name": "Federal Deposit Insurance Corporation"
+        }
+    },
+    {
+        "model": "respondents.agency",
+        "pk": 5,
+        "fields": {
+            "acronym": "NCUA",
+            "full_name": "National Credit Union Administration"
+        }
+    },
+    {
+        "model": "respondents.agency",
+        "pk": 7,
+        "fields": {
+            "acronym": "HUD",
+            "full_name": "Department of Housing and Urban Development"
+        }
+    },
+    {
+        "model": "respondents.agency",
+        "pk": 9,
+        "fields": {
+            "acronym": "CFPB",
+            "full_name": "Consumer Financial Protection Bureau"
+        }
+    }
+]

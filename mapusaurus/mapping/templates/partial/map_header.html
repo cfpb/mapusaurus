@@ -1,0 +1,26 @@
+
+<div class="map-header__wrapper">
+    <div class="map-header__map-title">
+        {% if lender %}
+            <span><strong>{{ lender.name}}</strong></span>
+        {% endif %}
+        {% if metro %}
+            <span class="msa-name">{{ metro.name }}</span>
+        {% endif %}
+    </div>
+
+<!--     <div id="lock-map-container" class="map-header__lock-msa">
+        {% if metro %}
+            <div id="enforce-bounds" class="enforce-bounds"
+                 data-min-lat="{{metro.minlat}}"
+                 data-max-lat="{{metro.maxlat}}"
+                 data-min-lon="{{metro.minlon}}"
+                 data-max-lon="{{metro.maxlon}}" 
+                 data-unlocked-label="Show MSA Boundary"
+                 data-unlocked-title="Only display data for current MSA"
+                 data-enforce-bounds-state="locked">
+                    <button type="button" title="Display data for entire country" >Remove MSA Boundary</button>
+            </div>
+        {% endif %}
+    </div> -->
+</div>

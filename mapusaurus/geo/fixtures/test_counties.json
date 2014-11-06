@@ -1,0 +1,38 @@
+[
+  {
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "11222",
+      "geo_type": 2,
+      "name": "Positive County",
+      "state": "11",
+      "county": "222",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 4,
+      "minlon": 4,
+      "maxlat": 5,
+      "maxlon": 5,
+      "centlat": 4.5,
+      "centlon": 4.5
+    }
+  },
+  {
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "11223",
+      "geo_type": 2,
+      "name": "Negative County",
+      "state": "11",
+      "county": "222",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": -4,
+      "minlon": -4,
+      "maxlat": -2,
+      "maxlon": -2,
+      "centlat": -3,
+      "centlon": -3
+    }
+  }
+]
+
+
