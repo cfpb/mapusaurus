@@ -83,7 +83,7 @@ module.exports = function(grunt) {
       ,
       vendor: {
         src: [
-          'frontend/bower_components/jquery/dist/jquery.js',
+          'frontend/bower_components/jquery/dist/jquery.min.js',
           'frontend/bower_components/jquery.easing/js/jquery.easing.js',
           'frontend/bower_components/typeahead/dist/typeahead.bundle.js',
           'frontend/bower_components/cf-expandables/src/js/cf-expandables.js'
@@ -93,9 +93,8 @@ module.exports = function(grunt) {
       vendor_map: {
         src: [
           'frontend/bower_components/underscore/underscore.js',
-          'frontend/bower_components/topojson/topojson.js',
+          // 'frontend/bower_components/leaflet-hash/leaflet-hash.js',
           'frontend/bower_components/leaflet-rrose/rrose-src.js',
-          'frontend/bower_components/leafet-tilelayer-geojson/TileLayer.GeoJSON.js'
         ],
         dest: 'frontend/dist/map/js/map-vendor.min.js'
       },

@@ -8,12 +8,13 @@
         <title>{% block title %}{% endblock title %}</title>
         <link rel="stylesheet" href="{% static 'basestyle/css/vendor.css' %}" />
         <link rel="stylesheet" href="{% static 'basestyle/css/mapusaurus.css' %}" />
+        <script type="text/javascript" src="{% static 'basestyle/js/vendor.min.js' %}"></script>
         {% block head_styles %}{% endblock %}
-        {% block head_scripts %}{% endblock %}
+        {% block head_scripts %}
+        {% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}
-        <script src="{% static 'basestyle/js/vendor.min.js' %}"></script>
         {% block foot_scripts %}{% endblock %}
     </body>
 </html>
