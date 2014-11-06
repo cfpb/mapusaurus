@@ -21,13 +21,13 @@ def all(request):
 
 def hmda(request):
     """This endpoint returns hmda data using params from the request"""
-    return loan_originations_as_json(request)
+    return HttpResponse(json.dumps(loan_originations_as_json(request)))
 
 def census(request):
     """This endpoint returns census data used for circle coloring over tracts"""
-    return race_summary_as_json(request)
+    return HttpResponse(json.dumps(race_summary_as_json(request)))
 
 def tractCentroids(request):
     """This endpoints returns census tract centroids used to determine circle position on map"""
-    return tract_centroids_as_json(request)
+    return HttpResponse(json.dumps(json.loads(tract_centroids_as_json(request))), content_type='application/json')
 

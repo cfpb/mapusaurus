@@ -15,11 +15,7 @@ from topojson import topojson
 from geo.models import Geo
 
 def tract_centroids_as_json(request):
-    censustract_dict = json.loads(get_censustract_json(request, northEastLat, northEastLon, southWestLat, southWestLon))
-    return HttpResponse(json.dumps(censustract_dict), content_type='application/json')
-
-def get_censustract_json(request):
-    censusgeos = get_censustract_geos(request, northEastLat, northEastLon, southWestLat, southWestLon)
+    censusgeos = get_censustract_geos(request)
     # We already have the json strings per model pre-computed, so just place
     # them inside a static response
     response = '{"crs": {"type": "link", "properties": {"href": '
