@@ -37,7 +37,7 @@ class Agency(models.Model):
 
 
 class ParentInstitution(models.Model):
-    """ Parent and top holder mapusaurus need to be stored a bit differently
+    """ Parent and top holder institutions need to be stored a bit differently
     because (1) they can be international and (2) they might not report HMDA so
     we have fewer details. If we have an RSSD ID we try and store it here. """
 

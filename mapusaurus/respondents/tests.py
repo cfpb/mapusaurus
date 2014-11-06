@@ -189,8 +189,8 @@ class ViewTest(TestCase):
                                {'q': 'Bank'},
                                HTTP_ACCEPT='application/json')
         resp = json.loads(resp.content)
-        self.assertEqual(1, len(resp['mapusaurus']))
-        inst = resp['mapusaurus'][0]
+        self.assertEqual(1, len(resp['institutions']))
+        inst = resp['institutions'][0]
         self.assertEqual('Some Bank', inst['name'])
 
     @patch('respondents.views.SearchQuerySet')
@@ -203,8 +203,8 @@ class ViewTest(TestCase):
 
         request = RequestFactory().get('/', data={'q': 'Bank'})
         results = views.search_results(request)
-        self.assertEqual(len(results.data['mapusaurus']), 1)
-        self.assertEqual(45, results.data['mapusaurus'][0].num_loans)
+        self.assertEqual(len(results.data['institutions']), 1)
+        self.assertEqual(45, results.data['institutions'][0].num_loans)
 
     @patch('respondents.views.SearchQuerySet')
     def test_search_sort(self, SQS):

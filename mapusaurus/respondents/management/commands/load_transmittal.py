@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
         with open(transmittal_filename) as institutioncsv:
             transmittal_reader = csv.reader(institutioncsv, delimiter='\t')
-            mapusaurus = []
+            institutions = []
             for inst_line in transmittal_reader:
                 zip_code = inst_line[8]
                 state = inst_line[7]
@@ -35,5 +35,5 @@ class Command(BaseCommand):
                     assets=int(inst_line[17]),
                 )
 
-                mapusaurus.append(inst)
-            Institution.objects.bulk_create(mapusaurus)
+                institutions.append(inst)
+            Institution.objects.bulk_create(institutions)
