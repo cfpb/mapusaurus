@@ -1,5 +1,5 @@
 """
-Django settings for institutions project.
+Django settings for mapusaurus project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.6/topics/settings/
@@ -64,9 +64,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
-ROOT_URLCONF = 'institutions.urls'
+ROOT_URLCONF = 'mapusaurus.urls'
 
-WSGI_APPLICATION = 'institutions.wsgi.application'
+WSGI_APPLICATION = 'mapusaurus.wsgi.application'
 
 
 # Database
@@ -139,4 +139,4 @@ if 'test' in sys.argv:
 
 CONTACT_US_EMAIL = 'feedback@example.com'
 
-from institutions.settings.local_settings import *
+from mapusaurus.settings.local_settings import *

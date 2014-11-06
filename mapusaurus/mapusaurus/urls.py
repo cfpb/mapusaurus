@@ -7,9 +7,9 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-    url(r'^$', RedirectView.as_view(url='/institutions/')),
+    url(r'^$', RedirectView.as_view(url='/institution-search/')),
     url(r'^api/', include('api.urls')),
-    url(r'^institutions/', include('respondents.urls',
+    url(r'^institution-search/', include('respondents.urls',
                                    namespace='respondents')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^shapes/', include('geo.urls', namespace='geo')),
