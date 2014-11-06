@@ -10,5 +10,5 @@ before_script:
   - psql -c 'CREATE DATABASE travisdb;' -U postgres
   - psql -c 'CREATE EXTENSION postgis;' -U postgres -d travisdb
 script:
-  - cd institutions
+  - cd mapusaurus
   - python manage.py test
