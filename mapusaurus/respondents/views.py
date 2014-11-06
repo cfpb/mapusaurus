@@ -151,7 +151,7 @@ def search_results(request):
     start_results = start_results + 1
 
     return Response(
-        {'institutions': results, 'query_str': query_str,
+        {'mapusaurus': results, 'query_str': query_str,
          'num_results': num_results, 'start_results': start_results,
          'end_results': end_results, 'sort': sort,
          'page_num': page, 'total_results': total_results,
