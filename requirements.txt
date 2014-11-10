@@ -8,7 +8,6 @@ django-overextends==0.3.2
 djangorestframework==2.3.14
 jsonschema==2.4.0
 mock==1.0.1
-numpy==1.8.2
 psycopg2==2.5.3
 pyelasticsearch==0.7.1
 requests==2.3.0
