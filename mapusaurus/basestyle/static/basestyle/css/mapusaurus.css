@@ -5516,6 +5516,31 @@ html b {
 .secondary-nav li:last-child {
   border-bottom: none;
 }
+select {
+  font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+}
+select em,
+select i {
+  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
+  font-style: italic;
+  font-weight: normal;
+}
+.lt-ie9 select em,
+.lt-ie9 select i {
+  font-style: normal !important;
+}
+select strong,
+select b {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 select strong,
+.lt-ie9 select b {
+  font-weight: normal !important;
+}
 .map-wrapper {
   max-width: 70%;
   padding: 0 15px;
@@ -5731,14 +5756,42 @@ html b {
   border: 1px solid #ccc;
 }
 #key {
-  width: 300px;
+  font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  width: 250px;
   border: solid 1px #000;
   background: #fff;
-  padding: 10px;
+  padding: 5px;
+}
+#key em,
+#key i {
+  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
+  font-style: italic;
+  font-weight: normal;
+}
+.lt-ie9 #key em,
+.lt-ie9 #key i {
+  font-style: normal !important;
+}
+#key strong,
+#key b {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 #key strong,
+.lt-ie9 #key b {
+  font-weight: normal !important;
 }
 #key label {
   font-size: larger;
   font-weight: bold;
+}
+#key select {
+  width: 100%;
+  margin-top: 5px;
+  font-size: large;
 }
 #minority-key {
   width: 100%;
@@ -5758,11 +5811,6 @@ html b {
   /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#806b280a', endColorstr='#800c3061', GradientType=1);
   /* IE6-9 */
-}
-#key select {
-  width: 100%;
-  margin-top: 10px;
-  font-size: large;
 }
 #percentage-container .left {
   display: inline-block;

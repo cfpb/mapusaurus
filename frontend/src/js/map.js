@@ -13,7 +13,7 @@ if (!window.console) console = {log: function() {}};
 
         // When minority changes, redraw the circles with appropriate styles
         $('#category-selector').on('change', function(e) {
-            val = $('#category-selector').val();
+            var val = $('#category-selector').val();
             layerUpdate(val);  
         });
 
