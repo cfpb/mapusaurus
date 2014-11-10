@@ -79,8 +79,7 @@ module.exports = function(grunt) {
         compress: true,
         mangle: false,
         beautify: true
-      }
-      ,
+      },
       vendor: {
         src: [
           'frontend/bower_components/jquery/dist/jquery.min.js',
@@ -93,8 +92,8 @@ module.exports = function(grunt) {
       vendor_map: {
         src: [
           'frontend/bower_components/underscore/underscore.js',
-          // 'frontend/bower_components/leaflet-hash/leaflet-hash.js',
-          'frontend/bower_components/leaflet-rrose/rrose-src.js',
+          'frontend/bower_components/leaflet-hash/leaflet-hash.js',
+          'frontend/bower_components/leaflet-rrose/rrose-src.js'
         ],
         dest: 'frontend/dist/map/js/map-vendor.min.js'
       },
@@ -159,6 +158,13 @@ module.exports = function(grunt) {
             src: ['frontend/src/img/choropleth-key.svg'],
             dest: 'frontend/dist/basestyle/img/',
             filter: 'isFile'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['frontend/src/img/icon_spinner_2x.gif'],
+            dest: 'frontend/dist/basestyle/img/',
+            filter: 'isFile'
           }
         ]
       },
@@ -169,21 +175,21 @@ module.exports = function(grunt) {
             expand: true,
             cwd: 'frontend/dist/basestyle/',
             src: ['**'],
-            dest: 'institutions/basestyle/static/basestyle/',
+            dest: 'mapusaurus/basestyle/static/basestyle/',
             filter: 'isFile'
           },
           {
             expand: true,
             cwd: 'frontend/dist/search/',
             src: ['**'],
-            dest: 'institutions/respondents/static/respondents/',
+            dest: 'mapusaurus/respondents/static/respondents/',
             filter: 'isFile'
           },
           {
             expand: true,
             cwd: 'frontend/dist/map/',
             src: ['**'],
-            dest: 'institutions/mapping/static/mapping/',
+            dest: 'mapusaurus/mapping/static/mapping/',
             filter: 'isFile'
           }
 
