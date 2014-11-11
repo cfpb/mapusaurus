@@ -1,11 +1,12 @@
 // Set the map and all its containers to 100% so it fills the viewport
 html, body {
-    //height:100%;
 }
 
 .map-container {
-  //min-height: 100%;
-  //overflow: hidden;
+}
+
+select {
+  .webfont-regular();
 }
 
 .map-wrapper {
@@ -261,16 +262,24 @@ html, body {
 
 
 #key {
-  width: 300px;
+  .webfont-regular();
+  width: 250px;
   border: solid 1px #000;
   background: #fff;
-  padding: 10px;
+  padding: 5px;
+
+  label {
+    font-size: larger;
+    font-weight: bold;    
+  }
+  select {
+    width: 100%;
+    margin-top: 5px;
+    font-size: large;
+  }
+
 }
 
-#key label {
-  font-size: larger;
-  font-weight: bold;
-}
 
 #minority-key {
   width: 100%;
@@ -284,12 +293,6 @@ html, body {
   background: -ms-linear-gradient(left,  rgba(107,40,10,0.5) 0%,rgba(250,186,106,0.5) 50%,rgba(124,198,186,0.5) 51%,rgba(12,48,97,0.5) 100%); /* IE10+ */
   background: linear-gradient(to right,  rgba(107,40,10,0.5) 0%,rgba(250,186,106,0.5) 50%,rgba(124,198,186,0.5) 51%,rgba(12,48,97,0.5) 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#806b280a', endColorstr='#800c3061',GradientType=1 ); /* IE6-9 */
-}
-
-#key select {
-  width: 100%;
-  margin-top: 10px;
-  font-size: large;
 }
 
 #percentage-container {
