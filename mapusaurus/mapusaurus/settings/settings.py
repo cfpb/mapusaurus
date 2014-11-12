@@ -41,7 +41,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'localflavor',
     'south',
-    'leaflet',
     'haystack',
     'rest_framework',
     'basestyle',

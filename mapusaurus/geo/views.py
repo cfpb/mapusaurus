@@ -1,17 +1,13 @@
 import json
-import math
 
-from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.views.decorators.cache import cache_page
 from haystack.inputs import AutoQuery
 from haystack.query import SearchQuerySet
 from rest_framework import serializers
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from topojson import topojson
 from geo.models import Geo
 
 def tract_centroids_as_json(request):
