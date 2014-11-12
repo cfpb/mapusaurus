@@ -4,7 +4,6 @@ from localflavor.us.models import USStateField
 
 from respondents.managers import AgencyManager
 
-
 class ZipcodeCityState(models.Model):
     """ For each zipcode, maintain the city, state information. """
     zip_code = models.IntegerField()
@@ -102,3 +101,11 @@ class Institution(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class LenderHierarchy(models.Model):
+    agency = models.ForeignKey('Agency')
+    respondent_id = models.CharField(max_length=10)
+    organization_id = models.IntegerField()
+
+
+
