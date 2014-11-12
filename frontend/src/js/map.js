@@ -33,12 +33,24 @@ if (!window.console) console = {log: function() {}};
             addParam( 'action', 'all-apps-5' );
         }
 
+        if( typeof loadParams.lh !== 'undefined'){
+            var status = (loadParams.lh.values == "true");
+            console.log('load params status: ', status);
+            $('#superSelect').prop('checked', status );
+        }
+
+        $('#superSelect').change( function(){
+            var el = $('#superSelect');
+            var status = el.prop('checked');
+            addParam('lh', status );
+            init();
+        });
+
         // When the user changes the action taken data selector, re-initialize
         $('#action-taken-selector').on('change', function(){
             addParam( 'action', $('#action-taken-selector option:selected').val() );
             init();
-        })
-
+        });
 
         //Let the application do its thing 
         init();
@@ -105,10 +117,11 @@ if (!window.console) console = {log: function() {}};
         $('#bubbles_loading').show();
         var endpoint = '/api/all/',
             params = { year: 2013,
-                        neLat: bounds.neLat,
-                        neLon: bounds.neLon,
-                        swLat: bounds.swLat,
-                        swLon: bounds.swLon };
+                        'lh': $('#superSelect').prop('checked'),
+                        'neLat': bounds.neLat,
+                        'neLon': bounds.neLon,
+                        'swLat': bounds.swLat,
+                        'swLon': bounds.swLon };
 
         // Check to see if another year has been requested other than the default
         if ( urlParam('year') ){
@@ -122,6 +135,7 @@ if (!window.console) console = {log: function() {}};
             console.log(' Lender parameter is required.');
             return false;
         }
+
 
         // If actionTaken, go get data, otherwise
         // let the user know about the default value
