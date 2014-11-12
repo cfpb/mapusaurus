@@ -4,7 +4,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import MultiPolygon, Polygon
 from django.test import TestCase
 from mock import Mock, patch
-from geojson import geojson
 
 from geo.management.commands.load_geos_from import Command as LoadGeos
 from geo.management.commands.set_tract_csa_cbsa import Command as SetTractCBSA
