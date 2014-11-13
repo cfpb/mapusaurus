@@ -7,11 +7,23 @@ from mock import Mock, patch
 
 from geo.models import Geo
 from hmda.models import HMDARecord
-from respondents import views, zipcode_utils
-from respondents.models import Agency, Institution, ZipcodeCityState
+from respondents import views, zipcode_utils, lender_hierarchy_utils
+from respondents.models import Agency, Institution, ZipcodeCityState, LenderHierarchy
 from respondents.management.commands import load_reporter_panel
 from respondents.management.commands import load_transmittal
 from respondents.search_indexes import InstitutionIndex
+
+
+class LenderHierarchyUtilsTests(TestCase):
+    fixtures = ['agency']
+
+    def test_get_related_lenders(self):
+        testAgency = Agency.objects.get(pk=9)
+        LenderHierarchy.objects.create(agency=testAgency, respondent_id='1234', organization_id=9999)
+        LenderHierarchy.objects.create(agency=testAgency, respondent_id='5678', organization_id=9999)
+        LenderHierarchy.objects.create(agency=testAgency, respondent_id='5678', organization_id=1111)
+        lenders = lender_hierarchy_utils.get_related_lenders('91234')
+        self.assertEquals(len(lenders[0]), 2)
 
 
 class ZipcodeUtilsTests(TestCase):
