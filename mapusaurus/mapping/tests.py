@@ -47,10 +47,8 @@ class ViewTest(TestCase):
         resp = self.client.get(reverse('map'), {'metro': '12121'})
         self.assertTrue('45.4545' in resp.content)
         self.assertTrue('67.6767' in resp.content)
-        self.assertTrue('0.11' in resp.content)
-        self.assertTrue('0.22' in resp.content)
-        self.assertTrue('1.33' in resp.content)
-        self.assertTrue('1.44' in resp.content)
+        self.assertTrue('11' in resp.content)
+        self.assertTrue('12' in resp.content)
         self.assertTrue('MetMetMet' in resp.content)
 
     def test_make_download_url(self):

@@ -52,5 +52,3 @@ class ViewsTest(TestCase):
     def tearDown(self):
         Census2010Households.objects.all().delete()
         HMDARecord.objects.all().delete()
-
-
