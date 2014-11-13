@@ -4,7 +4,6 @@ from respondents.models import LenderHierarchy, Agency
 
 
 class Command(BaseCommand):
-    import pdb; pdb.set_trace();
     args = "<filename>"
     help = "Loads the data from Vahan's csv mapping."
 
