@@ -6,8 +6,7 @@ from geo.models import Geo
 from hmda.models import LendingStats
 from hmda.management.commands.calculate_loan_stats import (calculate_median_loans)
 from respondents.models import Institution
-
-
+from respondents.lender_hierarchy_utils import get_related_lenders
 
 def map(request):
     """Display the map. If lender info is present, provide it to the
@@ -30,7 +29,11 @@ def map(request):
         metro = query.first()
         if metro:
             context['metro'] = metro
-    context['download_url'] = make_download_url(lender, metro)
+    lender_id = []
+    lender_id.append(str(lender.agency_id) + lender.ffiec_id)
+    context['download_url'] = make_download_url(lender_id, metro)
+    lender_hierarchy = get_related_lenders(str(lender_id[0]))
+    context['hierarchy_download_url'] = make_download_url(lender_hierarchy[0], metro)
     context['median_loans'] = lookup_median(lender, metro) or 0
     if context['median_loans']:
         # 50000 is an arbitrary constant; should be altered if we want to
@@ -41,13 +44,19 @@ def map(request):
 
     return render(request, 'map.html', context)
 
-def make_download_url(lender, metro):
+def make_download_url(lenders, metro):
     """Create a link to CFPB's HMDA explorer, either linking to all of this
     lender's records, or to just those relevant for an MSA. MSA's are broken
     into divisions in that tool, so make sure the query uses the proper ids"""
-    if lender:
-        where = 'as_of_year=2013 AND agency_code=%d AND respondent_id="%s"'
-        where = where % (lender.agency_id, lender.ffiec_id)
+    if lenders:
+        where = 'as_of_year=2013 AND'
+        count = 0 
+        for lender in lenders:
+            query = '(agency_code=%s AND respondent_id="%s")'
+            where += query % (lender[0], lender[1:])
+            count += 1
+            if(count <= len(lender)):
+                where += "OR"
         if metro:
             divisions = [div.metdiv for div in
                          Geo.objects.filter(
