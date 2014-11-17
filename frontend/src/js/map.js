@@ -37,11 +37,13 @@ if (!window.console) console = {log: function() {}};
             var status = (loadParams.lh.values == "true");
             console.log('load params status: ', status);
             $('#superSelect').prop('checked', status );
+            toggleSuper(status);
         }
 
         $('#superSelect').change( function(){
             var el = $('#superSelect');
             var status = el.prop('checked');
+            toggleSuper(status);
             addParam('lh', status );
             init();
         });
@@ -80,6 +82,16 @@ if (!window.console) console = {log: function() {}};
         $('#map').css('height', mapHeight);
     }
 
+    function toggleSuper( status ){
+        var url = $('#download_data').data('hierarchy_download_url'),
+            origUrl = $('#download_data').data('download_url');
+
+        if( !status ){
+            $('#download_data').attr('href', url);
+        } else {
+            $('#download_data').attr('href', origUrl); 
+        }
+    }
 
     /* 
         ---- GET DATA SCRIPTS ----
