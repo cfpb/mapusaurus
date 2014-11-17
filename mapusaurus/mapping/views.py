@@ -61,7 +61,7 @@ def make_download_url(lenders, metro):
             query = '(agency_code=%s AND respondent_id="%s")'
             where += query % (lender[0], lender[1:])
             count += 1
-            if(count <= len(lender)):
+            if(count < len(lenders)):
                 where += "OR"
         if metro:
             divisions = [div.metdiv for div in
