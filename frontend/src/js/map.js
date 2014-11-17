@@ -43,8 +43,8 @@ if (!window.console) console = {log: function() {}};
         $('#superSelect').change( function(){
             var el = $('#superSelect');
             var status = el.prop('checked');
-            toggleSuper(status);
             addParam('lh', status );
+            toggleSuper(status);
             init();
         });
 
@@ -83,13 +83,12 @@ if (!window.console) console = {log: function() {}};
     }
 
     function toggleSuper( status ){
-        var url = $('#download_data').data('hierarchy_download_url'),
-            origUrl = $('#download_data').data('download_url');
-
+        var url = $('#download-data').data('super-download'),
+            origUrl = $('#download-data').data('download');
         if( !status ){
-            $('#download_data').attr('href', url);
+            $('#download-data').attr('href', origUrl);
         } else {
-            $('#download_data').attr('href', origUrl); 
+            $('#download-data').attr('href', url);
         }
     }
 
