@@ -60,7 +60,6 @@ def make_download_url(lenders, metro):
         for lender in lenders:
             query = '(agency_code=%s AND respondent_id="%s")'
             where += query % (lender[0], lender[1:])
-            import pdb; pdb.set_trace();
             count += 1
             if(count < len(lenders)):
                 where += "OR"
