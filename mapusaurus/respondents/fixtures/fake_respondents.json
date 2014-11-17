@@ -13,6 +13,7 @@
     "pk": 1234567,
     "fields": {
       "year": 1970,
+      "agency" : 9,
       "ffiec_id": "22-333",
       "agency": 1,
       "tax_id": "taxtax",

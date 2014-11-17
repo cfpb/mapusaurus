@@ -53,12 +53,14 @@ class ViewTest(TestCase):
 
     def test_make_download_url(self):
         self.assertEqual(None, make_download_url(None, None))
-        url = make_download_url(self.respondent, None)
+        lender_ids = []
+        lender_ids.append(str(self.respondent.agency) + self.respondent.ffiec_id)
+        url = make_download_url(lender_ids, None)
         self.assertTrue('22-333' in url)
         self.assertTrue('1' in url)
         self.assertFalse('msamd' in url)
 
-        url = make_download_url(self.respondent, self.metro)
+        url = make_download_url(lender_ids, self.metro)
         self.assertTrue('msamd="12121"' in unquote(url))
 
         div1 = Geo.objects.create(
@@ -71,7 +73,8 @@ class ViewTest(TestCase):
             geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
             centlon=67.6767, cbsa='12121', metdiv='78787')
-        url = make_download_url(self.respondent, self.metro)
+        
+        url = make_download_url(lender_ids, self.metro)
         self.assertFalse('12121' in url)
         self.assertTrue('msamd+IN+("98989","78787")' in unquote(url))
 
