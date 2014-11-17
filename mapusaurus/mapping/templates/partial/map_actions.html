@@ -57,12 +57,13 @@
             <div class="map-aside__download">
                 <h3>Download Data</h3>
                 <p>Download the loan application records (LAR) for the current Lender/MSA/Year combination:</p>
-                <p style="text-align:center"><a target="_blank" id="download-data" class="btn" href="{{ download_url }}" >
+                <p style="text-align:center"><a target="_blank" id="download-data" data-download="{{ download_url }}" data-super-download="{{ hierarchy_download_url }}" class="btn" href="{{ download_url}}" >
                     Download CSV
                     <!--<span class="btn_icon__right fa fa-download"></span>-->
                 </a></p>
             </div>
         {% endif %}
+
     </div><!-- /.tabpanel -->
 
 

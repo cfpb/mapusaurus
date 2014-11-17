@@ -35,14 +35,15 @@ if (!window.console) console = {log: function() {}};
 
         if( typeof loadParams.lh !== 'undefined'){
             var status = (loadParams.lh.values == "true");
-            console.log('load params status: ', status);
             $('#superSelect').prop('checked', status );
+            toggleSuper(status);
         }
 
         $('#superSelect').change( function(){
             var el = $('#superSelect');
             var status = el.prop('checked');
             addParam('lh', status );
+            toggleSuper(status);
             init();
         });
 
@@ -80,6 +81,15 @@ if (!window.console) console = {log: function() {}};
         $('#map').css('height', mapHeight);
     }
 
+    function toggleSuper( status ){
+        var url = $('#download-data').data('super-download'),
+            origUrl = $('#download-data').data('download');
+        if( !status ){
+            $('#download-data').attr('href', origUrl);
+        } else {
+            $('#download-data').attr('href', url);
+        }
+    }
 
     /* 
         ---- GET DATA SCRIPTS ----
@@ -443,7 +453,6 @@ if (!window.console) console = {log: function() {}};
     function getBoundParams(){
         var bounds = map.getBounds(),
         padding = .00;
-        console.log(bounds);
         return { neLat: (bounds._northEast.lat + padding).toFixed(6),
                 neLon: (bounds._northEast.lng + padding).toFixed(6),
                 swLat: (bounds._southWest.lat - padding).toFixed(6),
