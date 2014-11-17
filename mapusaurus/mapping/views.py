@@ -23,17 +23,23 @@ def map(request):
             context['lender'] = lender
     else:
         lender = None
+        lender_ids = None
+        lender_hierarchy = None
     if metro:
         query = Geo.objects.filter(geo_type=Geo.METRO_TYPE,
                                    geoid=metro)
         metro = query.first()
         if metro:
             context['metro'] = metro
-    lender_id = []
-    lender_id.append(str(lender.agency_id) + lender.ffiec_id)
-    context['download_url'] = make_download_url(lender_id, metro)
-    lender_hierarchy = get_related_lenders(str(lender_id[0]))
-    context['hierarchy_download_url'] = make_download_url(lender_hierarchy[0], metro)
+
+    if lender and metro: 
+        lender_ids = []
+        lender_ids.append(str(lender.agency_id) + lender.ffiec_id)
+        context['download_url'] = make_download_url(lender_ids, metro)
+        lender_hierarchy = get_related_lenders(str(lender_ids[0]))
+        if (len(lender_hierarchy) > 0):
+            context['hierarchy_download_url'] = make_download_url(lender_hierarchy[0], metro)
+
     context['median_loans'] = lookup_median(lender, metro) or 0
     if context['median_loans']:
         # 50000 is an arbitrary constant; should be altered if we want to
