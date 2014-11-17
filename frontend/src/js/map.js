@@ -35,7 +35,6 @@ if (!window.console) console = {log: function() {}};
 
         if( typeof loadParams.lh !== 'undefined'){
             var status = (loadParams.lh.values == "true");
-            console.log('load params status: ', status);
             $('#superSelect').prop('checked', status );
             toggleSuper(status);
         }
@@ -454,7 +453,6 @@ if (!window.console) console = {log: function() {}};
     function getBoundParams(){
         var bounds = map.getBounds(),
         padding = .00;
-        console.log(bounds);
         return { neLat: (bounds._northEast.lat + padding).toFixed(6),
                 neLon: (bounds._northEast.lng + padding).toFixed(6),
                 swLat: (bounds._southWest.lat - padding).toFixed(6),
