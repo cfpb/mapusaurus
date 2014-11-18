@@ -56,7 +56,7 @@ class Command(BaseCommand):
 
         geo_states = set(
                 row['state'] for row in
-                Geo.objects.filter(geo_type=Geo.TRACT_TYPE,state=12).values('state').distinct()
+                Geo.objects.filter(geo_type=Geo.TRACT_TYPE).values('state').distinct()
             )
 
         db.reset_queries()
