@@ -28,7 +28,7 @@ def loan_originations(request):
                 'geoid', 'geoid__census2010households__total'
             ).annotate(volume=Count('geoid'))
             return query
-    elif lender_hierarchy == 'false' and geoids and lender_id and action_taken:
+    elif geoids and lender_id and action_taken:
         query = HMDARecord.objects.filter(
             # actions 7-8 are preapprovals to ignore
             property_type__in=[1,2], owner_occupancy=1, lien_status=1,
