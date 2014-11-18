@@ -139,7 +139,6 @@ if (!window.console) console = {log: function() {}};
                         'swLon': bounds.swLon };
         var hash = getHashParams();
         if( typeof hash.lh !== 'undefined' ){
-            console.log('loadParams lh: ', hash.lh );
             params.lh = hash.lh.values;
         }
 
