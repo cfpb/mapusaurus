@@ -1,0 +1,170 @@
+{% extends "basestyle/base.html" %}
+{% load staticfiles %}
+
+{% block title %}Fair Lending HMDA Visualization Toolkit - {{lender}}{% endblock %}
+
+{% block head_styles %}
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css' rel='stylesheet' />
+    <link rel="stylesheet" href="{% static 'mapping/css/vendor.css' %}" />
+
+{% endblock %}
+
+{% block head_scripts %}
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.js'></script>
+    <script type="text/javascript" src="{% static 'mapping/js/map-vendor.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/js/map.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
+{% endblock %}
+
+
+{% block body%}
+
+<div id="main-container" style="padding:15px;">
+    <header id="header" class="header" role="banner">
+      <div class="map-wrapper" style="height: 80px;">
+        <div class="logo" style="display:inline-block">
+          <a href="http://www.consumerfinance.gov"><img class="logo" src="{{ STATIC_URL }}basestyle/img/logo_210.png" alt="Consumer Financial Protection Bureau"></a>
+        </div>
+        <div style="display:inline-block; position: relative; text-align: right; float:right;">
+            <strong>{{ lender.name }}</strong> - 0{{ lender.agency_id }}-{{ lender.ffiec_id }}<br/>
+            {{ metro.name }}<br/>
+            Layer: <span id="actionValue"></span> / <span id="minorityValue"></span>
+        </div>
+        <div id="filterStatus" style="display:inline-block; vertical-align:top; top: 5px;"></div>
+      </div>
+    </header>
+    <div id="map-container" >
+        <div id="map" style="width:100%; height: 680px">
+        {% include 'partial/map_key_print.html'%}    
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block foot_scripts %}
+    
+    <script>
+
+        /* 
+          ---- MAPBOX / LEAFLET CODE ----
+        */
+        
+        // Size the map container for the window size
+        //setMapHeight();
+        
+        // Our Mapbox public token so we can load all these fun layers
+        L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
+        
+        // Initialize the map
+        var map = L.mapbox.map('map', null, { zoomControl:false });
+        
+        // If we have a metro parameter, center the map on this lat / lon
+        {% if metro %}
+            map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 11);
+        {% else %}
+            // Otherwise, somewhere near Chicago for grins
+            map.setView([40, -74.50], 11);
+        {% endif %}
+        
+        // Using our modified Leaflet-Hash plugin, check to see if we need to move the map somewhere else.
+        var hash = new L.Hash(map),
+            hashCheck = hash.parseHash(hash),
+            loadParams = getHashParams();
+
+        // If the hash already has parameters, change the view to be those exact coordinates
+        if( typeof hashCheck.params != 'undefined') {
+            map.setView([hashCheck.params.lat.values, hashCheck.params.lon.values], hashCheck.params.zoom.values );
+        }
+
+        // Set our map options after it's been created and centered
+        map.options.maxZoom = loadParams.zoom.values;
+        map.options.minZoom = loadParams.zoom.values;
+        map.options.inertia = false;
+
+        // When the user has stopped moving the map, run init, with a slight delay
+        map.on('moveend', _.debounce(init, 650) );
+
+        // Initialize all of our layers
+        var layers = {
+            MBBase: L.mapbox.tileLayer('cfpb.k55b27gd'),
+            Base: L.mapbox.tileLayer('cfpb.fi6hia4i'),
+            Water: L.mapbox.tileLayer('cfpb.FL_WATER_all_US'),
+            Boundaries: L.mapbox.tileLayer('cfpb.FL_BORDERS_all_US'),
+            CountyLabels: L.mapbox.tileLayer('cfpb.1mkotj4i'),
+            MSALabels: L.mapbox.tileLayer('cfpb.FL_MSA_labels'),
+            PctMinority: L.mapbox.tileLayer('cfpb.FL_TRACT_per-min_US'),
+            PctHispanic: L.mapbox.tileLayer('cfpb.FL_TRACT_per-hsp_US'),
+            PctBlack: L.mapbox.tileLayer('cfpb.FL_TRACT_per-blk_US'),
+            PctAsian: L.mapbox.tileLayer('cfpb.FL_TRACT_per-asn_US'),
+            PctNonWhite: L.mapbox.tileLayer('cfpb.FL_TRACT_pct_nhwht_US'),
+            Centroids: L.layerGroup([])
+        };
+
+        // Baselayers are created here and show up in our layer selector on the screen as radio buttons
+        var baseLayers = {
+            'Mapbox Base': layers.MBBase,
+            'Contiguous US': layers.Base
+        };
+
+        // Overlay layers show up as checkboxes and can be enabled at the same time using the layer selector
+        var overlays = {
+            'Water': layers.Water,
+            'Boundaries': layers.Boundaries,
+            'MSA Labels': layers.MSALabels,
+            'Percentage Minority': layers.PctMinority,
+            'Percentage Hispanic': layers.PctHispanic,
+            'Percentage Black': layers.PctBlack,
+            'Percentage Asian': layers.PctAsian,
+            'Percentage Non-white': layers.PctNonWhite,
+            'County Labels': layers.CountyLabels
+        };
+
+        // This array allows us to remove them from the map when a new one is selected (later)
+        var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctNonWhite];
+
+        // Add all our primary default layers to the map up front
+        layers.Base.addTo(map);
+        layers.Water.addTo(map);
+        layers.Boundaries.addTo(map);
+        layers.CountyLabels.addTo(map);
+
+        // Create a layer for our circles
+        layers.Centroids.addTo(map);
+
+        // Add our +/- and layer controls to the top left
+        // Add a mile scale
+        L.control.scale().addTo(map);
+        
+        // Make sure water and boundaries are above everything else
+        layers.Water.bringToFront();
+        layers.Boundaries.bringToFront();
+        layers.CountyLabels.bringToFront();
+
+        // Add the HTML Template key as a key in the top right
+        var key = L.control();
+        key.onAdd = function() {
+            return L.DomUtil.get('key');
+        };
+        key.setPosition('topright');
+        key.addTo(map);
+
+    /* 
+      END MAPBOX / LEAFLET CODE
+    */
+
+        
+    </script>
+    <script>
+        $(document).ready(function(){
+            var minorityVal = $('#category-selector option:selected').text();
+            $('#minorityValue').text(minorityVal);
+
+            var actionValue = $('#action-taken-selector option:selected').text();
+            $('#actionValue').text(actionValue);
+        });
+    </script>
+    <script type="text/javascript" src="{% static 'respondents/js/metro-search.min.js' %}"></script>
+
+{% endblock %}
