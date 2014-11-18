@@ -5,6 +5,8 @@ from django import db
 from geo import errors
 from geo.models import Geo
 from hmda.models import HMDARecord
+import sys
+import traceback
 
 
 class Command(BaseCommand):
@@ -14,7 +16,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if not args:
             raise CommandError("Needs a first argument, " + Command.args)
-
 
         delete_file = False
         filter_hmda = False
@@ -52,9 +53,10 @@ class Command(BaseCommand):
             raise Exception("Not a file or Directory! " + args[0])
 
 
+
         geo_states = set(
                 row['state'] for row in
-                Geo.objects.filter(geo_type=Geo.TRACT_TYPE).values('state').distinct()
+                Geo.objects.filter(geo_type=Geo.TRACT_TYPE,state=12).values('state').distinct()
             )
 
         db.reset_queries()
@@ -63,9 +65,6 @@ class Command(BaseCommand):
                               + ", ".join(list(sorted(geo_states))))
 
         if filter_hmda:
-
-
-            #todo: hmda query has huge data leak. look into table structure and figure out why.
             known_hmda = set(
                 row['statefp'] for row in
                 HMDARecord.objects.values('statefp').distinct())
@@ -78,73 +77,114 @@ class Command(BaseCommand):
         def records(csv_file):
             """A generator returning a new Record with each call. Required as
             there are too many to instantiate in memory at once"""
-
+            prevent_delete= False
             datafile = open(csv_file, 'r')
             i = 0
+            inserted_counter = 0
+            skipped_counter = 0
             print "Processing " + csv_file
             for row in reader(datafile):
 
-                if i % 25000 == 0:
-                        #total_so_far = i // 25000
-                    self.stdout.write("Records Processed " + str(i) )#) (i // 25000))
-                record = HMDARecord(
-                    as_of_year=int(row[0]), respondent_id=row[1],
-                    agency_code=row[2], loan_type=int(row[3]),
-                    property_type=row[4], loan_purpose=int(row[5]),
-                    owner_occupancy=int(row[6]), loan_amount_000s=int(row[7]),
-                    preapproval=row[8], action_taken=int(row[9]),
-                    msamd=row[10], statefp=row[11], countyfp=row[12],
-                    census_tract_number=row[13], applicant_ethnicity=row[14],
-                    co_applicant_ethnicity=row[15], applicant_race_1=row[16],
-                    applicant_race_2=row[17], applicant_race_3=row[18],
-                    applicant_race_4=row[19], applicant_race_5=row[20],
-                    co_applicant_race_1=row[21], co_applicant_race_2=row[22],
-                    co_applicant_race_3=row[23], co_applicant_race_4=row[24],
-                    co_applicant_race_5=row[25], applicant_sex=int(row[26]),
-                    co_applicant_sex=int(row[27]), applicant_income_000s=row[28],
-                    purchaser_type=row[29], denial_reason_1=row[30],
-                    denial_reason_2=row[31], denial_reason_3=row[32],
-                    rate_spread=row[33], hoepa_status=row[34],
-                    lien_status=row[35], edit_status=row[36],
-                    sequence_number=row[37], population=row[38],
-                    minority_population=row[39], ffieic_median_family_income=row[40],
-                    tract_to_msamd_income=row[41], number_of_owner_occupied_units=row[42],
-                    number_of_1_to_4_family_units=row[43], application_date_indicator=row[44])
-                censustract = row[11] + row[12] + row[13].replace('.', '')
-                record.geoid_id = errors.in_2010.get(censustract, censustract)
-                record.auto_fields()
-                if filter_hmda:
+                if i % 50000 == 0:
+                    self.stdout.write("Records Processed " + str(i) )
 
-                    if (row[11] not in known_hmda and row[11] in geo_states
-                            and 'NA' not in record.geoid_id):
+                try:
 
-                        yield record
-                else:
-                    if row[11] in geo_states and 'NA' not in record.geoid_id:
-                        yield record
+                    record = HMDARecord(
+                        as_of_year=int(row[0]), respondent_id=row[1],
+                        agency_code=row[2], loan_type=int(row[3]),
+                        property_type=row[4], loan_purpose=int(row[5]),
+                        owner_occupancy=int(row[6]), loan_amount_000s=int(row[7]),
+                        preapproval=row[8], action_taken=int(row[9]),
+                        msamd=row[10], statefp=row[11], countyfp=row[12],
+                        census_tract_number=row[13], applicant_ethnicity=row[14],
+                        co_applicant_ethnicity=row[15], applicant_race_1=row[16],
+                        applicant_race_2=row[17], applicant_race_3=row[18],
+                        applicant_race_4=row[19], applicant_race_5=row[20],
+                        co_applicant_race_1=row[21], co_applicant_race_2=row[22],
+                        co_applicant_race_3=row[23], co_applicant_race_4=row[24],
+                        co_applicant_race_5=row[25], applicant_sex=int(row[26]),
+                        co_applicant_sex=int(row[27]), applicant_income_000s=row[28],
+                        purchaser_type=row[29], denial_reason_1=row[30],
+                        denial_reason_2=row[31], denial_reason_3=row[32],
+                        rate_spread=row[33], hoepa_status=row[34],
+                        lien_status=row[35], edit_status=row[36],
+                        sequence_number=row[37], population=row[38],
+                        minority_population=row[39], ffieic_median_family_income=row[40],
+                        tract_to_msamd_income=row[41], number_of_owner_occupied_units=row[42],
+                        number_of_1_to_4_family_units=row[43], application_date_indicator=row[44])
+
+                    censustract = row[11] + row[12] + row[13].replace('.', '')
+
+                    record.geoid_id = errors.in_2010.get(censustract, censustract)
+
+                    record.auto_fields()
+
+                    if filter_hmda:
+                        if (row[11] not in known_hmda and row[11] in geo_states and 'NA' not in record.geoid_id):
+                            #print str(i) + "inserting: " + record.respondent_id , record.statefp , record.geoid_id
+                            inserted_counter  +=1
+                            yield record
+                        else:
+                            #print "skipping: " + str(record)
+                            skipped_counter += 1
+                    else:
+                        if row[11] in geo_states and 'NA' not in record.geoid_id:
+                            #print str(i) + "inserting: " + record.respondent_id , record.statefp , record.geoid_id
+                            inserted_counter  +=1
+                            yield record
+                        else:
+                            #print str(i)+ "skipping: " + record.respondent_id , record.statefp , record.geoid_id
+                            skipped_counter += 1
+
+
+                except:
+                    prevent_delete= True
+                    print '*****************************'
+                    print "Error processing csv_file"
+                    print "Record Line Number " + str(i)
+                    print "Row: "+ str(row)
+                    print "Unexpected error:", sys.exc_info()[0]
+                    print traceback.print_exc()
+                    print '*****************************'
+
                 i += 1
 
             datafile.close()
 
+            self.stdout.write("Records Processed " + str(i) )
+            self.stdout.write("Records Inserted " + str(inserted_counter) )
+            self.stdout.write("Records Skipped " + str(skipped_counter) )
+
             if delete_file:
-                os.remove(csv_file)
+                if not prevent_delete:
+                    os.remove(csv_file)
 
 
 
 
         window = []         # Need to materialize records for bulk_create
         until_insert = 1000
+        total_count = 0
         for csv_file in csv_files:
 
             for record in records(csv_file):
                 if until_insert > 0:
                     until_insert -= 1
                     window.append(record)
+                    total_count += 1
                 else:
-                    HMDARecord.objects.bulk_create(window)
+                    try:
+                        HMDARecord.objects.bulk_create(window,batch_size=200)
+                    except:
+                        print "Unexpected bulk_create error:", sys.exc_info()[0]
+
                     db.reset_queries()
-                    record = None
                     until_insert = 1000
                     window[:] = []
+            print "Total Records bulk inserted: " + str(total_count)
+
 
         HMDARecord.objects.bulk_create(window)
+
+
