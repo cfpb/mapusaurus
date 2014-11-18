@@ -33,17 +33,17 @@ if (!window.console) console = {log: function() {}};
             addParam( 'action', 'all-apps-5' );
         }
 
-        if( typeof loadParams.lh !== 'undefined'){
+        if( typeof loadParams.lh != 'undefined'){
             var status = (loadParams.lh.values == "true");
-            addParam('lh', status);
             $('#superSelect').prop('checked', status );
             toggleSuper(status);
+        } else {
+            addParam('lh', false );
         }
 
         $('#superSelect').change( function(){
             var el = $('#superSelect');
             var status = el.prop('checked');
-            addParam('lh', status );
             toggleSuper(status);
             init();
         });
@@ -85,11 +85,13 @@ if (!window.console) console = {log: function() {}};
     function toggleSuper( status ){
         var url = $('#download-data').data('super-download'),
             origUrl = $('#download-data').data('download');
+
         if( !status ){
             $('#download-data').attr('href', origUrl);
         } else {
             $('#download-data').attr('href', url);
         }
+        addParam('lh', status);
     }
 
     /* 
@@ -128,11 +130,15 @@ if (!window.console) console = {log: function() {}};
         $('#bubbles_loading').show();
         var endpoint = '/api/all/',
             params = { year: 2013,
-                        'lh': $('#superSelect').prop('checked'),
+                        'lh': false,
                         'neLat': bounds.neLat,
                         'neLon': bounds.neLon,
                         'swLat': bounds.swLat,
                         'swLon': bounds.swLon };
+
+        if( typeof loadParams.lh !== 'undefined' ){
+            params.lh = loadParams.lh.values;
+        }
 
         // Check to see if another year has been requested other than the default
         if ( urlParam('year') ){
