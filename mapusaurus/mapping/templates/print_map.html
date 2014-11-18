@@ -30,7 +30,7 @@
         <div style="display:inline-block; position: relative; text-align: right; float:right;">
             <strong>{{ lender.name }}</strong> - 0{{ lender.agency_id }}-{{ lender.ffiec_id }}<br/>
             {{ metro.name }}<br/>
-            Layer: <span id="actionValue"></span> / <span id="minorityValue"></span>
+            <strong>Context:</strong> <span id="actionValue"></span> / <span id="minorityValue"></span>
         </div>
         <div id="filterStatus" style="display:inline-block; vertical-align:top; top: 5px;"></div>
       </div>
@@ -80,8 +80,14 @@
         }
 
         // Set our map options after it's been created and centered
-        map.options.maxZoom = loadParams.zoom.values;
-        map.options.minZoom = loadParams.zoom.values;
+        if( typeof loadParams.zoom != 'undefined' ){
+            map.options.maxZoom = loadParams.zoom.values;
+            map.options.minZoom = loadParams.zoom.values;            
+        } else {
+            map.options.maxZoom = 9;
+            map.options.minZoom = 9;
+        }
+
         map.options.inertia = false;
 
         // When the user has stopped moving the map, run init, with a slight delay
