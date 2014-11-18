@@ -127,7 +127,7 @@ if (!window.console) console = {log: function() {}};
         $('#bubbles_loading').show();
         var endpoint = '/api/all/',
             params = { year: 2013,
-                        'lh': $('#superSelect').prop('checked'),
+                        'lh': loadParams.lh.values,
                         'neLat': bounds.neLat,
                         'neLon': bounds.neLon,
                         'swLat': bounds.swLat,
