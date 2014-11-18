@@ -35,6 +35,7 @@ if (!window.console) console = {log: function() {}};
 
         if( typeof loadParams.lh !== 'undefined'){
             var status = (loadParams.lh.values == "true");
+            addParam('lh', status);
             $('#superSelect').prop('checked', status );
             toggleSuper(status);
         }
@@ -127,7 +128,7 @@ if (!window.console) console = {log: function() {}};
         $('#bubbles_loading').show();
         var endpoint = '/api/all/',
             params = { year: 2013,
-                        'lh': loadParams.lh.values,
+                        'lh': $('#superSelect').prop('checked'),
                         'neLat': bounds.neLat,
                         'neLon': bounds.neLon,
                         'swLat': bounds.swLat,
