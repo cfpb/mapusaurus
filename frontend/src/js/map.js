@@ -92,6 +92,8 @@ if (!window.console) console = {log: function() {}};
             $('#download-data').attr('href', url);
         }
         addParam('lh', status);
+        $('#superSelect').prop('checked', status );
+
     }
 
     /* 
@@ -135,9 +137,10 @@ if (!window.console) console = {log: function() {}};
                         'neLon': bounds.neLon,
                         'swLat': bounds.swLat,
                         'swLon': bounds.swLon };
-
-        if( typeof loadParams.lh !== 'undefined' ){
-            params.lh = loadParams.lh.values;
+        var hash = getHashParams();
+        if( typeof hash.lh !== 'undefined' ){
+            console.log('loadParams lh: ', hash.lh );
+            params.lh = hash.lh.values;
         }
 
         // Check to see if another year has been requested other than the default
