@@ -185,7 +185,7 @@ class Command(BaseCommand):
             #print "Record Count after File Process" + str(final_count)
             print "All Files Total Records bulk inserted: " + str(total_count)
             print "All Files Total Skipped: " +str(self.total_skipped)
-            print "All Total NA in GeoId: " +str(self.na_skipped)
+            print "All Files Total NA in GeoId: " +str(self.na_skipped)
 
 
 
