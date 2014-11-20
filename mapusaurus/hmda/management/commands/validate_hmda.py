@@ -1,9 +1,5 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from hmda.models import HMDARecord
-from django.test import SimpleTestCase
-from django.db.models import Q
-
-
 
 class Command(BaseCommand):
     args = "None"
@@ -29,7 +25,6 @@ class Command(BaseCommand):
             assert self.test_records(db_count,value)
 
         print "Congrats! All HMDA Record Counts Passed"
-
 
 
     def test_records(self,db_count, Q_count):
