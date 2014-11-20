@@ -16,7 +16,9 @@ class Command(BaseCommand):
         states_with_Q_Counts = {"12":944260,
                                 "17":635804,
                                 "18":341612,
-                                "55":303365
+                                "55":303365,
+                                "06":2158015,
+                                "13":534125,
                                }
 
         for key,value in states_with_Q_Counts.items():
