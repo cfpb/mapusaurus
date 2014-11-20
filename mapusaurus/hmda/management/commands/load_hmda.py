@@ -51,7 +51,6 @@ class Command(BaseCommand):
 
             for file in os.listdir(working_directory):
                 if os.path.isfile(os.path.join(working_directory,file)) and 'hmda_csv_' in file:
-                    #print "CSV File: " + os.path.join(working_directory, file)
                     csv_files.append(os.path.join(working_directory, file))
         else:
             raise Exception("Not a file or Directory! " + args[0])
@@ -90,7 +89,7 @@ class Command(BaseCommand):
             for row in reader(datafile):
                 i += 1
                 if i % 50000 == 0:
-                    self.stdout.write("Records Processed " + str(i) )
+                    self.stdout.write("Records Processed For File" + str(i) )
 
                 try:
 
@@ -126,27 +125,20 @@ class Command(BaseCommand):
 
                     if filter_hmda:
                         if (row[11] not in known_hmda and row[11] in geo_states and 'NA' not in record.geoid_id):
-                            #print str(i) + "inserting: " + record.respondent_id , record.statefp , record.geoid_id
                             inserted_counter  +=1
                             yield record
                         else:
-                            #print "skipping: " + str(record)
                             skipped_counter += 1
                     else:
                         if row[11] in geo_states and 'NA' not in record.geoid_id:
-                            #print str(i) + "inserting: " + record.respondent_id , record.statefp , record.geoid_id
                             inserted_counter  =inserted_counter + 1
-                            #if inserted_counter > 28889:
-                                #print str(i) + " : " + str(inserted_counter)  + ": "+ record.sequence_number, record.respondent_id , record.statefp ,record.countyfp, record.geoid_id
                             yield record
                         else:
-                            #print type(row[11])
-                            #print "row11:" + row[11] + "--"
                             if row[11] in geo_states:
                                 if 'NA' in record.geoid_id:
                                     self.na_skipped += 1
                                 self.total_skipped +=1
-                                #print str(i)+ "skipping: " + record.respondent_id , record.statefp , record.geoid_id
+
                             skipped_counter += 1
 
 
@@ -162,9 +154,9 @@ class Command(BaseCommand):
 
             datafile.close()
 
-            self.stdout.write("Records Processed: " + str(i))
-            self.stdout.write("Records That have been yield/Inserted: " + str(inserted_counter) )
-            self.stdout.write("Records Skipped: " + str(skipped_counter) )
+            self.stdout.write("Records Processed For File: " + str(i))
+            self.stdout.write("Records That have been yield/Inserted For File: " + str(inserted_counter) )
+            self.stdout.write("Records Skipped For File: " + str(skipped_counter) )
 
             if delete_file:
                 if not prevent_delete:
@@ -191,9 +183,9 @@ class Command(BaseCommand):
 
             #final_count = HMDARecord.objects.filter(statefp='12').count()
             #print "Record Count after File Process" + str(final_count)
-            print "Total Records bulk inserted: " + str(total_count)
-            print "Total Skipped: " +str(self.total_skipped)
-            print "Total geoid NA: " +str(self.na_skipped)
+            print "All Files Total Records bulk inserted: " + str(total_count)
+            print "All Files Total Skipped: " +str(self.total_skipped)
+            print "All Total NA in GeoId: " +str(self.na_skipped)
 
 
 
