@@ -7,6 +7,8 @@ from geo.models import Geo
 from hmda.models import HMDARecord
 import sys
 import traceback
+import logging
+
 
 
 class Command(BaseCommand):
@@ -23,6 +25,19 @@ class Command(BaseCommand):
 
         self.total_skipped = 0
         self.na_skipped = 0
+
+        def get_logger():
+            logging.basicConfig(filename='hmdaload.log',
+                                level=logging.INFO,
+                                format='%(asctime)s %(message)s')
+
+        def log_info(message):
+            logging.info(message)
+            print message
+
+        get_logger()
+
+
 
         ### if delete_file argument, remove csv file after processing
         ### default is False
@@ -64,18 +79,18 @@ class Command(BaseCommand):
 
         db.reset_queries()
 
-        self.stdout.write("Filtering by states "
-                              + ", ".join(list(sorted(geo_states))))
+        log_info("Filtering by states " + ", ".join(list(sorted(geo_states))))
 
         if filter_hmda:
             known_hmda = set(
                 row['statefp'] for row in
                 HMDARecord.objects.values('statefp').distinct())
 
-            self.stdout.write("Already have data for "
-                             + ", ".join(list(sorted(known_hmda))))
+            log_info("Already have data for "+ ", ".join(list(sorted(known_hmda))))
 
             db.reset_queries()
+
+
 
         def records(self,csv_file):
             """A generator returning a new Record with each call. Required as
@@ -85,11 +100,11 @@ class Command(BaseCommand):
             i = 0
             inserted_counter = 0
             skipped_counter = 0
-            print "Processing " + csv_file
+            log_info("Processing " + csv_file)
             for row in reader(datafile):
                 i += 1
                 if i % 50000 == 0:
-                    self.stdout.write("Records Processed For File" + str(i) )
+                    log_info("Records Processed For File " + str(i) )
 
                 try:
 
@@ -144,23 +159,25 @@ class Command(BaseCommand):
 
                 except:
                     prevent_delete= True
-                    print '*****************************'
-                    print "Error processing csv_file"
-                    print "Record Line Number " + str(i)
-                    print "Row: "+ str(row)
-                    print "Unexpected error:", sys.exc_info()[0]
-                    print traceback.print_exc()
-                    print '*****************************'
+                    log_info('*****************************')
+                    log_info("Error processing csv_file")
+                    log_info("Record Line Number " + str(i))
+                    log_info("Row: "+ str(row))
+                    log_info("Unexpected error:", sys.exc_info()[0])
+                    log_info(traceback.print_exc())
+                    log_info('*****************************')
 
             datafile.close()
 
-            self.stdout.write("Records Processed For File: " + str(i))
-            self.stdout.write("Records That have been yield/Inserted For File: " + str(inserted_counter) )
-            self.stdout.write("Records Skipped For File: " + str(skipped_counter) )
+            log_info("Records Processed For File: " + str(i))
+            log_info("Records That have been yield/Inserted For File: " + str(inserted_counter) )
+            log_info("Records Skipped For File: " + str(skipped_counter) )
 
             if delete_file:
                 if not prevent_delete:
                     os.remove(csv_file)
+
+
 
 
         window = []         # Need to materialize records for bulk_create
@@ -176,16 +193,16 @@ class Command(BaseCommand):
                     window[:] = []
 
             if (len(window) > 0):
-                print "window size (last records): " + str(len(window))
+                log_info("window size (last records): " + str(len(window)))
                 HMDARecord.objects.bulk_create(window,batch_size=100)
                 db.reset_queries()
                 window[:] = []
 
             #final_count = HMDARecord.objects.filter(statefp='12').count()
             #print "Record Count after File Process" + str(final_count)
-            print "All Files Total Records bulk inserted: " + str(total_count)
-            print "All Files Total Skipped: " +str(self.total_skipped)
-            print "All Files Total NA in GeoId: " +str(self.na_skipped)
+            log_info("All Files Total Records bulk inserted: " + str(total_count))
+            log_info("All Files Total Skipped: " +str(self.total_skipped))
+            log_info("All Files Total NA in GeoId: " +str(self.na_skipped))
 
 
 
