@@ -180,11 +180,13 @@ class Command(BaseCommand):
                 total_count = total_count + 1
                 if len(window) > 1000:
                     HMDARecord.objects.bulk_create(window,batch_size=200)
+                    db.reset_queries()
                     window[:] = []
 
             if (len(window) > 0):
                 print "window size (last records): " + str(len(window))
                 HMDARecord.objects.bulk_create(window,batch_size=100)
+                db.reset_queries()
                 window[:] = []
 
             #final_count = HMDARecord.objects.filter(statefp='12').count()
