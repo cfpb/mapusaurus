@@ -13,17 +13,23 @@ class Command(BaseCommand):
         #                           and census_tract_number != ''
         #                           and state_code=<insert_state_num_here>
         '''
-        states_with_Q_Counts = {"12":944260,
-                                "17":635804,
-                                "18":341612,
-                                "55":303365,
-                                "06":2158015,
-                                "13":534125,
-                               }
 
+        states_with_Q_Counts = {"12":944260,"17":635804,"18":341612,"55":303365,"06":2158015,"13":534125}
         for key,value in states_with_Q_Counts.items():
-            db_count = HMDARecord.objects.filter(statefp=key).count()
-            print "Testing State " + key
+            db_count = HMDARecord.objects.filter(as_of_year=2013,statefp=key).count()
+            print str(value) + " total for  State " + key
+            assert self.test_records(db_count,value)
+
+        ethnicity_na  = {"06":175823,"12":74871,"13":55797,"17":58629,"18":28680,"55":17851}
+        for key,value in ethnicity_na.items():
+            db_count = HMDARecord.objects.filter(as_of_year=2013,statefp=key, applicant_ethnicity='4').count()
+            print str(value) +" Applicants who did not report ethnicity for State " + key
+            assert self.test_records(db_count,value)
+
+        applicant_females = {"06":501109,"12":254857,"13":142849,"17":157410,"18":82801,"55":72931}
+        for key,value in applicant_females.items():
+            db_count = HMDARecord.objects.filter(as_of_year=2013,statefp=key, applicant_sex=2).count()
+            print str(value) +" Female applicants for State " + key
             assert self.test_records(db_count,value)
 
         print "Congrats! All HMDA Record Counts Passed"
