@@ -284,7 +284,7 @@ if (!window.console) console = {log: function() {}};
     */
 
     var baseStyle = { fillOpacity: 0.9, weight: 0.5, className: 'lar-circle', fillColor: '#333' };
-    var seqBaseStyle = { fillOpacity: 0.3, weight: 0.75, className: 'lar-circle seq-circle', fillColor: '#111111', stroke: true, color: '#333' };
+    var seqBaseStyle = { fillOpacity: 0.7, weight: 0.75, className: 'lar-circle seq-circle', fillColor: '#111111', stroke: true, color: '#333', opacity: 1 };
 
     //  population-less tracts
     var noStyle = {stroke: false, weight: 0, fill: false};
