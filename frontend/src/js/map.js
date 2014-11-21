@@ -62,10 +62,20 @@ if (!window.console) console = {log: function() {}};
     // Go get the tract centroids and supporting data, THEN build a data object (uses jQuery Deferreds)
     function init(){
         $.when( getTractsInBounds( getBoundParams() ), getTractData( getBoundParams(), getActionTaken( $('#action-taken-selector option:selected').val() ))).done( function(data1, data2){
+            // Get the information about the currently selected layer so we can pass bubble styles to redraw
+            var hashInfo = getHashParams(),
+                layerInfo = getLayerType(hashInfo.category.values);
+
+            // Create our two global data objects with our returned data
             rawGeo = data1[0];
             rawData = data2[0];
+
+            // Create our Tract Data Object (Datastore.tracts) from the raw sources
             createTractDataObj(); 
-            redrawCircles(dataStore.tracts);
+
+
+            // Redraw the circles using the created tract object AND the layer bubble type
+            redrawCircles(dataStore.tracts, layerInfo.type );
             $('#bubbles_loading').hide();
         });
     }
@@ -209,30 +219,47 @@ if (!window.console) console = {log: function() {}};
         ---- DRAW CIRCLES ----
     */
 
-    function redrawCircles( geoData ){
-        // Remove circles currently on the page (TODO: Add as LayerGroup and transition)
-        $('#bubbles_loading').show();
+    function redrawCircles( geoData, layerType ){
+        // Show data load icon
+        $('#bubbles_loading').show();     
         layers.Centroids.clearLayers();
         _.each(geoData, function(geo) {
-            var bubble = drawCircle(geo);
+            var bubble = drawCircle(geo, layerType);
         });
     }
 
-    function updateCircles(){
+    function updateCircles( layerType ){
         //TODO: Figure out best way to update colors of existing, not redraw to reduce lag
         layers.Centroids.eachLayer( function(layer){
-            layer.setStyle({fillColor: updateMinorityCircleFill(layer.geoid) });
+            if( layerType == 'minority' ){
+                var newStyle = {}
+                _.extend(newStyle, baseStyle);
+                newStyle.fillColor = updateMinorityCircleFill(layer.geoid);
+                layer.setStyle( newStyle );
+                console.log('baseStyle: ', baseStyle);
+            } else if( layerType =='seq'){
+                layer.setStyle( seqBaseStyle );
+                console.log(' Sequence Base Used in Update Circles');
+            }
         });
         console.log("color update complete.");
     }
 
 
-    function drawCircle(geo){
+    function drawCircle(geo, layerType){
         var data = geo,
-            style = minorityContinuousStyle(
-               geo, baseStyle),
-            circle = L.circle([geo.centlat, geo.centlon],
+            style;
+
+        if( layerType === 'seq' ){
+            style = seqBaseStyle;
+        } else {
+            style = minorityContinuousStyle(geo, baseStyle);
+        }
+        console.log("layerType: ", layerType, "style Used: ", style);
+
+        var circle = L.circle([geo.centlat, geo.centlon],
                               hmdaStat(data), style );
+
         //  We will use the geoid when redrawing
         circle.geoid = geo.geoid;
         circle.on('mouseover mousemove', function(e){
@@ -257,7 +284,8 @@ if (!window.console) console = {log: function() {}};
     */
 
     var baseStyle = { fillOpacity: 0.9, weight: 0.5, className: 'lar-circle', fillColor: '#333' };
-    
+    var seqBaseStyle = { fillOpacity: 0.3, weight: 0.75, className: 'lar-circle seq-circle', fillColor: '#111111', stroke: true, color: '#333' };
+
     //  population-less tracts
     var noStyle = {stroke: false, weight: 0, fill: false};
     
@@ -391,37 +419,73 @@ if (!window.console) console = {log: function() {}};
             return Math.sqrt(area);
     }
 
-    // Helper that ensures when a new layer is selected, all others are hidden and primaries stay up front
-    function layerUpdate( layer ){
-        if ( !layer ){
-            console.log('The layer you\'ve requested does not exist.');
-        }
-        for (var i = minorityLayers.length - 1; i >= 0; i--) {
-            map.removeLayer(minorityLayers[i]);
-        };
+    function getLayerType( layer ){
+        var type;
+
         switch( layer ){
             case 'inv_non_hisp_white_only_perc':
                 layer = layers.PctMinority;
+                type = 'minority';
                 break;
             case 'hispanic_perc':
                 layer = layers.PctHispanic;
+                type = 'minority';
                 break;
             case 'non_hisp_black_only_perc':
                 layer = layers.PctBlack;
+                type = 'minority';
                 break;
             case 'non_hisp_asian_only_perc':
                 layer = layers.PctAsian;
+                type = 'minority';
                 break;
             case 'non_hisp_white_only_perc':
                 layer = layers.PctNonWhite;
+                type = 'minority';
+                break;
+            case 'sequential3':
+                layer = layers.Sequential3;
+                type = 'seq';
+                break;
+            case 'sequential10':
+                layer = layers.Sequential10;
+                type = 'seq';
+                break;
+            case 'plurality':
+                layer = layers.Plurality;
+                type = 'seq';
                 break;
         }
+
+        return { 'type': type, 'layer': layer };
+    }
+
+    // Helper that ensures when a new layer is selected, all others are hidden and primaries stay up front
+    function layerUpdate( layer ){
+        // layer Type is set to minority by default
+        // Type determines which style scale is used to fill circles
+
+        if ( !layer ){
+            console.log('The layer you\'ve requested does not exist.');
+            return false;
+        }
+
+        for (var i = minorityLayers.length - 1; i >= 0; i--) {
+            map.removeLayer(minorityLayers[i]);
+        }
+
+        var layerEval = getLayerType( layer );
+        console.log("layer eval: ", layerEval);
+        var layer = layerEval.layer;
+        var layerType = layerEval.type;
+
         map.addLayer( layer );
+        layer.bringToFront();
         layers.Water.bringToFront();
         layers.Boundaries.bringToFront();
-        layers.CountyLabels.bringToFront();
+        layers.MSALabels.bringToFront();
         addParam( 'category', $('#category-selector option:selected').val() );
-        updateCircles();
+        updateCircles( layerType );
     }
 
     // Gets non-hash URL parameters
