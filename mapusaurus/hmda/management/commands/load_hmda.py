@@ -25,6 +25,8 @@ class Command(BaseCommand):
 
         self.total_skipped = 0
         self.na_skipped = 0
+        self.total_lines_read = 0
+        self.other_skipped  = 0
 
         def get_logger():
             logging.basicConfig(filename='hmdaload.log',
@@ -103,7 +105,7 @@ class Command(BaseCommand):
             log_info("Processing " + csv_file)
             for row in reader(datafile):
                 i += 1
-                if i % 50000 == 0:
+                if i % 25000 == 0:
                     log_info("Records Processed For File " + str(i) )
 
                 try:
@@ -138,6 +140,8 @@ class Command(BaseCommand):
 
                     record.auto_fields()
 
+                    self.total_lines_read = self.total_lines_read + 1
+
                     if filter_hmda:
                         if (row[11] not in known_hmda and row[11] in geo_states and 'NA' not in record.geoid_id):
                             inserted_counter  +=1
@@ -149,12 +153,14 @@ class Command(BaseCommand):
                             inserted_counter  =inserted_counter + 1
                             yield record
                         else:
-                            if row[11] in geo_states:
-                                if 'NA' in record.geoid_id:
-                                    self.na_skipped += 1
-                                self.total_skipped +=1
+                            if 'NA' in record.geoid_id:
+                                self.na_skipped = self.na_skipped + 1
+                            else:
+                                self.other_skipped = self.other_skipped +1
 
-                            skipped_counter += 1
+                            self.total_skipped = self.total_skipped + 1
+
+                        skipped_counter += 1
 
 
                 except:
@@ -169,7 +175,7 @@ class Command(BaseCommand):
 
             datafile.close()
 
-            log_info("Records Processed For File: " + str(i))
+            log_info("Finished Processing File: " + str(i))
             log_info("Records That have been yield/Inserted For File: " + str(inserted_counter) )
             log_info("Records Skipped For File: " + str(skipped_counter) )
 
@@ -183,11 +189,10 @@ class Command(BaseCommand):
         window = []         # Need to materialize records for bulk_create
         total_count = 0
         for csv_file in csv_files:
-            window[:] = []
             for record in records(self,csv_file):
                 window.append(record)
                 total_count = total_count + 1
-                if len(window) > 1000:
+                if len(window) > 999:
                     HMDARecord.objects.bulk_create(window,batch_size=200)
                     db.reset_queries()
                     window[:] = []
@@ -198,11 +203,14 @@ class Command(BaseCommand):
                 db.reset_queries()
                 window[:] = []
 
-            #final_count = HMDARecord.objects.filter(statefp='12').count()
-            #print "Record Count after File Process" + str(final_count)
+
             log_info("All Files Total Records bulk inserted: " + str(total_count))
-            log_info("All Files Total Skipped: " +str(self.total_skipped))
-            log_info("All Files Total NA in GeoId: " +str(self.na_skipped))
+            log_info("All Lines Read from All Files: " + str(self.total_lines_read))
+            log_info("All Files Total Skipped: " + str(self.total_skipped))
+            log_info("All Files Total Skipped for GeoID=NA: " + str(self.na_skipped))
+            log_info("All Files Total Skipped for other reason: " + str(self.other_skipped ))
+
+
 
 
 
