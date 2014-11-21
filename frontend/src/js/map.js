@@ -229,17 +229,20 @@ if (!window.console) console = {log: function() {}};
     }
 
     function updateCircles( layerType ){
-        //TODO: Figure out best way to update colors of existing, not redraw to reduce lag
         layers.Centroids.eachLayer( function(layer){
+            
+            // If layer has no LAR information, zero this out.
+            if( layer.volume == 0 ){
+                return false;
+            }
+
             if( layerType == 'minority' ){
                 var newStyle = {}
                 _.extend(newStyle, baseStyle);
                 newStyle.fillColor = updateMinorityCircleFill(layer.geoid);
                 layer.setStyle( newStyle );
-                console.log('baseStyle: ', baseStyle);
             } else if( layerType =='seq'){
                 layer.setStyle( seqBaseStyle );
-                console.log(' Sequence Base Used in Update Circles');
             }
         });
         console.log("color update complete.");
@@ -249,19 +252,20 @@ if (!window.console) console = {log: function() {}};
     function drawCircle(geo, layerType){
         var data = geo,
             style;
-
-        if( layerType === 'seq' ){
+        // If no population exists, use the "no style" style (hidden)
+        if (geo['total_pop'] === 0 || geo.volume === 0 ) {
+            style = noStyle;
+        } else if( layerType === 'seq' ){
             style = seqBaseStyle;
         } else {
             style = minorityContinuousStyle(geo, baseStyle);
         }
-        console.log("layerType: ", layerType, "style Used: ", style);
-
         var circle = L.circle([geo.centlat, geo.centlon],
                               hmdaStat(data), style );
 
         //  We will use the geoid when redrawing
         circle.geoid = geo.geoid;
+        circle.volume = geo.volume;
         circle.on('mouseover mousemove', function(e){
             new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false })
               .setContent(data['volume'] + ' records<br />' + data['num_households'] + ' households')
