@@ -462,6 +462,9 @@ if (!window.console) console = {log: function() {}};
 
     // Helper that ensures when a new layer is selected, all others are hidden and primaries stay up front
     function layerUpdate( layer ){
+
+        var layerEval, mbLayer, layerType, keyPath;
+
         // layer Type is set to minority by default
         // Type determines which style scale is used to fill circles
 
@@ -474,13 +477,40 @@ if (!window.console) console = {log: function() {}};
             map.removeLayer(minorityLayers[i]);
         }
 
-        var layerEval = getLayerType( layer );
-        console.log("layer eval: ", layerEval);
-        var layer = layerEval.layer;
-        var layerType = layerEval.type;
+        //Custom Key / replacement handling because of the different scales.
+        // Check which layer is being presented and replace the key appropriately
+        // Then hide the minority scale if required. If we agree on these scales
+        // Then we should code this as HTML like the existing key because
+        // This is relatively hacky, and hard-codes the static files directory
+        switch( layer ){
+            case 'sequential3':
+                keyPath = '/static/basestyle/img/fl_color-ramp_seq-03.png';
+                break;
+            case 'sequential10':
+                keyPath = '/static/basestyle/img/fl_color-ramp_seq-10.png';
+                break;
+            case 'plurality':
+                keyPath = '/static/basestyle/img/fl_color-ramp_plurality.png';                
+                break;
+            case 'default':
+                keyPath = false;
+        }
 
-        map.addLayer( layer );
-        layer.bringToFront();
+        if( keyPath ){
+            $('#altScaleImg').attr('src', keyPath);
+            $('#altScale').removeClass('hidden');
+            $('#scale').addClass('hidden');
+        } else {
+            $('#altScale').addClass('hidden');
+            $('#scale').removeClass('hidden');
+        }
+
+        layerEval = getLayerType( layer );
+        mbLayer = layerEval.layer;
+        layerType = layerEval.type;
+
+        map.addLayer( mbLayer );
+        mbLayer.bringToFront();
         layers.Water.bringToFront();
         layers.Boundaries.bringToFront();
         layers.MSALabels.bringToFront();
