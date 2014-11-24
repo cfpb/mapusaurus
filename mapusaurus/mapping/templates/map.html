@@ -149,6 +149,10 @@
         layers.Boundaries.bringToFront();
         layers.MSALabels.bringToFront();
 
+        if( map.hasLayer(layers.CountyLabels) ){
+            layers.CountyLabels.bringToFront();
+        }
+
         // Add the HTML Template key as a key in the top right
         var key = L.control();
         key.onAdd = function() {

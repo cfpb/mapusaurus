@@ -518,6 +518,11 @@ if (!window.console) console = {log: function() {}};
         layers.Water.bringToFront();
         layers.Boundaries.bringToFront();
         layers.MSALabels.bringToFront();
+
+        if( map.hasLayer(layers.CountyLabels) ){
+            layers.CountyLabels.bringToFront();
+        }
+        
         addParam( 'category', $('#category-selector option:selected').val() );
         updateCircles( layerType );
     }
