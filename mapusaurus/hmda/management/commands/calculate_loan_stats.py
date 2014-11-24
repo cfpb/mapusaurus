@@ -10,17 +10,30 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         #   Remove existing stats; we're going to regenerate them
+        count = LendingStats.objects.count()
+        print "LendingStats Recordcount: "  + str(count)
         LendingStats.objects.all().delete()
+        count = LendingStats.objects.count()
+        print "LendingStats After Delete: "  + str(count)
 
         lender_q = HMDARecord.objects.values_list('lender').distinct('lender')
+
+        print "# of Distinct Lenders:" +str(len(lender_q))
+
         for metro in Geo.objects.filter(
                 geo_type=Geo.METRO_TYPE).order_by('name'):
             self.stdout.write("Processing " + metro.name)
             query = lender_q.filter(geoid__cbsa=metro.geoid)
+            print "Lender_Q based on geoid: " + str(query.count())
             for lender_str in (h[0] for h in query.iterator()):
                 median = calculate_median_loans(lender_str, metro) or 0
-                LendingStats.objects.create(
-                    lender=lender_str, geoid=metro, median_per_tract=median)
+                print "median:" + str(median)
+                LendingStats.objects.create(lender=lender_str, geoid=metro, median_per_tract=median)
+
+            count = LendingStats.objects.count()
+            print "LendingStats Recordcount: "  + str(count)
+
+
 
 
 def calculate_median_loans(lender_str, metro):
@@ -33,6 +46,7 @@ def calculate_median_loans(lender_str, metro):
     if metro:
         query = query.filter(cbsa=metro.geoid)
     num_tracts = query.values('geoid').distinct('geoid').count()
+    print "num_tracts: " + str(num_tracts)
 
     cursor = connection.cursor()
     # Next, aggregate the # of loans per tract. This query will *not*
