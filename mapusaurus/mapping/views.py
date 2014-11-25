@@ -55,7 +55,7 @@ def make_download_url(lenders, metro):
     lender's records, or to just those relevant for an MSA. MSA's are broken
     into divisions in that tool, so make sure the query uses the proper ids"""
     if lenders:
-        where = 'as_of_year=2013 AND'
+        where = 'as_of_year=2013 AND property_type IN (1,2) AND lien_status=1 AND owner_occupancy=1 AND '
         count = 0 
         for lender in lenders:
             query = '(agency_code=%s AND respondent_id="%s")'
