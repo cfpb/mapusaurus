@@ -23,14 +23,15 @@
 
 <div id="main-container" style="padding:15px;">
     <header id="header" class="header" role="banner">
-      <div class="map-wrapper" style="height: 80px;">
+      <div class="map-wrapper" style="height: 90px;">
         <div class="logo" style="display:inline-block">
           <a href="http://www.consumerfinance.gov"><img class="logo" src="{{ STATIC_URL }}basestyle/img/logo_210.png" alt="Consumer Financial Protection Bureau"></a>
         </div>
         <div style="display:inline-block; position: relative; text-align: right; float:right;">
             <strong>{{ lender.name }}</strong> - 0{{ lender.agency_id }}-{{ lender.ffiec_id }}<br/>
             {{ metro.name }}<br/>
-            <strong>Context:</strong> <span id="actionValue"></span> / <span id="minorityValue"></span>
+            <strong>Context:</strong> <span id="actionValue"></span> / <span id="minorityValue"></span><br/>
+            <strong>Filter:</strong> <span id="filterSpecs">First lien, Owner-occupied, 1-4 family housing (including manufactured)</span>
         </div>
         <div id="filterStatus" style="display:inline-block; vertical-align:top; top: 5px;"></div>
       </div>
