@@ -58,3 +58,4 @@ def calculate_median_loans(lender_str, metro):
     result = cursor.fetchone()
     if result:
         return result[0]
+    
