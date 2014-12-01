@@ -32,6 +32,14 @@ class Command(BaseCommand):
             print str(value) +" Female applicants for State " + key
             assert self.test_records(db_count,value)
 
+        #list should be updated with next years import
+        #currently using the 2009 standard for HMDA 2013 data. Next year, HMDA will use 2013 standard.
+        msacode_ids = [ '14460', '16980', '19100', '19820', '31100', '33100', '35620', '37980',
+                               '41860', '42660','47900' ]
+        db_count = HMDARecord.objects.filter(as_of_year=2013, msamd__in=msacode_ids).count()
+        print "MSA Code count should be zero"
+        assert self.test_records(db_count,0)
+
         print "Congrats! All HMDA Record Counts Passed"
 
 
