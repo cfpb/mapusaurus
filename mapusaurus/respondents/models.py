@@ -91,8 +91,8 @@ class Institution(models.Model):
         help_text='The company at the top of the ownership chain.')
 
     def formatted_name(self):
-        formatted = defaultfilters.title(self.name) + " (0"
-        formatted += str(self.agency_id) + "-" + self.ffiec_id + ")"
+        formatted = defaultfilters.title(self.name) + " ("
+        formatted += str(self.agency_id) + self.ffiec_id + ")"
         return formatted
 
     class Meta:

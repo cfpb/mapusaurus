@@ -61,26 +61,27 @@ class InstitutionSerializer(serializers.ModelSerializer):
         model = Institution
 
 
-# 90123456789
-SMASH_RE = re.compile(r"^(?P<agency>[0-9])(?P<respondent>[0-9-]{10})$")
-# 09-0123456789
-PREFIX_RE = re.compile(r"^0(?P<agency>[0-9])-(?P<respondent>[0-9-]{10})$")
-# Some Bank (09-0123456789) - same format as InstitutionSerializer
-PAREN_RE = re.compile(r"^.*\(0(?P<agency>[0-9])-(?P<respondent>[0-9-]{10})\)$")
-# 0123456789-09
-SUFFIX_RE = re.compile(r"^(?P<respondent>[0-9-]{10})-0(?P<agency>[0-9])$")
-LENDER_REGEXES = [SMASH_RE, PREFIX_RE, PAREN_RE, SUFFIX_RE]
+# 90123456789 (Agency Code + Respondent ID)
+PREFIX_RE = re.compile(r"^(?P<agency>[0-9])(?P<respondent>[0-9-]{10})$")
+# Some Bank (90123456789) - same format as InstitutionSerializer
+PAREN_RE = re.compile(r"^.*\((?P<agency>[0-9])(?P<respondent>[0-9-]{10})\)$")
+# 0123456789 (Respondent ID Only)
+RESP_RE = re.compile(r"^(?P<respondent>[0-9-]{10})$")
+LENDER_REGEXES = [PREFIX_RE, PAREN_RE]
 
 
 @api_view(['GET'])
 def search_results(request):
     query_str = request.GET.get('q', '').strip()
     lender_id = False
+    respondent_id = False
     for regex in LENDER_REGEXES:
         match = regex.match(query_str)
         if match:
             lender_id = match.group('agency') + match.group('respondent')
-
+    resp_only_match = RESP_RE.match(query_str)
+    if resp_only_match:
+        respondent_id = resp_only_match.group('respondent')
     query = SearchQuerySet().models(Institution).load_all()
 
     current_sort = request.GET.get('sort')
@@ -91,6 +92,8 @@ def search_results(request):
 
     if lender_id:
         query = query.filter(lender_id=Exact(lender_id))
+    elif respondent_id:
+        query = query.filter(respondent_id=Exact(respondent_id))
     elif query_str and request.GET.get('auto'):
         query = query.filter(text_auto=AutoQuery(query_str))
     elif query_str:
