@@ -164,10 +164,12 @@ class ViewTest(TestCase):
         result.object.name, result.object.id = 'Some Bank', 1234
         result.object.agency_id, result.object.ffiec_id = 3, '1234543210'
 
+
         resp = self.client.get(reverse('respondents:search_results'),
                                {'q': '01234567'})
 
-
+        self.assertTrue('01234567' in str(SQS.filter.call_args))
+        self.assertTrue('content' in str(SQS.filter.call_args))
         self.assertTrue('Some Bank' in resp.content)
         self.assertRaises(ValueError, json.loads, resp.content)
 
@@ -211,7 +213,7 @@ class ViewTest(TestCase):
                                HTTP_ACCEPT='application/json')
 
         resp = json.loads(resp.content)
-
+        self.assertEqual(1, len(resp['institutions']))
         inst = resp['institutions'][0]
         self.assertEqual('Some Bank', inst['name'])
 
@@ -225,7 +227,7 @@ class ViewTest(TestCase):
 
         request = RequestFactory().get('/', data={'q': 'Bank'})
         results = views.search_results(request)
-        #self.assertEqual(len(results.data['institutions']), 1)
+        self.assertEqual(len(results.data['institutions']), 1)
         self.assertEqual(45, results.data['institutions'][0].num_loans)
 
     @patch('respondents.views.SearchQuerySet')
