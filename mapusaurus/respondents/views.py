@@ -81,14 +81,19 @@ def search_results(request):
         if match:
             lender_id = match.group('agency') + match.group('respondent')
 
-    query = SearchQuerySet().models(Institution).load_all()
-
     current_sort = request.GET.get('sort')
-    if current_sort in ('assets', '-assets', 'num_loans', '-num_loans'):
-        query = query.order_by(current_sort)
-    else:
-        query = query.order_by('-assets')
+
+    if current_sort == None:
         current_sort = '-assets'
+
+    query = SearchQuerySet().models(Institution).load_all().order_by(current_sort)
+
+    #current_sort = request.GET.get('sort')
+    #if current_sort in ('assets', '-assets', 'num_loans', '-num_loans'):
+    #    query = query.order_by(current_sort)
+    #else:
+    #    #query = query.order_by('-assets')
+    #    current_sort = '-assets'
 
     if lender_id:
         query = query.filter(lender_id=Exact(lender_id))
