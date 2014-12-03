@@ -6,7 +6,7 @@ from geo.models import Geo
 from hmda.models import LendingStats
 from hmda.management.commands.calculate_loan_stats import (calculate_median_loans)
 from respondents.models import Institution
-from respondents.lender_hierarchy_utils import get_related_lenders
+from respondents.lender_hierarchy_utils import get_related_lenders, get_related_respondents
 
 def map(request, template):
     """Display the map. If lender info is present, provide it to the
@@ -37,9 +37,12 @@ def map(request, template):
         lender_ids.append(str(lender.agency_id) + lender.ffiec_id)
         context['download_url'] = make_download_url(lender_ids, metro)
         lender_hierarchy = get_related_lenders(str(lender_ids[0]))
+        lender_hierarchy_respondents = get_related_respondents(str(lender_ids[0]))
+        names_dictionary = Institution.objects.filter(ffiec_id__in=lender_hierarchy_respondents[0]).values('ffiec_id', 'name', 'agency')
         if (len(lender_hierarchy) > 0):
             context['hierarchy_download_url'] = make_download_url(lender_hierarchy[0], metro)
-
+        if (len(names_dictionary) > 0):
+            context['lender_hierarchy_names'] = names_dictionary
     context['median_loans'] = lookup_median(lender, metro) or 0
     if context['median_loans']:
         # 50000 is an arbitrary constant; should be altered if we want to
