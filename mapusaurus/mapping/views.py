@@ -41,7 +41,8 @@ def map(request, template):
         names_dictionary = Institution.objects.filter(ffiec_id__in=lender_hierarchy_respondents[0]).values('ffiec_id', 'name', 'agency')
         if (len(lender_hierarchy) > 0):
             context['hierarchy_download_url'] = make_download_url(lender_hierarchy[0], metro)
-    context['lender_hierarchy_names'] = names_dictionary
+        if (len(names_dictionary) > 0):
+            context['lender_hierarchy_names'] = names_dictionary
     context['median_loans'] = lookup_median(lender, metro) or 0
     if context['median_loans']:
         # 50000 is an arbitrary constant; should be altered if we want to
