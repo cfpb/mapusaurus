@@ -8,6 +8,7 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
     name or lender id"""
     text = indexes.CharField(document=True, model_attr='name')
     text_auto = indexes.EdgeNgramField(model_attr='name')
+    respondent_id = indexes.CharField()
     lender_id = indexes.CharField()
     assets = indexes.IntegerField(model_attr='assets')
     num_loans = indexes.IntegerField(model_attr='num_loans')
@@ -31,6 +32,9 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
         """A more efficient query than the index query -- makes use of select
         related and does not include the num_loans calculation."""
         return self.get_model().objects.select_related('zip_code', 'agency')
+
+    def prepare_respondent_id(self, institution):
+        return str(institution.ffiec_id)
 
     def prepare_lender_id(self, institution):
         return str(institution.agency_id) + institution.ffiec_id
