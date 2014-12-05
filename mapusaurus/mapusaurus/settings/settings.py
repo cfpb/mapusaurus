@@ -63,8 +63,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
-STATIC_ROOT = '/var/www/static/'
-
 ROOT_URLCONF = 'mapusaurus.urls'
 
 WSGI_APPLICATION = 'mapusaurus.wsgi.application'
@@ -72,7 +70,7 @@ WSGI_APPLICATION = 'mapusaurus.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-#DATABASES = {'default': {'ENGINE': '', 'NAME': '', 'USER': '', 'PASSWORD': ''}}
+DATABASES = {'default': {'ENGINE': '', 'NAME': '', 'USER': '', 'PASSWORD': ''}}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -94,6 +92,14 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'
 
+LEAFLET_CONFIG = {
+    'RESET_VIEW': False,
+    'TILES': 'http://tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg',
+    'SCALE': 'imperial',
+    'MIN_ZOOM': 7,
+    'MAX_ZOOM': 18
+}
+
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
@@ -111,6 +117,25 @@ REST_FRAMEWORK = {
 
 SOUTH_TESTS_MIGRATE = False
 
-CONTACT_US_EMAIL = '_DL_CFPB_FL_Visualization_Tool@cfpb.gov'
+LONGTERM_CACHE_TIMEOUT = 60*60*24*30   # 30 days
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'long_term_geos': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/tmp/long_term_geos',
+        'TIMEOUT': LONGTERM_CACHE_TIMEOUT,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000000
+        }
+    }
+}
+
+if 'test' in sys.argv:
+    CACHES['long_term_geos']['BACKEND'] = 'django.core.cache.backends.dummy.DummyCache'
+
+CONTACT_US_EMAIL = 'feedback@example.com'
 
 from mapusaurus.settings.local_settings import *
