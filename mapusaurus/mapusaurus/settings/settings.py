@@ -111,6 +111,4 @@ REST_FRAMEWORK = {
 
 SOUTH_TESTS_MIGRATE = False
 
-CONTACT_US_EMAIL = '_DL_CFPB_FL_Visualization_Tool@cfpb.gov'
-
 from mapusaurus.settings.local_settings import *
