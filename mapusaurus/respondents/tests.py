@@ -286,14 +286,6 @@ class ViewTest(TestCase):
         results = views.search_results(request)
         self.assertEqual(results.data['num_results'], 25)
 
-    def test_landing_email_addy(self):
-        old_email = settings.CONTACT_US_EMAIL
-        settings.CONTACT_US_EMAIL = 'someotherexample@domain.com'
-        results = self.client.get(reverse('respondents:search_home'))
-        self.assertTrue('someotherexample@domain.com' in results.content)
-        settings.CONTACT_US_EMAIL = old_email
-
-
 class InstitutionIndexTests(TestCase):
     fixtures = ['agency', 'many_tracts']
 
