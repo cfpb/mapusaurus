@@ -61,6 +61,7 @@ if (!window.console) console = {log: function() {}};
     
     // Go get the tract centroids and supporting data, THEN build a data object (uses jQuery Deferreds)
     function init(){
+        blockStuff();
         $.when( getTractsInBounds( getBoundParams() ), getTractData( getBoundParams(), getActionTaken( $('#action-taken-selector option:selected').val() ))).done( function(data1, data2){
             // Get the information about the currently selected layer so we can pass bubble styles to redraw
             var hashInfo = getHashParams(),
@@ -73,10 +74,12 @@ if (!window.console) console = {log: function() {}};
             // Create our Tract Data Object (Datastore.tracts) from the raw sources
             createTractDataObj(); 
 
-
             // Redraw the circles using the created tract object AND the layer bubble type
             redrawCircles(dataStore.tracts, layerInfo.type );
-            $('#bubbles_loading').hide();
+            
+            // Unblock the user interface (remove gradient)
+            $.unblockUI();
+            isUIBlocked = false;
         });
     }
 
@@ -106,11 +109,35 @@ if (!window.console) console = {log: function() {}};
 
     }
 
+    function blockStuff(){
+        if( isUIBlocked === true ){
+            return false;
+        } else {
+            isUIBlocked = true;
+            $.blockUI(
+                { css: { 
+                        border: 'none', 
+                        padding: '15px', 
+                        backgroundColor: '#000', 
+                        '-webkit-border-radius': '10px', 
+                        '-moz-border-radius': '10px', 
+                        opacity: .5, 
+                        color: '#fff' 
+                    },
+                 message: '<img src="/static/basestyle/img/loading_white.gif" height="75px"> <h6>Loading HMDA Data</h6>'
+                }
+            );
+        }
+        
+    }
+
+
     /* 
         ---- GET DATA SCRIPTS ----
     */    
 
-    var rawGeo, rawLar, rawMinority, rawData,
+    var rawGeo, rawLar, rawMinority, rawData, 
+    isUIBlocked = false,
     dataStore = {};
     dataStore.tracts = {};
     
@@ -268,7 +295,11 @@ if (!window.console) console = {log: function() {}};
         circle.volume = geo.volume;
         circle.on('mouseover mousemove', function(e){
             new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false })
-              .setContent(data['volume'] + ' records<br />' + data['num_households'] + ' households')
+              .setContent(data['volume'] + ' records<br />' + data['num_households'] + ' households<br />% White: ' + data['non_hisp_white_only_perc']*100 +
+                '<br /> % Hispanic: ' + data['hispanic_perc']*100 + '<br />% Black: ' + data['non_hisp_black_only_perc']*100 + 
+                '<br /> % Asian: ' + data['non_hisp_asian_only_perc']*100 )
+              // To complete this, you'll want to create a div with a class for 'sparkline' and data elements for each value then call
+              // all sparkline render function on redraw!  Wheeeeeee!
               .setLatLng(e.latlng)
               .openOn(map);
         });

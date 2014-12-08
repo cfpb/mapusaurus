@@ -5573,6 +5573,70 @@ select b {
 .map-aside-header {
   height: 34px;
 }
+.map-divider {
+  border-bottom: 1px solid #babbbd;
+  padding: 0 15px;
+}
+.header-main {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 0.75em;
+  margin: 0px;
+  line-height: 1.1;
+  letter-spacing: 1px;
+  color: #101820;
+}
+.lt-ie9 .header-main {
+  font-weight: normal !important;
+}
+.header-sub {
+  font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  color: #43484e;
+  letter-spacing: 1px;
+  margin-bottom: .1em;
+}
+.header-sub em,
+.header-sub i {
+  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
+  font-style: italic;
+  font-weight: normal;
+}
+.lt-ie9 .header-sub em,
+.lt-ie9 .header-sub i {
+  font-style: normal !important;
+}
+.header-sub strong,
+.header-sub b {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 .header-sub strong,
+.lt-ie9 .header-sub b {
+  font-weight: normal !important;
+}
+.header-group {
+  padding-bottom: 8px;
+}
+h6 {
+  color: #43484e;
+  font-size: .75em;
+  /* 12px / (26px * .875em) */
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.lt-ie9 h6 {
+  font-weight: normal !important;
+}
 /* Media Queries
    ========================================================================== */
 /* Mobile portrait (320px) */
@@ -5675,7 +5739,6 @@ select b {
 .map-aside__msa-search {
   background-color: #e3e4e5;
   border-bottom: 1px solid #babbbd;
-  padding: 15px;
 }
 .map-aside__msa-search label {
   font-size: 12px;
@@ -5718,9 +5781,6 @@ select b {
 .map-aside__msa-search .tt-suggestion.tt-cursor {
   color: #ffffff;
   background-color: #0072ce;
-}
-.map-aside__notes {
-  padding: 15px;
 }
 .hidden {
   display: block;
@@ -5809,50 +5869,6 @@ select b {
   font-weight: bold;
   font-size: larger;
 }
-/* Map header */
-/*
-#map-header {
-  background-color: #d0e5ca;
-  border-bottom: 4px solid #2cb34a;
-  padding: 0.5em 0;
-  min-height: 4em;
-}
-#map-header .map-type {
-  font-weight: bold;
-  text-transform: uppercase;
-}
-#map-header a {
-  color: #f00;
-  border-bottom: none;
-  text-transform: uppercase;
-}
-*/
-/*
-.map-header__lock-msa {
-  text-align: right;
-  font-size: 14px;
-  label {
-    //padding-right: 8px;
-    //line-height: 26px;
-    //vertical-align: top;
-  }
-  label:after {
-    font-family: 'CFPB Minicons';
-    content: "\e635  \e632";
-    font-size: 18px;
-    margin-left: 8px;
-  }
-  label.locked:after {
-    font-family: 'CFPB Minicons';
-    content: "\e634  \e633";
-    font-size: 18px;
-    margin-left: 8px;
-  }
-  input {
-    display: none;
-  }
-}
-*/
 .static-fa {
   background-repeat: no-repeat;
   display: block;

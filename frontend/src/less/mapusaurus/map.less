@@ -46,6 +46,43 @@ select {
   height: 34px;
 }
 
+.map-divider {
+  border-bottom: 1px solid @gray-50;
+  padding: 0 15px;
+}
+
+  .header-main {
+    .webfont-demi;
+    font-size: 0.75em;
+    margin: 0px;
+    line-height: 1.1;
+    letter-spacing: 1px;
+    color: @black
+  }
+
+  .header-sub {
+    .webfont-regular;
+    margin: 0px;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    color: @darkgray;
+    letter-spacing: 1px;
+    margin-bottom: .1em;
+  }
+
+.header-group {
+  
+  padding-bottom: 8px;
+
+}
+
+h6 {
+  color: @darkgray;
+  font-size: .75em; /* 12px / (26px * .875em) */
+  .webfont-demi;
+  text-transform: uppercase;
+  line-height: 1;
+}
 
 
 /* Media Queries
@@ -148,7 +185,6 @@ select {
 .map-aside__msa-search {
   background-color: @gray-20;
   border-bottom: 1px solid @gray-50;
-  padding: 15px;
 }
 
 .map-aside__msa-search {
@@ -237,7 +273,7 @@ select {
 
 
 .map-aside__notes {
-  padding: 15px;
+
 }
 
 .hidden {
@@ -313,55 +349,6 @@ select {
   font-weight: bold;
   font-size: larger;
 }
-
-/* Map header */
-/*
-#map-header {
-  background-color: #d0e5ca;
-  border-bottom: 4px solid #2cb34a;
-  padding: 0.5em 0;
-  min-height: 4em;
-}
-#map-header .map-type {
-  font-weight: bold;
-  text-transform: uppercase;
-}
-#map-header a {
-  color: #f00;
-  border-bottom: none;
-  text-transform: uppercase;
-}
-*/
-
-
-/*
-.map-header__lock-msa {
-  text-align: right;
-  font-size: 14px;
-  label {
-    //padding-right: 8px;
-    //line-height: 26px;
-    //vertical-align: top;
-  }
-  label:after {
-    font-family: 'CFPB Minicons';
-    content: "\e635  \e632";
-    font-size: 18px;
-    margin-left: 8px;
-  }
-  label.locked:after {
-    font-family: 'CFPB Minicons';
-    content: "\e634  \e633";
-    font-size: 18px;
-    margin-left: 8px;
-  }
-  input {
-    display: none;
-  }
-}
-*/
-// STATIC MAP ICONS -- Since Icons fonts do not work in IE on gov't laptops.
-// Make the icons here: http://fa2png.io/
 
 .static-fa {
   background-repeat: no-repeat;
