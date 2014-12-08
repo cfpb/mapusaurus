@@ -2,7 +2,7 @@
 <div class="map-header__wrapper">
     <div class="map-header__map-title">
         {% if lender %}
-            <span><strong>{{ lender.name}}</strong></span>
+            <span><strong>{{ lender.name|capfirst }}</strong></span>
         {% endif %}
         {% if metro %}
             <span class="msa-name">{{ metro.name }}</span>

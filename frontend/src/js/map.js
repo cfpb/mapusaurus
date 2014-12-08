@@ -100,8 +100,10 @@ if (!window.console) console = {log: function() {}};
             origUrl = $('#download-data').data('download');
 
         if( !status ){
+            $('#lender-affiliate-list').addClass('hidden');
             $('#download-data').attr('href', origUrl);
         } else {
+            $('#lender-affiliate-list').removeClass('hidden');
             $('#download-data').attr('href', url);
         }
         addParam('lh', status);
@@ -115,7 +117,7 @@ if (!window.console) console = {log: function() {}};
         } else {
             isUIBlocked = true;
             $.blockUI(
-                { css: { 
+                {   css: { 
                         border: 'none', 
                         padding: '15px', 
                         backgroundColor: '#000', 
@@ -124,7 +126,12 @@ if (!window.console) console = {log: function() {}};
                         opacity: .5, 
                         color: '#fff' 
                     },
-                 message: '<img src="/static/basestyle/img/loading_white.gif" height="75px"> <h6>Loading HMDA Data</h6>'
+                    message: '<img src="/static/basestyle/img/loading_white.gif" height="75px"> <h6>Loading HMDA Data</h6>',
+                    overlayCSS:  { 
+                        backgroundColor: '#000', 
+                        opacity:         0.0, 
+                        cursor:          'wait' 
+                    }
                 }
             );
         }

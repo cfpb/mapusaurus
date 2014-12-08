@@ -25,12 +25,12 @@ select {
 .map-main {
   //.grid_column(12);
   border-width: 0; // over-ride cf-grid
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
 .map-header,
 .map-aside-header {
-  background-color: @gray-20;
+  background-color: @gray-10;
 }
 
 .map-header {
@@ -48,20 +48,36 @@ select {
 
 .map-divider {
   border-bottom: 1px solid @gray-50;
-  padding: 0 15px;
-}
+  padding: 10px;
 
-  .header-main {
-    .webfont-demi;
+  h6 {
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+
+  .tab-title{
+    .webfont-demi();
+    color: @gray-80;
+    margin: 0px;
+  }
+  
+  .tab-main{
+    .webfont-demi();
+    color: @black;
+    text-transform: none;
+    font-size: .875em;
+  }
+
+  .item-main{
+    .webfont-demi();
     font-size: 0.75em;
     margin: 0px;
-    line-height: 1.1;
     letter-spacing: 1px;
     color: @black
   }
-
-  .header-sub {
-    .webfont-regular;
+  
+  .item-sub{
+    .webfont-regular();
     margin: 0px;
     text-transform: uppercase;
     font-size: 0.75em;
@@ -70,18 +86,17 @@ select {
     margin-bottom: .1em;
   }
 
-.header-group {
-  
-  padding-bottom: 8px;
-
 }
 
-h6 {
-  color: @darkgray;
-  font-size: .75em; /* 12px / (26px * .875em) */
-  .webfont-demi;
-  text-transform: uppercase;
-  line-height: 1;
+.header-group {
+  padding-bottom: 10px;
+}
+
+.lighter {
+    background-color: @gray-5;
+}
+.darker {
+    background-color: @gray-10;
 }
 
 
@@ -105,7 +120,7 @@ h6 {
   .map-aside-header {
     //.grid_column(2);
     float: left;
-    width: 240px;
+    width: 260px;
     border-right: 2px solid @gray-50;
     box-sizing: border-box;
   }
@@ -145,7 +160,7 @@ h6 {
 
 .map-aside {
 
-  background-color: @gray-10;
+  background-color: @gray-5;
 
   h3 {
     font-size: .875em;
@@ -183,7 +198,7 @@ h6 {
 .map-aside__export,
 .map-aside__download,
 .map-aside__msa-search {
-  background-color: @gray-20;
+  background-color: @gray-10;
   border-bottom: 1px solid @gray-50;
 }
 
@@ -273,7 +288,7 @@ h6 {
 
 
 .map-aside__notes {
-
+  padding: 10px;
 }
 
 .hidden {
@@ -427,17 +442,17 @@ h6 {
               top: 0;
 
               &.active {
-                  background-color: @gray-20;
+                  background-color: @gray-10;
                   color: @black;
 
                   &:hover {
-                      background-color: @gray-20;
+                      background-color: @gray-10;
                       //border: none;
                   }    
               }
 
               &:hover {
-                  background-color: @gray-20;
+                  background-color: @gray-10;
                   
               }
 

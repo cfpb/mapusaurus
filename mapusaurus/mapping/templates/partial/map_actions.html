@@ -1,43 +1,45 @@
 <div id="map-aside-header__tabpanels" class="tabpanels">
     {% if lender %}
         <div id="map-aside__lender-details" class="map-aside__lender-details">
-            <div id="lender-info" class="map-divider"><!-- lender-info ID is in a test, it needs to be changed in the test -->
-                <h6>Lender Details</h3>
-                <h4>{{ lender.name}}</h4>
-                <dl>
-                    <dt>Regulating Agency:</dt>
-                        <dd>{{ lender.agency.acronym }}</dd>
-                    <dt>Lender ID:</dt>
-                        <dd>0{{ lender.agency_id }}-{{ lender.ffiec_id }}</dd>
-                    <!--<dt>RSSID ID:</dt>
-                        <dd>{{ lender.rss_id }}</dd>-->
-                    <dt>Address:</dt>
-                        <dd>{{ lender.mailing_address }}<br />
-                            {{lender.zip_code.city}}, {{lender.zip_code.state}}
-                            {{lender.zip_code.zip_code }}
-                        </dd>
-                    <dt>HMDA Year:</dt>
-                        <dd>{{ lender.year }}</dd>
-                </dl>
+            <div class="map-divider"><h6 class="tab-title">Lender Details</h6></div>
+            <div id="lender-info" class="map-divider"><!-- lender-info ID is in a test, it needs to be changed in the test -->                
+                <h3 class="tab-main">{{ lender.name|capfirst }}</h3>
+                <div class="header-group">
+                    <h6 class="item-sub">Regulating Agency</h6>
+                    <h6 class="item-main">{{ lender.agency.acronym }}</h6>    
+                </div>
+                <div class="header-group">
+                    <h6 class="item-sub">Lender ID:</h6>
+                    <h6 class="item-main">{{ lender.agency_id }}{{ lender.ffiec_id}}</h6>
+                </div>
+                <div class="header-group">
+                    <h6 class="item-sub">Address:</h6>
+                    <h6 class="item-main">{{ lender.mailing_address|capfirst  }}<br />
+                                {{lender.zip_code.city|capfirst }}, {{lender.zip_code.state}}
+                                {{lender.zip_code.zip_code }}</h6>                   
+                </div>
+
             </div>
-            <div id="lender-affiliates" class="map-divider">
-                <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="toc-type" style="display:inline-block">Include Parents & Affiliates</h6>
+            <div id="lender-affiliates" class="map-divider lighter">
+                <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Parents & Affiliates</h6>
             </div>
-            <div style="max-height:275px; overflow:scroll" class="map-divider">
+            <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-affiliate-list">
                 {% for affiliate in lender_hierarchy_names %}
                     <div class="header-group">
-                        <h6 class="header-name">{{affiliate.name}}</h6>
-                        <h6 class="header-subtext">{{affiliate.agency}}{{affiliate.ffiec_id}}</h6>
+                        <h6 class="item-main">{{affiliate.name|capfirst}}</h6>
+                        <h6 class="item-sub">{{affiliate.agency}}{{affiliate.ffiec_id}}</h6>
                     </div>
                 {% endfor %}
             </div>
     {% endif %}
         </div><!-- /.tabpanel -->
     {% if metro %}
+        
         <div id="map-aside__msa-details" class="map-aside__msa-details">
-            <h3>MSA Details</h3>
-            <h4>{{ metro.name }}</h4>
-
+            <div class="map-divider"><h6 class="tab-title">MSA Details</h6></div>
+            <div class="map-divider">
+                <h4>{{ metro.name }}</h4>
+            </div> 
         </div>
     {% endif %}
 
@@ -46,8 +48,8 @@
 
     <div id="map-aside__download-export">
         {% if download_url %}
-            <div class="map-aside__download">
-                <h3>Download Data</h3>
+            <div class="map-divider darker"><h6 class="tab-title">Download Data</h6></div>
+            <div class="map-aside__download map-divider">
                 <p>Download the loan application records (LAR) for the current Lender/MSA/Year combination:</p>
                 <p style="text-align:center"><a target="_blank" id="download-data" data-download="{{ download_url }}" data-super-download="{{ hierarchy_download_url }}" class="btn" href="{{ download_url}}" >
                     Download CSV
@@ -58,20 +60,20 @@
 
     </div><!-- /.tabpanel -->
 
-
     <div id="map-aside__msa-search" class="map-aside__msa-search">
+        <div class="map-divider"><h6 class="tab-title">MSA Search</h6></div>
+        <div style="padding:10px">
+            <form action="{% url 'map' %}" method="GET">
+                
+                    <label for="geoid">Search and select a city:</label>
+                    <input type="text" id="geoid">
+                    <input type="hidden" name="lender" value="{{ lender.agency_id }}{{ lender.ffiec_id }}">
+                    <input type="hidden" id="msa-field" name="metro">
+                    <button type="submit" id="metro-search__submit" class="btn btn__disabled" disabled>Go to MSA</button>
+                
+            </form>            
+        </div>
 
-        <h3>MSA Search</h3>
-
-        <form action="{% url 'map' %}" method="GET">
-            
-                <label for="geoid">Search and select a city:</label>
-                <input type="text" id="geoid">
-                <input type="hidden" name="lender" value="{{ lender.agency_id }}{{ lender.ffiec_id }}">
-                <input type="hidden" id="msa-field" name="metro">
-                <button type="submit" id="metro-search__submit" class="btn btn__disabled" disabled>Go to MSA</button>
-            
-        </form>
 
     </div><!-- /.tabpanel -->
 
@@ -79,17 +81,6 @@
 </div><!-- /.map-aside-header__tablist -->
 
 
-<div class="map-aside__notes">
-    <h4>Note: HMDA LAR is being filtered by:</h4>
-    <dl>
-        <dt>First lien</dt>
-            <dd>Lien status = 1</dd> 
-        <dt>Owner occupied</dt>
-            <dd>Owner-occupancy = 1</dd>
-        <dt>1-4 family or manufactured housing</dt> 
-            <dd>Property type = 1 or 2</dd>
-    </dl>
-    <br/>
-    <br/>
-    <br/>
+<div class="map-aside__notes lighter">
+    <h4>HMDA LAR volumes are filtered using first-lien (status=1), owner-occupied, 1-4 family or manufactured housing (types 1 and 2)</h4>
 </div>
