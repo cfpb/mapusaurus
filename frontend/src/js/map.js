@@ -101,9 +101,11 @@ if (!window.console) console = {log: function() {}};
 
         if( !status ){
             $('#lender-affiliate-list').addClass('hidden');
+            $('#lender-affiliates').removeClass('green-highlight');
             $('#download-data').attr('href', origUrl);
         } else {
             $('#lender-affiliate-list').removeClass('hidden');
+            $('#lender-affiliates').addClass('green-highlight');
             $('#download-data').attr('href', url);
         }
         addParam('lh', status);
@@ -301,15 +303,31 @@ if (!window.console) console = {log: function() {}};
         circle.geoid = geo.geoid;
         circle.volume = geo.volume;
         circle.on('mouseover mousemove', function(e){
+            var hisp,white,black,asian;
+            hisp = (data['hispanic_perc']*100).toFixed(2);
+            white = (data['non_hisp_white_only_perc']*100).toFixed(2);
+            black = (data['non_hisp_black_only_perc']*100).toFixed(2);
+            asian = (data['non_hisp_asian_only_perc']*100).toFixed(2)
             new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false })
-              .setContent(data['volume'] + ' records<br />' + data['num_households'] + ' households<br />% White: ' + data['non_hisp_white_only_perc']*100 +
-                '<br /> % Hispanic: ' + data['hispanic_perc']*100 + '<br />% Black: ' + data['non_hisp_black_only_perc']*100 + 
-                '<br /> % Asian: ' + data['non_hisp_asian_only_perc']*100 )
-              // To complete this, you'll want to create a div with a class for 'sparkline' and data elements for each value then call
-              // all sparkline render function on redraw!  Wheeeeeee!
-              .setLatLng(e.latlng)
-              .openOn(map);
-        });
+                .setContent(data['volume'] + ' records<br />' + data['num_households'] + ' households' +
+                    '<br/><b>Hispanic</b>: (' + hisp + '%)<br/><span class="spark-bullet" data-min="[' + [hisp, hisp, 100] +']"></span>' +
+                    '<br/><b>Black</b>: (' + black + '%)<br/><span class="spark-bullet" data-min="[' + [black, black, 100] +']"></span>' + 
+                    '<br/><b>Asian</b>: (' + asian + '%)<br/><span class="spark-bullet" data-min="[' + [asian, asian, 100] +']"></span>' + 
+                    '<br/><b>White</b>: (' + white + '%)<br/><span class="spark-bullet" data-min="[' + [white, white, 100] +']"></span>' )
+                .setLatLng(e.latlng)
+                .openOn(map);
+                $('.spark-bullet').each( function(index){
+                    var sparkData = $( this ).data('min');
+                    console.log('SparkData');
+                    $( this ).sparkline( sparkData , {
+                        type: 'bullet',
+                        height: '10px',
+                        targetColor: '#000',
+                        performanceColor: '#000',
+                        rangeColors: ['#d3dafe','#a8b6ff','#7f94ff ']});
+                    });
+                });
+                    
         circle.on('mouseout', function(){ 
             map.closePopup();
         });
