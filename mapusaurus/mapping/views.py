@@ -38,7 +38,7 @@ def map(request, template):
         context['download_url'] = make_download_url(lender_ids, metro)
         lender_hierarchy = get_related_lenders(str(lender_ids[0]))
         lender_hierarchy_respondents = get_related_respondents(str(lender_ids[0]))
-        names_dictionary = Institution.objects.filter(ffiec_id__in=lender_hierarchy_respondents[0]).values('ffiec_id', 'name', 'agency')
+        names_dictionary = Institution.objects.filter(ffiec_id__in=lender_hierarchy_respondents[0]).values('ffiec_id', 'name', 'agency').order_by('-assets')
         if (len(lender_hierarchy) > 0):
             context['hierarchy_download_url'] = make_download_url(lender_hierarchy[0], metro)
         if (len(names_dictionary) > 0):
