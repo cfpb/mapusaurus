@@ -3,20 +3,24 @@
         <div id="map-aside__lender-details" class="map-aside__lender-details">
             <div class="map-divider"><h6 class="tab-title">Lender Details</h6></div>
             <div id="lender-info" class="map-divider"><!-- lender-info ID is in a test, it needs to be changed in the test -->                
-                <h3 class="tab-main">{{ lender.name|capfirst }}</h3>
+                <h3 class="tab-main">{{ lender.name }}</h3>
                 <div class="header-group">
                     <h6 class="item-sub">Regulating Agency</h6>
                     <h6 class="item-main">{{ lender.agency.acronym }}</h6>    
                 </div>
                 <div class="header-group">
                     <h6 class="item-sub">Lender ID:</h6>
-                    <h6 class="item-main">{{ lender.agency_id }}{{ lender.ffiec_id}}</h6>
+                    <h6 class="item-main">{{ lender.agency_id }}{{ lender.ffiec_id }}</h6>
                 </div>
                 <div class="header-group">
                     <h6 class="item-sub">Address:</h6>
-                    <h6 class="item-main">{{ lender.mailing_address|capfirst  }}<br />
-                                {{lender.zip_code.city|capfirst }}, {{lender.zip_code.state}}
-                                {{lender.zip_code.zip_code }}</h6>                   
+                    <h6 class="item-main">{{ lender.mailing_address  }}<br />
+                                {{ lender.zip_code.city }}, {{ lender.zip_code.state }}
+                                {{ lender.zip_code.zip_code }}</h6>                   
+                </div>
+                <div class="header-group">
+                    <h6 class="item-sub">HMDA Year:</h6>
+                    <h6 class="item-main">{{ lender.year }}</h6>                 
                 </div>
 
             </div>
@@ -26,8 +30,8 @@
             <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-affiliate-list">
                 {% for affiliate in lender_hierarchy_names %}
                     <div class="header-group">
-                        <h6 class="item-main">{{affiliate.name|capfirst}}</h6>
-                        <h6 class="item-sub">{{affiliate.agency}}{{affiliate.ffiec_id}}</h6>
+                        <h6 class="item-main">{{ affiliate.name }}</h6>
+                        <h6 class="item-sub">{{ affiliate.agency}}{{affiliate.ffiec_id }}</h6>
                     </div>
                 {% endfor %}
             </div>
@@ -43,9 +47,6 @@
         </div>
     {% endif %}
 
-
-
-
     <div id="map-aside__download-export">
         {% if download_url %}
             <div class="map-divider darker"><h6 class="tab-title">Download Data</h6></div>
@@ -53,7 +54,6 @@
                 <p>Download the loan application records (LAR) for the current Lender/MSA/Year combination:</p>
                 <p style="text-align:center"><a target="_blank" id="download-data" data-download="{{ download_url }}" data-super-download="{{ hierarchy_download_url }}" class="btn" href="{{ download_url}}" >
                     Download CSV
-                    <!--<span class="btn_icon__right fa fa-download"></span>-->
                 </a></p>
             </div>
         {% endif %}
@@ -74,12 +74,9 @@
             </form>            
         </div>
 
-
     </div><!-- /.tabpanel -->
 
-
 </div><!-- /.map-aside-header__tablist -->
-
 
 <div class="map-aside__notes lighter">
     <h4>HMDA LAR volumes are filtered using first-lien (status=1), owner-occupied, 1-4 family or manufactured housing (types 1 and 2)</h4>
