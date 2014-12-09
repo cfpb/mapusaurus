@@ -17,7 +17,8 @@
     "leaflet-hash": "git+https://github.com/sephcoster/leaflet-hash.git#",
     "leaflet-MiniMap": "git+https://github.com/Norkart/Leaflet-MiniMap.git#",
     "topojson": "git+https://github.com/mbostock/topojson#1.6.18",
-    "typeahead": "git+https://github.com/twitter/typeahead.js#0.10.5"
+    "typeahead": "git+https://github.com/twitter/typeahead.js#0.10.5",
+    "blockui": "git+https://github.com/malsup/blockui#2.70"
   }
 
 }
