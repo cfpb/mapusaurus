@@ -5560,7 +5560,7 @@ select b {
 }
 .map-header,
 .map-aside-header {
-  background-color: #e3e4e5;
+  background-color: #f1f2f2;
 }
 .map-header {
   height: 34px;
@@ -5573,6 +5573,87 @@ select b {
 .map-aside-header {
   height: 34px;
 }
+.map-divider {
+  border-bottom: 1px solid #babbbd;
+  padding: 10px;
+}
+.map-divider h6 {
+  line-height: 1;
+  letter-spacing: 1px;
+}
+.map-divider .tab-title {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  color: #919395;
+  margin: 0px;
+}
+.lt-ie9 .map-divider .tab-title {
+  font-weight: normal !important;
+}
+.map-divider .tab-main {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  color: #101820;
+  text-transform: none;
+  font-size: .875em;
+}
+.lt-ie9 .map-divider .tab-main {
+  font-weight: normal !important;
+}
+.map-divider .item-main {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 0.75em;
+  margin: 0px;
+  letter-spacing: 1px;
+  color: #101820;
+}
+.lt-ie9 .map-divider .item-main {
+  font-weight: normal !important;
+}
+.map-divider .item-sub {
+  font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  margin: 0px;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  color: #43484e;
+  letter-spacing: 1px;
+  margin-bottom: .1em;
+}
+.map-divider .item-sub em,
+.map-divider .item-sub i {
+  font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
+  font-style: italic;
+  font-weight: normal;
+}
+.lt-ie9 .map-divider .item-sub em,
+.lt-ie9 .map-divider .item-sub i {
+  font-style: normal !important;
+}
+.map-divider .item-sub strong,
+.map-divider .item-sub b {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 .map-divider .item-sub strong,
+.lt-ie9 .map-divider .item-sub b {
+  font-weight: normal !important;
+}
+.header-group {
+  padding-bottom: 10px;
+}
+.lighter {
+  background-color: #f8f8f8;
+}
+.darker {
+  background-color: #f1f2f2;
+}
 /* Media Queries
    ========================================================================== */
 /* Mobile portrait (320px) */
@@ -5582,7 +5663,7 @@ select b {
   .map-aside,
   .map-aside-header {
     float: left;
-    width: 240px;
+    width: 260px;
     border-right: 2px solid #babbbd;
     box-sizing: border-box;
   }
@@ -5626,7 +5707,7 @@ select b {
   }
 }
 .map-aside {
-  background-color: #f1f2f2;
+  background-color: #f8f8f8;
 }
 .map-aside h3 {
   font-size: .875em;
@@ -5673,9 +5754,8 @@ select b {
 .map-aside__export,
 .map-aside__download,
 .map-aside__msa-search {
-  background-color: #e3e4e5;
+  background-color: #f1f2f2;
   border-bottom: 1px solid #babbbd;
-  padding: 15px;
 }
 .map-aside__msa-search label {
   font-size: 12px;
@@ -5720,7 +5800,7 @@ select b {
   background-color: #0072ce;
 }
 .map-aside__notes {
-  padding: 15px;
+  padding: 10px;
 }
 .hidden {
   display: block;
@@ -5809,50 +5889,6 @@ select b {
   font-weight: bold;
   font-size: larger;
 }
-/* Map header */
-/*
-#map-header {
-  background-color: #d0e5ca;
-  border-bottom: 4px solid #2cb34a;
-  padding: 0.5em 0;
-  min-height: 4em;
-}
-#map-header .map-type {
-  font-weight: bold;
-  text-transform: uppercase;
-}
-#map-header a {
-  color: #f00;
-  border-bottom: none;
-  text-transform: uppercase;
-}
-*/
-/*
-.map-header__lock-msa {
-  text-align: right;
-  font-size: 14px;
-  label {
-    //padding-right: 8px;
-    //line-height: 26px;
-    //vertical-align: top;
-  }
-  label:after {
-    font-family: 'CFPB Minicons';
-    content: "\e635  \e632";
-    font-size: 18px;
-    margin-left: 8px;
-  }
-  label.locked:after {
-    font-family: 'CFPB Minicons';
-    content: "\e634  \e633";
-    font-size: 18px;
-    margin-left: 8px;
-  }
-  input {
-    display: none;
-  }
-}
-*/
 .static-fa {
   background-repeat: no-repeat;
   display: block;
@@ -5917,14 +5953,14 @@ select b {
   top: 0;
 }
 .tabs ul li a.active {
-  background-color: #e3e4e5;
+  background-color: #f1f2f2;
   color: #101820;
 }
 .tabs ul li a.active:hover {
-  background-color: #e3e4e5;
+  background-color: #f1f2f2;
 }
 .tabs ul li a:hover {
-  background-color: #e3e4e5;
+  background-color: #f1f2f2;
 }
 .tabs ul li a:hover,
 .tabs ul li a:focus {

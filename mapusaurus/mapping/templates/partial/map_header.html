@@ -2,12 +2,11 @@
 <div class="map-header__wrapper">
     <div class="map-header__map-title">
         {% if lender %}
-            <span><strong>{{ lender.name}}</strong></span>
+            <span><strong>{{ lender.name|capfirst }}</strong></span>
         {% endif %}
         {% if metro %}
             <span class="msa-name">{{ metro.name }}</span>
         {% endif %}
-        <input type="checkbox" id="superSelect" style="vertical-align:middle;" /><span style="font-size: .75em">Display Parent & Affiliates</span>
     </div>
 
 </div>
