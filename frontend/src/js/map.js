@@ -309,7 +309,7 @@ if (!window.console) console = {log: function() {}};
             black = (data['non_hisp_black_only_perc']*100).toFixed(2);
             asian = (data['non_hisp_asian_only_perc']*100).toFixed(2)
             new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false })
-                .setContent(data['volume'] + ' records<br />' + data['num_households'] + ' households' +
+                .setContent('<div style="border-bottom: 1px solid gray"><b>Tract # '+ circle.geoid + '</b><br/>' +data['volume'] + ' <b>records<br />' + data['num_households'] + ' <b>households</b></div>' +
                     '<br/><b>Hispanic</b>: (' + hisp + '%)<br/><span class="spark-bullet" data-min="[' + [hisp, hisp, 100] +']"></span>' +
                     '<br/><b>Black</b>: (' + black + '%)<br/><span class="spark-bullet" data-min="[' + [black, black, 100] +']"></span>' + 
                     '<br/><b>Asian</b>: (' + asian + '%)<br/><span class="spark-bullet" data-min="[' + [asian, asian, 100] +']"></span>' + 
