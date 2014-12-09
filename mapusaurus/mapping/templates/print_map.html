@@ -42,6 +42,47 @@
         </div>
     </div>
 </div>
+<div>
+    {% if lender %}
+        <div id="map-aside__lender-details" class="map-aside__lender-details">
+            <div class="map-divider"><h6 class="tab-title">Lender Details</h6></div>
+            <div id="lender-info" class="map-divider"><!-- lender-info ID is in a test, it needs to be changed in the test -->                
+                <h3 class="tab-main">{{ lender.name }}</h3>
+                <div class="header-group">
+                    <h6 class="item-sub">Regulating Agency</h6>
+                    <h6 class="item-main">{{ lender.agency.acronym }}</h6>    
+                </div>
+                <div class="header-group">
+                    <h6 class="item-sub">Lender ID:</h6>
+                    <h6 class="item-main">{{ lender.agency_id }}{{ lender.ffiec_id }}</h6>
+                </div>
+                <div class="header-group">
+                    <h6 class="item-sub">Address:</h6>
+                    <h6 class="item-main">{{ lender.mailing_address  }}<br />
+                                {{ lender.zip_code.city }}, {{ lender.zip_code.state }}
+                                {{ lender.zip_code.zip_code }}</h6>                   
+                </div>
+                <div class="header-group">
+                    <h6 class="item-sub">HMDA Year:</h6>
+                    <h6 class="item-main">{{ lender.year }}</h6>                 
+                </div>
+
+            </div>
+            <div id="lender-affiliates" class="map-divider lighter hidden">
+                <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Parents & Affiliates</h6>
+            </div>
+            <div class="map-divider lighter hidden" id="lender-affiliate-list">
+                {% for affiliate in lender_hierarchy_names %}
+                    <div class="header-group divided">
+                        <h6 class="item-main">{{ affiliate.name }}</h6>
+                        <h6 class="item-sub">{{ affiliate.agency}}{{affiliate.ffiec_id }}</h6>
+                    </div>
+                {% endfor %}
+            </div>
+    {% endif %}
+        </div>
+
+</div>
 
 {% endblock %}
 
