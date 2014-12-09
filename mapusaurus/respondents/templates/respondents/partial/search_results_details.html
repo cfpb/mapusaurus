@@ -32,7 +32,7 @@
 
             </div>
 
-            <div class="expandable_content" id="expandable-{{res.id}}">
+<!--             <div class="expandable_content" id="expandable-{{res.id}}">
                 
                 <div class="search-result-record__ec-left">
                     <dl>
@@ -49,35 +49,16 @@
                         <dt>Regulating Agency</dt>
                         <dd>{{res.agency.full_name}}</dd>
                     </dl>
-                    <!--
-                    <dl>
-                        <dt>RSSD ID</dt>
-                        <dd>{{res.rssd_id}}</dd>
-                    </dl>
-                    -->
                 </div>
                 <div class="search-result-record__ec-right">
                     <dl>
                         <dt>More Information</dt>
                         <dd><a href="{% url 'respondents:respondent_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></dd>
                     </dl>
-                <!--
-                    <p><a class="search-result-record__link" href="{% url 'respondents:respondent_profile' res.agency_id res.ffiec_id %}">Panel and TS data</a></p>
-                -->
-                <!--
-                <form action="{% url 'map' %}" method="GET">
-                    
-                        <label for="geoid">Search and select a city to view map:</label>
-                        <input type="text" id="geoid">
-                        <input type="hidden" name="lender" value="{{ lender.agency_id }}{{ lender.ffiec_id }}">
-                        <input type="hidden" id="msa-field" name="metro">
-                        <button type="submit" id="metro-search__submit" class="btn btn__disabled" disabled>Go to MSA</button>
-                    
-                </form>
-                -->
+
                 </div>
 
-            </div><!-- ./expandable_content -->
+            </div> --><!-- ./expandable_content -->
 
         </div><!-- ./expandable -->
 
