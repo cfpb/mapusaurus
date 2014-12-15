@@ -22,6 +22,7 @@ class Command(BaseCommand):
 
         delete_file = False
         filter_hmda = False
+        filter_state_list = None
 
         self.total_skipped = 0
         self.na_skipped = 0
@@ -45,6 +46,7 @@ class Command(BaseCommand):
         ### default is False
         ### if filter_hmda is passed in, setup known_hmda & geo_states
         ### else load all HMDA records without filtering
+        ### if  filter_state_list is passed in, setup filter list to only process those states
         if len(args) > 1:
             for arg in args:
                 if  "delete_file:" in arg:
@@ -56,6 +58,10 @@ class Command(BaseCommand):
 
                 if "filterhmda" in arg:
                     filter_hmda = True
+
+                if "filter_state_list" in arg:
+                    tmp_state_list = arg.split(":")
+                    filter_state_list = tmp_state_list[1].split(",")
 
 
 
@@ -73,11 +79,13 @@ class Command(BaseCommand):
             raise Exception("Not a file or Directory! " + args[0])
 
 
-
-        geo_states = set(
-                row['state'] for row in
-                Geo.objects.filter(geo_type=Geo.TRACT_TYPE).values('state').distinct()
-            )
+        if filter_state_list == None:
+            geo_states = set(
+                    row['state'] for row in
+                    Geo.objects.filter(geo_type=Geo.TRACT_TYPE).values('state').distinct()
+                )
+        else:
+            geo_states = set(filter_state_list)
 
         db.reset_queries()
 
