@@ -31,7 +31,7 @@
                     </tr>
                     <tr>
                         <th>Agency-HMDA ID:</th>
-                        <td>0{{res.agency_id}}-{{res.ffiec_id}}</td>
+                        <td>0{{res.agency_id}}-{{res.respondent_id}}</td>
                     </tr>
                     <tr>
                         <th>RSSD ID:</th>
@@ -46,7 +46,7 @@
                     <tr>
                         <td>&nbsp;</td>
                         <td>
-                            <a href="{% url 'respondents:respondent_profile' res.agency_id res.ffiec_id %}">HMDA Panel and Transmittal Sheet (TS) data</a>
+                            <a href="{% url 'respondents:respondent_profile' res.agency_id res.respondent_id %}">HMDA Panel and Transmittal Sheet (TS) data</a>
                         </td>
                     </tr>                            
                 </table>

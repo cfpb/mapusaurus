@@ -26,12 +26,12 @@ class ParentInstitutionAdmin(admin.ModelAdmin):
     )
 
 class InstitutionAdmin(admin.ModelAdmin):
-    list_display = ['name', 'agency', 'assets', 'mailing_address', 'zip_code', 'ffiec_id', 'rssd_id']
+    list_display = ['name', 'agency', 'assets', 'mailing_address', 'zip_code', 'respondent_id', 'rssd_id']
     search_fields = ['name']
     #list_filter = ('agency__acronym')
     readonly_fields = (
         'year',
-        'ffiec_id',
+        'respondent_id',
         'agency',
         'assets',
         'tax_id',

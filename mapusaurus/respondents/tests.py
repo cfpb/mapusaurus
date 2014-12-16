@@ -76,7 +76,7 @@ class LoadTransmittalTests(TestCase):
         self.assertEqual(query.count(), 1)
         inst = query[0]
         self.assertEqual(inst.name, 'FIRST FAKE BK NA')
-        self.assertEqual(inst.ffiec_id, '0000055547')
+        self.assertEqual(inst.respondent_id, '0000055547')
         self.assertEqual(inst.agency_id, 1)
         self.assertEqual(inst.assets, 121212)
 
@@ -93,7 +93,7 @@ class ViewTest(TestCase):
         zipcode = ZipcodeCityState.objects.create(
             zip_code=12345, city='City', state='IL')
         inst = Institution.objects.create(
-            year=1234, ffiec_id='9879879870', agency=Agency.objects.get(pk=9),
+            year=1234, respondent_id='9879879870', agency=Agency.objects.get(pk=9),
             tax_id='1111111111', name='Institution', mailing_address='mail',
             zip_code=zipcode)
 
@@ -127,11 +127,11 @@ class ViewTest(TestCase):
         result1.object.name = 'Some Bank'
         result1.object.assets = 201
         result1.object.agency_id = 1
-        result1.object.ffiec_id = '0123456789'
+        result1.object.respondent_id = '0123456789'
         result2.object.name = 'Bank & Loan'
         result1.object.assets = 202
         result2.object.agency_id = 2
-        result2.object.ffiec_id = '1122334455'
+        result2.object.respondent_id = '1122334455'
         resp = self.client.get(reverse('respondents:search_results'),
                                {'q': 'Bank'})
 
@@ -149,7 +149,7 @@ class ViewTest(TestCase):
         result = Mock()
         SQS.filter.return_value = [result]
         result.object.name, result.object.id = 'Some Bank', 1234
-        result.object.agency_id, result.object.ffiec_id = 3, '3232434354'
+        result.object.agency_id, result.object.respondent_id = 3, '3232434354'
         self.client.get(reverse('respondents:search_results'),
                         {'q': 'Bank', 'auto': '1'})
         self.assertTrue('Bank' in str(SQS.filter.call_args))
@@ -162,7 +162,7 @@ class ViewTest(TestCase):
         result = Mock()
         SQS.filter.return_value = [result]
         result.object.name, result.object.id = 'Some Bank', 1234
-        result.object.agency_id, result.object.ffiec_id = 3, '1234543210'
+        result.object.agency_id, result.object.respondent_id = 3, '1234543210'
 
 
         resp = self.client.get(reverse('respondents:search_results'),
@@ -293,11 +293,11 @@ class InstitutionIndexTests(TestCase):
         self.zipcode = ZipcodeCityState.objects.create(
             zip_code=12345, city='City', state='IL')
         self.inst1 = Institution.objects.create(
-            year=1234, ffiec_id='9876543210', agency=Agency.objects.get(pk=9),
+            year=1234, respondent_id='9876543210', agency=Agency.objects.get(pk=9),
             tax_id='1111111111', name='Institution', mailing_address='mail',
             zip_code=self.zipcode)
         self.inst2 = Institution.objects.create(
-            year=1234, ffiec_id='0123456789', agency=Agency.objects.get(pk=9),
+            year=1234, respondent_id='0123456789', agency=Agency.objects.get(pk=9),
             tax_id='2222222222', name='Institution', mailing_address='mail',
             zip_code=self.zipcode)
         self.hmda = HMDARecord.objects.create(
@@ -323,10 +323,10 @@ class InstitutionIndexTests(TestCase):
         found1, found2 = False, False
         index = InstitutionIndex()
         for obj in index.index_queryset():
-            if obj.ffiec_id == '9876543210':
+            if obj.respondent_id == '9876543210':
                 found1 = True
                 self.assertEqual(obj.num_loans, 1)
-            elif obj.ffiec_id == '0123456789':
+            elif obj.respondent_id == '0123456789':
                 found2 = True
         self.assertTrue(found1)
         self.assertFalse(found2)

@@ -45,7 +45,7 @@ class Migration(SchemaMigration):
         db.create_table(u'respondents_institution', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('year', self.gf('django.db.models.fields.SmallIntegerField')()),
-            ('ffiec_id', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('respondent_id', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('agency', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['respondents.Agency'])),
             ('tax_id', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=30)),
@@ -59,19 +59,19 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'respondents', ['Institution'])
 
-        # Adding unique constraint on 'Institution', fields ['ffiec_id', 'agency', 'year']
-        db.create_unique(u'respondents_institution', ['ffiec_id', 'agency_id', 'year'])
+        # Adding unique constraint on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.create_unique(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
 
-        # Adding index on 'Institution', fields ['ffiec_id', 'agency', 'year']
-        db.create_index(u'respondents_institution', ['ffiec_id', 'agency_id', 'year'])
+        # Adding index on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.create_index(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
 
 
     def backwards(self, orm):
-        # Removing index on 'Institution', fields ['ffiec_id', 'agency', 'year']
-        db.delete_index(u'respondents_institution', ['ffiec_id', 'agency_id', 'year'])
+        # Removing index on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.delete_index(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
 
-        # Removing unique constraint on 'Institution', fields ['ffiec_id', 'agency', 'year']
-        db.delete_unique(u'respondents_institution', ['ffiec_id', 'agency_id', 'year'])
+        # Removing unique constraint on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.delete_unique(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
 
         # Removing unique constraint on 'ZipcodeCityState', fields ['zip_code', 'city']
         db.delete_unique(u'respondents_zipcodecitystate', ['zip_code', 'city'])
@@ -97,10 +97,10 @@ class Migration(SchemaMigration):
             'hmda_id': ('django.db.models.fields.IntegerField', [], {'primary_key': 'True'})
         },
         u'respondents.institution': {
-            'Meta': {'unique_together': "(('ffiec_id', 'agency', 'year'),)", 'object_name': 'Institution', 'index_together': "[['ffiec_id', 'agency', 'year']]"},
+            'Meta': {'unique_together': "(('respondent_id', 'agency', 'year'),)", 'object_name': 'Institution', 'index_together': "[['respondent_id', 'agency', 'year']]"},
             'agency': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['respondents.Agency']"}),
             'assets': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'ffiec_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'respondent_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'mailing_address': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),

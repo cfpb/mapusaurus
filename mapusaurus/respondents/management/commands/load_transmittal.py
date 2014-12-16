@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
                 inst = Institution(
                     year=inst_line[0],
-                    ffiec_id=inst_line[1],
+                    respondent_id=inst_line[1],
                     agency=agency,
                     tax_id=inst_line[3],
                     name=inst_line[4],

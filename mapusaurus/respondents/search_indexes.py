@@ -23,7 +23,7 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
             FROM hmda_hmdarecord
             WHERE hmda_hmdarecord.lender
                     = CAST(respondents_institution.agency_id AS VARCHAR(1))
-                      || respondents_institution.ffiec_id"""
+                      || respondents_institution.respondent_id"""
         return self.get_model().objects.extra(
             select={"num_loans": "SELECT COUNT(*) " + subquery_tail},
             where=["SELECT COUNT(*) > 0 " + subquery_tail])
@@ -34,7 +34,7 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
         return self.get_model().objects.select_related('zip_code', 'agency')
 
     def prepare_respondent_id(self, institution):
-        return str(institution.ffiec_id)
+        return str(institution.respondent_id)
 
     def prepare_lender_id(self, institution):
-        return str(institution.agency_id) + institution.ffiec_id
+        return str(institution.agency_id) + institution.respondent_id

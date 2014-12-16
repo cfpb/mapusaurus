@@ -73,7 +73,7 @@ def get_institution(reporter):
     institution = Institution.objects.get(
         year=reporter.year,
         agency__hmda_id=reporter.agency_code,
-        ffiec_id=reporter.respondent_id)
+        respondent_id=reporter.respondent_id)
     return institution
 
 
@@ -83,7 +83,7 @@ def get_parent(reporter):
 
     parents = Institution.objects.filter(
         year=reporter.year,
-        ffiec_id=reporter.parent_id,
+        respondent_id=reporter.parent_id,
         zip_code__state=reporter.parent_state)
     if len(parents) > 0:
         return parents[0]

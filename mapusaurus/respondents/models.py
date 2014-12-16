@@ -97,7 +97,7 @@ class Institution(models.Model):
 
     def formatted_name(self):
         formatted = defaultfilters.title(self.name) + " ("
-        formatted += str(self.agency_id) + self.ffiec_id + ")"
+        formatted += str(self.agency_id) + self.respondent_id + ")"
         return formatted
 
     class Meta:

@@ -42,7 +42,7 @@ class PrecalcTest(TestCase):
         
 
         hmda_params = {
-            'as_of_year': 2010, 'respondent_id': self.respondent.ffiec_id,
+            'as_of_year': 2010, 'respondent_id': self.respondent.respondent_id,
             'agency_code': str(self.respondent.agency_id), 'loan_type': 1,
             'property_type': 1, 'loan_purpose': 1, 'owner_occupancy': 1,
             'loan_amount_000s': 100, 'preapproval': '1', 'action_taken': 1, 
@@ -89,14 +89,14 @@ class PrecalcTest(TestCase):
         self.metro.delete()
 
     def test_calculate_median_loans(self):
-        lender_id = str(self.respondent.agency_id) + self.respondent.ffiec_id
+        lender_id = str(self.respondent.agency_id) + self.respondent.respondent_id
         # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4;             avg: 4, med: 3
         self.assertEqual(3, calculate_median_loans(lender_id, self.metro))
         # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4; 7 in 5, 16 in 6; avg:6, med:7
         self.assertEqual(7, calculate_median_loans(lender_id, None))
 
     def test_saves_stats(self):
-        lender_id = str(self.respondent.agency_id) + self.respondent.ffiec_id
+        lender_id = str(self.respondent.agency_id) + self.respondent.respondent_id
         command = Command()
         command.stdout = Mock()
         command.handle()

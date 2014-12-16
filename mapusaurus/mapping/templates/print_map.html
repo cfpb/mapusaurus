@@ -28,7 +28,7 @@
           <a href="http://www.consumerfinance.gov"><img class="logo" src="{{ STATIC_URL }}basestyle/img/logo_210.png" alt="Consumer Financial Protection Bureau"></a>
         </div>
         <div style="display:inline-block; position: relative; text-align: right; float:right;">
-            <strong>{{ lender.name }}</strong> - 0{{ lender.agency_id }}-{{ lender.ffiec_id }}<br/>
+            <strong>{{ lender.name }}</strong> - 0{{ lender.agency_id }}-{{ lender.respondent_id }}<br/>
             {{ metro.name }}<br/>
             <strong>Context:</strong> <span id="actionValue"></span> / <span id="minorityValue"></span><br/>
             <strong>Filter:</strong> <span id="filterSpecs">First lien, Owner-occupied, 1-4 family housing (including manufactured)</span>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="header-group">
                     <h6 class="item-sub">Lender ID:</h6>
-                    <h6 class="item-main">{{ lender.agency_id }}{{ lender.ffiec_id }}</h6>
+                    <h6 class="item-main">{{ lender.agency_id }}{{ lender.respondent_id }}</h6>
                 </div>
                 <div class="header-group">
                     <h6 class="item-sub">Address:</h6>
@@ -75,7 +75,7 @@
                 {% for affiliate in lender_hierarchy_names %}
                     <div class="header-group divided">
                         <h6 class="item-main">{{ affiliate.name }}</h6>
-                        <h6 class="item-sub">{{ affiliate.agency}}{{affiliate.ffiec_id }}</h6>
+                        <h6 class="item-sub">{{ affiliate.agency}}{{affiliate.respondent_id }}</h6>
                     </div>
                 {% endfor %}
             </div>

@@ -9,7 +9,7 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding field 'Institution.respondent_id'
-        db.rename_column(u'respondents_institution', 'ffiec_id', 'respondent_id')
+        db.rename_column(u'respondents_institution', 'respondent_id', 'respondent_id')
 
         # Adding unique constraint on 'Institution', fields ['respondent_id', 'agency', 'year']
         db.create_unique(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
@@ -22,13 +22,13 @@ class Migration(SchemaMigration):
         # Removing unique constraint on 'Institution', fields ['respondent_id', 'agency', 'year']
         db.delete_unique(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
 
-        # Adding field 'Institution.ffiec_id'
-        db.rename_column(u'respondents_institution', 'respondent_id', 'ffiec_id')
-        # Adding index on 'Institution', fields ['ffiec_id', 'agency', 'year']
-        db.create_index(u'respondents_institution', ['ffiec_id', 'agency_id', 'year'])
+        # Adding field 'Institution.respondent_id'
+        db.rename_column(u'respondents_institution', 'respondent_id', 'respondent_id')
+        # Adding index on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.create_index(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
 
-        # Adding unique constraint on 'Institution', fields ['ffiec_id', 'agency', 'year']
-        db.create_unique(u'respondents_institution', ['ffiec_id', 'agency_id', 'year'])
+        # Adding unique constraint on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.create_unique(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
 
 
     models = {

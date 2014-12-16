@@ -31,10 +31,10 @@ class Migration(SchemaMigration):
             'hmda_id': ('django.db.models.fields.IntegerField', [], {'primary_key': 'True'})
         },
         u'respondents.institution': {
-            'Meta': {'unique_together': "(('ffiec_id', 'agency', 'year'),)", 'object_name': 'Institution', 'index_together': "[['ffiec_id', 'agency', 'year']]"},
+            'Meta': {'unique_together': "(('respondent_id', 'agency', 'year'),)", 'object_name': 'Institution', 'index_together': "[['respondent_id', 'agency', 'year']]"},
             'agency': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['respondents.Agency']"}),
             'assets': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'ffiec_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'respondent_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'mailing_address': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),

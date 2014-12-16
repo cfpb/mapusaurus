@@ -12,7 +12,7 @@ from respondents.models import Institution
 
 
 def respondent(request, agency_id, respondent):
-    respondent = get_object_or_404(Institution, ffiec_id=respondent,
+    respondent = get_object_or_404(Institution, respondent_id=respondent,
                                    agency_id=int(agency_id))
     context = {'respondent': respondent}
 
@@ -46,7 +46,7 @@ def search_home(request):
 
 def select_metro(request, agency_id, respondent):
     """Once an institution is selected, search for a metro"""
-    institution = get_object_or_404(Institution, ffiec_id=respondent,
+    institution = get_object_or_404(Institution, respondent_id=respondent,
                                     agency_id=int(agency_id))
     return render(request, 'respondents/metro_search.html', {
         'institution': institution
