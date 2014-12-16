@@ -32,7 +32,7 @@ This currently uses:
 
 1. Django 1.7 
 2. Python 2.7.8
-3. Postgres 9.2
+3. PostgreSQL 9.2
 
 There's also a requirements.txt file in the repository root directory.  
 
