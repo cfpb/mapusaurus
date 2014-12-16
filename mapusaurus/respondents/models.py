@@ -60,7 +60,7 @@ class Institution(models.Model):
     """
 
     year = models.SmallIntegerField()
-    ffiec_id = models.CharField(max_length=10)
+    respondent_id = models.CharField(max_length=10)
     agency = models.ForeignKey('Agency')
     tax_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
@@ -73,7 +73,7 @@ class Institution(models.Model):
     rssd_id = models.CharField(
         max_length=10,
         null=True,
-        help_text='Id on the National Information Center repository')
+        help_text='From Reporter Panel. Id on the National Information Center repository')
     parent = models.ForeignKey(
         'self',
         null=True,
@@ -90,14 +90,19 @@ class Institution(models.Model):
         null=True,
         help_text='The company at the top of the ownership chain.')
 
+    lender_id = models.CharField(max_length=11, default="")
+
+    def auto_fields(self):
+        self.lender_id = self.agency + self.respondent_id    
+
     def formatted_name(self):
         formatted = defaultfilters.title(self.name) + " ("
         formatted += str(self.agency_id) + self.ffiec_id + ")"
         return formatted
 
     class Meta:
-        unique_together = ('ffiec_id', 'agency', 'year')
-        index_together = [['ffiec_id', 'agency', 'year']]
+        unique_together = ('respondent_id', 'agency', 'year')
+        index_together = [['respondent_id', 'agency', 'year']]
 
     def __unicode__(self):
         return self.name
