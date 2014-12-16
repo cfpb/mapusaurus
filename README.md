@@ -29,10 +29,10 @@ http://www.ffiec.gov/hmdarawdata/OTHER/2013HMDAReporterPanel.zip
 ## Requirements 
 
 This currently uses: 
-Django 1.7
-Python 2.7.8
-Postgres 9.2
 
+1. Django 1.7 
+2. Python 2.7.8
+3. Postgres 9.2
 
 There's also a requirements.txt file in the repository root directory.  
 
