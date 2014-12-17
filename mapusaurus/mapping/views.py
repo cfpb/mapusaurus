@@ -33,7 +33,6 @@ def map(request, template):
 
     if lender and metro: 
         context['download_url'] = make_download_url(lender.institution_id, metro)
-        import pdb; pdb.set_trace()
         lender_hierarchy = get_related_lenders(lender.institution_id)
         names_dictionary = Institution.objects.filter(institution_id__in=lender_hierarchy).values('respondent_id', 'name', 'agency').order_by('-assets')
         if (len(lender_hierarchy) > 0):
