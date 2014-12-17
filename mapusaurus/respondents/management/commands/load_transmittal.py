@@ -28,6 +28,7 @@ class Command(BaseCommand):
                     year=inst_line[0],
                     respondent_id=inst_line[1],
                     agency=agency,
+                    institution_id = inst_line[2]+inst_line[1],
                     tax_id=inst_line[3],
                     name=inst_line[4],
                     mailing_address=inst_line[5],

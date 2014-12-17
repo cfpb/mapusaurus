@@ -19,12 +19,27 @@ class LenderHierarchyUtilsTests(TestCase):
 
     def test_get_related_lenders(self):
         testAgency = Agency.objects.get(pk=9)
-        LenderHierarchy.objects.create(agency=testAgency, respondent_id='1234', organization_id=9999)
-        LenderHierarchy.objects.create(agency=testAgency, respondent_id='5678', organization_id=9999)
-        LenderHierarchy.objects.create(agency=testAgency, respondent_id='5678', organization_id=1111)
-        lenders = lender_hierarchy_utils.get_related_lenders('91234')
-        self.assertEquals(len(lenders[0]), 2)
-
+        zipcode = ZipcodeCityState.objects.create(
+            zip_code=12345, city='City', state='IL')
+        inst = Institution.objects.create(
+            year=1234, respondent_id='9879879870', agency=Agency.objects.get(pk=9),
+            institution_id='99879879870', tax_id='1111111111', name='Institution', mailing_address='mail',
+            zip_code=zipcode)
+        inst2 = Institution.objects.create(
+            year=1234, respondent_id='9879879872', agency=Agency.objects.get(pk=9),
+            institution_id='99879879872', tax_id='1111111111', name='Institution', mailing_address='mail',
+            zip_code=zipcode)
+        inst3 = Institution.objects.create(
+            year=1234, respondent_id='9879879873', agency=Agency.objects.get(pk=9),
+            institution_id='99879879873', tax_id='1111111111', name='Institution', mailing_address='mail',
+            zip_code=zipcode)
+        LenderHierarchy.objects.create(institution=inst, organization_id=9999)
+        LenderHierarchy.objects.create(institution=inst2, organization_id=9999)
+        LenderHierarchy.objects.create(institution=inst3, organization_id=1111)
+        lenders = lender_hierarchy_utils.get_related_lenders('99879879870')
+        self.assertEquals(len(lenders), 2)
+        Institution.objects.all().delete()
+        LenderHierarchy.objects.all().delete()
 
 class ZipcodeUtilsTests(TestCase):
     def test_createzipcode(self):
@@ -294,11 +309,11 @@ class InstitutionIndexTests(TestCase):
             zip_code=12345, city='City', state='IL')
         self.inst1 = Institution.objects.create(
             year=1234, respondent_id='9876543210', agency=Agency.objects.get(pk=9),
-            tax_id='1111111111', name='Institution', mailing_address='mail',
+            institution_id='99876543210', tax_id='1111111111', name='Institution', mailing_address='mail',
             zip_code=self.zipcode)
         self.inst2 = Institution.objects.create(
             year=1234, respondent_id='0123456789', agency=Agency.objects.get(pk=9),
-            tax_id='2222222222', name='Institution', mailing_address='mail',
+            institution_id='90123456789', tax_id='2222222222', name='Institution', mailing_address='mail',
             zip_code=self.zipcode)
         self.hmda = HMDARecord.objects.create(
             as_of_year=2005, respondent_id='9876543210', agency_code='9',
