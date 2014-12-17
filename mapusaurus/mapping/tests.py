@@ -54,7 +54,7 @@ class ViewTest(TestCase):
     def test_make_download_url(self):
         self.assertEqual(None, make_download_url(None, None))
         lender_ids = []
-        lender_ids.append(str(self.respondent.agency) + self.respondent.ffiec_id)
+        lender_ids.append(str(self.respondent.agency) + self.respondent.respondent_id)
         url = make_download_url(lender_ids, None)
         self.assertTrue('22-333' in url)
         self.assertTrue('1' in url)
@@ -84,7 +84,7 @@ class ViewTest(TestCase):
     @patch('mapping.views.LendingStats')
     @patch('mapping.views.calculate_median_loans')
     def test_lookup_median(self, calc, LendingStats):
-        lender_str = str(self.respondent.agency_id) + self.respondent.ffiec_id
+        lender_str = str(self.respondent.agency_id) + self.respondent.respondent_id
         # No lender
         self.assertEqual(None, lookup_median(None, None))
         # All of the US

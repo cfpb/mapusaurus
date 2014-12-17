@@ -16,7 +16,7 @@ def map(request, template):
     context = {}
     if lender and len(lender) > 1 and lender[0].isdigit():
         query = Institution.objects.filter(agency_id=int(lender[0]))
-        query = query.filter(ffiec_id=lender[1:])
+        query = query.filter(respondent_id=lender[1:])
         query = query.select_related('agency', 'zip_code')
         lender = query.first()
         if lender:
@@ -34,11 +34,11 @@ def map(request, template):
 
     if lender and metro: 
         lender_ids = []
-        lender_ids.append(str(lender.agency_id) + lender.ffiec_id)
+        lender_ids.append(str(lender.agency_id) + lender.respondent_id)
         context['download_url'] = make_download_url(lender_ids, metro)
         lender_hierarchy = get_related_lenders(str(lender_ids[0]))
         lender_hierarchy_respondents = get_related_respondents(str(lender_ids[0]))
-        names_dictionary = Institution.objects.filter(ffiec_id__in=lender_hierarchy_respondents[0]).values('ffiec_id', 'name', 'agency').order_by('-assets')
+        names_dictionary = Institution.objects.filter(respondent_id__in=lender_hierarchy_respondents[0]).values('respondent_id', 'name', 'agency').order_by('-assets')
         if (len(lender_hierarchy) > 0):
             context['hierarchy_download_url'] = make_download_url(lender_hierarchy[0], metro)
         if (len(names_dictionary) > 0):
@@ -86,7 +86,7 @@ def make_download_url(lenders, metro):
 def lookup_median(lender, metro):
     """Look up median. If not present, calculate it."""
     if lender:
-        lender_str = str(lender.agency_id) + lender.ffiec_id
+        lender_str = str(lender.agency_id) + lender.respondent_id
         if metro:
             stat = LendingStats.objects.filter(
                 lender=lender_str, geoid=metro.geoid).first()

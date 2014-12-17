@@ -8,19 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'LenderHierarchy'
-        db.create_table(u'respondents_lenderhierarchy', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('agency', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['respondents.Agency'])),
-            ('respondent_id', self.gf('django.db.models.fields.CharField')(max_length=10)),
-            ('organization_id', self.gf('django.db.models.fields.IntegerField')()),
-        ))
-        db.send_create_signal(u'respondents', ['LenderHierarchy'])
+        # Adding field 'Institution.lender_id'
+        db.add_column(u'respondents_institution', 'lender_id',
+                      self.gf('django.db.models.fields.CharField')(default='', max_length=11),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'LenderHierarchy'
-        db.delete_table(u'respondents_lenderhierarchy')
+        # Deleting field 'Institution.lender_id'
+        db.delete_column(u'respondents_institution', 'lender_id')
 
 
     models = {
@@ -34,12 +30,13 @@ class Migration(SchemaMigration):
             'Meta': {'unique_together': "(('respondent_id', 'agency', 'year'),)", 'object_name': 'Institution', 'index_together': "[['respondent_id', 'agency', 'year']]"},
             'agency': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['respondents.Agency']"}),
             'assets': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'respondent_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'lender_id': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '11'}),
             'mailing_address': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'non_reporting_parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'children'", 'null': 'True', 'to': u"orm['respondents.ParentInstitution']"}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'children'", 'null': 'True', 'to': u"orm['respondents.Institution']"}),
+            'respondent_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'rssd_id': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
             'tax_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'top_holder': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'descendants'", 'null': 'True', 'to': u"orm['respondents.ParentInstitution']"}),

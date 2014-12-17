@@ -8,19 +8,27 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'LenderHierarchy'
-        db.create_table(u'respondents_lenderhierarchy', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('agency', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['respondents.Agency'])),
-            ('respondent_id', self.gf('django.db.models.fields.CharField')(max_length=10)),
-            ('organization_id', self.gf('django.db.models.fields.IntegerField')()),
-        ))
-        db.send_create_signal(u'respondents', ['LenderHierarchy'])
+        # Adding field 'Institution.respondent_id'
+        db.rename_column(u'respondents_institution', 'respondent_id', 'respondent_id')
 
+        # Adding unique constraint on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.create_unique(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
+        db.create_index(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
 
     def backwards(self, orm):
-        # Deleting model 'LenderHierarchy'
-        db.delete_table(u'respondents_lenderhierarchy')
+        # Removing index on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.delete_index(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
+
+        # Removing unique constraint on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.delete_unique(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
+
+        # Adding field 'Institution.respondent_id'
+        db.rename_column(u'respondents_institution', 'respondent_id', 'respondent_id')
+        # Adding index on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.create_index(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
+
+        # Adding unique constraint on 'Institution', fields ['respondent_id', 'agency', 'year']
+        db.create_unique(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
 
 
     models = {
@@ -34,12 +42,12 @@ class Migration(SchemaMigration):
             'Meta': {'unique_together': "(('respondent_id', 'agency', 'year'),)", 'object_name': 'Institution', 'index_together': "[['respondent_id', 'agency', 'year']]"},
             'agency': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['respondents.Agency']"}),
             'assets': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'respondent_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'mailing_address': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'non_reporting_parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'children'", 'null': 'True', 'to': u"orm['respondents.ParentInstitution']"}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'children'", 'null': 'True', 'to': u"orm['respondents.Institution']"}),
+            'respondent_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'rssd_id': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
             'tax_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'top_holder': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'descendants'", 'null': 'True', 'to': u"orm['respondents.ParentInstitution']"}),
