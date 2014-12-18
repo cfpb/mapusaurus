@@ -17,13 +17,13 @@ def loan_originations(request):
     action_taken = action_taken_param.split(',')
     if lender_hierarchy == 'true':
         lenders = get_related_lenders(lender_id)
-        if len(lenders[0]) == 0:
+        if len(lenders) == 0:
             return HttpResponseRequest("No other lenders found in hierarchy. Invalid lender")
         if geoids and lenders and action_taken:
             query = HMDARecord.objects.filter(
                 # actions 7-8 are preapprovals to ignore
                 property_type__in=[1,2], owner_occupancy=1, lien_status=1,
-                lender__in=lenders[0], action_taken__in=action_taken
+                lender__in=lenders, action_taken__in=action_taken
             ).filter(geoid_id__in=geoids).values(
                 'geoid', 'geoid__census2010households__total'
             ).annotate(volume=Count('geoid'))
