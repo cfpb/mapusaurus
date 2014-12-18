@@ -43,10 +43,10 @@ class Migration(SchemaMigration):
 
         # Adding model 'Institution'
         db.create_table(u'respondents_institution', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('year', self.gf('django.db.models.fields.SmallIntegerField')()),
             ('respondent_id', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('agency', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['respondents.Agency'])),
+            ('institution_id', self.gf('django.db.models.fields.CharField')(max_length=11, primary_key=True)),
             ('tax_id', self.gf('django.db.models.fields.CharField')(max_length=10)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=30)),
             ('mailing_address', self.gf('django.db.models.fields.CharField')(max_length=40)),
@@ -59,19 +59,27 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'respondents', ['Institution'])
 
-        # Adding unique constraint on 'Institution', fields ['respondent_id', 'agency', 'year']
-        db.create_unique(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
+        # Adding unique constraint on 'Institution', fields ['institution_id', 'year']
+        db.create_unique(u'respondents_institution', ['institution_id', 'year'])
 
-        # Adding index on 'Institution', fields ['respondent_id', 'agency', 'year']
-        db.create_index(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
+        # Adding index on 'Institution', fields ['institution_id', 'year']
+        db.create_index(u'respondents_institution', ['institution_id', 'year'])
+
+        # Adding model 'LenderHierarchy'
+        db.create_table(u'respondents_lenderhierarchy', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('institution', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['respondents.Institution'])),
+            ('organization_id', self.gf('django.db.models.fields.IntegerField')()),
+        ))
+        db.send_create_signal(u'respondents', ['LenderHierarchy'])
 
 
     def backwards(self, orm):
-        # Removing index on 'Institution', fields ['respondent_id', 'agency', 'year']
-        db.delete_index(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
+        # Removing index on 'Institution', fields ['institution_id', 'year']
+        db.delete_index(u'respondents_institution', ['institution_id', 'year'])
 
-        # Removing unique constraint on 'Institution', fields ['respondent_id', 'agency', 'year']
-        db.delete_unique(u'respondents_institution', ['respondent_id', 'agency_id', 'year'])
+        # Removing unique constraint on 'Institution', fields ['institution_id', 'year']
+        db.delete_unique(u'respondents_institution', ['institution_id', 'year'])
 
         # Removing unique constraint on 'ZipcodeCityState', fields ['zip_code', 'city']
         db.delete_unique(u'respondents_zipcodecitystate', ['zip_code', 'city'])
@@ -88,6 +96,9 @@ class Migration(SchemaMigration):
         # Deleting model 'Institution'
         db.delete_table(u'respondents_institution')
 
+        # Deleting model 'LenderHierarchy'
+        db.delete_table(u'respondents_lenderhierarchy')
+
 
     models = {
         u'respondents.agency': {
@@ -97,20 +108,26 @@ class Migration(SchemaMigration):
             'hmda_id': ('django.db.models.fields.IntegerField', [], {'primary_key': 'True'})
         },
         u'respondents.institution': {
-            'Meta': {'unique_together': "(('respondent_id', 'agency', 'year'),)", 'object_name': 'Institution', 'index_together': "[['respondent_id', 'agency', 'year']]"},
+            'Meta': {'unique_together': "(('institution_id', 'year'),)", 'object_name': 'Institution', 'index_together': "[['institution_id', 'year']]"},
             'agency': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['respondents.Agency']"}),
             'assets': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
-            'respondent_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'institution_id': ('django.db.models.fields.CharField', [], {'max_length': '11', 'primary_key': 'True'}),
             'mailing_address': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'non_reporting_parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'children'", 'null': 'True', 'to': u"orm['respondents.ParentInstitution']"}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'children'", 'null': 'True', 'to': u"orm['respondents.Institution']"}),
+            'respondent_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'rssd_id': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True'}),
             'tax_id': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'top_holder': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'descendants'", 'null': 'True', 'to': u"orm['respondents.ParentInstitution']"}),
             'year': ('django.db.models.fields.SmallIntegerField', [], {}),
             'zip_code': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['respondents.ZipcodeCityState']"})
+        },
+        u'respondents.lenderhierarchy': {
+            'Meta': {'object_name': 'LenderHierarchy'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'institution': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['respondents.Institution']"}),
+            'organization_id': ('django.db.models.fields.IntegerField', [], {})
         },
         u'respondents.parentinstitution': {
             'Meta': {'object_name': 'ParentInstitution'},

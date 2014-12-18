@@ -62,6 +62,7 @@ class Institution(models.Model):
     year = models.SmallIntegerField()
     respondent_id = models.CharField(max_length=10)
     agency = models.ForeignKey('Agency')
+    institution_id = models.CharField(max_length=11, primary_key=True)
     tax_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     mailing_address = models.CharField(max_length=40)
@@ -90,27 +91,18 @@ class Institution(models.Model):
         null=True,
         help_text='The company at the top of the ownership chain.')
 
-    lender_id = models.CharField(max_length=11, default="")
-
-    def auto_fields(self):
-        self.lender_id = self.agency + self.respondent_id    
-
     def formatted_name(self):
         formatted = defaultfilters.title(self.name) + " ("
         formatted += str(self.agency_id) + self.respondent_id + ")"
         return formatted
 
     class Meta:
-        unique_together = ('respondent_id', 'agency', 'year')
-        index_together = [['respondent_id', 'agency', 'year']]
+        unique_together = ('institution_id', 'year')
+        index_together = [['institution_id', 'year']]
 
     def __unicode__(self):
         return self.name
 
 class LenderHierarchy(models.Model):
-    agency = models.ForeignKey('Agency')
-    respondent_id = models.CharField(max_length=10)
+    institution = models.ForeignKey('Institution', to_field='institution_id')
     organization_id = models.IntegerField()
-
-
-

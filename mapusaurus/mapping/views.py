@@ -6,7 +6,7 @@ from geo.models import Geo
 from hmda.models import LendingStats
 from hmda.management.commands.calculate_loan_stats import (calculate_median_loans)
 from respondents.models import Institution
-from respondents.lender_hierarchy_utils import get_related_lenders, get_related_respondents
+from respondents.lender_hierarchy_utils import get_related_lenders
 
 def map(request, template):
     """Display the map. If lender info is present, provide it to the
@@ -23,7 +23,6 @@ def map(request, template):
             context['lender'] = lender
     else:
         lender = None
-        lender_ids = None
         lender_hierarchy = None
     if metro:
         query = Geo.objects.filter(geo_type=Geo.METRO_TYPE,
@@ -33,14 +32,11 @@ def map(request, template):
             context['metro'] = metro
 
     if lender and metro: 
-        lender_ids = []
-        lender_ids.append(str(lender.agency_id) + lender.respondent_id)
-        context['download_url'] = make_download_url(lender_ids, metro)
-        lender_hierarchy = get_related_lenders(str(lender_ids[0]))
-        lender_hierarchy_respondents = get_related_respondents(str(lender_ids[0]))
-        names_dictionary = Institution.objects.filter(respondent_id__in=lender_hierarchy_respondents[0]).values('respondent_id', 'name', 'agency').order_by('-assets')
+        context['download_url'] = make_download_url(lender.institution_id, metro)
+        lender_hierarchy = get_related_lenders(lender.institution_id)
+        names_dictionary = Institution.objects.filter(institution_id__in=lender_hierarchy).values('respondent_id', 'name', 'agency').order_by('-assets')
         if (len(lender_hierarchy) > 0):
-            context['hierarchy_download_url'] = make_download_url(lender_hierarchy[0], metro)
+            context['hierarchy_download_url'] = make_download_url(lender_hierarchy, metro)
         if (len(names_dictionary) > 0):
             context['lender_hierarchy_names'] = names_dictionary
     context['median_loans'] = lookup_median(lender, metro) or 0
