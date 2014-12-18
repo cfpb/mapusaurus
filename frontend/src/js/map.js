@@ -18,7 +18,7 @@ if (!window.console) console = {log: function() {}};
         });
 
         // Check to see if we have any parameters for category-selector
-        if( typeof loadParams.category != 'undefined'){
+        if( typeof loadParams.category !== 'undefined'){
             $('#category-selector').val( loadParams.category.values );
             layerUpdate( loadParams.category.values );
         } else {
@@ -27,14 +27,14 @@ if (!window.console) console = {log: function() {}};
         }
 
         // Check to see if we have any parameters for action-taken
-        if( typeof loadParams.action != 'undefined'){
+        if( typeof loadParams.action !== 'undefined'){
             $('#action-taken-selector').val( loadParams.action.values );
         } else {
             addParam( 'action', 'all-apps-5' );
         }
 
-        if( typeof loadParams.lh != 'undefined'){
-            var status = (loadParams.lh.values == "true");
+        if( typeof loadParams.lh !== 'undefined'){
+            var status = (loadParams.lh.values === 'true');
             $('#superSelect').prop('checked', status );
             toggleSuper(status);
         } else {
@@ -125,7 +125,7 @@ if (!window.console) console = {log: function() {}};
                         backgroundColor: '#000', 
                         '-webkit-border-radius': '10px', 
                         '-moz-border-radius': '10px', 
-                        opacity: .5, 
+                        opacity: 0.5, 
                         color: '#fff' 
                     },
                     message: '<img src="/static/basestyle/img/loading_white.gif" height="75px"> <h6>Loading HMDA Data</h6>',
@@ -140,7 +140,6 @@ if (!window.console) console = {log: function() {}};
         
     }
 
-
     /* 
         ---- GET DATA SCRIPTS ----
     */    
@@ -150,7 +149,7 @@ if (!window.console) console = {log: function() {}};
     dataStore = {};
     dataStore.tracts = {};
     
-    function getTractsInBounds( bounds, callback ){
+    function getTractsInBounds( bounds ){
         //TODO: Modify parameters for this endpoint to take param hooks instead of forward slash
 
         $('#bubbles_loading').show();
@@ -168,13 +167,9 @@ if (!window.console) console = {log: function() {}};
             console.log( 'no data was available at' + endpoint + '. status: ' + status );
         });
 
-        if( typeof callback === 'function' && callback() ){
-            callback;
-        }
-
     }    
 
-    function getTractData( bounds, actionTakenVal, callback ){
+    function getTractData( bounds, actionTakenVal ){
         $('#bubbles_loading').show();
         var endpoint = '/api/all/',
             params = { year: 2013,
@@ -215,11 +210,8 @@ if (!window.console) console = {log: function() {}};
             success: console.log('get API All Data request successful')
         }).fail( function( status ){
             console.log( 'no data was available at' + endpoint + '. status: ' + status );
-        });;
+        });
 
-        if( typeof callback === 'function' && callback() ){
-            callback;
-        }
     }
 
     function createTractDataObj( callback ){
@@ -233,7 +225,7 @@ if (!window.console) console = {log: function() {}};
             dataStore.tracts[geoid] = feature.properties;
             _.extend( dataStore.tracts[geoid], rawData.minority[geoid] );
 
-            if( typeof rawData.loanVolume[geoid] != 'undefined'){
+            if( typeof rawData.loanVolume[geoid] !== 'undefined'){
                 _.extend( dataStore.tracts[geoid], rawData.loanVolume[geoid] );
             } else {
                 dataStore.tracts[geoid].volume = 0;
@@ -242,7 +234,7 @@ if (!window.console) console = {log: function() {}};
         });
 
         if( typeof callback === 'function' && callback() ){
-            callback;
+            callback();
         }
     }
 
@@ -268,20 +260,20 @@ if (!window.console) console = {log: function() {}};
         layers.Centroids.eachLayer( function(layer){
             
             // If layer has no LAR information, zero this out.
-            if( layer.volume == 0 ){
+            if( layer.volume === 0 ){
                 return false;
             }
 
-            if( layerType == 'minority' ){
-                var newStyle = {}
+            if( layerType === 'minority' ){
+                var newStyle = {};
                 _.extend(newStyle, baseStyle);
                 newStyle.fillColor = updateMinorityCircleFill(layer.geoid);
                 layer.setStyle( newStyle );
-            } else if( layerType =='seq'){
+            } else if( layerType === 'seq'){
                 layer.setStyle( seqBaseStyle );
             }
         });
-        console.log("color update complete.");
+        console.log('color update complete.');
     }
 
 
@@ -307,7 +299,7 @@ if (!window.console) console = {log: function() {}};
             hisp = (data['hispanic_perc']*100).toFixed(2);
             white = (data['non_hisp_white_only_perc']*100).toFixed(2);
             black = (data['non_hisp_black_only_perc']*100).toFixed(2);
-            asian = (data['non_hisp_asian_only_perc']*100).toFixed(2)
+            asian = (data['non_hisp_asian_only_perc']*100).toFixed(2);
             new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false })
                 .setContent('<div style="border-bottom: 1px solid gray"><b>Tract # '+ circle.geoid + '</b><br/>' +data['volume'] + ' <b>records<br />' + data['num_households'] + ' <b>households</b></div>' +
                     '<br/><b>Hispanic</b>: (' + hisp + '%)<br/><span class="spark-bullet" data-min="[' + [hisp, hisp, 100] +']"></span>' +
@@ -434,7 +426,7 @@ if (!window.console) console = {log: function() {}};
                 highB: 97
             }
         }
-    ]
+    ];
 
     function toBucket(percent) {
         var i,
@@ -446,7 +438,7 @@ if (!window.console) console = {log: function() {}};
             }
         } 
         return colorRanges[len - 1];  //  last color
-    };
+    }
 
     /* Given low and high colors and a percent, figure out the RGB of said
      * percent in that scale */
@@ -620,12 +612,12 @@ if (!window.console) console = {log: function() {}};
     // Simple function to return bounds consistently with our padding / fixed #
     function getBoundParams(){
         var bounds = map.getBounds(),
-        padding = .00;
+        padding = 0;
         return { neLat: (bounds._northEast.lat + padding).toFixed(6),
                 neLon: (bounds._northEast.lng + padding).toFixed(6),
                 swLat: (bounds._southWest.lat - padding).toFixed(6),
                 swLon: (bounds._southWest.lng - padding).toFixed(6)
-            }
+            };
     }
 
     function getUniques( arr ){
