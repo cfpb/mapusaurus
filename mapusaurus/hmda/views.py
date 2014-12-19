@@ -15,7 +15,6 @@ def loan_originations(request):
     lender_hierarchy = request.GET.get('lh')
     geoids = get_censustract_geoids(request)
     action_taken = action_taken_param.split(',')
-    import pdb; pdb.set_trace()
     if lender_hierarchy == 'true':
         lender = Institution.objects.get(institution_id=lender_id)
         lenders = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
