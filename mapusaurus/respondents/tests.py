@@ -13,34 +13,6 @@ from respondents.management.commands import load_reporter_panel
 from respondents.management.commands import load_transmittal
 from respondents.search_indexes import InstitutionIndex
 
-
-class LenderHierarchyUtilsTests(TestCase):
-    fixtures = ['agency']
-
-    def test_get_related_lenders(self):
-        testAgency = Agency.objects.get(pk=9)
-        zipcode = ZipcodeCityState.objects.create(
-            zip_code=12345, city='City', state='IL')
-        inst = Institution.objects.create(
-            year=1234, respondent_id='9879879870', agency=Agency.objects.get(pk=9),
-            institution_id='99879879870', tax_id='1111111111', name='Institution', mailing_address='mail',
-            zip_code=zipcode)
-        inst2 = Institution.objects.create(
-            year=1234, respondent_id='9879879872', agency=Agency.objects.get(pk=9),
-            institution_id='99879879872', tax_id='1111111111', name='Institution', mailing_address='mail',
-            zip_code=zipcode)
-        inst3 = Institution.objects.create(
-            year=1234, respondent_id='9879879873', agency=Agency.objects.get(pk=9),
-            institution_id='99879879873', tax_id='1111111111', name='Institution', mailing_address='mail',
-            zip_code=zipcode)
-        LenderHierarchy.objects.create(institution=inst, organization_id=9999)
-        LenderHierarchy.objects.create(institution=inst2, organization_id=9999)
-        LenderHierarchy.objects.create(institution=inst3, organization_id=1111)
-        lenders = lender_hierarchy_utils.get_related_lenders('99879879870')
-        self.assertEquals(len(lenders), 2)
-        Institution.objects.all().delete()
-        LenderHierarchy.objects.all().delete()
-
 class ZipcodeUtilsTests(TestCase):
     def test_createzipcode(self):
         ZipcodeCityState.objects.all().delete()
