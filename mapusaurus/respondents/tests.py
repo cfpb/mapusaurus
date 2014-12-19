@@ -7,7 +7,7 @@ from mock import Mock, patch
 
 from geo.models import Geo
 from hmda.models import HMDARecord
-from respondents import views, zipcode_utils, lender_hierarchy_utils
+from respondents import views, zipcode_utils
 from respondents.models import Agency, Institution, ZipcodeCityState, LenderHierarchy
 from respondents.management.commands import load_reporter_panel
 from respondents.management.commands import load_transmittal
