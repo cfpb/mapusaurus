@@ -48,6 +48,7 @@ def make_download_url(lender, metro):
     """Create a link to CFPB's HMDA explorer, either linking to all of this
     lender's records, or to just those relevant for an MSA. MSA's are broken
     into divisions in that tool, so make sure the query uses the proper ids"""
+    where = ""
     if lender:
         where = 'as_of_year=2013 AND property_type IN (1,2) AND lien_status=1 AND owner_occupancy=1 AND '
         count = 0 
@@ -71,12 +72,12 @@ def make_download_url(lender, metro):
         else:   # no divisions, so just use the MSA
             where += ' AND msamd="' + metro.geoid + '"'
 
-        query = urlencode({
-            '$where': where,
-            '$limit': 0
-        })
-        base_url = 'https://api.consumerfinance.gov/data/hmda/slice/'
-        return base_url + 'hmda_lar.csv?' + query
+    query = urlencode({
+        '$where': where,
+        '$limit': 0
+    })
+    base_url = 'https://api.consumerfinance.gov/data/hmda/slice/'
+    return base_url + 'hmda_lar.csv?' + query
 
 def lookup_median(lender, metro):
     """Look up median. If not present, calculate it."""
