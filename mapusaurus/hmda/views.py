@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from hmda.models import HMDARecord
 from geo.views import get_censustract_geoids 
 from rest_framework.renderers import JSONRenderer
-from respondents.lender_hierarchy_utils import get_related_lenders
+from respondents.models import LenderHierarchy, Institution
 
 def loan_originations(request):
     """Get loan originations for a given lender, county combination. This
@@ -15,8 +15,10 @@ def loan_originations(request):
     lender_hierarchy = request.GET.get('lh')
     geoids = get_censustract_geoids(request)
     action_taken = action_taken_param.split(',')
+    import pdb; pdb.set_trace()
     if lender_hierarchy == 'true':
-        lenders = get_related_lenders(lender_id)
+        lender = Institution.objects.get(institution_id=lender_id)
+        lenders = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
         if len(lenders) == 0:
             return HttpResponseRequest("No other lenders found in hierarchy. Invalid lender")
         if geoids and lenders and action_taken:
