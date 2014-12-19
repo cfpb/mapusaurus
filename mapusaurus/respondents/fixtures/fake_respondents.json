@@ -10,12 +10,11 @@
   },
   {
     "model": "respondents.institution",
-    "pk": 1234567,
     "fields": {
       "year": 1970,
       "agency" : 9,
       "respondent_id": "22-333",
-      "agency": 1,
+      "institution_id":"922-333",
       "tax_id": "taxtax",
       "name": "Some Bank",
       "mailing_address": "123 Avenue St.",

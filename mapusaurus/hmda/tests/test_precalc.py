@@ -12,7 +12,7 @@ class PrecalcTest(TestCase):
     fixtures = ['agency', 'fake_respondents']
 
     def setUp(self):
-        self.respondent = Institution.objects.get(pk=1234567)
+        self.respondent = Institution.objects.get(pk="922-333")
         tract_params = {
             'geo_type': Geo.TRACT_TYPE, 'minlat': 0.11, 'minlon': 0.22,
             'maxlat': 1.33, 'maxlon': 1.44, 'centlat': 45.4545,
