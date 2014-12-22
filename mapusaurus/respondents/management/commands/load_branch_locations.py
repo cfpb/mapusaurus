@@ -4,7 +4,6 @@ from respondents.models import Branch, Institution
 
 class Command(BaseCommand):
     args = "<filename>"
-    help = "Loads the data from Vahan's csv mapping."
 
     def handle(self, *args, **options):
         branch_location_filename = args[0]

@@ -5,7 +5,6 @@ from respondents.models import LenderHierarchy, Institution
 
 class Command(BaseCommand):
     args = "<filename>"
-    help = "Loads the data from Vahan's csv mapping."
 
     def handle(self, *args, **options):
         hierarchy_filename = args[0]
