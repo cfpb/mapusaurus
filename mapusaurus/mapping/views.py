@@ -30,7 +30,7 @@ def map(request, template):
 
     if lender and metro: 
         institution_id_list = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
-        institution_hierarchy = Institution.objects.filter(institution_id__in=institution_id_list)
+        institution_hierarchy = Institution.objects.filter(institution_id__in=institution_id_list).order_by('-assets')
         context['institution_hierarchy'] = institution_hierarchy 
         context['download_url'] = make_download_url(lender, metro)
         context['hierarchy_download_url'] = make_download_url(institution_hierarchy, metro)
