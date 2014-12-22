@@ -1,7 +1,7 @@
 from django.db import models
 from django.template import defaultfilters
 from localflavor.us.models import USStateField
-
+import json
 from respondents.managers import AgencyManager
 
 class ZipcodeCityState(models.Model):
@@ -106,3 +106,29 @@ class Institution(models.Model):
 class LenderHierarchy(models.Model):
     institution = models.ForeignKey('Institution', to_field='institution_id')
     organization_id = models.IntegerField()
+
+class Branch(models.Model):
+    year = models.SmallIntegerField()
+    institution = models.ForeignKey('Institution', to_field='institution_id')
+    name = models.CharField(max_length=50)
+    street = models.CharField(max_length=100)
+    city = models.CharField(max_length=25)
+    state = USStateField()
+    zipcode = models.IntegerField()
+    lat = models.FloatField(help_text='y')
+    lon = models.FloatField(help_text='x')
+
+    def branch_as_geojson(self):
+        """Convert this model into a geojson string"""
+        geojson = {'type': 'Feature',
+                   'properties': {
+                       'year': self.year,
+                       'institution_id': self.institution_id,
+                       'name': self.name,
+                       'street': self.street,
+                       'city': self.city,
+                       'state': self.state,
+                       'zipcode': self.zipcode,
+                       'lat': self.lat,
+                       'lon': self.lon}}
+        geojson = json.dumps(geojson)

@@ -73,6 +73,21 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'respondents', ['LenderHierarchy'])
 
+        # Adding model 'Branch'
+        db.create_table(u'respondents_branch', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('year', self.gf('django.db.models.fields.SmallIntegerField')()),
+            ('institution', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['respondents.Institution'])),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('street', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('city', self.gf('django.db.models.fields.CharField')(max_length=25)),
+            ('state', self.gf('localflavor.us.models.USStateField')(max_length=2)),
+            ('zipcode', self.gf('django.db.models.fields.IntegerField')()),
+            ('lat', self.gf('django.db.models.fields.FloatField')()),
+            ('lon', self.gf('django.db.models.fields.FloatField')()),
+        ))
+        db.send_create_signal(u'respondents', ['Branch'])
+
 
     def backwards(self, orm):
         # Removing index on 'Institution', fields ['institution_id', 'year']
@@ -99,6 +114,9 @@ class Migration(SchemaMigration):
         # Deleting model 'LenderHierarchy'
         db.delete_table(u'respondents_lenderhierarchy')
 
+        # Deleting model 'Branch'
+        db.delete_table(u'respondents_branch')
+
 
     models = {
         u'respondents.agency': {
@@ -106,6 +124,19 @@ class Migration(SchemaMigration):
             'acronym': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'full_name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'hmda_id': ('django.db.models.fields.IntegerField', [], {'primary_key': 'True'})
+        },
+        u'respondents.branch': {
+            'Meta': {'object_name': 'Branch'},
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'institution': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['respondents.Institution']"}),
+            'lat': ('django.db.models.fields.FloatField', [], {}),
+            'lon': ('django.db.models.fields.FloatField', [], {}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'state': ('localflavor.us.models.USStateField', [], {'max_length': '2'}),
+            'street': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'year': ('django.db.models.fields.SmallIntegerField', [], {}),
+            'zipcode': ('django.db.models.fields.IntegerField', [], {})
         },
         u'respondents.institution': {
             'Meta': {'unique_together': "(('institution_id', 'year'),)", 'object_name': 'Institution', 'index_together': "[['institution_id', 'year']]"},

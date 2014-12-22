@@ -7,4 +7,5 @@ urlpatterns = patterns(
     url(r'^hmda/', 'api.views.hmda', name='hmda'),
     url(r'^census/', 'api.views.census', name='census'),
     url(r'^tractCentroids/', 'api.views.tractCentroids', name='tractCentroids'),
+    url(r'^branchLocations/', 'api.views.branch_locations', name='branchLocations'),
 )
