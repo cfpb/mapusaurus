@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from geo.views import tract_centroids_as_json 
 from censusdata.views import race_summary_as_json
 from hmda.views import loan_originations_as_json
-
+from respondents.views import branch_locations_as_json
 
 def all(request):
     """This endpoint allows multiple statistical queries to be made in a
@@ -28,6 +28,8 @@ def census(request):
     return HttpResponse(json.dumps(race_summary_as_json(request)))
 
 def tractCentroids(request):
-    """This endpoints returns census tract centroids used to determine circle position on map"""
+    """This endpoint returns census tract centroids used to determine circle position on map"""
     return HttpResponse(json.dumps(tract_centroids_as_json(request)), content_type='application/json')
 
+def branch_locations(request):
+    return HttpResponse(json.dumps(branch_locations_as_json(request)), content_type='application/json')

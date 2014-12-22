@@ -162,3 +162,35 @@ def search_results(request):
          'next_page': next_page, 'prev_page': prev_page,
          'total_pages': total_pages, 'current_sort': current_sort},
         template_name='respondents/search_results.html')
+
+def branch_locations_as_json(request):
+    return json.loads(branch_locations(request))
+
+def branch_locations(request):
+    """This endpoint returns geocoded branch locations"""
+    lender = request.GET.get('lender')
+    northEastLat = request.GET.get('neLat')
+    northEastLon = request.GET.get('neLon')
+    southWestLat = request.GET.get('swLat')
+    southWestLon = request.GET.get('swLon')
+    try:
+        maxlat, minlon, minlat, maxlon = float(northEastLat), float(southWestLon), float(southWestLat), float(northEastLon)
+    except ValueError:
+        return HttpResponseBadRequest(
+                "Bad or missing values: northEastLat, northEastLon, southWestLat, southWestLon")
+    # check that any of the four points or center are inside the boundary
+    query = Q(minlat__gte=minlat, minlat__lte=maxlat,
+              minlon__gte=minlon, minlon__lte=maxlon)
+    query = query | Q(minlat__gte=minlat, minlat__lte=maxlat,
+                      maxlon__gte=minlon, maxlon__lte=maxlon)
+    query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
+                      minlon__gte=minlon, minlon__lte=maxlon)
+    query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
+                      maxlon__gte=minlon, maxlon__lte=maxlon)
+    query = query | Q(lat__gte=minlat, lat__lte=maxlat,
+                      lon__gte=minlon, lon__lte=maxlon)
+    branches = Branch.objects.filter(insitution_id=lender).filter(query)
+    response = '{"crs": {"type": "link", "properties": {"href": '
+    response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
+    response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
+    return response % ', '.join(branch.branch_as_geojson() for branch in branches)
