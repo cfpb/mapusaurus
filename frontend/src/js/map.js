@@ -407,8 +407,8 @@ if (!window.console) console = {log: function() {}};
     }
 
     function drawMarker(data){
-        var myIcon = L.icon({ iconUrl: '/static/basestyle/img/branch-marker_off.png', iconSize: [10,10] }),
-            myIconHover = L.icon({ iconUrl: '/static/basestyle/img/branch-marker_on.png', iconSize: [10,10] });
+        var myIcon = L.icon({ iconUrl: '/static/basestyle/img/branch-marker_off.png', iconSize: [8,8] }),
+            myIconHover = L.icon({ iconUrl: '/static/basestyle/img/branch-marker_on.png', iconSize: [8,8] });
 
         var marker = L.marker([data.lat, data.lon], {icon: myIcon });
         
