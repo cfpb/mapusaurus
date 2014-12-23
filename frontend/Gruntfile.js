@@ -141,32 +141,11 @@ module.exports = function(grunt) {
             dest: 'frontend/dist/basestyle/fonts/',
             filter: 'isFile'
           },
-          /* Source images that where manually downloaded to the src/img folder */
+          /* Source images that were manually downloaded to the src/img folder */
           {
             expand: true,
             flatten: true,
-            src: ['frontend/src/img/logo_210.png'],
-            dest: 'frontend/dist/basestyle/img/',
-            filter: 'isFile'
-          },
-          {
-            expand: true,
-            flatten: true,
-            src: ['frontend/src/img/font-awesome/*'],
-            dest: 'frontend/dist/basestyle/img/font-awesome/',
-            filter: 'isFile'
-          },
-          {
-            expand: true,
-            flatten: true,
-            src: ['frontend/src/img/choropleth-key.svg'],
-            dest: 'frontend/dist/basestyle/img/',
-            filter: 'isFile'
-          },
-          {
-            expand: true,
-            flatten: true,
-            src: ['frontend/src/img/icon_spinner_2x.gif'],
+            src: ['frontend/src/img/*'],
             dest: 'frontend/dist/basestyle/img/',
             filter: 'isFile'
           }
