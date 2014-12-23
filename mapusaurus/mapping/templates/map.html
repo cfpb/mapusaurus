@@ -81,9 +81,6 @@
         map.options.minZoom = 9;
         map.options.inertia = false;
 
-        // When the user has stopped moving the map, run init, with a slight delay
-        map.on('moveend', _.debounce(init, 650) );
-
         // Initialize all of our layers
         var layers = {
             MBBase: L.mapbox.tileLayer('cfpb.k55b27gd'),
