@@ -9,13 +9,13 @@ class GeoInline(admin.TabularInline):
     model = Geo
 
 class HMDARecordAdmin(admin.ModelAdmin):
-    list_display = ('lender', 'as_of_year', 'action_taken', 'statefp', 'countyfp')
+    list_display = ('institution', 'as_of_year', 'action_taken', 'statefp', 'countyfp')
     #inlines = [
     #    GeoInline,
     #]
 
 class LendingStatsAdmin(admin.ModelAdmin):
-    list_display = ('lender', 'median_per_tract')
+    list_display = ('institution', 'lar_median')
 
 
 admin.site.register(HMDARecord, HMDARecordAdmin)

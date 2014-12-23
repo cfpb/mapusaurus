@@ -28,10 +28,16 @@ def map(request, template):
         if metro:
             context['metro'] = metro
 
-    if lender and metro: 
-        institution_id_list = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
-        institution_hierarchy = Institution.objects.filter(institution_id__in=institution_id_list).order_by('-assets')
+    if lender and metro:
+        hierarchy_list = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
+        institution_hierarchy = Institution.objects.filter(institution_id__in=hierarchy_list).order_by('-assets')
+        percent_50 = lender.lendingstats_set.get().lar_count * .50
+        percent_200 = lender.lendingstats_set.get().lar_count * 2.00
+        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=lender.lendingstats_set.get().fha_bucket, lar_count__range=(percent_50, percent_200)).values_list('institution_id', flat=True)
+        institution_peers = Institution.objects.filter(institution_id__in=peer_list).order_by('assets')
+       
         context['institution_hierarchy'] = institution_hierarchy 
+        context['institution_peers'] = institution_peers 
         context['download_url'] = make_download_url(lender, metro)
         context['hierarchy_download_url'] = make_download_url(institution_hierarchy, metro)
     context['median_loans'] = lookup_median(lender, metro) or 0
@@ -82,10 +88,10 @@ def make_download_url(lender, metro):
 def lookup_median(lender, metro):
     """Look up median. If not present, calculate it."""
     if lender:
-        lender_str = str(lender.agency_id) + lender.respondent_id
+        lender_str = lender.institution_id
         if metro:
             stat = LendingStats.objects.filter(
-                lender=lender_str, geoid=metro.geoid).first()
+                institution_id=lender_str, geo_id=metro.geoid).first()
             if stat:
-                return stat.median_per_tract
+                return stat.lar_median
         return calculate_median_loans(lender_str, metro)
