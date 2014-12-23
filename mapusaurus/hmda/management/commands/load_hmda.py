@@ -136,24 +136,24 @@ class Command(BaseCommand):
 
                     censustract = row[11] + row[12] + row[13].replace('.', '')
 
-                    record.geoid_id = errors.in_2010.get(censustract, censustract)
+                    record.geo_id = errors.in_2010.get(censustract, censustract)
 
-                    record.auto_fields()
+                    record.institution_id = row[2]+row[1]                    
 
                     self.total_lines_read = self.total_lines_read + 1
 
                     if filter_hmda:
-                        if (row[11] not in known_hmda and row[11] in geo_states and 'NA' not in record.geoid_id):
+                        if (row[11] not in known_hmda and row[11] in geo_states and 'NA' not in record.geo_id):
                             inserted_counter  +=1
                             yield record
                         else:
                             skipped_counter += 1
                     else:
-                        if row[11] in geo_states and 'NA' not in record.geoid_id:
+                        if row[11] in geo_states and 'NA' not in record.geo_id:
                             inserted_counter  =inserted_counter + 1
                             yield record
                         else:
-                            if 'NA' in record.geoid_id:
+                            if 'NA' in record.geo_id:
                                 self.na_skipped = self.na_skipped + 1
                             else:
                                 self.other_skipped = self.other_skipped +1
