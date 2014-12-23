@@ -149,8 +149,8 @@ if (!window.console) console = {log: function() {}};
     dataStore = {};
     dataStore.tracts = {};
     
+    // Get the census tracts that are in bounds for the current map view. Return a promise.
     function getTractsInBounds( bounds ){
-        //TODO: Modify parameters for this endpoint to take param hooks instead of forward slash
 
         $('#bubbles_loading').show();
 
@@ -169,6 +169,8 @@ if (!window.console) console = {log: function() {}};
 
     }    
 
+    // Get minority and LAR data for census Tracts within the bounding box, for a specific criteria (actionTaken)
+    // Return a promise.
     function getTractData( bounds, actionTakenVal ){
         $('#bubbles_loading').show();
         var endpoint = '/api/all/',
@@ -214,6 +216,7 @@ if (!window.console) console = {log: function() {}};
 
     }
 
+    // Creates the dataStore.tracts object global for use by application (depends upon rawGeo / rawData)
     function createTractDataObj( callback ){
         dataStore.tracts = {};
 
@@ -238,7 +241,34 @@ if (!window.console) console = {log: function() {}};
         }
     }
 
-  
+    // Gets Branch Locations in bounds when a user selects "Branch Locations"
+    // Returns a promise
+    function getBranchesInBounds( bounds ){
+
+        // Create the appropriate URL path to return values
+        var endpoint = '/api/branchLocations/', 
+            params = { neLat: bounds.neLat,
+                       neLon: bounds.neLon,
+                       swLat: bounds.swLat,
+                       swLon: bounds.swLon };
+
+        // Add the lender param, if it exists, otherwise error out.
+        if ( urlParam('lender') ){
+            params['lender'] = urlParam('lender');
+        } else {
+            console.log(' Lender parameter is required.');
+            return false;
+        }
+
+        return $.ajax({
+            url: endpoint, data: params, traditional: true,
+            success: console.log('Branch Location Get successful')
+        }).fail( function( status ){
+            console.log( 'no data was available at' + endpoint + '. status: ' + status );
+        });
+
+    } 
+
     /*
         END GET DATA SECTION
     */
