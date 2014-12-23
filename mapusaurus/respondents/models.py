@@ -132,3 +132,4 @@ class Branch(models.Model):
                        'lat': self.lat,
                        'lon': self.lon}}
         geojson = json.dumps(geojson)
+        return geojson
