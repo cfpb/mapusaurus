@@ -115,7 +115,8 @@
             'Water': layers.Water,
             'Boundaries': layers.Boundaries,
             'MSA Labels': layers.MSALabels,
-            'County Labels': layers.CountyLabels
+            'County Labels': layers.CountyLabels,
+            'LAR Circles': layers.Centroids
         };
 
         // Setup the minimap
@@ -135,6 +136,8 @@
 
         // Create a layer for our circles
         layers.Centroids.addTo(map);
+        // Create a layer for Branch Locations
+        layers.Branches.addTo(map);
 
         // Add our +/- and layer controls to the top left
         L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
