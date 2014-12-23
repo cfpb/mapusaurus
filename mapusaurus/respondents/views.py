@@ -192,7 +192,6 @@ def branch_locations(request):
     query = Q(lat__gte=minlat, lat__lte=maxlat,
                       lon__gte=minlon, lon__lte=maxlon)
     branches = Branch.objects.filter(institution_id=lender).filter(query)
-    import pdb; pdb.set_trace()
     response = '{"crs": {"type": "link", "properties": {"href": '
     response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
     response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
