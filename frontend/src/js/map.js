@@ -48,6 +48,20 @@ if (!window.console) console = {log: function() {}};
             init();
         });
 
+        if( typeof loadParams.branches !== 'undefined'){
+            var status = (loadParams.branches.values === 'true');
+            $('#branchSelect').prop('checked', status );
+            toggleBranches(status);
+        } else {
+            addParam('branches', false );
+        }
+
+        $('#branchSelect').change( function(){
+            var el = $('#branchSelect');
+            var status = el.prop('checked');
+            toggleBranches(status);            
+        });
+
         // When the user changes the action taken data selector, re-initialize
         $('#action-taken-selector').on('change', function(){
             addParam( 'action', $('#action-taken-selector option:selected').val() );
@@ -95,6 +109,7 @@ if (!window.console) console = {log: function() {}};
         $('#map').css('height', mapHeight);
     }
 
+    // Helper function that takes care of all the DOM interactions when "Lender Hierarchy" is checked
     function toggleSuper( status ){
         var url = $('#download-data').data('super-download'),
             origUrl = $('#download-data').data('download');
@@ -112,6 +127,22 @@ if (!window.console) console = {log: function() {}};
         $('#superSelect').prop('checked', status );
 
     }
+
+    // Helper function that takes care of all the DOM interactions when "Branches" is checked
+    function toggleBranches( status ){
+
+        if( !status ){
+            layers.Branches.clearLayers();
+            $('#lender-branches').removeClass('green-highlight');
+        } else {
+            drawBranches();
+            $('#lender-branches').addClass('green-highlight');
+        }
+
+        addParam('branches', status);
+        $('#branchSelect').prop('checked', status );
+
+    }    
 
     function blockStuff(){
         if( isUIBlocked === true ){
@@ -149,8 +180,8 @@ if (!window.console) console = {log: function() {}};
     dataStore = {};
     dataStore.tracts = {};
     
+    // Get the census tracts that are in bounds for the current map view. Return a promise.
     function getTractsInBounds( bounds ){
-        //TODO: Modify parameters for this endpoint to take param hooks instead of forward slash
 
         $('#bubbles_loading').show();
 
@@ -169,6 +200,8 @@ if (!window.console) console = {log: function() {}};
 
     }    
 
+    // Get minority and LAR data for census Tracts within the bounding box, for a specific criteria (actionTaken)
+    // Return a promise.
     function getTractData( bounds, actionTakenVal ){
         $('#bubbles_loading').show();
         var endpoint = '/api/all/',
@@ -214,6 +247,7 @@ if (!window.console) console = {log: function() {}};
 
     }
 
+    // Creates the dataStore.tracts object global for use by application (depends upon rawGeo / rawData)
     function createTractDataObj( callback ){
         dataStore.tracts = {};
 
@@ -238,13 +272,48 @@ if (!window.console) console = {log: function() {}};
         }
     }
 
-  
+    // Gets Branch Locations in bounds when a user selects "Branch Locations"
+    // Returns a promise
+    function getBranchesInBounds( bounds ){
+
+        // Create the appropriate URL path to return values
+        var endpoint = '/api/branchLocations/', 
+            params = { neLat: bounds.neLat,
+                       neLon: bounds.neLon,
+                       swLat: bounds.swLat,
+                       swLon: bounds.swLon };
+
+        // Add the lender param, if it exists, otherwise error out.
+        if ( urlParam('lender') ){
+            params['lender'] = urlParam('lender');
+        } else {
+            console.log(' Lender parameter is required.');
+            return false;
+        }
+
+        return $.ajax({
+            url: endpoint, data: params, traditional: true,
+            success: console.log('Branch Location Get successful')
+        }).fail( function( status ){
+            console.log( 'no data was available at' + endpoint + '. status: ' + status );
+        });
+
+    } 
+
+    function drawBranches(){
+        $.when( getBranchesInBounds( getBoundParams() ) ).then( function(branches){
+            $.each( branches.features, function( i, val){
+                drawMarker(val.properties);
+            });
+        });
+    }
+
     /*
         END GET DATA SECTION
     */
 
     /* 
-        ---- DRAW CIRCLES ----
+        ---- DRAW CIRCLES AND MARKERS ----
     */
 
     function redrawCircles( geoData, layerType ){
@@ -327,8 +396,30 @@ if (!window.console) console = {log: function() {}};
 
     }
 
+    function drawMarker(data){
+        var myIcon = L.icon({ iconUrl: '/static/basestyle/img/branch-marker_off.png', iconSize: [10,10] }),
+            myIconHover = L.icon({ iconUrl: '/static/basestyle/img/branch-marker_on.png', iconSize: [10,10] });
+
+        var marker = L.marker([data.lat, data.lon], {icon: myIcon });
+        
+        marker.on('mouseover mousemove', function(e){
+            this.setIcon(myIconHover);
+            new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false })
+                .setContent('<div class="branch-marker">' + data.name + '<br/>' + data.city);
+                .setLatLng(e.latlng)
+                .openOn(map);            
+        });
+
+        marker.on('mouseout mousemove', function(e){
+            this.setIcon(myIcon);
+
+        });
+
+        layers.Branches.addLayer(marker);
+    }
+
     /*
-        END DRAW CIRCLES SECTION
+        END DRAW CIRCLES AND MARKERS SECTION
     */
 
     /*
