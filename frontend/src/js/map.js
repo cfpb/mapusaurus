@@ -68,6 +68,16 @@ if (!window.console) console = {log: function() {}};
             init();
         });
 
+        // When the user has stopped moving the map, check for new branches,
+        // and run init(), with a slight delay to ensure many moves in a row do not crowd the queue
+        map.on('moveend', function(e){
+            if( $('#branchSelect').prop('checked') ){
+                toggleBranches(true);
+            }
+        });
+
+        map.on('moveend', _.debounce(init, 500) );
+
         //Let the application do its thing 
         init();
         
@@ -405,7 +415,7 @@ if (!window.console) console = {log: function() {}};
         marker.on('mouseover mousemove', function(e){
             this.setIcon(myIconHover);
             new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false })
-                .setContent('<div class="branch-marker">' + data.name + '<br/>' + data.city);
+                .setContent('<div class="branch-marker">' + data.name + '<br/>' + data.city)
                 .setLatLng(e.latlng)
                 .openOn(map);            
         });
