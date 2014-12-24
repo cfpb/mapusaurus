@@ -5713,6 +5713,26 @@ select b {
     behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
   }
 }
+.css-chart-inner {
+  height: 6px;
+  background-color: #919395;
+  margin: 0;
+  padding: 0;
+}
+.css-chart {
+  width: 120px;
+  border: 1px solid #babbbd;
+}
+.leaflet-rrose-content {
+  margin-top: 8px;
+  margin-right: 10px;
+}
+.bubble-header {
+  border-bottom: 1px solid #2cb34a;
+}
+.bubble-label {
+  margin-top: 3px;
+}
 .map-aside {
   background-color: #f8f8f8;
 }
