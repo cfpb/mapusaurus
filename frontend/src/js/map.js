@@ -398,7 +398,7 @@ if (!window.console) console = {log: function() {}};
         });
                     
         circle.on('mouseout', function(){ 
-            //map.closePopup();
+            map.closePopup();
         });
 
         layers.Centroids.addLayer(circle);
