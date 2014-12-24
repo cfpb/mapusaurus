@@ -380,28 +380,27 @@ if (!window.console) console = {log: function() {}};
             black = (data['non_hisp_black_only_perc']*100).toFixed(2);
             asian = (data['non_hisp_asian_only_perc']*100).toFixed(2);
             new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false })
-                .setContent('<div style="border-bottom: 1px solid gray"><b>Tract # '+ circle.geoid + '</b><br/>' +data['volume'] + ' <b>records<br />' + data['num_households'] + ' <b>households</b></div>' +
-                    '<br/><b>Hispanic</b>: (' + hisp + '%)<br/><span class="spark-bullet" data-min="[' + [hisp, hisp, 100] +']"></span>' +
-                    '<br/><b>Black</b>: (' + black + '%)<br/><span class="spark-bullet" data-min="[' + [black, black, 100] +']"></span>' + 
-                    '<br/><b>Asian</b>: (' + asian + '%)<br/><span class="spark-bullet" data-min="[' + [asian, asian, 100] +']"></span>' + 
-                    '<br/><b>White</b>: (' + white + '%)<br/><span class="spark-bullet" data-min="[' + [white, white, 100] +']"></span>' )
+                .setContent('<div class="bubble-header"><b>Tract '+ circle.geoid + '<br/>' +data['volume'] + '</b> LAR | <b>' + data['num_households'] + '</b> HHs</div>' +
+                    '<div class="bubble-label"><b>Hispanic</b>: (' + hisp + '%)</div><div class="css-chart"><div class="css-chart-inner" data-min=' + hisp +'></div></div>' +
+                    '<div class="bubble-label"><b>Black</b>: (' + black + '%)</div><div class="css-chart"><div class="css-chart-inner" data-min=' + black +'></div></div>' + 
+                    '<div class="bubble-label"><b>Asian</b>: (' + asian + '%)</div><div class="css-chart"><div class="css-chart-inner" data-min=' + asian +'></div></div>' + 
+                    '<div class="bubble-label"><b>White</b>: (' + white + '%)</div><div class="css-chart"><div class="css-chart-inner" data-min=' + white +'></div></div>' )
                 .setLatLng(e.latlng)
                 .openOn(map);
-                $('.spark-bullet').each( function(index){
-                    var sparkData = $( this ).data('min');
-                    console.log('SparkData');
-                    $( this ).sparkline( sparkData , {
-                        type: 'bullet',
-                        height: '10px',
-                        targetColor: '#000',
-                        performanceColor: '#000',
-                        rangeColors: ['#d3dafe','#a8b6ff','#7f94ff ']});
-                    });
-                });
+            
+            $('.css-chart-inner').each( function(index){
+                var self = $( this ),
+                    width = ( self.data('min') / 100 )*120,
+                    widthStr = width.toString() + 'px';
+                self.css('width', widthStr);
+                self.css('background-color', '#000');
+            });
+        });
                     
         circle.on('mouseout', function(){ 
             map.closePopup();
         });
+
         layers.Centroids.addLayer(circle);
 
     }
@@ -420,8 +419,9 @@ if (!window.console) console = {log: function() {}};
                 .openOn(map);            
         });
 
-        marker.on('mouseout mousemove', function(e){
+        marker.on('mouseout', function(e){
             this.setIcon(myIcon);
+            map.closePopup();
 
         });
 
