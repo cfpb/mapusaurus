@@ -28,7 +28,7 @@ class Command(BaseCommand):
                     bucket = 1 
                 elif fha_percentage > .10 and fha_percentage <= .3:
                     bucket = 2 
-                elif fha_percentage > .3 and fha_percentage t s<= .5:
+                elif fha_percentage > .3 and fha_percentage <= .5:
                     bucket = 3
                 elif fha_percentage > .5 and fha_percentage <= .7:
                     bucket = 4
