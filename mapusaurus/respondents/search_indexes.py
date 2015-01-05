@@ -21,9 +21,8 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
         an "extra" annotation"""
         subquery_tail = """
             FROM hmda_hmdarecord
-            WHERE hmda_hmdarecord.lender
-                    = CAST(respondents_institution.agency_id AS VARCHAR(1))
-                      || respondents_institution.respondent_id"""
+            WHERE hmda_hmdarecord.institution_id
+                    = respondents_institution.institution_id"""
         return self.get_model().objects.extra(
             select={"num_loans": "SELECT COUNT(*) " + subquery_tail},
             where=["SELECT COUNT(*) > 0 " + subquery_tail])
@@ -37,4 +36,4 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
         return str(institution.respondent_id)
 
     def prepare_lender_id(self, institution):
-        return str(institution.agency_id) + institution.respondent_id
+        return str(institution.institution_id)

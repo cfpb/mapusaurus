@@ -3,9 +3,9 @@ from mock import Mock
 
 from geo.models import Geo
 from hmda.management.commands.calculate_loan_stats import (
-     calculate_median_loans, Command)
+     calculate_median_loans, calculate_lar_count, calculate_fha_count, Command)
 from hmda.models import HMDARecord, LendingStats
-from respondents.models import Institution
+from respondents.models import Institution, Agency, ZipcodeCityState
 
 
 class PrecalcTest(TestCase):
@@ -72,10 +72,16 @@ class PrecalcTest(TestCase):
                 geo=self.non_city_tract2, institution=self.respondent, **hmda_params))
 
         hmda_params['respondent_id'] = 'other'
+        self.zipcode = ZipcodeCityState.objects.create(
+            zip_code=12345, city='City', state='IL')
+        self.inst1 = Institution.objects.create(
+            year=1234, respondent_id='9876543210', agency=Agency.objects.get(pk=9),
+            institution_id='99876543210', tax_id='1111111111', name='Institution', mailing_address='mail', 
+            zip_code=self.zipcode)
         # these should not affect the results, since they are another lender
         for i in range(3):
             self.hmdas.append(HMDARecord.objects.create(
-                geo=self.city_tract2, institution=self.respondent, **hmda_params))
+                geo=self.city_tract2, institution=self.inst1, **hmda_params))
 
     def tearDown(self):
         for hmda in self.hmdas:
@@ -88,6 +94,10 @@ class PrecalcTest(TestCase):
         self.non_city_tract2.delete()
         self.metro.delete()
 
+    def test_calculate_lar_count(self):
+        lender_id = self.respondent.institution_id
+        self.assertEqual(12, calculate_lar_count(lender_id, self.metro))
+    
     def test_calculate_median_loans(self):
         lender_id = self.respondent.institution_id
         # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4;             avg: 4, med: 3
