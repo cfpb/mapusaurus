@@ -31,7 +31,6 @@ def map(request, template):
     if lender and metro:
         hierarchy_list = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
         institution_hierarchy = Institution.objects.filter(institution_id__in=hierarchy_list).order_by('-assets')
-        import pdb; pdb.set_trace() 
         context['institution_hierarchy'] = institution_hierarchy 
         context['institution_peers'] = get_peer_list(lender, metro) 
         context['download_url'] = make_download_url(lender, metro)
