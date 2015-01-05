@@ -8,7 +8,7 @@ from hmda.models import HMDARecord
 
 
 class ViewsTest(TestCase):
-    fixtures = ['dummy_tracts']
+    fixtures = ['fake_respondents', 'dummy_tracts']
 
     def setUp(self):
         stats = Census2010Households(
@@ -23,10 +23,12 @@ class ViewsTest(TestCase):
             None, 200, 160, 100, 60, 40, 20, 40, 30, 10)
         stats.geoid_id = '1222233300'
         stats.save()
-
-        def mkrecord(action_taken, agency_code, countyfp, geoid):
+        
+   
+        def mkrecord(action_taken, countyfp, geoid):
+            respondent = Institution.objects.get(institution_id="922-333")
             record = HMDARecord(
-                as_of_year=2014, respondent_id='1111111111', agency_code=agency_code,
+                as_of_year=2014, respondent_id=respondent.respondent_id, agency_code=respondent.agency_id,
                 loan_type=1, property_type=1, loan_purpose=1, owner_occupancy=1,
                 loan_amount_000s=222, preapproval='1', action_taken=action_taken,
                 msamd='01234', statefp='11', countyfp=countyfp,
@@ -39,15 +41,16 @@ class ViewsTest(TestCase):
                 number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
                 application_date_indicator=1)
         
-            record.geoid_id = geoid
+            record.geo_geoid = geoid
+            record.institution_id = respondent.institution_id
             record.save()
 
-        mkrecord(1, '1', '222', '1122233300')
-        mkrecord(1, '1', '222', '1122233300')
-        mkrecord(1, '1', '222', '1122233400')
-        mkrecord(8, '1', '222', '1122233300')
-        mkrecord(1, '2', '222', '1122233300')
-        mkrecord(1, '1', '223', '1122333300')
+        mkrecord(1, '222', '1122233300')
+        mkrecord(1, '222', '1122233300')
+        mkrecord(1, '222', '1122233400')
+        mkrecord(8, '222', '1122233300')
+        mkrecord(1, '222', '1122233300')
+        mkrecord(1, '223', '1122333300')
 
     def tearDown(self):
         Census2010Households.objects.all().delete()

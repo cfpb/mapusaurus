@@ -82,7 +82,7 @@ class ViewTest(TestCase):
     @patch('mapping.views.LendingStats')
     @patch('mapping.views.calculate_median_loans')
     def test_lookup_median(self, calc, LendingStats):
-        lender_str = str(self.respondent.agency_id) + self.respondent.respondent_id
+        lender_str = self.respondent.institution_id
         # No lender
         self.assertEqual(None, lookup_median(None, None))
         # All of the US
@@ -90,7 +90,7 @@ class ViewTest(TestCase):
         self.assertEqual(calc.call_args[0], (lender_str, None))
         # Entry in the db
         mock_obj = Mock()
-        mock_obj.median_per_tract = 9898
+        mock_obj.lar_median = 9898
         LendingStats.objects.filter.return_value.first.return_value = mock_obj
         self.assertEqual(9898, lookup_median(self.respondent, self.metro))
         # No entry in db

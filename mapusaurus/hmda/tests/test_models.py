@@ -4,11 +4,11 @@ from hmda.models import HMDARecord
 
 
 class HMDARecordTest(TestCase):
-    fixtures = ['many_tracts']
+    fixtures = ['fake_respondents', 'agency', 'many_tracts']
 
     def test_auto_fields(self):
         record = HMDARecord(
-            as_of_year=2014, respondent_id='0123456789', agency_code='3',
+            as_of_year=2014, respondent_id='22-333', agency_code='9',
             loan_type=1, property_type=1, loan_purpose=1, owner_occupancy=1,
             loan_amount_000s=55, preapproval='1', action_taken=1,
             msamd='01234', statefp='11', countyfp='222',
@@ -20,13 +20,14 @@ class HMDARecordTest(TestCase):
             ffieic_median_family_income='1000', tract_to_msamd_income='1000',
             number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
             application_date_indicator=1)
-        record.geoid_id = '11222333000'
+        record.geo_id = '11222333000'
+        record.institution_id='922-333'
         record.save()
-        self.assertEqual(record.lender, '30123456789')
+        self.assertEqual(record.institution_id, '922-333')
         record.delete()
 
         record = HMDARecord(
-            as_of_year=2014, respondent_id='01-345-789', agency_code='2',
+            as_of_year=2014, respondent_id='22-333', agency_code='9',
             loan_type=1, property_type=1, loan_purpose=1, owner_occupancy=1,
             loan_amount_000s=55, preapproval='1', action_taken=1,
             msamd='01234', statefp='11', countyfp='222',
@@ -38,5 +39,6 @@ class HMDARecordTest(TestCase):
             ffieic_median_family_income='1000', tract_to_msamd_income='1000',
             number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
             application_date_indicator=1)
-        record.auto_fields()
-        self.assertEqual(record.lender, '201-345-789')
+        record.geo_id='11222333000'
+        record.institution_id='922-333'
+        self.assertEqual(record.institution_id, '922-333')

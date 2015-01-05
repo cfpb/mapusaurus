@@ -299,7 +299,7 @@ class InstitutionIndexTests(TestCase):
             sequence_number='1', population='1', minority_population='1',
             ffieic_median_family_income='1000', tract_to_msamd_income='1000',
             number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
-            application_date_indicator=1, lender='9876543210', geoid=Geo.objects.all()[0])
+            application_date_indicator=1, institution=self.inst1, geo=Geo.objects.all()[0])
     def tearDown(self):
         self.hmda.delete()
         self.inst2.delete()

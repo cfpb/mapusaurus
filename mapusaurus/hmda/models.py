@@ -1,4 +1,5 @@
 from django.db import models
+from respondents.models import Institution
 
 AGENCY_CHOICES = ( 
     (1, 'Office of the Comptroller of the Currency (OCC)'),
@@ -18,7 +19,8 @@ EDIT_STATUS_CHOICES = (
 
 LOAN_TYPE_CHOICES = ( 
     (1, 'Conventional (any loan other than FHA, VA, FSA, or RHS loans)'),
-    (2, 'FHA-insured (Federal Housing Administration)  3, VA-guaranteed (Veterans Administration)'),
+    (2, 'FHA-insured (Federal Housing Administration)'),
+    (3, 'VA-guaranteed (Veterans Administration)'),
     (4, 'FSA/RHS (Farm Service Agency or Rural Housing Service)'),
 )
 
@@ -177,35 +179,29 @@ class HMDARecord(models.Model):
     number_of_owner_occupied_units = models.CharField(max_length=8, help_text="The number of dwellings in the tract that are lived in by the owner.")
     number_of_1_to_4_family_units = models.CharField(max_length=8, help_text="The number of dwellings in the tract that are built to house fewer than 5 families.")
     application_date_indicator = models.PositiveIntegerField(choices=APPLICATION_DATE_INDICATOR_CHOICES, help_text="A code representing the date of the application. '0' means the application was made on or after 1/1/2004; '1' means the application was made before 1/1/2004; '2' means the application date is not available.")
-    
-    lender = models.CharField(max_length=11, db_index=True)
-    geoid = models.ForeignKey('geo.Geo', to_field='geoid',
+   
+    institution = models.ForeignKey('respondents.Institution', to_field='institution_id')
+    geo = models.ForeignKey('geo.Geo', to_field='geoid',
                               db_index=True)
 
     class Meta:
-        index_together = [("statefp", "countyfp"),
-                          ("statefp", "countyfp", "lender"),
-                          ("geoid", "lender")]
-
-    def auto_fields(self):
-        self.lender = self.agency_code + self.respondent_id
+        index_together = [("institution", "geo")]
 
     def save(self, *args, **kwargs):
-        self.auto_fields()
         super(HMDARecord, self).save(*args, **kwargs)
 
 
 class LendingStats(models.Model):
     """For certain lender x geo combinations, we have pre-computed
-    aggregations to speed up query time."""
+    hmda lar aggregations to speed up query time."""
 
-    lender = models.CharField(max_length=11)
-    geoid = models.ForeignKey('geo.Geo', to_field='geoid')
-
-    median_per_tract = models.PositiveIntegerField(
-        help_text=("Median number of applications per census tract within "
-                   + "this geo associated with this lender"))
-
+    institution = models.ForeignKey('respondents.Institution', to_field='institution_id')
+    geo = models.ForeignKey('geo.Geo', to_field='geoid')
+    lar_median = models.PositiveIntegerField(help_text="HMDA LAR median")
+    lar_count = models.PositiveIntegerField(help_text="Total HMDA LAR count")
+    fha_count = models.PositiveIntegerField(help_text="Total HMDA LAR count where loan_type=2(FHA)")
+    fha_bucket = models.PositiveIntegerField(help_text="Predetermined buckets calculated by find fha % of total lar count")
+    
     class Meta:
-        index_together = [("lender", "geoid")]
-        unique_together = [("lender", "geoid")]
+        index_together = [("institution", "geo")]
+        unique_together = [("institution", "geo")]
