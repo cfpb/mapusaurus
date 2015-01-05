@@ -20,7 +20,7 @@ class Command(BaseCommand):
                 median = calculate_median_loans(lender_str, metro) or 0
                 lar = calculate_lar_count(lender_str, metro)
                 fha = calculate_fha_count(lender_str, metro)
-                fha_percentage = fha/lar; 
+                fha_percentage = fha/lar 
                
                 if fha_percentage == 0:
                     bucket = 0 
@@ -28,7 +28,7 @@ class Command(BaseCommand):
                     bucket = 1 
                 elif fha_percentage > .10 and fha_percentage <= .3:
                     bucket = 2 
-                elif fha_percentage > .3 and fha_percentage <= .5:
+                elif fha_percentage > .3 and fha_percentage t s<= .5:
                     bucket = 3
                 elif fha_percentage > .5 and fha_percentage <= .7:
                     bucket = 4
