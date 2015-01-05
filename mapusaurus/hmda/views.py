@@ -3,43 +3,52 @@ import json
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseBadRequest
 from hmda.models import HMDARecord
+from geo.models import Geo
 from geo.views import get_censustract_geoids 
 from rest_framework.renderers import JSONRenderer
 from respondents.models import LenderHierarchy, Institution
 
+
 def loan_originations(request):
-    """Get loan originations for a given lender, county combination. This
-    ignores year for the moment."""
-    lender_id = request.GET.get('lender')
+    institution_id = request.GET.get('lender')
+    metro = request.GET.get('metro')
     action_taken_param = request.GET.get('action_taken')
     lender_hierarchy = request.GET.get('lh')
+    peers = request.GET.get('peers')
     geoids = get_censustract_geoids(request)
-    action_taken = action_taken_param.split(',')
-    if lender_hierarchy == 'true':
-        lender = Institution.objects.get(institution_id=lender_id)
-        lenders = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
-        if len(lenders) == 0:
-            return HttpResponseRequest("No other lenders found in hierarchy. Invalid lender")
-        if geoids and lenders and action_taken:
-            query = HMDARecord.objects.filter(
-                # actions 7-8 are preapprovals to ignore
-                property_type__in=[1,2], owner_occupancy=1, lien_status=1,
-                lender__in=lenders, action_taken__in=action_taken
-            ).filter(geo__geoid__in=geoids).values(
-                'geo__geoid', 'geo__census2010households__total'
-            ).annotate(volume=Count('geo__geoid'))
-            return query
-    elif geoids and lender_id and action_taken:
+    
+    institution_selected = Institution.objects.get(pk=institution_id)
+    metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro)
+    action_taken_selected = action_taken_param.split(',')
+    if geoids and action_taken_selected:
         query = HMDARecord.objects.filter(
-            # actions 7-8 are preapprovals to ignore
-            property_type__in=[1,2], owner_occupancy=1, lien_status=1,
-            institution_id=lender_id, action_taken__in=action_taken
-        ).filter(geo__geoid__in=geoids).values(
-            'geo__geoid', 'geo__census2010households__total'
-        ).annotate(volume=Count('geo__geoid'))
-        return query
-    else:
-        return HttpResponseBadRequest("Missing one of lender, action_taken and county or geoid.")
+                property_type__in=[1,2], owner_occupancy=1, lien_status=1,
+                action_taken__in=action_taken_selected)
+        if lender_hierarchy == 'true':
+            hierarchy_list = LenderHierarchy.objects.filter(organization_id=institution_selected.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
+            if len(hierarchy_list) > 0:
+                query = query.filter(institution_id__in=hierarchy_list) 
+        elif peers == 'true':
+            peer_list = get_peer_list(institution_selected, metro_selected)
+            if len(peer_list) > 0:
+                query = query.filter(institution_id__in=peer_list)
+        else: 
+            query = query.filter(institution=institution_selected)
+        query = query.filter(geo__geoid__in=geoids)
+    else: 
+        return HttpResponseBadRequest("Missing one of lender, action_taken, lat/lon bounds or geoid.")
+    query = query.values('geo__geoid', 'geo__census2010households__total').annotate(volume=Count('geo__geoid'))
+    return query; 
+    
+def get_peer_list(lender, metro):
+    loan_stats = lender.lendingstats_set.filter(geo_id=metro.geoid).first()
+    if loan_stats:
+        percent_50 = loan_stats.lar_count * .50
+        percent_200 = loan_stats.lar_count * 2.0
+        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).values_list('institution_id', flat=True)
+        institution_peers = Institution.objects.filter(institution_id__in=peer_list).order_by('assets')
+        return institution_peers
+    return []
 
 def loan_originations_as_json(request):
     records = loan_originations(request)
