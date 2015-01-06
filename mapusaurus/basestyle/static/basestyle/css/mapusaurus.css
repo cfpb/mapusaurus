@@ -5661,6 +5661,9 @@ select b {
 .divided {
   border-bottom: 1px solid #babbbd;
 }
+.symbol-key-img {
+  height: 10px;
+}
 /* Media Queries
    ========================================================================== */
 /* Mobile portrait (320px) */

@@ -143,9 +143,11 @@ if (!window.console) console = {log: function() {}};
 
         if( !status ){
             layers.Branches.clearLayers();
+            $('#branchKey').addClass('hidden');
             $('#lender-branches').removeClass('green-highlight');
         } else {
             drawBranches();
+            $('#branchKey').removeClass('hidden');
             $('#lender-branches').addClass('green-highlight');
         }
 
