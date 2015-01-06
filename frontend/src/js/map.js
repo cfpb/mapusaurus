@@ -2,7 +2,7 @@
 
 if (!window.console) console = {log: function() {}};
 
-    // When the DOM is loaded, do the following:
+    // When the DOM is loaded, check for params and add listeners:
     $(document).ready(function(){
 
         $('.tabs').show();
@@ -33,6 +33,7 @@ if (!window.console) console = {log: function() {}};
             addParam( 'action', 'all-apps-5' );
         }
 
+        // Check to see if we have any parameters for Lender Hierarchy
         if( typeof loadParams.lh !== 'undefined'){
             var status = (loadParams.lh.values === 'true');
             $('#superSelect').prop('checked', status );
@@ -41,13 +42,16 @@ if (!window.console) console = {log: function() {}};
             addParam('lh', false );
         }
 
+        // On LH selection, change the params, and use toggle Helper
         $('#superSelect').change( function(){
             var el = $('#superSelect');
             var status = el.prop('checked');
             toggleSuper(status);
+            $('#peerSelect').prop('disabled', status);
             init();
         });
 
+        // Check for branch parameters
         if( typeof loadParams.branches !== 'undefined'){
             var status = (loadParams.branches.values === 'true');
             $('#branchSelect').prop('checked', status );
@@ -56,10 +60,29 @@ if (!window.console) console = {log: function() {}};
             addParam('branches', false );
         }
 
+        // On Branch selection, change params and use the toggle helper
         $('#branchSelect').change( function(){
             var el = $('#branchSelect');
             var status = el.prop('checked');
             toggleBranches(status);            
+        });
+
+        // Check for peer params on load
+        if( typeof loadParams.peers !== 'undefined'){
+            var status = (loadParams.peers.values === 'true');
+            $('#peerSelect').prop('checked', status );
+            togglePeers(status);
+            $('#superSelect').prop('disabled', status);
+        } else {
+            addParam('peers', false );
+        }
+
+        // If peers selected, change params and toggle helper
+        $('#peerSelect').change( function(){
+            var el = $('#peerSelect');
+            var status = el.prop('checked');
+            togglePeers(status);
+            init();
         });
 
         // When the user changes the action taken data selector, re-initialize
@@ -154,8 +177,27 @@ if (!window.console) console = {log: function() {}};
         addParam('branches', status);
         $('#branchSelect').prop('checked', status );
 
-    }    
+    }   
 
+    function togglePeers( status ){
+        // var url = $('#download-data').data('super-download'),
+        //     origUrl = $('#download-data').data('download');
+
+        if( !status ){
+            $('#lender-peers-list').addClass('hidden');
+            $('#lender-peers').removeClass('green-highlight');
+            // $('#download-data').attr('href', origUrl);
+        } else {
+            $('#lender-peers-list').removeClass('hidden');
+            $('#lender-peers').addClass('green-highlight');
+            // $('#download-data').attr('href', url);
+        }
+        addParam('peers', status);
+        $('#peerSelect').prop('checked', status );
+
+    }     
+
+    // Uses jQuery BlockUI plugin to block UI on data loading
     function blockStuff(){
         if( isUIBlocked === true ){
             return false;
@@ -219,13 +261,20 @@ if (!window.console) console = {log: function() {}};
         var endpoint = '/api/all/',
             params = { year: 2013,
                         'lh': false,
+                        'peers': false,
                         'neLat': bounds.neLat,
                         'neLon': bounds.neLon,
                         'swLat': bounds.swLat,
                         'swLon': bounds.swLon };
         var hash = getHashParams();
+
+        // Check to see if Lender Hierarchy (lh) exists.
         if( typeof hash.lh !== 'undefined' ){
             params.lh = hash.lh.values;
+        }
+
+        if( typeof hash.peers !== 'undefined') {
+            params.peers = hash.peers.values;
         }
 
         // Check to see if another year has been requested other than the default
