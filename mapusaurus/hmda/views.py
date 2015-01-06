@@ -29,7 +29,7 @@ def loan_originations(request):
             if len(hierarchy_list) > 0:
                 query = query.filter(institution_id__in=hierarchy_list) 
         elif peers == 'true':
-            peer_list = get_peer_list(institution_selected, metro_selected).values_list('institution_id', flat=True)
+            peer_list = get_peer_list(institution_selected, metro_selected)
             if len(peer_list) > 0:
                 query = query.filter(institution_id__in=peer_list)
         else: 
@@ -46,8 +46,7 @@ def get_peer_list(lender, metro):
         percent_50 = loan_stats.lar_count * .50
         percent_200 = loan_stats.lar_count * 2.0
         peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).values_list('institution_id', flat=True)
-        institution_peers = Institution.objects.filter(institution_id__in=peer_list).order_by('assets')
-        return institution_peers
+        return peer_list
     return []
 
 def loan_originations_as_json(request):
