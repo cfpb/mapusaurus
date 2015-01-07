@@ -32,9 +32,11 @@ def map(request, template):
         hierarchy_list = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
         institution_hierarchy = Institution.objects.filter(institution_id__in=hierarchy_list).order_by('-assets')
         context['institution_hierarchy'] = institution_hierarchy 
-        context['institution_peers'] = get_peer_list(lender, metro) 
+        peer_list = get_peer_list(lender, metro) 
+        context['institution_peers'] = peer_list
         context['download_url'] = make_download_url(lender, metro)
         context['hierarchy_download_url'] = make_download_url(institution_hierarchy, metro)
+        context['peer_download_url'] = make_download_url(peer_list, metro)
     context['median_loans'] = lookup_median(lender, metro) or 0
     if context['median_loans']:
         # 50000 is an arbitrary constant; should be altered if we want to
