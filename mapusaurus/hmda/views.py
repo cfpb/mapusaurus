@@ -29,7 +29,7 @@ def loan_originations(request):
             if len(hierarchy_list) > 0:
                 query = query.filter(institution_id__in=hierarchy_list) 
         elif peers == 'true':
-            peer_list = get_peer_list(institution_selected, metro_selected).values_list('institution_id', flat=True)
+            peer_list = get_peer_list(institution_selected, metro_selected)
             if len(peer_list) > 0:
                 query = query.filter(institution_id__in=peer_list)
         else: 
