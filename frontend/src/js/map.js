@@ -4,6 +4,7 @@ if (!window.console) console = {log: function() {}};
 
     // When the DOM is loaded, check for params and add listeners:
     $(document).ready(function(){
+        var lhStatus, peerStatus, branchStatus;
 
         $('.tabs').show();
 
@@ -35,9 +36,10 @@ if (!window.console) console = {log: function() {}};
 
         // Check to see if we have any parameters for Lender Hierarchy
         if( typeof loadParams.lh !== 'undefined'){
-            var status = (loadParams.lh.values === 'true');
-            $('#superSelect').prop('checked', status );
-            toggleSuper(status);
+            lhStatus = (loadParams.lh.values === 'true');
+            $('#superSelect').prop('checked', lhStatus );
+            $('#peerSelect').prop('disabled', lhStatus);
+            toggleSuper(lhStatus);
         } else {
             addParam('lh', false );
         }
@@ -53,9 +55,9 @@ if (!window.console) console = {log: function() {}};
 
         // Check for branch parameters
         if( typeof loadParams.branches !== 'undefined'){
-            var status = (loadParams.branches.values === 'true');
-            $('#branchSelect').prop('checked', status );
-            toggleBranches(status);
+            branchStatus = (loadParams.branches.values === 'true');
+            $('#branchSelect').prop('checked', branchStatus );
+            toggleBranches(branchStatus);
         } else {
             addParam('branches', false );
         }
@@ -67,12 +69,16 @@ if (!window.console) console = {log: function() {}};
             toggleBranches(status);            
         });
 
-        // Check for peer params on load
         if( typeof loadParams.peers !== 'undefined'){
-            var status = (loadParams.peers.values === 'true');
-            $('#peerSelect').prop('checked', status );
-            togglePeers(status);
-            $('#superSelect').prop('disabled', status);
+            if( lhStatus === true){
+                $('#peerSelect').prop('checked', false);
+                console.log("Peer and Hierarchy cannot be checked at the same time. Unchecking Peers.");
+            } else {
+                peerStatus = (loadParams.peers.values === 'true');
+                $('#peerSelect').prop('checked', peerStatus );
+                $('#superSelect').prop('disabled', peerStatus );
+                togglePeers(peerStatus);
+            }
         } else {
             addParam('peers', false );
         }
@@ -82,6 +88,7 @@ if (!window.console) console = {log: function() {}};
             var el = $('#peerSelect');
             var status = el.prop('checked');
             togglePeers(status);
+            $('#superSelect').prop('disabled', status);
             init();
         });
 

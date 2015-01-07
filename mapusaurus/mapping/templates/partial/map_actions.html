@@ -26,8 +26,7 @@
             </div>
             <div id="lender-branches" class="map-divider lighter">
                 <input type="checkbox" id="branchSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Branch Locations</h6>
-            </div> 
-            {% if institution_peers.count > 1 %}          
+            </div>         
             <div id="lender-affiliates" class="map-divider lighter">
                 <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Parent/Affiliate LAR</h6>
             </div>
@@ -39,11 +38,9 @@
                     </div>
                 {% endfor %}
             </div>
-            {% endif %}
 
-            {% if institution_peers.count > 1 %}
             <div id="lender-peers" class="map-divider lighter">
-                <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Peer LAR ({{ institution_peers.count }} Peers)</h6>
+                <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Peer LAR ({{ institution_peers.count|add:"-1" }} Peer{{ institution_peers.count|add:"-1"|pluralize}})</h6>
             </div>
             <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
                 {% for peer in institution_peers %}
@@ -53,7 +50,6 @@
                     </div>
                 {% endfor %}
             </div>
-            {% endif %}
     {% endif %}
         </div><!-- /.tabpanel -->
     {% if metro %}
