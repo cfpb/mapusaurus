@@ -282,6 +282,13 @@ if (!window.console) console = {log: function() {}};
             params.year = urlParam('year');
         }
 
+        //
+        if ( urlParam('metro') ){
+            params.metro = urlParam('metro');
+        } else {
+            console.log("No metro area provided");
+        }
+
         // Set the lender parameter based on the current URL param
         if ( urlParam('lender') ){
             params['lender'] = urlParam('lender');
