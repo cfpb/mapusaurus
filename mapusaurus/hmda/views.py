@@ -2,7 +2,7 @@ import json
 
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseBadRequest
-from hmda.models import HMDARecord
+from hmda.models import HMDARecord, LendingStats
 from geo.models import Geo
 from geo.views import get_censustract_geoids 
 from rest_framework.renderers import JSONRenderer
@@ -18,7 +18,7 @@ def loan_originations(request):
     geoids = get_censustract_geoids(request)
     
     institution_selected = Institution.objects.get(pk=institution_id)
-    metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro)
+    metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
     action_taken_selected = action_taken_param.split(',')
     if geoids and action_taken_selected:
         query = HMDARecord.objects.filter(
@@ -46,8 +46,7 @@ def get_peer_list(lender, metro):
         percent_50 = loan_stats.lar_count * .50
         percent_200 = loan_stats.lar_count * 2.0
         peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).values_list('institution_id', flat=True)
-        institution_peers = Institution.objects.filter(institution_id__in=peer_list).order_by('assets')
-        return institution_peers
+        return peer_list
     return []
 
 def loan_originations_as_json(request):
