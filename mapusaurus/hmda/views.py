@@ -2,7 +2,7 @@ import json
 
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseBadRequest
-from hmda.models import HMDARecord
+from hmda.models import HMDARecord, LendingStats
 from geo.models import Geo
 from geo.views import get_censustract_geoids 
 from rest_framework.renderers import JSONRenderer
@@ -18,7 +18,7 @@ def loan_originations(request):
     geoids = get_censustract_geoids(request)
     
     institution_selected = Institution.objects.get(pk=institution_id)
-    metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro)
+    metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
     action_taken_selected = action_taken_param.split(',')
     if geoids and action_taken_selected:
         query = HMDARecord.objects.filter(
