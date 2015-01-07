@@ -29,7 +29,7 @@
             </div> 
             {% if institution_peers.count > 1 %}          
             <div id="lender-affiliates" class="map-divider lighter">
-                <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Parents & Affiliates</h6>
+                <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Parent/Affiliate LAR</h6>
             </div>
             <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-affiliate-list">
                 {% for inst in institution_hierarchy %}
@@ -43,7 +43,7 @@
 
             {% if institution_peers.count > 1 %}
             <div id="lender-peers" class="map-divider lighter">
-                <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Peers ({{ institution_peers.count }})</h6>
+                <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Peer LAR ({{ institution_peers.count }} Peers)</h6>
             </div>
             <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
                 {% for peer in institution_peers %}
