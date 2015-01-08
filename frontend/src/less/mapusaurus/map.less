@@ -51,8 +51,7 @@ select {
   padding: 10px;
 
   h6 {
-    line-height: 1;
-    letter-spacing: 1px;
+    line-height: 1.375;
   }
 
   .tab-title{
@@ -66,31 +65,37 @@ select {
     color: @black;
     text-transform: none;
     font-size: .875em;
+    letter-spacing: 0;
   }
 
   .item-main{
     .webfont-demi();
     font-size: 0.75em;
     margin: 0px;
-    letter-spacing: 1px;
-    color: @black
+    color: @black;
+    letter-spacing: 0;
   }
   
   .item-sub{
     .webfont-regular();
     margin: 0px;
-    text-transform: uppercase;
+    text-transform: none;
     font-size: 0.75em;
-    color: @darkgray;
-    letter-spacing: 1px;
+    color: @gray-80;
     margin-bottom: .1em;
+    letter-spacing: 0;
+  }
+  
+  .inst-id{
+    color: @black;
+    .webfont-demi();
   }
 
 }
 
 .header-group {
   padding-bottom: 10px;
-  padding-top: 10px;
+
 }
 
 .lighter {
@@ -199,7 +204,6 @@ select {
     font-size: .875em;
     text-transform: uppercase;
     .webfont-demi();
-    margin-bottom: .875em;
   }
 
   h4 {
@@ -438,6 +442,7 @@ select {
 
 // MAP ASIDE
 .tabs {
+  @gray-active: #d0d0ce;
   ul {
       .clearfix();
       list-style-type: none;
@@ -475,11 +480,11 @@ select {
               top: 0;
 
               &.active {
-                  background-color: @gray-10;
+                  background-color: @gray-active;
                   color: @black;
 
                   &:hover {
-                      background-color: @gray-10;
+                      background-color: @gray-20;
                       //border: none;
                   }    
               }
