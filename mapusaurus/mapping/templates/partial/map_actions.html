@@ -3,17 +3,16 @@
         <div id="map-aside__lender-details" class="map-aside__lender-details">
             <div class="map-divider"><h6 class="tab-title">Lender Details</h6></div>
             <div id="lender-info" class="map-divider"><!-- lender-info ID is in a test, it needs to be changed in the test -->                
-                <h3 class="tab-main">{{ lender.name }}</h3>
+                <div class="header-group">
+                    <h3 class="tab-main">{{ lender.name }}</h3>
+                    <h6 class="item-sub inst-id">{{ lender.agency_id }}{{ lender.respondent_id }}</h6>
+                </div>
                 <div class="header-group">
                     <h6 class="item-sub">Regulating Agency</h6>
                     <h6 class="item-main">{{ lender.agency.acronym }}</h6>    
                 </div>
                 <div class="header-group">
-                    <h6 class="item-sub">Lender ID:</h6>
-                    <h6 class="item-main">{{ lender.agency_id }}{{ lender.respondent_id }}</h6>
-                </div>
-                <div class="header-group">
-                    <h6 class="item-sub">Address:</h6>
+                    <h6 class="item-sub">Address</h6>
                     <h6 class="item-main">{{ lender.mailing_address  }}<br />
                                 {{ lender.zip_code.city }}, {{ lender.zip_code.state }}
                                 {{ lender.zip_code.zip_code }}</h6>                   
@@ -64,7 +63,7 @@
 
     <div id="map-aside__download-export">
         {% if download_url %}
-            <div class="map-divider darker"><h6 class="tab-title">Download Data</h6></div>
+            <div class="map-divider darker"><h6 class="tab-title">Download LAR Data</h6></div>
             <div class="map-aside__download map-divider">
                 <p>Download the loan application records (LAR) for the current Lender/MSA/Year combination:</p>
                 <p style="text-align:center"><a target="_blank" id="download-data" data-download="{{ download_url }}" data-super-download="{{ hierarchy_download_url }}" class="btn" href="{{ download_url}}" >

@@ -5578,8 +5578,7 @@ select b {
   padding: 10px;
 }
 .map-divider h6 {
-  line-height: 1;
-  letter-spacing: 1px;
+  line-height: 1.375;
 }
 .map-divider .tab-title {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
@@ -5598,6 +5597,7 @@ select b {
   color: #101820;
   text-transform: none;
   font-size: .875em;
+  letter-spacing: 0;
 }
 .lt-ie9 .map-divider .tab-main {
   font-weight: normal !important;
@@ -5608,8 +5608,8 @@ select b {
   font-weight: bold;
   font-size: 0.75em;
   margin: 0px;
-  letter-spacing: 1px;
   color: #101820;
+  letter-spacing: 0;
 }
 .lt-ie9 .map-divider .item-main {
   font-weight: normal !important;
@@ -5619,11 +5619,11 @@ select b {
   font-style: normal;
   font-weight: normal;
   margin: 0px;
-  text-transform: uppercase;
+  text-transform: none;
   font-size: 0.75em;
-  color: #43484e;
-  letter-spacing: 1px;
+  color: #919395;
   margin-bottom: .1em;
+  letter-spacing: 0;
 }
 .map-divider .item-sub em,
 .map-divider .item-sub i {
@@ -5645,9 +5645,17 @@ select b {
 .lt-ie9 .map-divider .item-sub b {
   font-weight: normal !important;
 }
+.map-divider .inst-id {
+  color: #101820;
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 .map-divider .inst-id {
+  font-weight: normal !important;
+}
 .header-group {
   padding-bottom: 10px;
-  padding-top: 10px;
 }
 .lighter {
   background-color: #f8f8f8;
@@ -5745,7 +5753,6 @@ select b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
-  margin-bottom: .875em;
 }
 .lt-ie9 .map-aside h3 {
   font-weight: normal !important;
@@ -5983,11 +5990,11 @@ select b {
   top: 0;
 }
 .tabs ul li a.active {
-  background-color: #f1f2f2;
+  background-color: #d0d0ce;
   color: #101820;
 }
 .tabs ul li a.active:hover {
-  background-color: #f1f2f2;
+  background-color: #e3e4e5;
 }
 .tabs ul li a:hover {
   background-color: #f1f2f2;
