@@ -40,7 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'django.contrib.humanize',
     'localflavor',
-    'south',
     'haystack',
     'rest_framework',
     'basestyle',
