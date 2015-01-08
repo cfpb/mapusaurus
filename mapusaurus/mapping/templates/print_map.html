@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block head_scripts %}
-    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.js'></script>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-vendor.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
@@ -68,14 +68,21 @@
                 </div>
 
             </div>
-            <div id="lender-affiliates" class="map-divider lighter hidden">
-                <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Parents & Affiliates</h6>
-            </div>
-            <div class="map-divider lighter hidden" id="lender-affiliate-list">
-                {% for affiliate in lender_hierarchy_names %}
+            <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-affiliate-list">
+                <h3>Affiliated Institutions included in LAR count:</h3>
+                {% for inst in institution_hierarchy %}
                     <div class="header-group divided">
-                        <h6 class="item-main">{{ affiliate.name }}</h6>
-                        <h6 class="item-sub">{{ affiliate.agency}}{{affiliate.respondent_id }}</h6>
+                        <h6 class="item-main">{{ inst.name }}</h6>
+                        <h6 class="item-sub">{{ inst.institution_id }}</h6>
+                    </div>
+                {% endfor %}
+            </div>
+            <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
+                <h3>Peer Institutions included in LAR count:</h3>
+                {% for peer in institution_peers %}
+                    <div class="header-group divided">
+                        <h6 class="item-main">{{ peer.name }}</h6>
+                        <h6 class="item-sub">{{ peer.institution_id }}</h6>
                     </div>
                 {% endfor %}
             </div>
@@ -111,7 +118,7 @@
             map.setView([40, -74.50], 11);
         {% endif %}
         
-        // Using our modified Leaflet-Hash plugin, check to see if we need to move the map somewhere else.
+       // Using our modified Leaflet-Hash plugin, check to see if we need to move the map somewhere else.
         var hash = new L.Hash(map),
             hashCheck = hash.parseHash(hash),
             loadParams = getHashParams();
@@ -122,18 +129,9 @@
         }
 
         // Set our map options after it's been created and centered
-        if( typeof loadParams.zoom != 'undefined' ){
-            map.options.maxZoom = loadParams.zoom.values;
-            map.options.minZoom = loadParams.zoom.values;            
-        } else {
-            map.options.maxZoom = 9;
-            map.options.minZoom = 9;
-        }
-
+        map.options.maxZoom = 12;
+        map.options.minZoom = 9;
         map.options.inertia = false;
-
-        // When the user has stopped moving the map, run init, with a slight delay
-        map.on('moveend', _.debounce(init, 650) );
 
         // Initialize all of our layers
         var layers = {
@@ -151,12 +149,9 @@
             Sequential3: L.mapbox.tileLayer('cfpb.FL_TRACT_seq_pct_minorv1_US'),
             Sequential10: L.mapbox.tileLayer('cfpb.FL_TRACT_seq-10_minorv1_US'),
             Plurality: L.mapbox.tileLayer('cfpb.FL_TRACT_minor_plurality_US'),
-            Centroids: L.layerGroup([])
+            Centroids: L.layerGroup([]),
+            Branches: L.layerGroup([])
         };
-
-        // Setup the minimap
-        var miniLayer = new L.mapbox.TileLayer('cfpb.k55b27gd', null, {minZoom: 0, maxZoom: 13 });
-        var miniMap = new L.Control.MiniMap(miniLayer).addTo(map);
 
         // Baselayers are created here and show up in our layer selector on the screen as radio buttons
         var baseLayers = {
@@ -169,8 +164,13 @@
             'Water': layers.Water,
             'Boundaries': layers.Boundaries,
             'MSA Labels': layers.MSALabels,
-            'County Labels': layers.CountyLabels
+            'County Labels': layers.CountyLabels,
+            'LAR Circles': layers.Centroids
         };
+
+        // Setup the minimap
+        var miniLayer = new L.mapbox.TileLayer('cfpb.k55b27gd', {minZoom: 0, maxZoom: 13 });
+        var miniMap = new L.Control.MiniMap(miniLayer).addTo(map);
 
         // This array allows us to remove them from the map when a new one is selected (later)
         var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctNonWhite,
@@ -181,18 +181,27 @@
         layers.Water.addTo(map);
         layers.Boundaries.addTo(map);
         layers.MSALabels.addTo(map);
+        layers.PctMinority.addTo(map);
 
         // Create a layer for our circles
         layers.Centroids.addTo(map);
+        // Create a layer for Branch Locations
+        layers.Branches.addTo(map);
 
         // Add our +/- and layer controls to the top left
+        L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
         // Add a mile scale
         L.control.scale().addTo(map);
         
         // Make sure water and boundaries are above everything else
         layers.Water.bringToFront();
+        layers.PctMinority.bringToFront();
         layers.Boundaries.bringToFront();
         layers.MSALabels.bringToFront();
+
+        if( map.hasLayer(layers.CountyLabels) ){
+            layers.CountyLabels.bringToFront();
+        }
 
         // Add the HTML Template key as a key in the top right
         var key = L.control();
@@ -215,6 +224,15 @@
 
             var actionValue = $('#action-taken-selector option:selected').text();
             $('#actionValue').text(actionValue);
+
+            console.log("LH? ", loadParams.lh.values);
+            // Show or Hide the lender / peer information if checked.
+            if( loadParams.peers.values === true ){
+                $("#lender-peers-list").removeClass('hidden');
+            }
+            if( loadParams.lh.values === true ){
+                $("#lender-affiliate-list").removeClass('hidden');
+            }
         });
     </script>
     <script type="text/javascript" src="{% static 'respondents/js/metro-search.min.js' %}"></script>
