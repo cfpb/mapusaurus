@@ -6,10 +6,18 @@ if (!window.console) console = {log: function() {}};
     $(document).ready(function(){
         var lhStatus, peerStatus, branchStatus;
 
+        // Invoke our tabs JavaScript
         $('.tabs').show();
 
+        // On window resize, set the map height anew
         $( window ).resize(function() {
             setMapHeight();
+        });
+
+        // When the page loads, update the print link, and update it whenever the hash changes
+        updatePrintLink();
+        $( window ).on('hashchange', function(){
+            updatePrintLink();
         });
 
         // When minority changes, redraw the circles with appropriate styles
@@ -755,6 +763,11 @@ if (!window.console) console = {log: function() {}};
                 return soFar;
             }, {});
         return params[field];
+    }
+
+    // Update the #printLink href to reflect the current map when "print" is clicked
+    function updatePrintLink(){
+        $('#printLink').attr('href', '/map/print' + window.location.search + window.location.hash );
     }
 
     // Parameter helper function that filters the query according to dropdown values
