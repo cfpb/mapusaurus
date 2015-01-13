@@ -80,10 +80,9 @@
             <div class="map-divider lighter hidden" id="lender-peers-list">
                 <h3>Peer Institutions included in LAR count:</h3>
                 {% for peer in institution_peers %}
-                    <div class="header-group divided">
-                        <h6 class="item-main">{{ peer.name }}</h6>
-                        <h6 class="item-sub">{{ peer.institution_id }}</h6>
-                    </div>
+                    <span style="display:inline-block; min-width:250px; max-width:250px; height:60px; vertical-align:top;">
+                        <span class="item-main"><b>{{ peer.name }}</b></span><br/><span class="item-sub">{{ peer.institution_id }}</span>
+                    </span>
                 {% endfor %}
             </div>
     {% endif %}
