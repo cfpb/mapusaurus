@@ -214,19 +214,19 @@ if (!window.console) console = {log: function() {}};
     }   
 
     function togglePeers( status ){
-        // var url = $('#download-data').data('super-download'),
-        //     origUrl = $('#download-data').data('download');
+        var url = $('#download-data').data('peer-download'),
+            origUrl = $('#download-data').data('download');
 
         if( !status ){
             $('#lender-peers-list').addClass('hidden');
             $('#lender-peers').removeClass('green-highlight');
             $('.tooltipsy.peer-component').addClass('hidden');
-            // $('#download-data').attr('href', origUrl);
+            $('#download-data').attr('href', origUrl);
         } else {
             $('#lender-peers-list').removeClass('hidden');
             $('#lender-peers').addClass('green-highlight');
             $('.tooltipsy.peer-component').removeClass('hidden');
-            // $('#download-data').attr('href', url);
+            $('#download-data').attr('href', url);
         }
         addParam('peers', status);
         $('#peerSelect').prop('checked', status );
