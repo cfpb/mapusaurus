@@ -25,30 +25,43 @@
             </div>
             <div id="lender-branches" class="map-divider lighter">
                 <input type="checkbox" id="branchSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Branch Locations <span class="tooltipsy hidden branch-component" title="Locations are only shown for {{lender.name}} and will not include peers or affiliates"><i class="cf-icon cf-icon-information-round"></i></span></h6> 
-            </div>         
-            <div id="lender-affiliates" class="map-divider lighter">
-                <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Parent/Affiliate LAR</h6>
-            </div>
-            <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-affiliate-list">
-                {% for inst in institution_hierarchy %}
-                    <div class="header-group divided">
-                        <h6 class="item-main">{{ inst.name }}</h6>
-                        <h6 class="item-sub">{{ inst.institution_id }}</h6>
-                    </div>
-                {% endfor %}
-            </div>
+            </div>  
 
-            <div id="lender-peers" class="map-divider lighter">
-                <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Peer LAR ({{ institution_peers.count}} Peer{{ institution_peers.count|pluralize}}) <span class="tooltipsy hidden peer-component" title="Peers are institutions that have between 50% and 200% of {{lender.name}} LAR count, and and a similar percentage of overall FHA Applications in {{ metro.name}}"><i class="cf-icon cf-icon-information-round"></i></span></h6>
-            </div>
-            <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
-                {% for peer in institution_peers %}
-                    <div class="header-group divided">
-                        <h6 class="item-main">{{ peer.name }}</h6>
-                        <h6 class="item-sub">{{ peer.institution_id }} | {{ peer.lar_count}} LAR</h6>
-                    </div>
-                {% endfor %}
-            </div>
+            {% if institution_hierarchy.count > 0 %}       
+                <div id="lender-affiliates" class="map-divider lighter">
+                    <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Parent/Affiliate LAR</h6>
+                </div>
+                <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-affiliate-list">
+                    {% for inst in institution_hierarchy %}
+                        <div class="header-group divided">
+                            <h6 class="item-main">{{ inst.name }}</h6>
+                            <h6 class="item-sub">{{ inst.institution_id }}</h6>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div id="lender-affiliates" class="map-divider lighter">
+                    <input type="checkbox" disabled=true style="display:inline-block"/><h6 class="header-name" style="display:inline-block">No Parents / Affiliates</h6>
+                </div>                
+            {% endif %}
+
+            {% if institution_peers.count > 0 %}
+                <div id="lender-peers" class="map-divider lighter">
+                    <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Peer LAR ({{ institution_peers.count}} Peer{{ institution_peers.count|pluralize}}) <span class="tooltipsy hidden peer-component" title="Peers are institutions that have between 50% and 200% of {{lender.name}} LAR count, and and a similar percentage of overall FHA Applications in {{ metro.name}}"><i class="cf-icon cf-icon-information-round"></i></span></h6>
+                </div>
+                <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
+                    {% for peer in institution_peers %}
+                        <div class="header-group divided">
+                            <h6 class="item-main">{{ peer.name }}</h6>
+                            <h6 class="item-sub">{{ peer.institution_id }} | {{ peer.lar_count}} LAR</h6>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div id="lender-peers" class="map-divider lighter">
+                    <input type="checkbox" disabled=true /><h6 class="header-name" style="display:inline-block">No Peers Available <span class="tooltipsy hidden peer-component" title="Peers are institutions that have between 50% and 200% of {{lender.name}} LAR count, and and a similar percentage of overall FHA Applications in {{ metro.name}}"><i class="cf-icon cf-icon-information-round"></i></span></h6>
+                </div>  
+            {% endif %}
     {% endif %}
         </div><!-- /.tabpanel -->
     {% if metro %}
