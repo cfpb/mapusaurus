@@ -29,13 +29,12 @@ def map(request, template):
             context['metro'] = metro
 
     if lender and metro:
-        hierarchy_list = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
-        institution_hierarchy = Institution.objects.filter(institution_id__in=hierarchy_list).exclude(institution_id=lender.institution_id).order_by('-assets')
-        context['institution_hierarchy'] = institution_hierarchy 
+        hierarchy_list = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).exclude(institution_id=lender.institution_id).order_by('-institution__assets')
+        context['institution_hierarchy'] = hierarchy_list 
         peer_list = get_peer_list(lender, metro) 
         context['institution_peers'] = peer_list
         context['download_url'] = make_download_url(lender, metro)
-        context['hierarchy_download_url'] = make_download_url(institution_hierarchy, metro)
+        context['hierarchy_download_url'] = make_download_url(hierarchy_list, metro)
         context['peer_download_url'] = make_download_url(peer_list, metro)
     context['median_loans'] = lookup_median(lender, metro) or 0
     if context['median_loans']:
@@ -52,9 +51,8 @@ def get_peer_list(lender, metro):
     if loan_stats:    
         percent_50 = loan_stats.lar_count * .50
         percent_200 = loan_stats.lar_count * 2.0
-        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).values_list('institution_id', flat=True)
-        institution_peers = Institution.objects.filter(institution_id__in=peer_list).exclude(institution_id=lender.institution_id).order_by('assets')
-        return institution_peers
+        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).exclude(institution_id=lender.institution_id).order_by('-institution__assets')
+        return peer_list
     return []
 
 def make_download_url(lender, metro):
@@ -66,9 +64,9 @@ def make_download_url(lender, metro):
         where = 'as_of_year=2013 AND property_type IN (1,2) AND lien_status=1 AND owner_occupancy=1 AND '
         count = 0 
         if type(lender) is QuerySet:
-            for institution in lender:
+            for item in lender:
                 query = '(agency_code=%s AND respondent_id="%s")'
-                where += query % (institution.agency_id, institution.respondent_id)
+                where += query % (item.institution.agency_id, item.institution.respondent_id)
                 count += 1
                 if(count < len(lender)):
                     where += "OR"

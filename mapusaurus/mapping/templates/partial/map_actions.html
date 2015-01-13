@@ -34,8 +34,8 @@
                 <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-affiliate-list">
                     {% for inst in institution_hierarchy %}
                         <div class="header-group divided">
-                            <h6 class="item-main">{{ inst.name }}</h6>
-                            <h6 class="item-sub">{{ inst.institution_id }}</h6>
+                            <h6 class="item-main">{{ inst.institution.name }}</h6>
+                            <h6 class="item-sub">{{ inst.institution.institution_id }}</h6>
                         </div>
                     {% endfor %}
                 </div>
@@ -52,8 +52,8 @@
                 <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
                     {% for peer in institution_peers %}
                         <div class="header-group divided">
-                            <h6 class="item-main">{{ peer.name }}</h6>
-                            <h6 class="item-sub">{{ peer.institution_id }}</h6>
+                            <h6 class="item-main">{{ peer.institution.name }}</h6>
+                            <h6 class="item-sub">{{ peer.institution.institution_id }} | {{ peer.lar_count}} LAR</h6>
                         </div>
                     {% endfor %}
                 </div>
