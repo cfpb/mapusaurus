@@ -30,7 +30,7 @@ def map(request, template):
 
     if lender and metro:
         hierarchy_list = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
-        institution_hierarchy = Institution.objects.filter(institution_id__in=hierarchy_list).order_by('-assets')
+        institution_hierarchy = Institution.objects.filter(institution_id__in=hierarchy_list).exclude(institution_id=lender.institution_id).order_by('-assets')
         context['institution_hierarchy'] = institution_hierarchy 
         peer_list = get_peer_list(lender, metro) 
         context['institution_peers'] = peer_list
@@ -53,7 +53,7 @@ def get_peer_list(lender, metro):
         percent_50 = loan_stats.lar_count * .50
         percent_200 = loan_stats.lar_count * 2.0
         peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).values_list('institution_id', flat=True)
-        institution_peers = Institution.objects.filter(institution_id__in=peer_list).order_by('assets')
+        institution_peers = Institution.objects.filter(institution_id__in=peer_list).exclude(institution_id=lender.institution_id).order_by('assets')
         return institution_peers
     return []
 
