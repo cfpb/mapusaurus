@@ -86,7 +86,8 @@ module.exports = function(grunt) {
           'frontend/bower_components/jquery/dist/jquery.min.js',
           'frontend/bower_components/jquery.easing/js/jquery.easing.js',
           'frontend/bower_components/typeahead/dist/typeahead.bundle.js',
-          'frontend/bower_components/cf-expandables/src/js/cf-expandables.js'
+          'frontend/bower_components/cf-expandables/src/js/cf-expandables.js',
+          'frontend/bower_components/tooltipsy/tooltipsy.min.js'
         ],
         dest: 'frontend/dist/basestyle/js/vendor.min.js'
       },
