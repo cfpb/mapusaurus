@@ -106,6 +106,18 @@ if (!window.console) console = {log: function() {}};
             init();
         });
 
+        // Generate the tool-tip listener for anything with that class
+        $('.tooltipsy').tooltipsy({
+            className: 'bubbletooltip_tip',
+            offset: [10,0],
+            show: function (e, $el) {
+                $el.fadeIn(100);
+            },
+            hide: function (e, $el) {
+                $el.fadeOut(450);
+            }
+        });
+
         // When the user has stopped moving the map, check for new branches,
         // and run init(), with a slight delay to ensure many moves in a row do not crowd the queue
         map.on('moveend', function(e){
@@ -170,6 +182,11 @@ if (!window.console) console = {log: function() {}};
             $('#lender-affiliate-list').removeClass('hidden');
             $('#lender-affiliates').addClass('green-highlight');
             $('#download-data').attr('href', url);
+            if( $('#branchSelect').prop('checked') ){
+                $('.tooltipsy.branch-component').addClass('red-highlight');                
+            } else {
+                $('.tooltipsy.branch-component').removeClass('red-highlight');    
+            }
         }
         addParam('lh', status);
         $('#superSelect').prop('checked', status );
@@ -182,10 +199,12 @@ if (!window.console) console = {log: function() {}};
         if( !status ){
             layers.Branches.clearLayers();
             $('#branchKey').addClass('hidden');
+            $('.tooltipsy.branch-component').addClass('hidden');
             $('#lender-branches').removeClass('green-highlight');
         } else {
             drawBranches();
             $('#branchKey').removeClass('hidden');
+            $('.tooltipsy.branch-component').removeClass('hidden');
             $('#lender-branches').addClass('green-highlight');
         }
 
@@ -201,10 +220,12 @@ if (!window.console) console = {log: function() {}};
         if( !status ){
             $('#lender-peers-list').addClass('hidden');
             $('#lender-peers').removeClass('green-highlight');
+            $('.tooltipsy.peer-component').addClass('hidden');
             // $('#download-data').attr('href', origUrl);
         } else {
             $('#lender-peers-list').removeClass('hidden');
             $('#lender-peers').addClass('green-highlight');
+            $('.tooltipsy.peer-component').removeClass('hidden');
             // $('#download-data').attr('href', url);
         }
         addParam('peers', status);

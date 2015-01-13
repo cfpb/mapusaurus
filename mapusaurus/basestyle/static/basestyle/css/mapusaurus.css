@@ -5672,6 +5672,29 @@ select b {
 .symbol-key-img {
   height: 10px;
 }
+.bubbletooltip_tip {
+  padding: 10px;
+  color: #fff;
+  width: 200px;
+  font-size: .85em;
+  background-color: #43484e;
+  position: relative;
+}
+.bubbletooltip_tip:before {
+  content: '';
+  position: absolute;
+  border: 10px solid transparent;
+  border-left-color: #000;
+  top: 20px;
+  left: -10;
+  z-index: -1;
+}
+.tooltipsy {
+  color: #0072ce;
+}
+.red-highlight i {
+  color: #d12124;
+}
 /* Media Queries
    ========================================================================== */
 /* Mobile portrait (320px) */

@@ -117,6 +117,28 @@ select {
   height: 10px;
 }
 
+
+.bubbletooltip_tip
+{
+    padding: 10px;
+    color: #fff;
+    width: 200px;
+    font-size: .85em;
+    background-color: @darkgray;
+    // border-radius: 10px;
+    position: relative;
+}
+
+.bubbletooltip_tip:before { content: ''; position: absolute; border: 10px solid transparent; border-left-color: #000; top: 20px; left: -10; z-index: -1; }
+
+.tooltipsy {
+  color: @pacific;
+}
+
+.red-highlight i{
+  color: @redorange;
+}
+
 /* Media Queries
    ========================================================================== */
 
