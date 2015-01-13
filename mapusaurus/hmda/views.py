@@ -25,13 +25,17 @@ def loan_originations(request):
                 property_type__in=[1,2], owner_occupancy=1, lien_status=1,
                 action_taken__in=action_taken_selected)
         if lender_hierarchy == 'true':
-            hierarchy_list = LenderHierarchy.objects.filter(organization_id=institution_selected.lenderhierarchy_set.get().organization_id).values_list('institution_id', flat=True)
+            hierarchy_list = LenderHierarchy.objects.filter(organization_id=institution_selected.lenderhierarchy_set.get().organization_id)
             if len(hierarchy_list) > 0:
-                query = query.filter(institution_id__in=hierarchy_list) 
+                query = query.filter(institution__in=hierarchy_list) 
+            else: 
+                query = query.filter(institution__in=institution_selected)
         elif peers == 'true':
             peer_list = get_peer_list(institution_selected, metro_selected)
             if len(peer_list) > 0:
-                query = query.filter(institution_id__in=peer_list)
+                query = query.filter(institution__in=peer_list)
+            else:
+                query = query.filter(institution=institution_selected)
         else: 
             query = query.filter(institution=institution_selected)
         query = query.filter(geo__geoid__in=geoids)
@@ -45,7 +49,7 @@ def get_peer_list(lender, metro):
     if loan_stats:
         percent_50 = loan_stats.lar_count * .50
         percent_200 = loan_stats.lar_count * 2.0
-        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).values_list('institution_id', flat=True)
+        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200))
         return peer_list
     return []
 
