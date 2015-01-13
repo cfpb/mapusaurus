@@ -68,22 +68,20 @@
                 </div>
 
             </div>
-            <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-affiliate-list">
+            <div class="map-divider lighter hidden" id="lender-affiliate-list">
                 <h3>Affiliated Institutions included in LAR count:</h3>
                 {% for inst in institution_hierarchy %}
-                    <div class="header-group divided">
-                        <h6 class="item-main">{{ inst.name }}</h6>
-                        <h6 class="item-sub">{{ inst.institution_id }}</h6>
-                    </div>
+                    <span style="display:inline-block; min-width:250px; max-width:250px; height:60px; vertical-align:top;">
+                        <span class="item-main"><b>{{ inst.name }}</b></span><br/><span class="item-sub">{{ inst.institution_id }}</span>
+                    </span>
                 {% endfor %}
             </div>
-            <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
+            <div class="map-divider lighter hidden" id="lender-peers-list">
                 <h3>Peer Institutions included in LAR count:</h3>
                 {% for peer in institution_peers %}
-                    <div class="header-group divided">
-                        <h6 class="item-main">{{ peer.name }}</h6>
-                        <h6 class="item-sub">{{ peer.institution_id }}</h6>
-                    </div>
+                    <span style="display:inline-block; min-width:250px; max-width:250px; height:60px; vertical-align:top;">
+                        <span class="item-main"><b>{{ peer.name }}</b></span><br/><span class="item-sub">{{ peer.institution_id }}</span>
+                    </span>
                 {% endfor %}
             </div>
     {% endif %}
