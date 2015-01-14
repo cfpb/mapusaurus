@@ -43,5 +43,5 @@ def race_summary_csv(request):
     institution_id = request.GET.get('lender')
     metro = request.GET.get('metro')
     tracts_in_msa = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=metro).values_list('geoid', flat=True)
-    query = HMDARecord.objects.filter(institution_id=institution_id, geo_id__in=tracts_in_msa).values('geo_id', 'geo__census2010households__total', 'geo__census2010racestats__total_pop', 'geo__census2010racestats__hispanic_perc', 'geo__census2010racestats__non_hisp_white_only_perc', 'geo__census2010racestats__non_hisp_black_only_perc', 'geo__census2010racestats__non_hisp_asian_only_perc').annotate(volume=Count('geo_id'))
+    query = HMDARecord.objects.filter(institution_id=institution_id, geo_id__in=tracts_in_msa).values('geo_id', 'geo__census2010households__total', 'geo__census2010racestats__total_pop', 'geo__census2010racestats__hispanic_perc', 'geo__census2010racestats__non_hisp_white_only_perc', 'geo__census2010racestats__non_hisp_black_only_perc', 'geo__census2010racestats__non_hisp_asian_only_perc').annotate(lar_count=Count('geo_id'))
     return render_to_csv_response(query)
