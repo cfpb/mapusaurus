@@ -16,8 +16,11 @@ if (!window.console) console = {log: function() {}};
 
         // When the page loads, update the print link, and update it whenever the hash changes
         updatePrintLink();
+        updateCensusLink();
+
         $( window ).on('hashchange', function(){
             updatePrintLink();
+            updateCensusLink();
         });
 
         // When minority changes, redraw the circles with appropriate styles
@@ -789,6 +792,13 @@ if (!window.console) console = {log: function() {}};
     // Update the #printLink href to reflect the current map when "print" is clicked
     function updatePrintLink(){
         $('#printLink').attr('href', '/map/print' + window.location.search + window.location.hash );
+    }
+
+    // Update the #censusLink href to reflect the selections of the user
+    function updateCensusLink(){
+        var actions = getHashParams()
+        var actionVar = getActionTaken( actions.action.values );
+        $('#downloadCensus').attr('href', '/census/race_summary_csv/?metro=' + urlParam('metro') + '&lender=' + urlParam('lender') + '&action_taken=' + actionVar );
     }
 
     // Parameter helper function that filters the query according to dropdown values
