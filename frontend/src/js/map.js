@@ -14,15 +14,6 @@ if (!window.console) console = {log: function() {}};
             setMapHeight();
         });
 
-        // When the page loads, update the print link, and update it whenever the hash changes
-        updatePrintLink();
-        updateCensusLink();
-
-        $( window ).on('hashchange', function(){
-            updatePrintLink();
-            updateCensusLink();
-        });
-
         // When minority changes, redraw the circles with appropriate styles
         $('#category-selector').on('change', function(e) {
             var val = $('#category-selector').val();
@@ -130,6 +121,17 @@ if (!window.console) console = {log: function() {}};
         });
 
         map.on('moveend', _.debounce(init, 500) );
+
+        // When the page loads, update the print link, and update it whenever the hash changes
+        updatePrintLink();
+        updateCensusLink();
+
+        layerUpdate( $('#category-selector').val() );
+
+        $( window ).on('hashchange', function(){
+            updatePrintLink();
+            updateCensusLink();
+        });
 
         //Let the application do its thing 
         init();
