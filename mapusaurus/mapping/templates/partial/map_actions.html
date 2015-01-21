@@ -47,7 +47,7 @@
 
             {% if institution_peers.count > 0 %}
                 <div id="lender-peers" class="map-divider lighter">
-                    <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Peer LAR ({{ institution_peers.count}} Peer{{ institution_peers.count|pluralize}}) <span class="tooltipsy hidden peer-component" title="Peers are institutions that have between 50% and 200% of {{lender.name}} LAR count, and and a similar percentage of overall FHA Applications in {{ metro.name}}"><i class="cf-icon cf-icon-information-round"></i></span></h6>
+                    <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Peer LAR ({{ institution_peers.count}} Peer{{ institution_peers.count|pluralize}}) <span class="tooltipsy hidden peer-component" title="Peers are institutions that have between 50% and 200% of {{lender.name}} LAR count, and and a similar percentage of overall FHA Applications in {{ metro.name}}. By checking this box, you show the combined LAR count of the below peers on the map, without the selected institution included."><i class="cf-icon cf-icon-information-round"></i></span></h6>
                 </div>
                 <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
                     {% for peer in institution_peers %}
