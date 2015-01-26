@@ -6,8 +6,8 @@ from hmda.models import HMDARecord, LendingStats
 from geo.models import Geo
 from geo.views import get_censustract_geoids 
 from rest_framework.renderers import JSONRenderer
-from respondents.models import LenderHierarchy, Institution
-
+from respondents.models import Institution
+from respondents.views import get_lender_hierarchy
 
 def loan_originations(request):
     institution_id = request.GET.get('lender')
@@ -17,7 +17,7 @@ def loan_originations(request):
     peers = request.GET.get('peers')
     geoids = get_censustract_geoids(request)
     
-    institution_selected = Institution.objects.get(pk=institution_id)
+    institution_selected = Institution.objects.filter(pk=institution_id).first()
     metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
     action_taken_selected = action_taken_param.split(',')
     if geoids and action_taken_selected:
@@ -25,7 +25,7 @@ def loan_originations(request):
                 property_type__in=[1,2], owner_occupancy=1, lien_status=1,
                 action_taken__in=action_taken_selected)
         if lender_hierarchy == 'true':
-            hierarchy_list = LenderHierarchy.objects.filter(organization_id=institution_selected.lenderhierarchy_set.get().organization_id)
+            hierarchy_list = get_lender_hierarchy(institution_selected, False, False)
             if len(hierarchy_list) > 0:
                 query = query.filter(institution__in=hierarchy_list) 
             else: 
@@ -42,14 +42,14 @@ def loan_originations(request):
     else: 
         return HttpResponseBadRequest("Missing one of lender, action_taken, lat/lon bounds or geoid.")
     query = query.values('geo__geoid', 'geo__census2010households__total').annotate(volume=Count('geo__geoid'))
-    return query; 
+    return query 
     
 def get_peer_list(lender, metro):
     loan_stats = lender.lendingstats_set.filter(geo_id=metro.geoid).first()
     if loan_stats:
         percent_50 = loan_stats.lar_count * .50
         percent_200 = loan_stats.lar_count * 2.0
-        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).exclude(institution=lender)
+        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).exclude(institution=lender).select_related('institution')
         return peer_list
     return []
 

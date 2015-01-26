@@ -10,7 +10,7 @@ from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from respondents.models import Institution, Branch
+from respondents.models import Institution, LenderHierarchy, Branch
 
 
 def respondent(request, agency_id, respondent):
@@ -164,6 +164,18 @@ def search_results(request):
          'next_page': next_page, 'prev_page': prev_page,
          'total_pages': total_pages, 'current_sort': current_sort},
         template_name='respondents/search_results.html')
+
+def get_lender_hierarchy(inst, exclude, order_by):
+    lender_hierarchy = inst.lenderhierarchy_set.first()
+    if lender_hierarchy:
+        org_id = lender_hierarchy.organization_id
+        hierarchy = LenderHierarchy.objects.filter(organization_id=org_id).select_related('institution')
+        if exclude:
+            hierarchy = hierarchy.exclude(institution=inst)
+        if order_by:
+            hierarchy = hierarchy.order_by('-institution__assets')
+        return hierarchy
+    return [] 
 
 def branch_locations_as_json(request):
     return json.loads(branch_locations(request))
