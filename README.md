@@ -3,6 +3,8 @@ Mapusaurus
 
  [![Build Status](https://travis-ci.org/cfpb/mapusaurus.png)](https://travis-ci.org/cfpb/mapusaurus)
 
+ [![Coverage Status](https://coveralls.io/repos/cfpb/mapusaurus/badge.svg)](https://coveralls.io/r/cfpb/mapusaurus)
+
 ## Description 
 
 Mapusaurus loads institution data from HMDA, and maps HMDA
