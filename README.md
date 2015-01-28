@@ -7,10 +7,10 @@ Mapusaurus
 
 ## Description 
 
-Mapusaurus loads institution data from HMDA, and maps HMDA
-reporter ids to National Information Center ids for easy identification. 
+This repository provides data and scripts to set up an API endpoint for serving Home Mortgage Disclosure Act data as well as front-end and back-end application components that feed off this data.
+Financial institution data is loaded from raw HMDA files and welded to National Information Center data to allow for more robust analysis in the front-end application.
 
-Mapusaurus is a Python/Django application. Additional requirements are defined below.
+The Mapusaurus back-end is a Python/Django application. Additional requirements are defined below.
 
 
 ## Data
