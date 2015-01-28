@@ -32,15 +32,17 @@ http://www.ffiec.gov/hmdarawdata/OTHER/2013HMDAReporterPanel.zip
 
 ## Requirements 
 
-This currently uses: 
+This currently uses:
 Django 1.7
 Python 2.7.x
 
 You will also need:
 PostgreSQL 9.3
-PostGIS 2.1.3
+PostGIS 2.1.x
+ElasticSearch
 
-There's also a requirements.txt file in the repository root directory.  
+There's also a requirements.txt file in the repository root directory that can be installed with pip.
+
 
 ## Loading the data
 
