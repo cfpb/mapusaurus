@@ -1,22 +1,7 @@
-This is actually a tool to build an API out of data tables.. and the files to build the front-end...
-And the files to create a webserver
-
-Doesn't use South
-
-Remove precaching stuff
 python 2.7.X
 postgres 9.3
 postgis 2.1.X
 django 1.7.X
-
-Find and replace respondents
-
-Browser tests internal instance
-./manage.py test (runs travis)
-
-Travis need to be the owner of the repo
-Turn it on for fork but not for the public project
-
 
 
 Install pip (link to it)
@@ -28,9 +13,11 @@ brew install postgis
 
 pip install -r requirements.txt 
 
+
 cd to mapusaurus directory
 
 There needs to be a database setup.. at least to work with django
 
+Requires Elasticsearch. Needs to be included as a dependency.
 
 
