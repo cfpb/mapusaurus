@@ -1,7 +1,7 @@
 Mapusaurus
 =======
 
-https://api.travis-ci.org/cfpb/mapusaurus.svg?branch=master
+ [![Build Status](https://travis-ci.org/cfpb/mapusaurus.png)](https://travis-ci.org/cfpb/mapusaurus)
 
 ## Description 
 
