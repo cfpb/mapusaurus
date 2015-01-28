@@ -1,6 +1,8 @@
 Mapusaurus
 =======
 
+ [![Build Status](https://travis-ci.org/cfpb/mapusaurus.png)](https://travis-ci.org/cfpb/mapusaurus)
+
 ## Description 
 
 Mapusaurus loads institution data from HMDA, and maps HMDA
@@ -30,21 +32,21 @@ http://www.ffiec.gov/hmdarawdata/OTHER/2013HMDAReporterPanel.zip
 
 This currently uses: 
 Django 1.7
-Python 2.7.8
+Python 2.7.x
 
-PostgreSQL 9.2
+You will also need:
+PostgreSQL 9.3
 PostGIS 2.1.3
 
 There's also a requirements.txt file in the repository root directory.  
 
 ## Loading the data
 
-This uses South. 
 
 To create the tables, you need to run:
 
 ```
-    python manage.py migrate respondants
+    python manage.py migrate respondents
 ```
 
 There's also a fixture that you need to load some information from:
