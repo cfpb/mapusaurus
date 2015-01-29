@@ -16,7 +16,7 @@ def map(request, template):
     lender_selected = request.GET.get('lender', '')
     metro_selected = request.GET.get('metro')
     context = {}
-    lender = Institution.objects.filter(institution_id=lender_selected).select_related('agency', 'zip_code').first()
+    lender = Institution.objects.filter(institution_id=lender_selected).select_related('agency', 'zip_code', 'lenderhierarchy').first()
     metro = Geo.objects.filter(geo_type=Geo.METRO_TYPE,geoid=metro_selected).first()
     if lender:
         context['lender'] = lender
@@ -25,7 +25,7 @@ def map(request, template):
     if metro:
         context['metro'] = metro
     if lender and metro:
-        peer_list = get_peer_list(lender, metro).order_by('-institution__assets') 
+        peer_list = get_peer_list(lender, metro, True, True) 
         context['institution_peers'] = peer_list
         context['download_url'] = make_download_url(lender, metro)
         context['hierarchy_download_url'] = make_download_url(hierarchy_list, metro)

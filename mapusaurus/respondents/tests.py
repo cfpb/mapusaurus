@@ -8,6 +8,7 @@ from mock import Mock, patch
 from geo.models import Geo
 from hmda.models import HMDARecord
 from respondents import views, zipcode_utils
+from respondents.views import get_lender_hierarchy
 from respondents.models import Agency, Institution, ZipcodeCityState, LenderHierarchy
 from respondents.management.commands import load_reporter_panel
 from respondents.management.commands import load_transmittal
@@ -69,8 +70,20 @@ class LoadTransmittalTests(TestCase):
 
 
 class ViewTest(TestCase):
-    fixtures = ['agency']
+    fixtures = ['agency', 'fake_respondents', 'fake_hierarchy']
 
+    def test_get_lender_hierarchy(self):
+        institution = Institution.objects.filter(institution_id='91000000001').first()
+        hierarchy_list = get_lender_hierarchy(institution, False, False)
+        import pdb; pdb.set_trace()
+        self.assertEqual(len(hierarchy_list), 3)
+        hierarchy_list_exclude = get_lender_hierarchy(institution, True, False)
+        self.assertEqual(len(hierarchy_list_exclude), 2)
+        hierarchy_list_order = get_lender_hierarchy(institution, False, True)
+        self.assertEqual(hierarchy_list_order[0].institution_id, "91000000001")
+        hierarchy_list_exclude_order = get_lender_hierarchy(institution, True, True)
+        self.assertEqual(hierarchy_list_exclude_order[0].institution_id, "91000000002")        
+    
     def test_select_metro(self):
         results = self.client.get(
             reverse('respondents:select_metro',

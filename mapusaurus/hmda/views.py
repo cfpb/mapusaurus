@@ -44,12 +44,19 @@ def loan_originations(request):
     query = query.values('geo__geoid', 'geo__census2010households__total').annotate(volume=Count('geo__geoid'))
     return query 
     
-def get_peer_list(lender, metro):
+""" Returns a list of peers for a lender+metro combination based on fha_bucket and lar count. 
+    Allows to exclude selected institution/lender and order by institution's assets
+""" 
+def get_peer_list(lender, metro, exclude, order_by):
     loan_stats = lender.lendingstats_set.filter(geo_id=metro.geoid).first()
     if loan_stats:
         percent_50 = loan_stats.lar_count * .50
         percent_200 = loan_stats.lar_count * 2.0
-        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).exclude(institution=lender).select_related('institution')
+        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).select_related('institution')
+        if exclude:
+            peer_list = peer_list.exclude(institution=lender)
+        if order_by:
+            peer_list = peer_list.order_by('-institution_assets')
         return peer_list
     return []
 

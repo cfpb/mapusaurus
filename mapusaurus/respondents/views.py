@@ -169,12 +169,12 @@ def get_lender_hierarchy(inst, exclude, order_by):
     lender_hierarchy = inst.lenderhierarchy_set.first()
     if lender_hierarchy:
         org_id = lender_hierarchy.organization_id
-        hierarchy = LenderHierarchy.objects.filter(organization_id=org_id).select_related('institution')
+        hierarchy_list = LenderHierarchy.objects.filter(organization_id=org_id).select_related('institution')
         if exclude:
-            hierarchy = hierarchy.exclude(institution=inst)
+            hierarchy_list = hierarchy_list.exclude(institution=inst)
         if order_by:
-            hierarchy = hierarchy.order_by('-institution__assets')
-        return hierarchy
+            hierarchy_list = hierarchy_list.order_by('-institution__assets')
+        return hierarchy_list
     return [] 
 
 def branch_locations_as_json(request):
