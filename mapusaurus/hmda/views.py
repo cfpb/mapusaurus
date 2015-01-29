@@ -16,7 +16,6 @@ def loan_originations(request):
     lender_hierarchy = request.GET.get('lh')
     peers = request.GET.get('peers')
     geoids = get_censustract_geoids(request)
-    
     institution_selected = Institution.objects.filter(pk=institution_id).first()
     metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
     action_taken_selected = action_taken_param.split(',')
@@ -50,13 +49,13 @@ def loan_originations(request):
 def get_peer_list(lender, metro, exclude, order_by):
     loan_stats = lender.lendingstats_set.filter(geo_id=metro.geoid).first()
     if loan_stats:
-        percent_50 = loan_stats.lar_count * .50
+        percent_50 = round(loan_stats.lar_count * .50)
         percent_200 = loan_stats.lar_count * 2.0
         peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).select_related('institution')
         if exclude:
             peer_list = peer_list.exclude(institution=lender)
         if order_by:
-            peer_list = peer_list.order_by('-institution_assets')
+            peer_list = peer_list.order_by('-institution__assets')
         return peer_list
     return []
 

@@ -90,5 +90,20 @@
       "rssd_id": "1000000001",
       "assets": 7
     }
+  },
+  {
+    "model": "respondents.institution",
+    "fields": {
+      "year": 2013,
+      "agency" : 1,
+      "respondent_id": "1000000002",
+      "institution_id":"11000000002",
+      "tax_id": "1100000002",
+      "name": "Dev Test Bank 4",
+      "mailing_address": "123 Avenue St.",
+      "zip_code": 20171,
+      "rssd_id": "1000000002",
+      "assets": 6
+    }
   }
 ]

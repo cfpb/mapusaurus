@@ -73,9 +73,24 @@ class ViewTest(TestCase):
     fixtures = ['agency', 'fake_respondents', 'fake_hierarchy']
 
     def test_get_lender_hierarchy(self):
-        institution = Institution.objects.filter(institution_id='91000000001').first()
+        """Case: Institution has no hierarchy"""
+        institution = Institution.objects.filter(institution_id="11000000002").first()
         hierarchy_list = get_lender_hierarchy(institution, False, False)
-        import pdb; pdb.set_trace()
+        self.assertEqual(len(hierarchy_list), 0) 
+        
+        """Case: Institution has no hierarchy but itself. 
+           Returns itself when exclude=False; Returns empy list when exclude=True
+        """
+        institution = Institution.objects.filter(institution_id="91000000003").first()
+        hierarchy_list = get_lender_hierarchy(institution, False, False)
+        self.assertEqual(len(hierarchy_list), 1)
+        self.assertEqual(hierarchy_list[0].institution_id, "91000000003")
+        hierarchy_list_exclude = get_lender_hierarchy(institution, True, False)
+        self.assertEqual(len(hierarchy_list_exclude), 0)
+
+        """Case: Institution has valid hierarchy and returns it""" 
+        institution = Institution.objects.filter(institution_id="91000000001").first()
+        hierarchy_list = get_lender_hierarchy(institution, False, False)
         self.assertEqual(len(hierarchy_list), 3)
         hierarchy_list_exclude = get_lender_hierarchy(institution, True, False)
         self.assertEqual(len(hierarchy_list_exclude), 2)
@@ -83,7 +98,8 @@ class ViewTest(TestCase):
         self.assertEqual(hierarchy_list_order[0].institution_id, "91000000001")
         hierarchy_list_exclude_order = get_lender_hierarchy(institution, True, True)
         self.assertEqual(hierarchy_list_exclude_order[0].institution_id, "91000000002")        
-    
+        self.assertEqual(len(hierarchy_list_exclude_order), 2)        
+ 
     def test_select_metro(self):
         results = self.client.get(
             reverse('respondents:select_metro',
