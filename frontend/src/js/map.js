@@ -1,7 +1,7 @@
 'use strict';
 
 if (!window.console) console = {log: function() {}};
-
+    var updateVoronoi;    
     // When the DOM is loaded, check for params and add listeners:
     $(document).ready(function(){
         var lhStatus, peerStatus, branchStatus;
@@ -13,6 +13,8 @@ if (!window.console) console = {log: function() {}};
         $( window ).resize(function() {
             setMapHeight();
         });
+
+        updateVoronoi = initVoronoi(); 
 
         // When minority changes, redraw the circles with appropriate styles
         $('#category-selector').on('change', function(e) {
@@ -132,10 +134,9 @@ if (!window.console) console = {log: function() {}};
             updatePrintLink();
             updateCensusLink();
         });
-
+         
         //Let the application do its thing 
         init();
-        
     });
     
     // Go get the tract centroids and supporting data, THEN build a data object (uses jQuery Deferreds)
@@ -155,7 +156,8 @@ if (!window.console) console = {log: function() {}};
 
             // Redraw the circles using the created tract object AND the layer bubble type
             //redrawCircles(dataStore.tracts, layerInfo.type );
-            
+             
+            updateVoronoi(rawGeo);
             // Unblock the user interface (remove gradient)
             $.unblockUI();
             isUIBlocked = false;
@@ -423,45 +425,62 @@ if (!window.console) console = {log: function() {}};
     /*
      * Voronoi drawing
      */
-    var map = new L.Map("map", {center: [37.8, -96.9], zoom: 4})
-    .addLayer(new L.TileLayer("http://{s}.tiles.mapbox.com/v3/examples.map-vyofok3q/{z}/{x}/{y}.png"));
 
-    var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-        g = svg.append("g").attr("class", "leaflet-zoom-hide");
+  function initVoronoi(){
+    map._initPathRoot();
+    var svg = d3.select("#map").select("svg"),
+        g = svg.append("g").attr("class", "leaflet-zoom-hide"),
+        voronoi = d3.geom.voronoi()
+          .x(function(d) { return d.x; })
+          .y(function(d) { return d.y; });
 
-    d3.json("us-states.json", function(collection) {
-      var transform = d3.geo.transform({point: projectPoint}),
-      path = d3.geo.path().projection(transform);
+    return function(collection){     
+      var positions = [];
+      var pointdata = collection.features;
 
-      var feature = g.selectAll("path")
-        .data(collection.features)
-        .enter().append("path");
+      pointdata.forEach(function(d) {        
+        var latlng = new L.LatLng(d.properties.centlat, d.properties.centlon);
+        positions.push({
+          x :map.latLngToLayerPoint(latlng).x,
+          y :map.latLngToLayerPoint(latlng).y
+        });
+      });
 
-      map.on("viewreset", reset);
-      reset();
+      d3.selectAll('.tractCentroid').remove();
 
-      // Reposition the SVG to cover the features.
-      function reset() {
-        var bounds = path.bounds(collection),
-        topLeft = bounds[0],
-        bottomRight = bounds[1];
+      var circle = g.selectAll("circle")
+        .data(positions)
+        .enter()
+        .append("circle")
+        .attr("class", "tractCentroid")
+        .attr({
+          "cx":function(d, i) { return d.x; },
+          "cy":function(d, i) { return d.y; },
+          "r":2,
+          fill:"red"            
+         });
 
-        svg .attr("width", bottomRight[0] - topLeft[0])
-          .attr("height", bottomRight[1] - topLeft[1])
-          .style("left", topLeft[0] + "px")
-          .style("top", topLeft[1] + "px");
 
-        g   .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+      var polygons = voronoi(positions);
+      polygons.forEach(function(v) { v.cell = v; });
 
-        feature.attr("d", path);
-      }
+      svg.selectAll(".voronoi").remove();
+      svg.selectAll("path")
+        .data(polygons)
+        .enter()
+        .append("svg:path")
+        .attr("class", "voronoi")
+        .attr({
+          "d": function(d) {
+            if(!d) return null; 
+            return "M" + d.cell.join("L") + "Z";
+          },
+          stroke:"black",
+          fill:"none"            
+        });
 
-      // Use Leaflet to implement a D3 geometric transformation.
-      function projectPoint(x, y) {
-        var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-        this.stream.point(point.x, point.y);
-      }
-    });
+    } 
+  }
     /*
      * End Voronoi drawing
      */
