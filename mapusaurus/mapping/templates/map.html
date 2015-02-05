@@ -16,6 +16,8 @@
     <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.standalone.js'></script>
     <script type="text/javascript" src="{% static 'mapping/js/map.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="{% static 'mapping/js/plots.min.js' %}"></script>
 {% endblock %}
 
 {% block sidebar_content %}
@@ -38,6 +40,58 @@
     </div>
 </div>
 
+<style>
+
+#plot-container div {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+}
+
+.bar-lar {
+  fill: steelblue;
+}
+
+.bar-min {
+  fill: red;
+}
+
+.bar-lar:hover {
+  fill: brown;
+}
+
+.bar-min:hover {
+  fill: brown;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+</style>
+
+<div id="plot-container">
+  
+</div>
+<!--<svg class="chart">
+  <!--<div id="minority-percentage">
+
+  </div>
+</svg>-->
 
 {% endblock %}
 
