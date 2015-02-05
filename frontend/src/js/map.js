@@ -440,9 +440,13 @@ if (!window.console) console = {log: function() {}};
       for(var i=0; i<polygons.length; i++){
         var poly = polygons[i];
         var bounds = L.latLngBounds(poly);
+        console.log(poly,bounds);
         for(var j=0,len=features[i].properties.volume; j<len; j++){
+          console.log(j,len);
           var pt = randomPoint(bounds);
+          var bail = 0;
           while(!pointInPoly(pt,poly)){
+            if(++bail>20) break;
             pt = randomPoint(bounds);
           }
           points.push(pt);
@@ -476,9 +480,9 @@ if (!window.console) console = {log: function() {}};
 
       return function(collection){     
         var positions = [];
-        var pointdata = collection.features;
+        var features = collection.features;
 
-        pointdata.forEach(function(d) {        
+        features.forEach(function(d) {        
           var latlng = new L.LatLng(d.properties.centlat, d.properties.centlon);
           positions.push([
             map.latLngToLayerPoint(latlng).x,
@@ -486,27 +490,19 @@ if (!window.console) console = {log: function() {}};
           ]);
         });
 
-        d3.selectAll('.tractCentroid').remove();
-
-        var circle = g.selectAll("circle")
-          .data(positions)
-          .enter()
-          .append("circle")
-          .attr("class", "tractCentroid")
-          .attr({
-            "cx":function(d, i) { return d[0]; },
-            "cy":function(d, i) { return d[1]; },
-            "r":2,
-            fill:"red"            
-           });
-
+        svg.selectAll('.densityDot').remove();
+        svg.selectAll(".voronoi").remove();
 
         var polygons = voronoi(positions);
-        polygons.forEach(function(v) { v.cell = v; });
+        
         console.log(positions,polygons);
-        window.gPoly = polygons[14];
-        window.gPoint = positions[14];
-        svg.selectAll(".voronoi").remove();
+         
+        window.poly = polygons;
+        window.feat = features;
+        var points = makeDots(polygons, features);
+         
+        polygons.forEach(function(v) { v.cell = v; });
+        
         svg.selectAll("path")
           .data(polygons)
           .enter()
@@ -520,7 +516,17 @@ if (!window.console) console = {log: function() {}};
             stroke:"black",
             fill:"none"            
           });
-
+         var circle = g.selectAll("circle")
+          .data(points)
+          .enter()
+          .append("circle")
+          .attr("class", "densityDot")
+          .attr({
+            "cx":function(d, i) { return d[0]; },
+            "cy":function(d, i) { return d[1]; },
+            "r":1,
+            fill:"#444"            
+           });
       } 
     }
     /*
