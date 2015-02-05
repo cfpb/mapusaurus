@@ -435,9 +435,24 @@ if (!window.console) console = {log: function() {}};
       return point;
     }
   
-    function makeDots(polygons, 
-    function pointInPoly(point, vs) {
+    function makeDots(polygons,features){
+      var points = []; 
+      for(var i=0; i<polygons.length; i++){
+        var poly = polygons[i];
+        var bounds = L.latLngBounds(poly);
+        for(var j=0,len=features[i].properties.volume; j<len; j++){
+          var pt = randomPoint(bounds);
+          while(!pointInPoly(pt,poly)){
+            pt = randomPoint(bounds);
+          }
+          points.push(pt);
+        } 
+      }
+      return points;
+    }
 
+    //https://github.com/substack/point-in-polygon 
+    function pointInPoly(point, vs) {
       var x = point[0], y = point[1];
 
       var inside = false;
