@@ -425,62 +425,78 @@ if (!window.console) console = {log: function() {}};
     /*
      * Voronoi drawing
      */
+    function pointInPoly(point, vs) {
 
-  function initVoronoi(){
-    map._initPathRoot();
-    var svg = d3.select("#map").select("svg"),
-        g = svg.append("g").attr("class", "leaflet-zoom-hide"),
-        voronoi = d3.geom.voronoi()
-          .x(function(d) { return d.x; })
-          .y(function(d) { return d.y; });
+      var x = point[0], y = point[1];
 
-    return function(collection){     
-      var positions = [];
-      var pointdata = collection.features;
+      var inside = false;
+      for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        var xi = vs[i][0], yi = vs[i][1];
+        var xj = vs[j][0], yj = vs[j][1];
 
-      pointdata.forEach(function(d) {        
-        var latlng = new L.LatLng(d.properties.centlat, d.properties.centlon);
-        positions.push({
-          x :map.latLngToLayerPoint(latlng).x,
-          y :map.latLngToLayerPoint(latlng).y
-        });
-      });
+        var intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+      }
 
-      d3.selectAll('.tractCentroid').remove();
+      return inside;
+    }
 
-      var circle = g.selectAll("circle")
-        .data(positions)
-        .enter()
-        .append("circle")
-        .attr("class", "tractCentroid")
-        .attr({
-          "cx":function(d, i) { return d.x; },
-          "cy":function(d, i) { return d.y; },
-          "r":2,
-          fill:"red"            
-         });
+    function initVoronoi(){
+      map._initPathRoot();
+      var svg = d3.select("#map").select("svg"),
+          g = svg.append("g").attr("class", "leaflet-zoom-hide"),
+          voronoi = d3.geom.voronoi();
 
+      return function(collection){     
+        var positions = [];
+        var pointdata = collection.features;
 
-      var polygons = voronoi(positions);
-      polygons.forEach(function(v) { v.cell = v; });
-
-      svg.selectAll(".voronoi").remove();
-      svg.selectAll("path")
-        .data(polygons)
-        .enter()
-        .append("svg:path")
-        .attr("class", "voronoi")
-        .attr({
-          "d": function(d) {
-            if(!d) return null; 
-            return "M" + d.cell.join("L") + "Z";
-          },
-          stroke:"black",
-          fill:"none"            
+        pointdata.forEach(function(d) {        
+          var latlng = new L.LatLng(d.properties.centlat, d.properties.centlon);
+          positions.push([
+            map.latLngToLayerPoint(latlng).x,
+            map.latLngToLayerPoint(latlng).y
+          ]);
         });
 
-    } 
-  }
+        d3.selectAll('.tractCentroid').remove();
+
+        var circle = g.selectAll("circle")
+          .data(positions)
+          .enter()
+          .append("circle")
+          .attr("class", "tractCentroid")
+          .attr({
+            "cx":function(d, i) { return d[0]; },
+            "cy":function(d, i) { return d[1]; },
+            "r":2,
+            fill:"red"            
+           });
+
+
+        var polygons = voronoi(positions);
+        polygons.forEach(function(v) { v.cell = v; });
+        console.log(positions,polygons);
+        window.gPoly = polygons[14];
+        window.gPoint = positions[14];
+        svg.selectAll(".voronoi").remove();
+        svg.selectAll("path")
+          .data(polygons)
+          .enter()
+          .append("svg:path")
+          .attr("class", "voronoi")
+          .attr({
+            "d": function(d) {
+              if(!d) return null; 
+              return "M" + d.cell.join("L") + "Z";
+            },
+            stroke:"black",
+            fill:"none"            
+          });
+
+      } 
+    }
     /*
      * End Voronoi drawing
      */
