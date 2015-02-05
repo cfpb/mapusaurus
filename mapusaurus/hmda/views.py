@@ -19,7 +19,10 @@ def loan_originations(request):
     
     institution_selected = Institution.objects.get(pk=institution_id)
     metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
-    action_taken_selected = action_taken_param.split(',')
+    if action_taken_param:
+        action_taken_selected = action_taken_param.split(',')
+    else:
+        action_taken_selected = None
     if geoids and action_taken_selected:
         query = HMDARecord.objects.filter(
                 property_type__in=[1,2], owner_occupancy=1, lien_status=1,
@@ -39,8 +42,10 @@ def loan_originations(request):
         else: 
             query = query.filter(institution=institution_selected)
         query = query.filter(geo__geoid__in=geoids)
+    elif geoids:
+        query = HMDARecord.objects.filter(geo__geoid__in=geoids)
     else: 
-        return HttpResponseBadRequest("Missing one of lender, action_taken, lat/lon bounds or geoid.")
+        return HttpResponseBadRequest("Missing geoid.")
     query = query.values('geo__geoid', 'geo__census2010households__total').annotate(volume=Count('geo__geoid'))
     return query; 
     
