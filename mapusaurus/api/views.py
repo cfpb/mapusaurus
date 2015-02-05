@@ -29,7 +29,6 @@ def tables(request):
 def msa(request):
     try:
         metro_id = request.GET.get('metro')
-        lender_id = request.GET.get('lender')
         msa_geo = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=metro_id)
         tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=metro_id)
     except:
