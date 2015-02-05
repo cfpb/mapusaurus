@@ -425,6 +425,17 @@ if (!window.console) console = {log: function() {}};
     /*
      * Voronoi drawing
      */
+
+    function randomPoint(bounds){
+      var point = new Array(2);
+      var west = bounds.getWest();
+      var north = bounds.getNorth();
+      point[0] = west + Math.random()*(bounds.getEast() - west);
+      point[1] = north + Math.random()*(bounds.getSouth() - north);
+      return point;
+    }
+  
+    function makeDots(polygons, 
     function pointInPoly(point, vs) {
 
       var x = point[0], y = point[1];
