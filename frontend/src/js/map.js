@@ -426,12 +426,14 @@ if (!window.console) console = {log: function() {}};
      * Voronoi drawing
      */
 
-    function randomPoint(bounds){
+    function randomPoint(rBounds){
       var point = new Array(2);
-      var west = bounds.getWest();
-      var north = bounds.getNorth();
-      point[0] = west + Math.random()*(bounds.getEast() - west);
-      point[1] = north + Math.random()*(bounds.getSouth() - north);
+      var west = rBounds.getNorth();
+      var north = rBounds.getEast();
+      var east = rBounds.getSouth();
+      var south = rBounds.getWest();
+      point[0] = west + Math.random()*(east - west);
+      point[1] = north + Math.random()*(south - north);
       return point;
     }
   
@@ -439,15 +441,13 @@ if (!window.console) console = {log: function() {}};
       var points = []; 
       for(var i=0; i<polygons.length; i++){
         var poly = polygons[i];
-        var bounds = L.latLngBounds(poly);
-        console.log(poly,bounds);
+        var reverseBounds = L.latLngBounds(poly);
         for(var j=0,len=features[i].properties.volume; j<len; j++){
-          console.log(j,len);
-          var pt = randomPoint(bounds);
+          var pt = randomPoint(reverseBounds);
           var bail = 0;
           while(!pointInPoly(pt,poly)){
-            if(++bail>20) break;
-            pt = randomPoint(bounds);
+            if(++bail>10){console.log("Bailing"); break;}
+            pt = randomPoint(reverseBounds);
           }
           points.push(pt);
         } 
@@ -481,12 +481,14 @@ if (!window.console) console = {log: function() {}};
       return function(collection){     
         var positions = [];
         var features = collection.features;
+        var size = map.getSize();
 
         features.forEach(function(d) {        
           var latlng = new L.LatLng(d.properties.centlat, d.properties.centlon);
+          var point =  map.latLngToLayerPoint(latlng);
           positions.push([
-            map.latLngToLayerPoint(latlng).x,
-            map.latLngToLayerPoint(latlng).y
+            point.x,
+            point.y
           ]);
         });
 
@@ -498,8 +500,8 @@ if (!window.console) console = {log: function() {}};
         console.log(positions,polygons);
          
         window.poly = polygons;
-        window.feat = features;
-        var points = makeDots(polygons, features);
+        window.feat = selectedFeatures;
+        var points = makeDots(polygons, selectedFeatures);
          
         polygons.forEach(function(v) { v.cell = v; });
         
