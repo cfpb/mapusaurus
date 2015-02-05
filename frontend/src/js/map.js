@@ -121,8 +121,12 @@ if (!window.console) console = {log: function() {}};
                 toggleBranches(true);
             }
         });
-
+         
         map.on('moveend', _.debounce(init, 500) );
+
+        map.on('movestart', function(){
+          d3.selectAll(".densityDot").remove();
+        });
 
         // When the page loads, update the print link, and update it whenever the hash changes
         updatePrintLink();
@@ -446,7 +450,7 @@ if (!window.console) console = {log: function() {}};
           var pt = randomPoint(reverseBounds);
           var bail = 0;
           while(!pointInPoly(pt,poly)){
-            if(++bail>10){console.log("Bailing"); break;}
+            if(++bail>10) break;
             pt = randomPoint(reverseBounds);
           }
           points.push(pt);
@@ -492,19 +496,18 @@ if (!window.console) console = {log: function() {}};
           ]);
         });
 
-        svg.selectAll('.densityDot').remove();
-        svg.selectAll(".voronoi").remove();
 
         var polygons = voronoi(positions);
         
-        console.log(positions,polygons);
-         
         window.poly = polygons;
-        window.feat = selectedFeatures;
-        var points = makeDots(polygons, selectedFeatures);
+        window.feat = features;
+        var points = makeDots(polygons, features);
          
+        /*
+         * Draw voronoi diagrams
+         * 
+        svg.selectAll(".voronoi").remove();
         polygons.forEach(function(v) { v.cell = v; });
-        
         svg.selectAll("path")
           .data(polygons)
           .enter()
@@ -518,7 +521,9 @@ if (!window.console) console = {log: function() {}};
             stroke:"black",
             fill:"none"            
           });
-         var circle = g.selectAll("circle")
+        */
+
+         g.selectAll("circle")
           .data(points)
           .enter()
           .append("circle")
