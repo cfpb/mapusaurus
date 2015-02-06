@@ -46,7 +46,7 @@ def msa(request):
         for tract in tracts:
             tracts_out['features'].append({
                     "type": "Feature",
-                    "geometry": {"type": "Polygon", "coordinates": tract.geom.simplify().coords},
+                    "geometry": {"type": "Polygon", "coordinates": tract.geom.simplify(0.001).coords},
                     "properties": {"tract_id": tract.geoid, "msa_id": tract.cbsa, "centlat": tract.centlat, "centlon": tract.centlon}
                     })
         context = {'msa': msa_out, 'tracts': tracts_out}
