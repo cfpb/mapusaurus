@@ -11,6 +11,7 @@ from djqscsv import render_to_csv_response
 from hmda.views import loan_originations_as_json
 
 def odds_ratio(target_a, target_c, peer_b, peer_d):
+    """courtesy of amok"""
     portfolio_x = float(target_a) / float(target_a + target_c)
     portfolio_y = float(peer_b) / float(peer_b + peer_d)
 
