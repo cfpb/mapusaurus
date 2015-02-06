@@ -36,7 +36,7 @@ def msa(request):
     else:
         msa_out = {
          "type": "Feature",
-            "geometry": {"type": "Multipolygon", "coordinates": msa_geo.geom.coords},
+            "geometry": {"type": "Multipolygon", "coordinates": msa_geo.geom.simplify(tolerance=0.0001, preserve_topology=True).coords},
             "properties": {"metro": msa_geo.geoid, "name": msa_geo.name}
         }
         tracts_out = { 
