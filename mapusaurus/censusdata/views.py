@@ -5,19 +5,27 @@ from django.http import HttpResponse, HttpResponseBadRequest
 
 from hmda.models import HMDARecord
 from .models import Census2010RaceStats
-from geo.views import get_censustract_geoids, get_tracts_by_msa
+from geo.views import get_censustract_geoids
 from geo.models import Geo
 from djqscsv import render_to_csv_response
 from hmda.views import loan_originations_as_json
+
+def odds_ratio(target_a, target_c, peer_b, peer_d):
+    portfolio_x = float(target_a) / float(target_a + target_c)
+    portfolio_y = float(peer_b) / float(peer_b + peer_d)
+
+    odds_numer = portfolio_x / (1.0 - portfolio_x)
+    odds_denom = portfolio_y / (1.0 - portfolio_y)
+
+    return int(odds_numer / odds_denom)
 
 def minority_aggregation_as_json(request):
     """
     aggregates minority population ranges and LAR counts 
     for a lender in an MSA
     TODO: do same by county
-    TODO: add odds calc
     """
-    tracts = get_tracts_by_msa(request)
+    tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=request.GET.get('metro'))
     pop, minority = 0, 0
     lma = []
     mma = []
