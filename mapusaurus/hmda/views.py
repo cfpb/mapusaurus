@@ -43,7 +43,9 @@ def loan_originations(request):
             query = query.filter(institution=institution_selected)
         query = query.filter(geo__geoid__in=geoids)
     elif geoids:
-        query = HMDARecord.objects.filter(geo__geoid__in=geoids)
+        query = HMDARecord.objects.filter(
+                property_type__in=[1,2], owner_occupancy=1, lien_status=1,
+                geo__geoid__in=geoids)
     else: 
         return HttpResponseBadRequest("Missing geoid.")
     query = query.values('geo__geoid', 'geo__census2010households__total').annotate(volume=Count('geo__geoid'))
