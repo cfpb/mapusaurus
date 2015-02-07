@@ -32,10 +32,11 @@ def get_censustract_geoids(request):
 
 def get_tracts_by_msa(request):
     msa_id = request.GET.get('metro')
-    lender_id = request.GET.get('lender')
     metro = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=msa_id).first()
-    lender = Institution.objects.filter(institution_id=lender_id).first()
-    if metro and lender:
+    # lender_id = request.GET.get('lender')
+    # lender = Institution.objects.filter(institution_id=lender_id).first()
+    # if metro and lender:
+    if metro:
         tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=msa_id)
         return tracts
     else:
