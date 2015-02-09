@@ -8,64 +8,142 @@ from .models import Census2010RaceStats
 from geo.views import get_censustract_geoids
 from geo.models import Geo
 from djqscsv import render_to_csv_response
-from hmda.views import loan_originations_as_json
+from hmda.views import loan_originations_as_json, get_peer_list
+from respondents.models import Institution
 
-def odds_ratio(target_a, target_c, peer_b, peer_d):
-    """courtesy of amok"""
-    portfolio_x = float(target_a) / float(target_a + target_c)
-    portfolio_y = float(peer_b) / float(peer_b + peer_d)
+def sum_lar_tuples(tups):
+    return sum([tup[1] for tup in tups])
 
-    odds_numer = portfolio_x / (1.0 - portfolio_x)
-    odds_denom = portfolio_y / (1.0 - portfolio_y)
-
-    return int(odds_numer / odds_denom)
-
-def minority_aggregation_as_json(request):
+def assemble_stats(request, lar_data, tracts):
     """
-    aggregates minority population ranges and LAR counts 
-    for a lender in an MSA
-    TODO: do same by county
+    assembles a lender's applications by those made
+    in low, medium and high minority areas;
+    we might be assembling stats for a lender or peer;
+    the request passes lender and metro-area ids
     """
-    tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=request.GET.get('metro'))
-    pop, minority = 0, 0
     lma = []
     mma = []
     hma = []
-    lma_ct, mma_ct, hma_ct = 0, 0, 0
     for tract in tracts:
-        lar_data = loan_originations_as_json(request)
         stats = tract.census2010racestats
-        pop += stats.total_pop
-        minority += (stats.total_pop - stats.non_hisp_white_only)
-        tract_tuple = (tract, lar_data[tract.geoid]['volume'])
+        if tract.geoid in lar_data.keys():
+            tract_tuple = (tract, lar_data[tract.geoid]['volume'])
+        else:
+            tract_tuple = (tract, 0)
         if stats.total_pop:
-            minority_pct = 1.0 * (stats.total_pop - stats.non_hisp_white_only) / stats.total_pop
+            minority = stats.total_pop - stats.non_hisp_white_only
+            minority_pct = 1.0 * minority / stats.total_pop
             if minority_pct < .5:
                 lma.append(tract_tuple)
             elif minority_pct < .8:
                 mma.append(tract_tuple)
             else:
                 hma.append(tract_tuple)
-    msa_minority_pct = 1.0 * minority / pop
-    for tup in lma:
-        lma_ct += tup[1]
-    for tup in mma:
-        mma_ct += tup[1]
-    for tup in hma:
-        hma_ct += tup[1]
-    loan_total = lma_ct + mma_ct + hma_ct
-    return {
-        'msa_minority_count': minority,
-        'msa_minority_pct': msa_minority_pct,
-        'msa_population': pop,
-        'lender_lma_count': lma_ct,
-        'lender_lma_pct': 1.0 * lma_ct / loan_total,
-        'lender_mma_count': mma_ct,
-        'lender_lma_pct': 1.0 * mma_ct / loan_total,
-        'lender_hma_count': hma_ct,
-        'lender_hma_pct': 1.0 * hma_ct / loan_total,
-    }
+    lma_ct = sum_lar_tuples(lma)
+    mma_ct = sum_lar_tuples(mma)
+    hma_ct = sum_lar_tuples(hma)
+    lar_total = lma_ct + mma_ct + hma_ct
+    lar_stats = {
+            'lma': lma_ct, 
+            'lma_pct': 1.0 * lma_ct / lar_total, 
+            'mma': mma_ct,
+            'mma_pct': 1.0 * mma_ct / lar_total,
+            'hma': hma_ct,
+            'hma_pct': 1.0 * hma_ct / lar_total,
+            'lar_total': lar_total
+            }
+    return lar_stats
 
+def tally_msa_minority_stats(tracts):
+    """
+    metro areas don't have attached census data, 
+    so we need to count up minority figures
+    """
+    pop, minority = 0, 0
+    for tract in tracts:
+        stats = tract.census2010racestats
+        pop += stats.total_pop
+        minority += (stats.total_pop - stats.non_hisp_white_only)
+    if pop:
+        return pop, minority, 1.0 * minority / pop
+    else:
+        return 0, 0, 0
+
+def combine_peer_stats(collector):
+    peer_total = sum([entry['lar_total'] for entry in collector])
+    lma = sum([entry['lma'] for entry in collector])
+    lma_pct = 1.0 * lma / peer_total
+    mma = sum([entry['mma'] for entry in collector])
+    mma_pct = 1.0 * mma / peer_total
+    hma = sum([entry['hma'] for entry in collector])
+    hma_pct = 1.0 * hma / peer_total
+    return {
+            'lma': lma, 
+            'lma_pct': 1.0 * lma / peer_total, 
+            'mma': mma,
+            'mma_pct': 1.0 * mma / peer_total,
+            'hma': hma,
+            'hma_pct': 1.0 * hma / peer_total,
+            'lar_total': peer_total
+            }
+
+def minority_aggregation_as_json(request):
+    """
+    aggregates minority population ranges and LAR counts 
+    for a lender in an MSA
+    by tract, msa and county
+    """
+    lar_data = loan_originations_as_json(request)
+    lender = Institution.objects.get(institution_id=request.GET.get('lender'))
+    tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=request.GET.get('metro'))
+    metro = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
+    lender_stats = assemble_stats(request, lar_data, tracts)
+    # MSA
+    msa_pop, msa_minority_ct, msa_minority_pct = tally_msa_minority_stats(tracts)
+    msa_stats = {
+        'minority_ct': msa_minority_ct,
+        'minority_pct': msa_minority_pct
+    }
+    # PEERS
+    peers = get_peer_list(lender, metro)
+    if peers:
+        peer_data_collector = []
+        for peer in peers:
+            request.GET['lender'] = peer.institution_id
+            peer_data_collector.append(assemble_stats(request, lar_data, tracts))
+        if len(peer_data_collector) == 1:
+            peer_stats = peer_data_collector[0]
+        else:
+            peer_stats = combine_peer_stats(peer_data_collector)
+        # ODDS
+        target_mm = lender_stats['hma'] + lender_stats['mma']
+        target_non = lender_stats['lma']
+        peer_mm = peer_stats['hma'] + peer_stats['mma']
+        peer_non = peer_stats['lma']
+        odds = odds_ratio(target_mm, target_non, peer_mm, peer_non)
+    else:
+        peer_stats = None
+        odds = None
+    # BY COUNTY -- TODO
+    county_ids = sorted(set([tract.geoid[:5] for tract in tracts]))
+    county_stats = {county_id: {} for county_id in county_ids}
+    return {
+        'msa': msa_stats,
+        'lender': lender_stats,
+        'peers': peer_stats,
+        'odds': odds,
+        'counties': county_stats,
+        }
+
+def odds_ratio(target_mm, target_non, peer_mm, peer_non):
+    """thank you, amy mok"""
+    portfolio_target = float(target_mm) / float(target_mm + target_non)
+    portfolio_peer = float(peer_mm) / float(peer_mm + peer_non)
+
+    odds_numer = portfolio_target / (1.0 - portfolio_target)
+    odds_denom = portfolio_peer / (1.0 - portfolio_peer)
+
+    return int(odds_numer / odds_denom)
 
 def race_summary(request):
     """Race summary statistics"""
