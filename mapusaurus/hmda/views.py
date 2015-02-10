@@ -16,7 +16,6 @@ def loan_originations(request):
     lender_hierarchy = request.GET.get('lh')
     peers = request.GET.get('peers')
     geoids = get_censustract_geoids(request)
-    
     institution_selected = Institution.objects.get(pk=institution_id)
     metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
     if action_taken_param:
@@ -26,7 +25,8 @@ def loan_originations(request):
     if geoids and action_taken_selected:
         query = HMDARecord.objects.filter(
                 property_type__in=[1,2], owner_occupancy=1, lien_status=1,
-                action_taken__in=action_taken_selected)
+                action_taken__in=action_taken_selected,
+                geo_id__in=geoids)
         if lender_hierarchy == 'true':
             hierarchy_list = LenderHierarchy.objects.filter(organization_id=institution_selected.lenderhierarchy_set.get().organization_id)
             if len(hierarchy_list) > 0:
@@ -41,11 +41,11 @@ def loan_originations(request):
                 query = query.filter(institution=institution_selected)
         else: 
             query = query.filter(institution=institution_selected)
-        query = query.filter(geo_id__in=geoids)
     elif geoids:
         query = HMDARecord.objects.filter(
                 property_type__in=[1,2], owner_occupancy=1, lien_status=1,
-                geo__geoid__in=geoids)
+                geo__geoid__in=geoids,
+                institution=institution_selected)
     else: 
         return HttpResponseBadRequest("Missing geoid.")
     query = query.values('geo_id', 'geo__census2010households__total').annotate(volume=Count('geo_id'))

@@ -1,7 +1,7 @@
 import json
 
 from django.db.models import Count
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 
 from hmda.models import HMDARecord
 from .models import Census2010RaceStats
@@ -14,12 +14,11 @@ from respondents.models import Institution
 def sum_lar_tuples(tups):
     return sum([tup[1] for tup in tups])
 
-def assemble_stats(request, lar_data, tracts):
+def assemble_stats(lar_data, tracts):
     """
     assembles a lender's applications by those made
     in low, medium and high minority areas;
     we might be assembling stats for a lender or peer;
-    the request passes lender and metro-area ids
     """
     lma = []
     mma = []
@@ -43,16 +42,27 @@ def assemble_stats(request, lar_data, tracts):
     mma_ct = sum_lar_tuples(mma)
     hma_ct = sum_lar_tuples(hma)
     lar_total = lma_ct + mma_ct + hma_ct
-    lar_stats = {
-            'lma': lma_ct, 
-            'lma_pct': 1.0 * lma_ct / lar_total, 
-            'mma': mma_ct,
-            'mma_pct': 1.0 * mma_ct / lar_total,
-            'hma': hma_ct,
-            'hma_pct': 1.0 * hma_ct / lar_total,
-            'lar_total': lar_total
+    if lar_total:
+        lar_stats = {
+                'lma': lma_ct, 
+                'lma_pct': 1.0 * lma_ct / lar_total, 
+                'mma': mma_ct,
+                'mma_pct': 1.0 * mma_ct / lar_total,
+                'hma': hma_ct,
+                'hma_pct': 1.0 * hma_ct / lar_total,
+                'lar_total': lar_total
+                }
+        return lar_stats
+    else:
+        return {
+            'lar_total': 0,
+            'lma': 0, 
+            'lma_pct': 0, 
+            'mma': 0,
+            'mma_pct': 0,
+            'hma': 0,
+            'hma_pct': 0
             }
-    return lar_stats
 
 def tally_msa_minority_stats(tracts):
     """
@@ -71,22 +81,32 @@ def tally_msa_minority_stats(tracts):
 
 def combine_peer_stats(collector):
     peer_total = sum([entry['lar_total'] for entry in collector])
-    lma = sum([entry['lma'] for entry in collector])
-    lma_pct = 1.0 * lma / peer_total
-    mma = sum([entry['mma'] for entry in collector])
-    mma_pct = 1.0 * mma / peer_total
-    hma = sum([entry['hma'] for entry in collector])
-    hma_pct = 1.0 * hma / peer_total
-    return {
-            'lma': lma, 
-            'lma_pct': 1.0 * lma / peer_total, 
-            'mma': mma,
-            'mma_pct': 1.0 * mma / peer_total,
-            'hma': hma,
-            'hma_pct': 1.0 * hma / peer_total,
-            'lar_total': peer_total
+    if peer_total:
+        lma = sum([entry['lma'] for entry in collector])
+        lma_pct = 1.0 * lma / peer_total
+        mma = sum([entry['mma'] for entry in collector])
+        mma_pct = 1.0 * mma / peer_total
+        hma = sum([entry['hma'] for entry in collector])
+        hma_pct = 1.0 * hma / peer_total
+        return {
+                'lma': lma, 
+                'lma_pct': 1.0 * lma / peer_total, 
+                'mma': mma,
+                'mma_pct': 1.0 * mma / peer_total,
+                'hma': hma,
+                'hma_pct': 1.0 * hma / peer_total,
+                'lar_total': peer_total
+                }
+    else:
+        return {
+            'lar_total': 0,
+            'lma': 0, 
+            'lma_pct': 0, 
+            'mma': 0,
+            'mma_pct': 0,
+            'hma': 0,
+            'hma_pct': 0
             }
-
 def minority_aggregation_as_json(request):
     """
     aggregates minority population ranges and LAR counts 
@@ -97,7 +117,7 @@ def minority_aggregation_as_json(request):
     lender = Institution.objects.get(institution_id=request.GET.get('lender'))
     tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=request.GET.get('metro'))
     metro = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
-    lender_stats = assemble_stats(request, lar_data, tracts)
+    lender_stats = assemble_stats(lar_data, tracts)
     # MSA
     msa_pop, msa_minority_ct, msa_minority_pct = tally_msa_minority_stats(tracts)
     msa_stats = {
@@ -109,8 +129,11 @@ def minority_aggregation_as_json(request):
     if peers:
         peer_data_collector = []
         for peer in peers:
-            request.GET['lender'] = peer.institution_id
-            peer_data_collector.append(assemble_stats(request, lar_data, tracts))
+            peer_request = HttpRequest()
+            peer_request.GET['lender'] = peer.institution.institution_id
+            peer_request.GET['metro']= metro.geoid
+            peer_lar_data = loan_originations_as_json(peer_request)
+            peer_data_collector.append(assemble_stats(peer_lar_data, tracts))
         if len(peer_data_collector) == 1:
             peer_stats = peer_data_collector[0]
         else:
