@@ -20,9 +20,9 @@ def loan_originations(request):
     institution_selected = Institution.objects.get(pk=institution_id)
     metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
     if action_taken_param:
-        action_taken_selected = action_taken_param.split(',')
+        action_taken_selected = [param for param in action_taken_param.split(',')]
     else:
-        action_taken_selected = None
+        action_taken_selected = []
     if geoids and action_taken_selected:
         query = HMDARecord.objects.filter(
                 property_type__in=[1,2], owner_occupancy=1, lien_status=1,
@@ -34,7 +34,7 @@ def loan_originations(request):
             else: 
                 query = query.filter(institution__in=institution_selected)
         elif peers == 'true':
-            peer_list = get_peer_list(institution_selected, metro_selected)
+                peer_list = get_peer_list(institution_selected, metro_selected)
             if len(peer_list) > 0:
                 query = query.filter(institution__in=peer_list)
             else:
