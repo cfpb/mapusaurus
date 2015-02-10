@@ -42,9 +42,12 @@ def get_tracts_by_msa(request):
     else:
         return []
 
-def get_censustract_geos(request):
+def get_censustract_geos(request, metro=False):
     """ """
-    geoTypeId = 3
+    if metro == False:
+        geoTypeId = 3
+    else:
+        geoTypeId = 4
     northEastLat = request.GET.get('neLat')
     northEastLon = request.GET.get('neLon')
     southWestLat = request.GET.get('swLat')

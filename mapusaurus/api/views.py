@@ -2,7 +2,7 @@ import json
 
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseBadRequest
-from geo.views import tract_centroids_as_json, get_censustract_geoids 
+from geo.views import tract_centroids_as_json, get_censustract_geoids, get_censustract_geos
 from geo.models import Geo
 from censusdata.views import race_summary_as_json, minority_aggregation_as_json
 from hmda.models import HMDARecord
@@ -30,6 +30,17 @@ def tables(request):
         return HttpResponse(json.dumps(context), content_type='application/json')
     except:
         return HttpResponseBadRequest("the following request failed: %s" % request)
+
+@cache_page(60 * 360, key_prefix="msas")
+def msas(request):
+    try:
+        query = get_censustract_geos(request, metro=True)
+        msas = {
+        'msas': [msa.geoid for msa in query]
+        }
+        return HttpResponse(json.dumps(msas), content_type='application/json')
+    except:
+        return HttpResponseBadRequest("request failed; details: %s" % request)
 
 @cache_page(60 * 360, key_prefix="msa")
 def msa(request):
