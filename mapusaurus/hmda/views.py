@@ -64,7 +64,7 @@ def loan_originations_as_json(request):
     records = loan_originations(request)
     data = {}
     for row in records:
-        data[row['geo__geoid']] = {
+        data[row['geo_id']] = {
             'volume': row['volume'],
             'num_households': row['geo__census2010households__total'],
         }
