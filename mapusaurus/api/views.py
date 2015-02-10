@@ -29,7 +29,7 @@ def tables(request):
         context = {'table_data': table_data}
         return HttpResponse(json.dumps(context), content_type='application/json')
     except:
-        return HttpResponseBadRequest("invalid endpoint")
+        return HttpResponseBadRequest("the following request failed: %s" % request)
 
 @cache_page(60 * 360, key_prefix="msa")
 def msa(request):
@@ -44,7 +44,8 @@ def msa(request):
         tract_loans = query.values('geo__geoid').annotate(volume=Count('geo__geoid'))
         # msa_geo = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=metro)
     except:
-        return HttpResponseBadRequest("invalid endpoint")
+        # return HttpResponseBadRequest("invalid endpoint")
+        return HttpResponseBadRequest("request failed; details: %s" % request)
     else:
         # msa_out = {
         #  "type": "Feature",
