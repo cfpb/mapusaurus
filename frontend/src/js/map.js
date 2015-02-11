@@ -156,9 +156,9 @@ if (!window.console) console = {log: function() {}};
             // Redraw the circles using the created tract object AND the layer bubble type
             redrawCircles(dataStore.tracts, layerInfo.type );
 
-            plotLarVolume();
             // Unblock the user interface (remove gradient)
             $.unblockUI();
+	    plotLarVolume();
             isUIBlocked = false;
         });
     }
@@ -169,6 +169,14 @@ if (!window.console) console = {log: function() {}};
 	    width = 1180 - margin.left - margin.right,
 	    height = 200 - margin.top - margin.bottom;
 	var barWidth = width / larVolume.length;
+
+	var data = _.zip(pctMinority, larVolume);
+	data = _.sortBy(data, function(item) { return item[0]; });
+	data = _.zip.apply(_, data);
+	pctMinority = data[0];
+	larVolume = data[1];
+
+	var colorMap = d3.scale.quantile().domain([0, 0.5, 0.8, 1.0]).range(["#E8E7E3", "#B7C8D6", "#7FA2BB"]);
 
 	d3.select("#plot-container").selectAll("*").remove();
 	
@@ -201,6 +209,7 @@ if (!window.console) console = {log: function() {}};
 	minX.domain(geoIds);
 	minY.domain([0, d3.max(pctMinority, function(d) { return d; })]);
 
+
 	/*chart.append("g").attr("class", "x axis")
 	    .attr("transform", "translate(0, " + height - margin.bottom - margin.top  + ")")
 	    .call(xAxis)
@@ -228,7 +237,8 @@ if (!window.console) console = {log: function() {}};
 	    .attr("x", function(d, i) { return larX(geoIds[i]); })
 	    .attr("width", larX.rangeBand())
 	    .attr("y", function(d) { return larY(d); })
-	    .attr("height", function(d) { return height - larY(d); });
+	    .attr("height", function(d) { return height - larY(d); })
+	    .style("fill", function(d, i) { return colorMap(pctMinority[i]); });
 
 	minChart.append("g")
 	    .attr("class", "y axis")
@@ -245,9 +255,16 @@ if (!window.console) console = {log: function() {}};
 	    .enter().append("rect")
 	    .attr("class", "bar-min")
 	    .attr("x", function(d, i) { return minX(geoIds[i]); })
-	    .attr("width", minX.rangeBand())
+	    .attr("width",larX.rangeBand())
 	    .attr("y", function(d) { return minY(d); })
-	    .attr("height", function(d) { return height - minY(d); });
+	    .attr("height", function(d, i) {
+		if ((height - larY(larVolume[i])) > 0.0) {
+		    return height - minY(d);
+		}
+		else {
+		    return 0;
+		}})
+	    .style("fill", function(d) { return colorMap(d); });
     }
 
 
