@@ -10,7 +10,7 @@ from hmda.views import loan_originations_as_json, loan_originations
 from respondents.views import branch_locations_as_json
 from django.views.decorators.cache import cache_page
 
-@cache_page(60 * 360)
+# @cache_page(60 * 360)
 def all(request):
     """This endpoint allows multiple statistical queries to be made in a
     single HTTP request"""
@@ -22,7 +22,7 @@ def all(request):
     except:
         return HttpResponseBadRequest("invalid endpoint")
 
-@cache_page(60 * 360)
+# @cache_page(60 * 360)
 def tables(request):
     try:
         table_data = minority_aggregation_as_json(request)
@@ -31,7 +31,7 @@ def tables(request):
     except:
         return HttpResponseBadRequest("the following request failed: %s" % request)
 
-@cache_page(60 * 360, key_prefix="msas")
+# @cache_page(60 * 360, key_prefix="msas")
 def msas(request):
     try:
         query = get_censustract_geos(request, metro=True)
@@ -42,7 +42,7 @@ def msas(request):
     except:
         return HttpResponseBadRequest("request failed; details: %s" % request)
 
-@cache_page(60 * 360, key_prefix="msa")
+# @cache_page(60 * 360, key_prefix="msa")
 def msa(request):
     try:
         institution_id = request.GET.get('lender')
@@ -51,18 +51,10 @@ def msa(request):
         geoids = tracts.values_list('geoid', flat=True)
         query = HMDARecord.objects.filter(
                 property_type__in=[1,2], owner_occupancy=1, lien_status=1,
-                geo__geoid__in=geoids)
+                geo__geoid__in=geoids, institution__institution_id=institution_id)
         tract_loans = query.values('geo__geoid').annotate(volume=Count('geo__geoid'))
-        # msa_geo = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=metro)
     except:
-        # return HttpResponseBadRequest("invalid endpoint")
         return HttpResponseBadRequest("request failed; details: %s" % request)
-    else:
-        # msa_out = {
-        #  "type": "Feature",
-        #     "geometry": {"type": "Multipolygon", "coordinates": msa_geo.geom.simplify(tolerance=0.0001, preserve_topology=True).coords},
-        #     "properties": {"metro": msa_geo.geoid, "name": msa_geo.name}
-        # }
         tracts_out = { 
              "type": "FeatureCollection",
                 "features": []
@@ -74,7 +66,6 @@ def msa(request):
                     "geometry": {"type": "Polygon", "coordinates": tracts.get(geoid=ID).geom.simplify(0.001).coords},
                     "properties": {"tract_id": ID, "volume": tract['volume']}
                     })
-        # context = {'msa': msa_out, 'tracts': tracts_out}
         context = {'tracts': tracts_out}
         return HttpResponse(json.dumps(context), content_type='application/json')
 
