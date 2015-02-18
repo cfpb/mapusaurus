@@ -37,9 +37,7 @@ class ViewTest(TestCase):
         resp = self.client.get(reverse('map'), {'lender': '922-333'})
         self.assertTrue('lender-info' in resp.content)
         self.assertTrue('Some Bank' in resp.content)
-        self.assertTrue('123 Avenue St.' in resp.content)
         self.assertTrue('1970' in resp.content)
-        self.assertTrue('11111' in resp.content)
         self.assertTrue('Somewhere' in resp.content)
         self.assertTrue('NE' in resp.content)
 
