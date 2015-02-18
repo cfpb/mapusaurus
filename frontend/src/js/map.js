@@ -1,7 +1,7 @@
 'use strict';
 
 if (!window.console) console = {log: function() {}};
-
+    var updateVoronoi;    
     // When the DOM is loaded, check for params and add listeners:
     $(document).ready(function(){
         var lhStatus, peerStatus, branchStatus;
@@ -13,6 +13,8 @@ if (!window.console) console = {log: function() {}};
         $( window ).resize(function() {
             setMapHeight();
         });
+
+        updateVoronoi = initVoronoi(); 
 
         // When minority changes, redraw the circles with appropriate styles
         $('#category-selector').on('change', function(e) {
@@ -119,8 +121,12 @@ if (!window.console) console = {log: function() {}};
                 toggleBranches(true);
             }
         });
-
+         
         map.on('moveend', _.debounce(init, 500) );
+
+        map.on('movestart', function(){
+          d3.selectAll(".densityDot").remove();
+        });
 
         // When the page loads, update the print link, and update it whenever the hash changes
         updatePrintLink();
@@ -132,10 +138,9 @@ if (!window.console) console = {log: function() {}};
             updatePrintLink();
             updateCensusLink();
         });
-
+         
         //Let the application do its thing 
         init();
-        
     });
     
     // Go get the tract centroids and supporting data, THEN build a data object (uses jQuery Deferreds)
@@ -154,8 +159,9 @@ if (!window.console) console = {log: function() {}};
             createTractDataObj(); 
 
             // Redraw the circles using the created tract object AND the layer bubble type
-            redrawCircles(dataStore.tracts, layerInfo.type );
-            
+            //redrawCircles(dataStore.tracts, layerInfo.type );
+             
+            updateVoronoi(rawGeo);
             // Unblock the user interface (remove gradient)
             $.unblockUI();
             isUIBlocked = false;
@@ -420,6 +426,119 @@ if (!window.console) console = {log: function() {}};
     /*
         END GET DATA SECTION
     */
+    /*
+     * Voronoi drawing
+     */
+
+    function randomPoint(rBounds){
+      var point = new Array(2);
+      var west = rBounds.getNorth();
+      var north = rBounds.getEast();
+      var east = rBounds.getSouth();
+      var south = rBounds.getWest();
+      point[0] = west + Math.random()*(east - west);
+      point[1] = north + Math.random()*(south - north);
+      return point;
+    }
+  
+    function makeDots(polygons,features){
+      var points = []; 
+      for(var i=0; i<polygons.length; i++){
+        var poly = polygons[i];
+        var reverseBounds = L.latLngBounds(poly);
+        for(var j=0,len=features[i].properties.volume; j<len; j++){
+          var pt = randomPoint(reverseBounds);
+          var bail = 0;
+          while(!pointInPoly(pt,poly)){
+            if(++bail>10) break;
+            pt = randomPoint(reverseBounds);
+          }
+          points.push(pt);
+        } 
+      }
+      return points;
+    }
+
+    //https://github.com/substack/point-in-polygon 
+    function pointInPoly(point, vs) {
+      var x = point[0], y = point[1];
+
+      var inside = false;
+      for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        var xi = vs[i][0], yi = vs[i][1];
+        var xj = vs[j][0], yj = vs[j][1];
+
+        var intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+      }
+
+      return inside;
+    }
+
+    function initVoronoi(){
+      map._initPathRoot();
+      var svg = d3.select("#map").select("svg"),
+          g = svg.append("g").attr("class", "leaflet-zoom-hide"),
+          voronoi = d3.geom.voronoi();
+
+      return function(collection){     
+        var positions = [];
+        var features = collection.features;
+        var size = map.getSize();
+
+        features.forEach(function(d) {        
+          var latlng = new L.LatLng(d.properties.centlat, d.properties.centlon);
+          var point =  map.latLngToLayerPoint(latlng);
+          positions.push([
+            point.x,
+            point.y
+          ]);
+        });
+
+
+        var polygons = voronoi(positions);
+        
+        window.poly = polygons;
+        window.feat = features;
+        var points = makeDots(polygons, features);
+         
+        /*
+         * Draw voronoi diagrams
+         * 
+        svg.selectAll(".voronoi").remove();
+        polygons.forEach(function(v) { v.cell = v; });
+        svg.selectAll("path")
+          .data(polygons)
+          .enter()
+          .append("svg:path")
+          .attr("class", "voronoi")
+          .attr({
+            "d": function(d) {
+              if(!d) return null; 
+              return "M" + d.cell.join("L") + "Z";
+            },
+            stroke:"black",
+            fill:"none"            
+          });
+        */
+
+         g.selectAll("circle")
+          .data(points)
+          .enter()
+          .append("circle")
+          .attr("class", "densityDot")
+          .attr({
+            "cx":function(d, i) { return d[0]; },
+            "cy":function(d, i) { return d[1]; },
+            "r":1,
+            fill:"#444"            
+           });
+      } 
+    }
+    /*
+     * End Voronoi drawing
+     */
 
     /* 
         ---- DRAW CIRCLES AND MARKERS ----
@@ -772,7 +891,7 @@ if (!window.console) console = {log: function() {}};
         }
         
         addParam( 'category', $('#category-selector option:selected').val() );
-        updateCircles( layerType );
+        //updateCircles( layerType );
     }
 
     // Gets non-hash URL parameters

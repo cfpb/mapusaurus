@@ -13,6 +13,7 @@
 
 {% block head_scripts %}
     <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-vendor.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
@@ -97,7 +98,6 @@
             Sequential3: L.mapbox.tileLayer('cfpb.FL_TRACT_seq_pct_minorv1_US'),
             Sequential10: L.mapbox.tileLayer('cfpb.FL_TRACT_seq-10_minorv1_US'),
             Plurality: L.mapbox.tileLayer('cfpb.FL_TRACT_minor_plurality_US'),
-            Centroids: L.layerGroup([]),
             Branches: L.layerGroup([])
         };
 
@@ -112,8 +112,7 @@
             'Water': layers.Water,
             'Boundaries': layers.Boundaries,
             'MSA Labels': layers.MSALabels,
-            'County Labels': layers.CountyLabels,
-            'LAR Circles': layers.Centroids
+            'County Labels': layers.CountyLabels
         };
 
         // Setup the minimap
@@ -131,8 +130,6 @@
         layers.MSALabels.addTo(map);
         layers.Sequential3.addTo(map);
 
-        // Create a layer for our circles
-        layers.Centroids.addTo(map);
         // Create a layer for Branch Locations
         layers.Branches.addTo(map);
 
