@@ -9,6 +9,15 @@
     }
   },
   {
+    "model": "respondents.zipcodecitystate",
+    "pk": 20171,
+    "fields": {
+      "zip_code": "20171",
+      "city": "Herndon",
+      "state": "VA"
+    }
+  },
+  {
     "model": "respondents.institution",
     "fields": {
       "year": 1970,
@@ -20,6 +29,81 @@
       "mailing_address": "123 Avenue St.",
       "zip_code": 11111,
       "rssd_id": "Other ID"
+    }
+  },
+  {
+    "model": "respondents.institution",
+    "fields": {
+      "year": 2013,
+      "agency" : 9,
+      "respondent_id": "1000000001",
+      "institution_id":"91000000001",
+      "tax_id": "1000000001",
+      "name": "Dev Test Bank 1",
+      "mailing_address": "123 Avenue St.",
+      "zip_code": 20171,
+      "rssd_id": "9100000001",
+      "assets": 10
+    }
+  },
+  {
+    "model": "respondents.institution",
+    "fields": {
+      "year": 2013,
+      "agency" : 9,
+      "respondent_id": "1000000002",
+      "institution_id":"91000000002",
+      "tax_id": "9100000002",
+      "name": "Dev Test Bank 2",
+      "mailing_address": "123 Avenue St.",
+      "zip_code": 20171,
+      "rssd_id": "1000000002",
+      "assets": 9
+    }
+  },
+  {
+    "model": "respondents.institution",
+    "fields": {
+      "year": 2013,
+      "agency" : 9,
+      "respondent_id": "1000000003",
+      "institution_id":"91000000003",
+      "tax_id": "9100000003",
+      "name": "Dev Test Bank 3",
+      "mailing_address": "123 Avenue St.",
+      "zip_code": 20171,
+      "rssd_id": "1000000003",
+      "assets": 8
+    }
+  },
+  {
+    "model": "respondents.institution",
+    "fields": {
+      "year": 2013,
+      "agency" : 1,
+      "respondent_id": "1000000001",
+      "institution_id":"11000000001",
+      "tax_id": "1100000001",
+      "name": "Dev Test Bank 4",
+      "mailing_address": "123 Avenue St.",
+      "zip_code": 20171,
+      "rssd_id": "1000000001",
+      "assets": 7
+    }
+  },
+  {
+    "model": "respondents.institution",
+    "fields": {
+      "year": 2013,
+      "agency" : 1,
+      "respondent_id": "1000000002",
+      "institution_id":"11000000002",
+      "tax_id": "1100000002",
+      "name": "Dev Test Bank 4",
+      "mailing_address": "123 Avenue St.",
+      "zip_code": 20171,
+      "rssd_id": "1000000002",
+      "assets": 6
     }
   }
 ]

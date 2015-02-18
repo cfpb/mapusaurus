@@ -1,0 +1,36 @@
+[
+  {
+    "pk": 101,
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "10000",
+      "geo_type": 4,
+      "name": "Dev MSA 1",
+      "csa": "100",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1,
+      "centlat": 0.5,
+      "centlon": 0.5
+    }
+  },
+{
+    "pk": 101,
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "10001",
+      "geo_type": 4,
+      "name": "Dev MSA 1",
+      "csa": "100",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1,
+      "centlat": 0.5,
+      "centlon": 0.5
+    }
+  }
+]

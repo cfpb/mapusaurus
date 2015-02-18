@@ -3,6 +3,7 @@ from django.template import defaultfilters
 from localflavor.us.models import USStateField
 import json
 from respondents.managers import AgencyManager
+from hmda.models import LendingStats
 
 class ZipcodeCityState(models.Model):
     """ For each zipcode, maintain the city, state information. """
@@ -95,6 +96,37 @@ class Institution(models.Model):
         formatted = defaultfilters.title(self.name) + " ("
         formatted += str(self.agency_id) + self.respondent_id + ")"
         return formatted
+
+    """ Returns a list of related institutions for the selected institution.  
+    Allows to exclude selected institution/lender and order by institution's assets
+    """ 
+    def get_lender_hierarchy(self, exclude, order):
+        lender_hierarchy = self.lenderhierarchy_set.first()
+        if lender_hierarchy:
+            org_id = lender_hierarchy.organization_id
+            hierarchy_list = LenderHierarchy.objects.filter(organization_id=org_id).select_related('institution')
+            if exclude:
+                hierarchy_list = hierarchy_list.exclude(institution=self)
+            if order:
+                hierarchy_list = hierarchy_list.order_by('-institution__assets')
+            return hierarchy_list
+        return [] 
+
+    """ Returns a list of peers for a lender+metro combination based on fha_bucket and lar count. 
+    Allows to exclude selected institution/lender and order by institution's assets
+    """ 
+    def get_peer_list(self, metro, exclude, order_by):
+        loan_stats = self.lendingstats_set.filter(geo_id=metro.geoid).first()
+        if loan_stats:
+            percent_50 = round(loan_stats.lar_count * .50)
+            percent_200 = loan_stats.lar_count * 2.0
+            peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).select_related('institution')
+            if exclude:
+                peer_list = peer_list.exclude(institution=self)
+            if order_by:
+                peer_list = peer_list.order_by('-institution__assets')
+            return peer_list
+        return []
 
     class Meta:
         unique_together = ('institution_id', 'year')
