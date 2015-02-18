@@ -80,6 +80,9 @@ def tally_msa_minority_stats(tracts):
         return 0, 0, 0
 
 def combine_peer_stats(collector):
+    """
+    calculates stats for a group of peers
+    """
     peer_total = sum([entry['lar_total'] for entry in collector])
     if peer_total:
         lma = sum([entry['lma'] for entry in collector])
@@ -159,7 +162,11 @@ def minority_aggregation_as_json(request):
         }
 
 def odds_ratio(target_mm, target_non, peer_mm, peer_non):
-    """thank you, amy mok"""
+    """
+    calculates odds ratio for a lender compared with peers
+    and based on counts of loans in mostly minority areas vs mostly majority areas
+    thank you, amy mok
+    """
     portfolio_target = float(target_mm) / float(target_mm + target_non)
     portfolio_peer = float(peer_mm) / float(peer_mm + peer_non)
 
