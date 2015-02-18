@@ -93,20 +93,20 @@ class ViewsTest(TestCase):
         """Case: Institution has no peers but itself in selected metro"""
         institution = Institution.objects.filter(institution_id="11000000001").first()
         metro = Geo.objects.filter(geoid="10000").first()
-        peer_list = Institution.get_peer_list(institution, metro, False, False)
+        peer_list = institution.get_peer_list(metro, False, False)
         self.assertEqual(len(peer_list), 1)
         self.assertEqual(peer_list[0].institution_id, "11000000001")
         
         """Case: Institution has peers in selected metro"""
         institution = Institution.objects.filter(institution_id="91000000001").first()
         metro = Geo.objects.filter(geoid="10000").first()
-        peer_list = Institution.get_peer_list(institution, metro, False, False)
+        peer_list = institution.get_peer_list(metro, False, False)
         self.assertEqual(len(peer_list), 3)
-        peer_list_exclude = Institution.get_peer_list(institution, metro, True, False)
+        peer_list_exclude = institution.get_peer_list(metro, True, False)
         self.assertEqual(len(peer_list_exclude), 2)
-        peer_list_order = Institution.get_peer_list(institution, metro, False, True)
+        peer_list_order = institution.get_peer_list(metro, False, True)
         self.assertEqual(peer_list_order[0].institution_id, "91000000001")
-        peer_list_order_exclude = Institution.get_peer_list(institution, metro, True, True)
+        peer_list_order_exclude = institution.get_peer_list(metro, True, True)
         self.assertEqual(peer_list_order_exclude[0].institution_id, "91000000002")
         self.assertEqual(len(peer_list_exclude), 2) 
 

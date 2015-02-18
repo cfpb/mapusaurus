@@ -6,7 +6,6 @@ from mock import Mock, patch
 
 from geo.models import Geo
 from mapping.views import lookup_median, make_download_url
-from mapping.views import make_download_url
 from respondents.models import Institution
 
 

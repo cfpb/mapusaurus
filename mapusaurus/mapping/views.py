@@ -17,12 +17,12 @@ def map(request, template):
     metro = Geo.objects.filter(geo_type=Geo.METRO_TYPE,geoid=metro_selected).first()
     if lender:
         context['lender'] = lender
-        hierarchy_list = Institution.get_lender_hierarchy(lender, True, True)
+        hierarchy_list = lender.get_lender_hierarchy(True, True)
         context['institution_hierarchy'] = hierarchy_list 
     if metro:
         context['metro'] = metro
     if lender and metro:
-        peer_list = Institution.get_peer_list(lender, metro, True, True) 
+        peer_list = lender.get_peer_list(metro, True, True) 
         context['institution_peers'] = peer_list
         context['download_url'] = make_download_url(lender, metro)
         context['hierarchy_download_url'] = make_download_url(hierarchy_list, metro)
