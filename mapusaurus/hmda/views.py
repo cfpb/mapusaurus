@@ -22,13 +22,13 @@ def loan_originations(request):
                 property_type__in=[1,2], owner_occupancy=1, lien_status=1,
                 action_taken__in=action_taken_selected)
         if lender_hierarchy == 'true':
-            hierarchy_list = Institution.get_lender_hierarchy(institution_selected, False, False)
+            hierarchy_list = institution_selected.get_lender_hierarchy(False, False)
             if len(hierarchy_list) > 0:
                 query = query.filter(institution__in=hierarchy_list) 
             else: 
                 query = query.filter(institution__in=institution_selected)
         elif peers == 'true':
-            peer_list = Institution.get_peer_list(institution_selected, metro_selected, False, False)
+            peer_list = institution_selected.get_peer_list(metro_selected, False, False)
             if len(peer_list) > 0:
                 query = query.filter(institution__in=peer_list)
             else:
