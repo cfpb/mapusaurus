@@ -1,12 +1,16 @@
 Mapusaurus
 =======
 
+ [![Build Status](https://travis-ci.org/cfpb/mapusaurus.png)](https://travis-ci.org/cfpb/mapusaurus)
+
+ [![Coverage Status](https://coveralls.io/repos/cfpb/mapusaurus/badge.svg)](https://coveralls.io/r/cfpb/mapusaurus)
+
 ## Description 
 
-Mapusaurus loads institution data from HMDA, and maps HMDA
-reporter ids to National Information Center ids for easy identification. 
+This repository provides data and scripts to set up an API endpoint for serving Home Mortgage Disclosure Act data as well as front-end and back-end application components that feed off this data.
+Financial institution data is loaded from raw HMDA files and welded to National Information Center data to allow for more robust analysis in the front-end application.
 
-Mapusaurus is a Python/Django application. Additional requirements are defined below.
+The Mapusaurus back-end is a Python/Django application. Additional requirements are defined below.
 
 
 ## Data
@@ -28,23 +32,25 @@ http://www.ffiec.gov/hmdarawdata/OTHER/2013HMDAReporterPanel.zip
 
 ## Requirements 
 
-This currently uses: 
+This currently uses:
 Django 1.7
-Python 2.7.8
+Python 2.7.x
 
-PostgreSQL 9.2
-PostGIS 2.1.3
+You will also need:
+PostgreSQL 9.3
+PostGIS 2.1.x
+ElasticSearch
 
-There's also a requirements.txt file in the repository root directory.  
+There's also a requirements.txt file in the repository root directory that can be installed with pip.
+
 
 ## Loading the data
 
-This uses South. 
 
 To create the tables, you need to run:
 
 ```
-    python manage.py migrate respondants
+    python manage.py migrate respondents
 ```
 
 There's also a fixture that you need to load some information from:
