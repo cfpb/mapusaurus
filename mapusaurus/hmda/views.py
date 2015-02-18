@@ -2,7 +2,7 @@ import json
 
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseBadRequest
-from hmda.models import HMDARecord, LendingStats
+from hmda.models import HMDARecord
 from geo.models import Geo
 from geo.views import get_censustract_geoids 
 from respondents.models import Institution
@@ -28,7 +28,7 @@ def loan_originations(request):
             else: 
                 query = query.filter(institution__in=institution_selected)
         elif peers == 'true':
-            peer_list = get_peer_list(institution_selected, metro_selected)
+            peer_list = Institution.get_peer_list(institution_selected, metro_selected, False, False)
             if len(peer_list) > 0:
                 query = query.filter(institution__in=peer_list)
             else:
@@ -40,22 +40,6 @@ def loan_originations(request):
         return HttpResponseBadRequest("Missing one of lender, action_taken, lat/lon bounds or geoid.")
     query = query.values('geo__geoid', 'geo__census2010households__total').annotate(volume=Count('geo__geoid'))
     return query 
-    
-""" Returns a list of peers for a lender+metro combination based on fha_bucket and lar count. 
-    Allows to exclude selected institution/lender and order by institution's assets
-""" 
-def get_peer_list(lender, metro, exclude, order_by):
-    loan_stats = lender.lendingstats_set.filter(geo_id=metro.geoid).first()
-    if loan_stats:
-        percent_50 = round(loan_stats.lar_count * .50)
-        percent_200 = loan_stats.lar_count * 2.0
-        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).select_related('institution')
-        if exclude:
-            peer_list = peer_list.exclude(institution=lender)
-        if order_by:
-            peer_list = peer_list.order_by('-institution__assets')
-        return peer_list
-    return []
 
 def loan_originations_as_json(request):
     records = loan_originations(request)

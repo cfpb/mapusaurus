@@ -4,7 +4,6 @@ from django.shortcuts import render
 from django.db.models.query import QuerySet
 from geo.models import Geo
 from hmda.models import LendingStats
-from hmda.views import get_peer_list
 from hmda.management.commands.calculate_loan_stats import (calculate_median_loans)
 from respondents.models import Institution
 
@@ -23,7 +22,7 @@ def map(request, template):
     if metro:
         context['metro'] = metro
     if lender and metro:
-        peer_list = get_peer_list(lender, metro, True, True) 
+        peer_list = Institution.get_peer_list(lender, metro, True, True) 
         context['institution_peers'] = peer_list
         context['download_url'] = make_download_url(lender, metro)
         context['hierarchy_download_url'] = make_download_url(hierarchy_list, metro)

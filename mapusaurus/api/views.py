@@ -10,7 +10,6 @@ def all(request):
     """This endpoint allows multiple statistical queries to be made in a
     single HTTP request"""
     try:
-
         hmda = loan_originations_as_json(request)
 
         minority = race_summary_as_json(request)

@@ -1,12 +1,8 @@
-import json
-
 from django.core.management import call_command
-from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from censusdata.models import Census2010Households
 from hmda.models import HMDARecord, LendingStats
-from hmda.views import get_peer_list
 from respondents.models import Institution
 from geo.models import Geo
 
@@ -97,20 +93,20 @@ class ViewsTest(TestCase):
         """Case: Institution has no peers but itself in selected metro"""
         institution = Institution.objects.filter(institution_id="11000000001").first()
         metro = Geo.objects.filter(geoid="10000").first()
-        peer_list = get_peer_list(institution, metro, False, False)
+        peer_list = Institution.get_peer_list(institution, metro, False, False)
         self.assertEqual(len(peer_list), 1)
         self.assertEqual(peer_list[0].institution_id, "11000000001")
         
         """Case: Institution has peers in selected metro"""
         institution = Institution.objects.filter(institution_id="91000000001").first()
         metro = Geo.objects.filter(geoid="10000").first()
-        peer_list = get_peer_list(institution, metro, False, False)
+        peer_list = Institution.get_peer_list(institution, metro, False, False)
         self.assertEqual(len(peer_list), 3)
-        peer_list_exclude = get_peer_list(institution, metro, True, False)
+        peer_list_exclude = Institution.get_peer_list(institution, metro, True, False)
         self.assertEqual(len(peer_list_exclude), 2)
-        peer_list_order = get_peer_list(institution, metro, False, True)
+        peer_list_order = Institution.get_peer_list(institution, metro, False, True)
         self.assertEqual(peer_list_order[0].institution_id, "91000000001")
-        peer_list_order_exclude = get_peer_list(institution, metro, True, True)
+        peer_list_order_exclude = Institution.get_peer_list(institution, metro, True, True)
         self.assertEqual(peer_list_order_exclude[0].institution_id, "91000000002")
         self.assertEqual(len(peer_list_exclude), 2) 
 
