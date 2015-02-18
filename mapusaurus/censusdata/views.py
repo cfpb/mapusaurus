@@ -153,6 +153,10 @@ def minority_aggregation_as_json(request):
     # BY COUNTY -- TODO
     county_ids = sorted(set([tract.geoid[:5] for tract in tracts]))
     county_stats = {county_id: {} for county_id in county_ids}
+    for county_id in county_ids:
+        county_tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, state=county_id[:2], county=county_id[2:])
+        county_stats[county_id] = assemble_stats(lar_data, county_tracts)
+
     return {
         'msa': msa_stats,
         'lender': lender_stats,
