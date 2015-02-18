@@ -3,7 +3,6 @@ from django.db import connection
 
 from geo.models import Geo
 from hmda.models import HMDARecord, LendingStats
-from respondents.models import Institution
 
 class Command(BaseCommand):
     help = "Generate loans stats per lender, metro combination"

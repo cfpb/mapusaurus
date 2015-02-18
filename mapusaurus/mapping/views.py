@@ -1,14 +1,12 @@
 from urllib import urlencode
 
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseBadRequest
 from django.db.models.query import QuerySet
 from geo.models import Geo
 from hmda.models import LendingStats
 from hmda.views import get_peer_list
 from hmda.management.commands.calculate_loan_stats import (calculate_median_loans)
-from respondents.models import Institution, LenderHierarchy
-from respondents.views import get_lender_hierarchy
+from respondents.models import Institution
 
 def map(request, template):
     """Display the map. If lender info is present, provide it to the
@@ -20,7 +18,7 @@ def map(request, template):
     metro = Geo.objects.filter(geo_type=Geo.METRO_TYPE,geoid=metro_selected).first()
     if lender:
         context['lender'] = lender
-        hierarchy_list = get_lender_hierarchy(lender, True, True)
+        hierarchy_list = Institution.get_lender_hierarchy(lender, True, True)
         context['institution_hierarchy'] = hierarchy_list 
     if metro:
         context['metro'] = metro

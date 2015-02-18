@@ -1,5 +1,4 @@
 from django.db import models
-from respondents.models import Institution
 
 AGENCY_CHOICES = ( 
     (1, 'Office of the Comptroller of the Currency (OCC)'),

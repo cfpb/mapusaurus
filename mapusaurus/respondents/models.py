@@ -96,6 +96,18 @@ class Institution(models.Model):
         formatted += str(self.agency_id) + self.respondent_id + ")"
         return formatted
 
+    def get_lender_hierarchy(self, exclude, order):
+        lender_hierarchy = self.lenderhierarchy_set.first()
+        if lender_hierarchy:
+            org_id = lender_hierarchy.organization_id
+            hierarchy_list = LenderHierarchy.objects.filter(organization_id=org_id).select_related('institution')
+            if exclude:
+                hierarchy_list = hierarchy_list.exclude(institution=self)
+            if order:
+                hierarchy_list = hierarchy_list.order_by('-institution__assets')
+            return hierarchy_list
+        return [] 
+
     class Meta:
         unique_together = ('institution_id', 'year')
         index_together = [['institution_id', 'year']]

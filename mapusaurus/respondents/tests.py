@@ -8,7 +8,6 @@ from mock import Mock, patch
 from geo.models import Geo
 from hmda.models import HMDARecord
 from respondents import views, zipcode_utils
-from respondents.views import get_lender_hierarchy
 from respondents.models import Agency, Institution, ZipcodeCityState, LenderHierarchy
 from respondents.management.commands import load_reporter_panel
 from respondents.management.commands import load_transmittal
@@ -75,28 +74,28 @@ class ViewTest(TestCase):
     def test_get_lender_hierarchy(self):
         """Case: Institution has no hierarchy"""
         institution = Institution.objects.filter(institution_id="11000000002").first()
-        hierarchy_list = get_lender_hierarchy(institution, False, False)
+        hierarchy_list = Institution.get_lender_hierarchy(institution, False, False)
         self.assertEqual(len(hierarchy_list), 0) 
         
         """Case: Institution has no hierarchy but itself. 
            Returns itself when exclude=False; Returns empy list when exclude=True
         """
         institution = Institution.objects.filter(institution_id="91000000003").first()
-        hierarchy_list = get_lender_hierarchy(institution, False, False)
+        hierarchy_list = Institution.get_lender_hierarchy(institution, False, False)
         self.assertEqual(len(hierarchy_list), 1)
         self.assertEqual(hierarchy_list[0].institution_id, "91000000003")
-        hierarchy_list_exclude = get_lender_hierarchy(institution, True, False)
+        hierarchy_list_exclude = Institution.get_lender_hierarchy(institution, True, False)
         self.assertEqual(len(hierarchy_list_exclude), 0)
 
         """Case: Institution has valid hierarchy and returns it""" 
         institution = Institution.objects.filter(institution_id="91000000001").first()
-        hierarchy_list = get_lender_hierarchy(institution, False, False)
+        hierarchy_list = Institution.get_lender_hierarchy(institution, False, False)
         self.assertEqual(len(hierarchy_list), 3)
-        hierarchy_list_exclude = get_lender_hierarchy(institution, True, False)
+        hierarchy_list_exclude = Institution.get_lender_hierarchy(institution, True, False)
         self.assertEqual(len(hierarchy_list_exclude), 2)
-        hierarchy_list_order = get_lender_hierarchy(institution, False, True)
+        hierarchy_list_order = Institution.get_lender_hierarchy(institution, False, True)
         self.assertEqual(hierarchy_list_order[0].institution_id, "91000000001")
-        hierarchy_list_exclude_order = get_lender_hierarchy(institution, True, True)
+        hierarchy_list_exclude_order = Institution.get_lender_hierarchy(institution, True, True)
         self.assertEqual(hierarchy_list_exclude_order[0].institution_id, "91000000002")        
         self.assertEqual(len(hierarchy_list_exclude_order), 2)        
  
