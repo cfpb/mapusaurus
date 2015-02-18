@@ -10,7 +10,6 @@ from hmda.views import loan_originations_as_json, loan_originations
 from respondents.views import branch_locations_as_json
 from django.views.decorators.cache import cache_page
 
-# @cache_page(60 * 360)
 def all(request):
     """This endpoint allows multiple statistical queries to be made in a
     single HTTP request"""
@@ -22,7 +21,6 @@ def all(request):
     except:
         return HttpResponseBadRequest("invalid endpoint")
 
-# @cache_page(60 * 360)
 def tables(request):
     try:
         table_data = minority_aggregation_as_json(request)
@@ -31,7 +29,6 @@ def tables(request):
     except:
         return HttpResponseBadRequest("the following request failed: %s" % request)
 
-# @cache_page(60 * 360, key_prefix="msas")
 def msas(request):
     try:
         query = get_censustract_geos(request, metro=True)
@@ -42,30 +39,43 @@ def msas(request):
     except:
         return HttpResponseBadRequest("request failed; details: %s" % request)
 
-# @cache_page(60 * 360, key_prefix="msa")
 def msa(request):
     try:
-        institution_id = request.GET.get('lender')
         metro = request.GET.get('metro')
         tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=metro)
-        geoids = tracts.values_list('geoid', flat=True)
-        query = HMDARecord.objects.filter(
-                property_type__in=[1,2], owner_occupancy=1, lien_status=1,
-                geo__geoid__in=geoids, institution__institution_id=institution_id)
-        tract_loans = query.values('geo__geoid').annotate(volume=Count('geo__geoid'))
+        tract_loans = loan_originations_as_json(request)
     except:
         return HttpResponseBadRequest("request failed; details: %s" % request)
+    else:
+        try:
+            with open("/var/www/static/tracts/%s.json" % metro, 'r') as f:
+                local_tracts = json.loads(f.read())
+        except:
+            local_tracts = None
         tracts_out = { 
              "type": "FeatureCollection",
                 "features": []
                  }
-        for tract in tract_loans:
-            ID = tract['geo__geoid']
-            tracts_out['features'].append({
-                    "type": "Feature",
-                    "geometry": {"type": "Polygon", "coordinates": tracts.get(geoid=ID).geom.simplify(0.001).coords},
-                    "properties": {"tract_id": ID, "volume": tract['volume']}
-                    })
+        if local_tracts:
+            for tract_id in local_tracts:
+                volume = 0
+                if tract_id in tract_loans and tract_loans[tract_id]['volume']:
+                    volume += tract_loans[tract_id]['volume']
+                tracts_out['features'].append({
+                        "type": "Feature",
+                        "geometry": {"type": "Polygon", "coordinates": local_tracts[tract_id]},
+                        "properties": {"tract_id": tract_id, "volume": volume}
+                        })
+        else:
+            for tract in tracts:
+                volume = 0
+                if tract.geoid in tract_loans:
+                    volume += tract_loans[tract.geoid]
+                tracts_out['features'].append({
+                        "type": "Feature",
+                        "geometry": {"type": "Polygon", "coordinates": tract.geom.simplify(0.001).coords},
+                        "properties": {"tract_id": tract.geoid, "volume": volume}
+                        })
         context = {'tracts': tracts_out}
         return HttpResponse(json.dumps(context), content_type='application/json')
 
