@@ -5912,6 +5912,9 @@ select b {
   margin-top: 5px;
   font-size: large;
 }
+.tooltip-li {
+  margin-left: 10px;
+}
 #minority-key {
   width: 100%;
   margin-top: 5px;

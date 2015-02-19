@@ -1,7 +1,7 @@
 <div id="map-aside-header__tabpanels" class="tabpanels">
     {% if lender %}
         <div id="map-aside__lender-details" class="map-aside__lender-details">
-            <div class="map-divider"><h6 class="tab-title">Lender Details</h6></div>
+            <div class="map-divider"><h6 class="tab-title">Lender Details - HMDA {{ lender.year }} </div>
             <div id="lender-info" class="map-divider"><!-- lender-info ID is in a test, it needs to be changed in the test -->                
                 <div class="header-group">
                     <h3 class="tab-main">{{ lender.name }}</h3>
@@ -12,19 +12,13 @@
                     <h6 class="item-main">{{ lender.agency.acronym }}</h6>    
                 </div>
                 <div class="header-group">
-                    <h6 class="item-sub">Address</h6>
-                    <h6 class="item-main">{{ lender.mailing_address  }}<br />
-                                {{ lender.zip_code.city }}, {{ lender.zip_code.state }}
-                                {{ lender.zip_code.zip_code }}</h6>                   
-                </div>
-                <div class="header-group">
-                    <h6 class="item-sub">HMDA Year</h6>
-                    <h6 class="item-main">{{ lender.year }}</h6>                 
+                    <h6 class="item-sub">Headquarters</h6>
+                    <h6 class="item-main">{{ lender.zip_code.city }}, {{ lender.zip_code.state }}</h6>                   
                 </div>
 
             </div>
             <div id="lender-branches" class="map-divider lighter">
-                <input type="checkbox" id="branchSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Branch Locations <span class="tooltipsy hidden branch-component" title="Locations are only shown for {{lender.name}} and will not include peers or affiliates"><i class="cf-icon cf-icon-information-round"></i></span></h6> 
+                <input type="checkbox" id="branchSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Branch Locations <span class="tooltipsy hidden branch-component" title="Locations are only shown for {{lender.name}} and will not include peers nor affiliates"><i class="cf-icon cf-icon-information-round"></i></span></h6> 
             </div>  
 
             {% if institution_hierarchy.count > 0 %}       
@@ -47,7 +41,7 @@
 
             {% if institution_peers.count > 0 %}
                 <div id="lender-peers" class="map-divider lighter">
-                    <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Peer LAR ({{ institution_peers.count}} Peer{{ institution_peers.count|pluralize}}) <span class="tooltipsy hidden peer-component" title="Peers are institutions that have between 50% and 200% of {{lender.name}} LAR count, and and a similar percentage of overall FHA Applications in {{ metro.name}}. By checking this box, you show the combined LAR count of the below peers on the map, without the selected institution included."><i class="cf-icon cf-icon-information-round"></i></span></h6>
+                    <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Peer LAR ({{ institution_peers.count}} Peer{{ institution_peers.count|pluralize}}) <span class="tooltipsy hidden peer-component" title="A 'peer' is an institution that has <li class='tooltip-li'>Between 50% and 200% of the total HMDA LAR submissions of the selected entity; and</li><li class='tooltip-li'>A similar percentage of FHA applications in the selected MSA.</li> The LAR from the peer entities are aggregated and displayed on the map when 'Show Peer LAR' is selected. <a href='#''>Full Peer Details</a>"><i class="cf-icon cf-icon-information-round"></i></span></h6>
                 </div>
                 <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
                     {% for peer in institution_peers %}
@@ -93,8 +87,8 @@
         {% if download_url %}
             <div class="map-divider download-csv">
                 <div class="header-group">
-                    <h3 class="tab-main">LAR data</h3>
-                    <h6 class="item-sub">Download the loan application records (LAR) for the current Lender/MSA/Year combination</h6>
+                    <h3 class="tab-main">HMDA data</h3>
+                    <h6 class="item-sub">Download the 2013 loan application records (LAR) for {{ lender.name }} in the {{ metro.name }} location for {{ lender.year }}.</h6>
                     <p>
                         <a target="_blank" id="downloadData" data-download="{{ download_url }}" data-super-download="{{ hierarchy_download_url }}" data-peer-download="{{ peer_download_url }}" href="{{ download_url}}"  class="btn btn__secondary">
                             <span class="btn_icon__left cf-icon cf-icon-download"></span>
@@ -108,7 +102,7 @@
             <div class="map-divider download-census">
                 <div class="header-group">
                     <h3 class="tab-main">Census data</h3>
-                    <h6 class="item-sub">Download the census demographic data for {{ metro.name }}. Data is derived from the 2010 SF-1, and also includes a LAR volume count for the selection action taken values.</h6>
+                    <h6 class="item-sub">Download the 2010 SF-1 Census demographic data for {{ metro.name }}. This download also includes LAR counts by tract, filtered as explained below.</h6>
                     <p>
                         <a target="_blank" id="downloadCensus" href="/census/race_summary_csv/"  class="btn btn__secondary">
                             <span class="btn_icon__left cf-icon cf-icon-download"></span>

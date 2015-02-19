@@ -1,14 +1,13 @@
-import json
-
-from django.core.urlresolvers import reverse
+from django.core.management import call_command
 from django.test import TestCase
 
 from censusdata.models import Census2010Households
-from hmda.models import HMDARecord
-
+from hmda.models import HMDARecord, LendingStats
+from respondents.models import Institution
+from geo.models import Geo
 
 class ViewsTest(TestCase):
-    fixtures = ['fake_respondents', 'dummy_tracts']
+    fixtures = ['agency', 'fake_respondents', 'dummy_tracts', 'fake_msa']
 
     def setUp(self):
         stats = Census2010Households(
@@ -23,10 +22,10 @@ class ViewsTest(TestCase):
             None, 200, 160, 100, 60, 40, 20, 40, 30, 10)
         stats.geoid_id = '1222233300'
         stats.save()
-        
    
-        def mkrecord(action_taken, countyfp, geoid):
-            respondent = Institution.objects.get(institution_id="922-333")
+        def mkrecord(institution_id, action_taken, countyfp, geoid):
+            respondent = Institution.objects.get(institution_id=institution_id)
+            geo = Geo.objects.get(geoid=geoid)
             record = HMDARecord(
                 as_of_year=2014, respondent_id=respondent.respondent_id, agency_code=respondent.agency_id,
                 loan_type=1, property_type=1, loan_purpose=1, owner_occupancy=1,
@@ -40,18 +39,74 @@ class ViewsTest(TestCase):
                 ffieic_median_family_income='1000', tract_to_msamd_income='1000',
                 number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
                 application_date_indicator=1)
-        
-            record.geo_geoid = geoid
-            record.institution_id = respondent.institution_id
+            record.geo = geo
+            record.institution = respondent
             record.save()
 
-        mkrecord(1, '222', '1122233300')
-        mkrecord(1, '222', '1122233300')
-        mkrecord(1, '222', '1122233400')
-        mkrecord(8, '222', '1122233300')
-        mkrecord(1, '222', '1122233300')
-        mkrecord(1, '223', '1122333300')
+        #institution #1 records, total = 6; selected institution
+        mkrecord("91000000001", 1, '222', '1122233300')
+        mkrecord("91000000001", 1, '222', '1122233300')
+        mkrecord("91000000001", 1, '222', '1122233400')
+        mkrecord("91000000001", 1, '222', '1122233300')
+        mkrecord("91000000001", 1, '222', '1122233300')
+        mkrecord("91000000001", 1, '223', '1122333300')
+
+        #institution #2 records, total = 4; >.5 and <2.0; peer
+        mkrecord("91000000002", 1, '222', '1122233300')
+        mkrecord("91000000002", 1, '222', '1122233300')
+        mkrecord("91000000002", 1, '222', '1122233400')
+        mkrecord("91000000002", 1, '222', '1122233300')
+        
+        #institution #3 records, total =2; <.5; not peer
+        mkrecord("91000000003", 1, '222', '1122233300')
+        mkrecord("91000000003", 1, '223', '1122333300')
+
+        #institution #4 records, total = 13; >2.0; not peer
+        mkrecord("11000000001", 1, '222', '1122233300')
+        mkrecord("11000000001", 1, '222', '1122233300')
+        mkrecord("11000000001", 1, '222', '1122233400')
+        mkrecord("11000000001", 1, '222', '1122233300')
+        mkrecord("11000000001", 1, '222', '1122233300')
+        mkrecord("11000000001", 1, '223', '1122333300')
+        mkrecord("11000000001", 1, '222', '1122233300')
+        mkrecord("11000000001", 1, '222', '1122233300')
+        mkrecord("11000000001", 1, '222', '1122233400')
+        mkrecord("11000000001", 1, '222', '1122233300')
+        mkrecord("11000000001", 1, '222', '1122233300')
+        mkrecord("11000000001", 1, '223', '1122333300')
+        mkrecord("11000000001", 1, '223', '1122333300')
+
+        #institution #4 records, total = 4; >.5 and <2.0; peer
+        mkrecord("11000000002", 1, '222', '1122233300')
+        mkrecord("11000000002", 1, '222', '1122233300')
+        mkrecord("11000000002", 1, '222', '1122233400')
+        mkrecord("11000000002", 1, '222', '1122233300')
+        mkrecord("11000000002", 1, '222', '1122233300')
+        call_command('calculate_loan_stats')
 
     def tearDown(self):
         Census2010Households.objects.all().delete()
         HMDARecord.objects.all().delete()
+        LendingStats.objects.all().delete()
+
+    def test_get_peer_list(self):
+        """Case: Institution has no peers but itself in selected metro"""
+        institution = Institution.objects.filter(institution_id="11000000001").first()
+        metro = Geo.objects.filter(geoid="10000").first()
+        peer_list = institution.get_peer_list(metro, False, False)
+        self.assertEqual(len(peer_list), 1)
+        self.assertEqual(peer_list[0].institution_id, "11000000001")
+        
+        """Case: Institution has peers in selected metro"""
+        institution = Institution.objects.filter(institution_id="91000000001").first()
+        metro = Geo.objects.filter(geoid="10000").first()
+        peer_list = institution.get_peer_list(metro, False, False)
+        self.assertEqual(len(peer_list), 3)
+        peer_list_exclude = institution.get_peer_list(metro, True, False)
+        self.assertEqual(len(peer_list_exclude), 2)
+        peer_list_order = institution.get_peer_list(metro, False, True)
+        self.assertEqual(peer_list_order[0].institution_id, "91000000001")
+        peer_list_order_exclude = institution.get_peer_list(metro, True, True)
+        self.assertEqual(peer_list_order_exclude[0].institution_id, "91000000002")
+        self.assertEqual(len(peer_list_exclude), 2) 
+

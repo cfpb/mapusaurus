@@ -5,55 +5,36 @@ from django.db.models.query import QuerySet
 from geo.models import Geo
 from hmda.models import LendingStats
 from hmda.management.commands.calculate_loan_stats import (calculate_median_loans)
-from respondents.models import Institution, LenderHierarchy
+from respondents.models import Institution
 
 def map(request, template):
     """Display the map. If lender info is present, provide it to the
     template"""
-    lender = request.GET.get('lender', '')
-    metro = request.GET.get('metro')
+    lender_selected = request.GET.get('lender', '')
+    metro_selected = request.GET.get('metro')
     context = {}
-    if lender and len(lender) > 1 and lender[0].isdigit():
-        query = Institution.objects.filter(institution_id=lender)
-        query = query.select_related('agency', 'zip_code')
-        lender = query.first()
-        if lender:
-            context['lender'] = lender
-    else:
-        lender = None
-    if metro:
-        query = Geo.objects.filter(geo_type=Geo.METRO_TYPE,
-                                   geoid=metro)
-        metro = query.first()
-        if metro:
-            context['metro'] = metro
-
-    if lender and metro:
-        hierarchy_list = LenderHierarchy.objects.filter(organization_id=lender.lenderhierarchy_set.get().organization_id).exclude(institution_id=lender.institution_id).order_by('-institution__assets')
+    lender = Institution.objects.filter(institution_id=lender_selected).select_related('agency', 'zip_code', 'lenderhierarchy').first()
+    metro = Geo.objects.filter(geo_type=Geo.METRO_TYPE,geoid=metro_selected).first()
+    if lender:
+        context['lender'] = lender
+        hierarchy_list = lender.get_lender_hierarchy(True, True)
         context['institution_hierarchy'] = hierarchy_list 
-        peer_list = get_peer_list(lender, metro) 
+    if metro:
+        context['metro'] = metro
+    if lender and metro:
+        peer_list = lender.get_peer_list(metro, True, True) 
         context['institution_peers'] = peer_list
         context['download_url'] = make_download_url(lender, metro)
         context['hierarchy_download_url'] = make_download_url(hierarchy_list, metro)
         context['peer_download_url'] = make_download_url(peer_list, metro)
-    context['median_loans'] = lookup_median(lender, metro) or 0
-    if context['median_loans']:
-        # 50000 is an arbitrary constant; should be altered if we want to
-        # change how big the median circle size is
-        context['scaled_median_loans'] = 50000 / context['median_loans']
-    else:
-        context['scaled_median_loans'] = 0
-
+        context['median_loans'] = lookup_median(lender, metro) or 0
+        if context['median_loans']:
+            # 50000 is an arbitrary constant; should be altered if we want to
+            # change how big the median circle size is
+            context['scaled_median_loans'] = 50000 / context['median_loans']
+        else:
+            context['scaled_median_loans'] = 0
     return render(request, template, context)
-
-def get_peer_list(lender, metro):
-    loan_stats = lender.lendingstats_set.filter(geo_id=metro.geoid).first()
-    if loan_stats:    
-        percent_50 = loan_stats.lar_count * .50
-        percent_200 = loan_stats.lar_count * 2.0
-        peer_list = LendingStats.objects.filter(geo_id=metro.geoid, fha_bucket=loan_stats.fha_bucket, lar_count__range=(percent_50, percent_200)).exclude(institution_id=lender.institution_id).order_by('-institution__assets')
-        return peer_list
-    return []
 
 def make_download_url(lender, metro):
     """Create a link to CFPB's HMDA explorer, either linking to all of this

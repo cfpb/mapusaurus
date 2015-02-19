@@ -2,11 +2,15 @@ import json
 
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseBadRequest
-from hmda.models import HMDARecord, LendingStats
+from hmda.models import HMDARecord
 from geo.models import Geo
 from geo.views import get_censustract_geoids 
+<<<<<<< HEAD
 from rest_framework.renderers import JSONRenderer
 from respondents.models import LenderHierarchy, Institution
+=======
+from respondents.models import Institution
+>>>>>>> 417f22f7d5996013556b19ae16f66af7ac4f3173
 
 def loan_originations(request):
     institution_id = request.GET.get('lender')
@@ -15,7 +19,11 @@ def loan_originations(request):
     lender_hierarchy = request.GET.get('lh')
     peers = request.GET.get('peers')
     geoids = get_censustract_geoids(request)
+<<<<<<< HEAD
     institution_selected = Institution.objects.get(pk=institution_id)
+=======
+    institution_selected = Institution.objects.filter(pk=institution_id).first()
+>>>>>>> 417f22f7d5996013556b19ae16f66af7ac4f3173
     metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
     if action_taken_param:
         action_taken_selected = [param for param in action_taken_param.split(',')]
@@ -42,8 +50,13 @@ def loan_originations(request):
         query = query.filter(geo__geoid__in=geoids)
     else: 
         return HttpResponseBadRequest("Missing one of lender, action_taken, lat/lon bounds or geoid.")
+<<<<<<< HEAD
     query = query.values('geo_id', 'geo__census2010households__total').annotate(volume=Count('geo_id'))
     return query; 
+=======
+    query = query.values('geo__geoid', 'geo__census2010households__total').annotate(volume=Count('geo__geoid'))
+    return query 
+>>>>>>> 417f22f7d5996013556b19ae16f66af7ac4f3173
 
 def loan_originations_as_json(request):
     records = loan_originations(request)
