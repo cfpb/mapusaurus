@@ -27,20 +27,9 @@ def get_censustract_geoids(request):
     if 'neLat' in request.GET:
         geos = get_censustract_geos(request)
     else:
-        geos = get_tracts_by_msa(request)
+        MSA = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
+        geos = MSA.get_censustract_geos_by_msa()
     return geos.values_list('geoid', flat=True)
-
-def get_tracts_by_msa(request):
-    msa_id = request.GET.get('metro')
-    metro = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=msa_id).first()
-    # lender_id = request.GET.get('lender')
-    # lender = Institution.objects.filter(institution_id=lender_id).first()
-    # if metro and lender:
-    if metro:
-        tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=msa_id)
-        return tracts
-    else:
-        return []
 
 def get_censustract_geos(request, metro=False):
     """ """

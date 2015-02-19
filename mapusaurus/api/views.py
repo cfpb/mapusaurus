@@ -30,12 +30,11 @@ def tables(request):
         return HttpResponseBadRequest("the following request failed: %s" % request)
 
 def msas(request):
+    """return a list of MSA ids visible by bounding coordinates"""
     try:
-        query = get_censustract_geos(request, metro=True)
-        msas = {
-        'msas': [msa.geoid for msa in query]
-        }
-        return HttpResponse(json.dumps(msas), content_type='application/json')
+        msas = get_censustract_geos(request, metro=True)
+        msa_list = [metro.geoid for metro in msas]
+        return HttpResponse(json.dumps(msa_list), content_type='application/json')
     except:
         return HttpResponseBadRequest("request failed; details: %s" % request)
 

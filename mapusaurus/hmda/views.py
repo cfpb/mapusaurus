@@ -30,7 +30,7 @@ def loan_originations(request):
         if lender_hierarchy == 'true':
             hierarchy_list = LenderHierarchy.objects.filter(organization_id=institution_selected.lenderhierarchy_set.get().organization_id)
             if len(hierarchy_list) > 0:
-                query = query.filter(institution__in=[item.institution for item in hierarchy_list]) 
+                query = query.filter(institution__in=hierarchy_list)
             else: 
                 query = query.filter(institution=institution_selected)
         elif peers == 'true':
