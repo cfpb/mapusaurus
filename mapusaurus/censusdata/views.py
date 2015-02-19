@@ -8,7 +8,7 @@ from .models import Census2010RaceStats
 from geo.views import get_censustract_geoids
 from geo.models import Geo
 from djqscsv import render_to_csv_response
-from hmda.views import loan_originations_as_json, get_peer_list
+from hmda.views import loan_originations_as_json
 from respondents.models import Institution
 
 def sum_lar_tuples(tups):
