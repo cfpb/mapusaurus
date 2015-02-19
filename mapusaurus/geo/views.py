@@ -32,7 +32,7 @@ def get_censustract_geoids(request):
     return geos.values_list('geoid', flat=True)
 
 def get_censustract_geos(request, metro=False):
-    """ """
+    """handles requests for tract-level ids or MSA ids"""
     if metro == False:
         geoTypeId = 3
     else:

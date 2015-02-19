@@ -8,7 +8,7 @@ from censusdata.views import race_summary_as_json, minority_aggregation_as_json
 from hmda.models import HMDARecord
 from hmda.views import loan_originations_as_json, loan_originations
 from respondents.views import branch_locations_as_json
-from django.views.decorators.cache import cache_page
+# from django.views.decorators.cache import cache_page
 
 def all(request):
     """This endpoint allows multiple statistical queries to be made in a
@@ -36,7 +36,7 @@ def msas(request):
         msa_list = [metro.geoid for metro in msas]
         return HttpResponse(json.dumps(msa_list), content_type='application/json')
     except:
-        return HttpResponseBadRequest("request failed; details: %s" % request)
+        return HttpResponseBadRequest("Invalid bounding coordinates")
 
 def msa(request):
     try:
