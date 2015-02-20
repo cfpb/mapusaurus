@@ -168,9 +168,10 @@ def minority_aggregation_as_json(request):
 
 def odds_ratio(target_mm, target_non, peer_mm, peer_non):
     """
-    calculates odds ratio for a lender compared with peers
-    and based on counts of loans in mostly minority areas vs mostly majority areas
-    thank you, amy mok
+    intended to calculate a lender/peers odds ratio for minority lending,
+    based on counts of loans in mostly minority areas vs mostly majority areas
+    this algorithm has not been vetted, so its current use 
+    is only for mocking data flow to tables
     """
     portfolio_target = float(target_mm) / float(target_mm + target_non)
     portfolio_peer = float(peer_mm) / float(peer_mm + peer_non)
