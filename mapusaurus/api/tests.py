@@ -27,7 +27,7 @@ class ConversionTest(TestCase):
 
 
 class ViewsTests(TestCase):
-    fixtures = ['agency.json', 'fake_msa.json', 'many_tracts.json', 'test_counties.json', 'fake_respondents.json']
+    fixtures = ['agency.json', 'fake_msa.json', 'api_tracts.json', 'test_counties.json', 'fake_respondents.json']
 
     def test_api_all_user_errors(self):
         resp = self.client.get(reverse('all'))
