@@ -128,7 +128,7 @@ def minority_aggregation_as_json(request):
         'minority_pct': msa_minority_pct
     }
     # PEERS
-    peers = lender.get_peer_list(metro)
+    peers = lender.get_peer_list(metro, None, None)
     if peers:
         peer_data_collector = []
         for peer in peers:
