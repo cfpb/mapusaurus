@@ -1,8 +1,49 @@
 [
   {
+    "pk": 98,
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "37067000700",
+      "geo_type": 3,
+      "cbsa": "49180",
+      "name": "12",
+      "state": "11",
+      "county": "222",
+      "tract": "001200",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 36.095741,
+      "minlon": -80.277912,
+      "maxlat": 36.123218,
+      "maxlon": -80.257619,
+      "centlat": 0.5,
+      "centlon": 0.5
+    }
+  },
+  {
+    "pk": 99,
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "37067001200",
+      "geo_type": 3,
+      "cbsa": "49180",
+      "name": "12",
+      "state": "11",
+      "county": "222",
+      "tract": "001200",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 36.095741,
+      "minlon": -80.277912,
+      "maxlat": 36.123218,
+      "maxlon": -80.257619,
+      "centlat": 0.5,
+      "centlon": 0.5
+    }
+  },
+  {
     "pk": 101,
     "model": "geo.geo",
     "fields": {
+      "cbsa": "49180",
       "geoid": "1122233300",
       "geo_type": 3,
       "name": "333",
@@ -73,6 +114,107 @@
       "maxlon": -4,
       "centlat": -4.5,
       "centlon": -4.5
+    }
+  },
+  {
+    "pk": 100,
+    "model": "hmda.hmdarecord",
+    "fields": {
+      "institution": "90000451965",
+      "geo": "49180",
+      "as_of_year": 2012,
+      "respondent_id": "1",
+      "agency_code": "9",
+      "loan_type": 1,
+      "property_type": "a",
+      "loan_purpose": 1,
+      "owner_occupancy": 1,
+      "loan_amount_000s": 1,
+      "preapproval": "a",
+      "action_taken": 1,
+      "msamd": "a",
+      "statefp": "a",
+      "countyfp": "a",
+      "census_tract_number": "a",
+      "applicant_ethnicity": "1",
+      "co_applicant_ethnicity": "1",
+      "applicant_race_1": "1",
+      "co_applicant_race_1": "1",
+      "applicant_sex": 1,
+      "co_applicant_sex": 1,
+      "applicant_income_000s": "a",
+      "purchaser_type": "a",
+      "rate_spread": "a",
+      "hoepa_status": "a",
+      "lien_status": "a",
+      "sequence_number": "a",
+      "population": "a",
+      "minority_population": "4",
+      "ffieic_median_family_income": "10",
+      "tract_to_msamd_income": "10",
+      "number_of_owner_occupied_units": "10",
+      "number_of_1_to_4_family_units": "10",
+      "application_date_indicator": 1
+    }
+  },
+  {
+    "pk": 100,
+    "model": "hmda.lendingstats",
+    "fields": {
+      "geo": "49180",
+      "institution": "90000451965",
+      "lar_median": 3,
+      "lar_count": 4,
+      "fha_count": 2,
+      "fha_bucket": 2
+    }
+  },
+  {
+    "pk": 100,
+    "model": "censusdata.census2010racestats",
+    "fields": {
+      "geoid": "37067001200",
+      "hispanic": 46,
+      "hispanic_perc": 0.0234813680449,
+      "non_hisp_asian_only": 16,
+      "non_hisp_asian_only_perc": 0.00816743236345,
+      "non_hisp_black_only": 167,
+      "non_hisp_black_only_perc": 0.0852475752935,
+      "non_hisp_white_only": 1713,
+      "non_hisp_white_only_perc": 0.874425727412,
+      "total_pop": 1959
+    }
+  },
+  {
+    "pk": 100,
+    "model": "censusdata.census2010racestats",
+    "fields": {
+      "geoid": "37067000700",
+      "hispanic": 86,
+      "hispanic_perc": 0.0234813680449,
+      "non_hisp_asian_only": 16,
+      "non_hisp_asian_only_perc": 0.00816743236345,
+      "non_hisp_black_only": 167,
+      "non_hisp_black_only_perc": 0.0852475752935,
+      "non_hisp_white_only": 1713,
+      "non_hisp_white_only_perc": 0.874425727412,
+      "total_pop": 2959
+    }
+  },
+  {
+    "pk": 100,
+    "model": "censusdata.census2010households",
+    "fields": {
+      "geoid": "37067000700",
+      "total": 5,
+      "total_family": 5,
+      "husband_wife": 1,
+      "total_family_other": 1,
+      "male_no_wife": 2,
+      "female_no_husband": 2,
+      "total_nonfamily": 3,
+      "living_alone": 1,
+      "not_living_alone": 1
     }
   }
 ]

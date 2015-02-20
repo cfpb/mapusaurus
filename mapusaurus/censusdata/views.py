@@ -110,6 +110,7 @@ def combine_peer_stats(collector):
             'hma': 0,
             'hma_pct': 0
             }
+
 def minority_aggregation_as_json(request):
     """
     aggregates minority population ranges and LAR counts 
