@@ -881,7 +881,7 @@ function buildKeyCircles(){
         rad = circle._radius;
         console.log("RAD: ", rad);
         posx = posx + 45; // Move the circles horizontally, y values stay constant    
-        svgStr += '<circle cx="' + posx + '" cy="' + (posy-rad) + '" r="' + rad + '" fill="gray" anchor="bottom"/>';        
+        svgStr += '<circle cx="' + posx + '" cy="' + (posy-rad) + '" r="' + rad + '" fillColor="#111111" fill-opacity=".7" stroke=true color="#333", opacity=1/>';        
         svgStr += '<text x="' + (posx) + '" y="' + textPosy + '" font-size="1em" text-anchor="middle">'+ circle.volume + '</text>';
     }
 
