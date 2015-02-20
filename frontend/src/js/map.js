@@ -861,9 +861,6 @@ function buildKeyCircles(){
     var selector = $('#keySvg');
     selector.html('');
     
-    // Create the initial SVG element
-    var svgStr = '<svg height="75px">';
-    
     // Circles to be generated
     var circles = getRange(map._layers);
 
@@ -875,6 +872,9 @@ function buildKeyCircles(){
     var maxRad = _.max(circles, function(circleObj){ return circleObj._radius; })._radius;
     var posy = maxRad*2;
     var textPosy = posy + 16; //Add 16px for font
+
+    // Create the initial SVG element
+    var svgStr = '<svg height="' + (maxRad*2 + 20) + '">';
 
     for( var i=0; i<circles.length; i++ ){
         var circle = circles[i];
