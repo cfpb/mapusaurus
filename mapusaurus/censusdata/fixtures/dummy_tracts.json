@@ -74,5 +74,43 @@
       "centlat": 0.0,
       "centlon": 0.0
     }
+  },
+  {
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "10000",
+      "geo_type": 4,
+      "name": "TEST METRO",
+      "state": "12",
+      "county": "222",
+      "tract": "33300",
+      "cbsa": "10000",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 2,
+      "maxlon": 2,
+      "centlat": 1.0,
+      "centlon": 1.0
+    }
+  },
+  {
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "10001",
+      "geo_type": 4,
+      "name": "TEST METRO",
+      "state": "12",
+      "county": "222",
+      "tract": "33300",
+      "cbsa": "10000",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 2,
+      "maxlon": 2,
+      "centlat": 1.0,
+      "centlon": 1.0
+    }
   }
 ]

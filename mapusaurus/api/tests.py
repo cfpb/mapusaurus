@@ -1,7 +1,8 @@
 import json
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpRequest, HttpResponse, HttpResponseBadRequest
+
 from django.test import TestCase
 from mock import Mock, patch
 
@@ -76,7 +77,7 @@ class ViewsTests(TestCase):
         self.assertEqual(resp.status_code, 400)
 
     def test_api_msas_endpoint(self):
-        """the msas endpoint should return a list of MSA ids"""
+        """should return a list of MSA ids in view"""
         coords = {'neLat': '36.551569', 'neLon':'-78.961487', 'swLat':'35.824494', 'swLon':'-81.828918'}
         url = reverse(msas)
         resp = self.client.get(url, coords)
@@ -85,7 +86,7 @@ class ViewsTests(TestCase):
         self.assertContains(resp, '49180')
 
     def test_api_msa_endpoint(self):
-        """the msa endpoint should return tract-level geojson for an MSA"""
+        """should return tract-level geojson for a lender/MSA pair"""
         params = {'lender': '90000451965', 'metro': '49180'}
         url = reverse(msa)
         resp = self.client.get(url, params)
@@ -93,11 +94,19 @@ class ViewsTests(TestCase):
         self.assertTrue(isinstance(result_dict, dict))
         self.assertContains(resp, 'features')
 
-    # def test_api_tables_endpoint(self):
-    #     """the tables endpoint should return table_data json for an MSA"""
-    #     params = {'lender': '90000451965', 'metro': '49180'}
-    #     url = reverse(tables)
-    #     resp = self.client.get(url, params)
-    #     result_dict = json.loads(resp.content)
-    #     self.assertTrue(isinstance(result_dict, dict))
-    #     self.assertContains(resp, 'lender')
+    def test_api_tables_endpoint(self):
+        """should return table_data json for a lender/MSA pair"""
+        params = {'lender': '90000451965', 'metro': '49180'}
+        url = reverse(tables)
+        resp = self.client.get(url, params)
+        result_dict = json.loads(resp.content)
+        self.assertTrue(isinstance(result_dict, dict))
+        keys = ['lender', 'peers', 'odds', 'msa', 'counties']
+        lender_keys = ['hma_pct', 'lma_pct', 'mma_pct', 'lma', 'mma', 'hma', 'lar_total']
+        for key in keys:
+            self.assertTrue(key in result_dict['table_data'].keys())
+        for key in lender_keys:
+                self.assertTrue(key in result_dict['table_data']['lender'].keys())
+        self.assertTrue(len(result_dict['table_data']['counties']) > 0)
+
+

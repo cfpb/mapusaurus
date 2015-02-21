@@ -151,7 +151,7 @@ def minority_aggregation_as_json(request):
     else:
         peer_stats = None
         odds = None
-    # BY COUNTY -- TODO
+    # BY COUNTY
     county_ids = sorted(set([tract.geoid[:5] for tract in tracts]))
     county_stats = {county_id: {} for county_id in county_ids}
     for county_id in county_ids:
@@ -179,9 +179,10 @@ def odds_ratio(target_mm, target_non, peer_mm, peer_non):
     odds_numer = portfolio_target / (1.0 - portfolio_target)
     odds_denom = portfolio_peer / (1.0 - portfolio_peer)
 
-    # return int(odds_numer / odds_denom)
-    return round((odds_numer / odds_denom), 1)
-    # return odds_numer / odds_denom
+    if odds_denom == 0:
+        return None
+    else:
+        return round((odds_numer / odds_denom), 1)
 
 def race_summary(request):
     """Race summary statistics"""
