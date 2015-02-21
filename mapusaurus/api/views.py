@@ -68,8 +68,8 @@ def msa(request):
         else:
             for tract in tracts:
                 volume = 0
-                if tract.geoid in tract_loans:
-                    volume += tract_loans[tract.geoid]
+                if tract.geoid in tract_loans and isinstance(tract_loans[tract.geoid]['volume'], int):
+                    volume += tract_loans[tract.geoid]['volume']
                 tracts_out['features'].append({
                         "type": "Feature",
                         "geometry": {"type": "Polygon", "coordinates": tract.geom.simplify(0.001).coords},
