@@ -179,7 +179,9 @@ def odds_ratio(target_mm, target_non, peer_mm, peer_non):
     odds_numer = portfolio_target / (1.0 - portfolio_target)
     odds_denom = portfolio_peer / (1.0 - portfolio_peer)
 
-    return int(odds_numer / odds_denom)
+    # return int(odds_numer / odds_denom)
+    return round((odds_numer / odds_denom), 1)
+    # return odds_numer / odds_denom
 
 def race_summary(request):
     """Race summary statistics"""
