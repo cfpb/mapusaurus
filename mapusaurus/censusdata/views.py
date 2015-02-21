@@ -45,11 +45,11 @@ def assemble_stats(lar_data, tracts):
     if lar_total:
         lar_stats = {
                 'lma': lma_ct, 
-                'lma_pct': 1.0 * lma_ct / lar_total, 
+                'lma_pct': round(1.0 * lma_ct / lar_total, 3), 
                 'mma': mma_ct,
-                'mma_pct': 1.0 * mma_ct / lar_total,
+                'mma_pct': round(1.0 * mma_ct / lar_total, 3),
                 'hma': hma_ct,
-                'hma_pct': 1.0 * hma_ct / lar_total,
+                'hma_pct': round(1.0 * hma_ct / lar_total, 3),
                 'lar_total': lar_total
                 }
         return lar_stats
@@ -75,7 +75,7 @@ def tally_msa_minority_stats(tracts):
         pop += stats.total_pop
         minority += (stats.total_pop - stats.non_hisp_white_only)
     if pop:
-        return pop, minority, 1.0 * minority / pop
+        return pop, minority, round(1.0 * minority / pop, 3)
     else:
         return 0, 0, 0
 
@@ -93,11 +93,11 @@ def combine_peer_stats(collector):
         hma_pct = 1.0 * hma / peer_total
         return {
                 'lma': lma, 
-                'lma_pct': 1.0 * lma / peer_total, 
+                'lma_pct': round(1.0 * lma / peer_total, 3), 
                 'mma': mma,
-                'mma_pct': 1.0 * mma / peer_total,
+                'mma_pct': round(1.0 * mma / peer_total, 3),
                 'hma': hma,
-                'hma_pct': 1.0 * hma / peer_total,
+                'hma_pct': round(1.0 * hma / peer_total, 3),
                 'lar_total': peer_total
                 }
     else:
@@ -126,7 +126,7 @@ def minority_aggregation_as_json(request):
     msa_pop, msa_minority_ct, msa_minority_pct = tally_msa_minority_stats(tracts)
     msa_stats = {
         'minority_ct': msa_minority_ct,
-        'minority_pct': msa_minority_pct
+        'minority_pct': round(msa_minority_pct, 3)
     }
     # PEERS
     peers = lender.get_peer_list(metro, None, None)
@@ -197,10 +197,6 @@ def race_summary_as_json(request_dict):
 
     data = {}
     for stats in records:
-        if stats.total_pop:
-            MINPERC = 1.0 * (stats.total_pop - stats.non_hisp_white_only) / stats.total_pop
-        else:
-            MINPERC = 0
         data[stats.geoid_id] = {
             'total_pop': stats.total_pop,
             'total_pop': stats.total_pop,
@@ -208,7 +204,7 @@ def race_summary_as_json(request_dict):
             'non_hisp_white_only': stats.non_hisp_white_only,
             'non_hisp_black_only': stats.non_hisp_black_only,
             'non_hisp_asian_only': stats.non_hisp_asian_only,
-            'minority_perc': MINPERC,
+            'minority_perc': 1-stats.non_hisp_white_only_perc,
             'hispanic_perc': stats.hispanic_perc,
             'non_hisp_white_only_perc': stats.non_hisp_white_only_perc,
             'non_hisp_black_only_perc': stats.non_hisp_black_only_perc,
