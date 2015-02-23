@@ -1,0 +1,273 @@
+@lma-color: #eae9e5;
+@mma-color: #b8cad9;
+@hma-color: #7ea4be;
+@border-strong: #bababa;
+@border-light: #dddddd;
+@background-gray: #F8F8F8;
+
+.show-data .leaflet-control-minimap {
+    display: none;
+}
+
+.chart-toggle {
+    cursor: pointer;
+}
+
+#map-aside {
+    overflow:hidden;
+}
+
+#data-container {
+    border-top: 3px solid #777;
+    overflow-y: auto;
+    position: relative;
+}
+
+.summary-data-table {
+    margin-bottom: 0;
+    width: 100%;
+    border-collapse: collapse;
+    
+    thead {
+        border-bottom: 1px solid @border-strong;
+        
+        th {
+            color: @gray;
+            background: @background-gray;
+      
+        	.color-coded {
+        	    position:relative;
+        	    padding-left: 1em;
+
+        	    &:before {
+        		    content: '\2022';
+            		line-height: 1;
+            		position: absolute;
+             		left: 0;
+             		font-size: 1.5em;
+             		top: -2px;
+             	}
+        	}
+
+            &.lar.lma_ct,
+            &.lar.lma_pct {
+                .color-coded:before {
+            		color: @lma-color;
+            	}
+            }
+
+            &.lar.mma_ct,
+            &.lar.mma_pct {
+                .color-coded:before {
+            		color: @mma-color;
+            	}
+            }
+
+            &.lar.hma_ct,
+            &.lar.hma_pct {
+                .color-coded:before {
+            		color: @hma-color;
+            	}
+            }
+
+            .sortable-content,
+            .arrows {
+                float: left;
+            }
+
+            .arrows {
+                position: relative;
+                margin-left: 4px;
+            }
+
+            .cf-icon-up,
+            .cf-icon-down {
+                font-size:  unit(12px / @base-font-size-px, em);
+            }
+            .cf-icon-up {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            .cf-icon-down {
+                position: absolute;
+                left: 0;
+                top: 7px;
+            }
+
+            &.tablesorter-headerAsc .cf-icon-down {
+                color: @gray-20;
+            }
+
+            &.tablesorter-headerDesc .cf-icon-up {
+                color: @gray-20;
+            }
+        }
+    }
+    
+    .sortable-header th {
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+    
+    .header-one th {
+        padding-bottom: .5em;
+        font-size:  unit(16px / @base-font-size-px, em);
+    }
+    .header-two th {
+        padding-top: .2em;
+        font-size:  unit(13px / @base-font-size-px, em);
+    }
+    
+    td,
+    th {
+        border-right: 1px solid @border-light;
+    }
+    
+    th.name,
+    td.name,
+    td.chart-title,
+    .expander {
+        border-right-width: 0;
+    }
+    
+    td.chart,
+    th.name-span,
+    .hma_ct,
+    .hma_pct,
+    .header-one th.title,
+    .header-one th.number,
+    .header-one th.percentage,
+    .header-two th.name {
+        border-color: @border-strong;
+    }
+    
+    .lar {
+        width: 3em;
+    }
+    
+    .odds_ratio {
+        width: 6em;
+    }
+    
+    .chart-title {
+        width: 3em;
+    }
+        
+    .chart {
+        width: 125px;
+        
+        .bar {
+            width: 125px;
+            height:16px;
+            .u-inline-block;
+            
+            .segment {
+                height: 16px;
+                float: left;
+                
+                &.lma {
+                    background-color: @lma-color;
+                }
+                &.mma {
+                    background-color: @mma-color;
+                }
+                &.hma {
+                    background-color: @hma-color;
+                }
+            }
+            
+            &.peer {
+                height: 8px;
+                
+                .segment {
+                    height: 8px;
+                }
+            }
+        }
+    }
+    
+    .expander {
+        width: 1em;
+        padding-right: 0px;
+        
+        & .cf-icon {
+            color: @gray-50;
+        }
+    }
+    
+    tbody {
+        &:hover {
+            background-color: @background-gray;
+        }
+        
+        &.county-tbody {
+            cursor: pointer;
+        }
+        
+        tr {
+            &.msa-row {
+                .webfont-demi() ;
+            }
+
+            &.peer-row {
+                color: @gray;
+                border-bottom: 1px solid @border-strong;
+
+                & td {
+                    padding-top: 0;
+                    padding-bottom: .5em;
+                }
+            }
+
+            &.tract-row {
+                .name {
+                    /* padding-left: 2em; */
+                }
+            }
+
+            &.county-row,
+            &.tract-row {
+                & .lar,
+                & .lar_pct {
+                    font-size: 14px;
+                }
+            }
+
+            td {
+                background-color: inherit;
+                vertical-align: top;
+
+                &.chart {
+                    vertical-align: middle;
+                }
+
+                &.lar_pct, 
+                &.odds_ratio,
+                &.lar {
+                    text-align: right;
+                }
+            }
+        }
+    }    
+    
+    &.peer-table  {
+        .target-row td {
+            padding-top: .5em;
+            padding-bottom: 0;
+        }
+        
+        .target-row-identifier {
+            display: none;
+        }
+    }
+    
+    &.basic-table {
+        .target-row  td {
+            border-bottom: 1px solid @border-strong;
+        }
+    }
+   
+}
+

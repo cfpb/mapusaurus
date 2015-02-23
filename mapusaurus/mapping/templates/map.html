@@ -16,6 +16,8 @@
     <script type="text/javascript" src="{% static 'mapping/js/map-vendor.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/js/table.min.js' %}"></script>
+    
 {% endblock %}
 
 {% block sidebar_content %}
@@ -37,8 +39,15 @@
     {% include 'partial/map_key.html'%}    
     </div>
 </div>
+{% endblock %}
 
-
+{% block data_content %}
+<div id="data-container" style="display:none;">
+    <div id="table-container" style="display:none;">
+    </div>
+    <div id="plot-container" style="display:none;">
+    </div>
+</div>    
 {% endblock %}
 
 {% block foot_scripts %}
@@ -168,4 +177,5 @@
     </script>
     <script type="text/javascript" src="{% static 'respondents/js/metro-search.min.js' %}"></script>
 
+    {% include 'partial/summary_table_templates.html'%}
 {% endblock %}

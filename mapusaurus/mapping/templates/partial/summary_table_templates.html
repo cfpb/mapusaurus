@@ -1,0 +1,230 @@
+<!-- BEGIN: Data table tbody Template Definition. -->
+<script type="text/template" class="table-template">
+<table class="rwd-table summary-data-table <%-msa.showPeers ? 'peer-table': 'basic-table'%>">
+    <thead>
+        <tr class="header-one">
+            <th class="sorter-false title" colspan="4">Data Tables</th>
+            <th class="sorter-false number" colspan="3">Number of Applications</th>
+            <th class="sorter-false percentage" colspan="3">Percentage of Market</th>
+            <% if (msa.showPeers) { %>
+            <th class="sorter-false odds"></th>
+            <% } %>
+        </tr>
+        <tr class="sortable-header header-two">
+            <th class="name" colspan="2">
+                <span class="sortable-content">Name</span> 
+                <div class="arrows">
+                    <div class="cf-icon cf-icon-up"></div>
+                    <div class="cf-icon cf-icon-down"></div>
+                </div>
+            </th>
+            <th class="sorter-false name-span" colspan="2"></th>
+            <th class="lar lma_ct">
+                <span class="color-coded sortable-content">LMA</span>
+                <div class="arrows">
+                    <div class="cf-icon cf-icon-up"></div>
+                    <div class="cf-icon cf-icon-down"></div>
+                </div>
+            </th>
+            <th class="lar mma_ct">
+                <span class="color-coded sortable-content">MMA</span>
+                <div class="arrows">
+                    <div class="cf-icon cf-icon-up"></div>
+                    <div class="cf-icon cf-icon-down"></div>
+                </div>
+            </th>
+            <th class="lar hma_ct">
+                <span class="color-coded sortable-content">HMA</span>
+                <div class="arrows">
+                    <div class="cf-icon cf-icon-up"></div>
+                    <div class="cf-icon cf-icon-down"></div>
+                </div>
+            </th>
+            <th class="lar lma_pct">
+                <span class="color-coded sortable-content">LMA</span>
+                <div class="arrows">
+                    <div class="cf-icon cf-icon-up"></div>
+                    <div class="cf-icon cf-icon-down"></div>
+                </div>
+            </th>
+            <th class="lar mma_pct">
+                <span class="color-coded sortable-content">MMA</span>
+                <div class="arrows">
+                    <div class="cf-icon cf-icon-up"></div>
+                    <div class="cf-icon cf-icon-down"></div>
+                </div>
+            </th>
+            <th class="lar hma_pct">
+                <span class="color-coded sortable-content">HMA</span>
+                <div class="arrows">
+                    <div class="cf-icon cf-icon-up"></div>
+                    <div class="cf-icon cf-icon-down"></div>
+                </div>
+            </th>
+            <% if (msa.showPeers) { %>
+            <th class="odds_ratio lma_ratio">
+                <span class="sortable-content">Odds Ratio</span>
+                <div class="arrows">
+                    <div class="cf-icon cf-icon-up"></div>
+                    <div class="cf-icon cf-icon-down"></div>
+                </div>
+            </th>
+            
+            <% } %>
+        </tr>
+    </thead>
+    
+    <tbody class="tablesorter-infoOnly">
+        <tr class="msa-row target-row">
+            <td class="name" colspan="2"><div>MSA {{metro.geoid}}</div></td>
+            <td class="chart-title "><% if (msa.showPeers) { %>Target<%}%></td>
+            <td class="chart">
+                <div class="bar">
+                    <div class="segment lma" style="width:<%-msa.lma_pct%>%"></div>
+                    <div class="segment mma" style="width:<%-msa.mma_pct%>%"></div>
+                    <div class="segment hma" style="width:<%-msa.hma_pct%>%"></div>
+                </div>
+            </td>
+            <td class="lar lma_ct"><%-msa.lma%></td>
+            <td class="lar mma_ct"><%-msa.mma%></td>
+            <td class="lar hma_ct"><%-msa.hma%></td>
+            <td class="lar lma_pct"><%-msa.lma_pct%>%</td>
+            <td class="lar mma_pct"><%-msa.mma_pct%>%</td>
+            <td class="lar hma_pct"><%-msa.hma_pct%>%</td>
+            <% if (msa.showPeers) { %>
+            <td class="odds_ratio lma_ratio"><%-msa.odds%></td>
+            
+            <% } %>
+        </tr>
+        <% if (msa.showPeers) { %>
+        <tr class="tablesorter-childRow msa-row peer-row">
+            <td class="name" colspan="2"></td>
+            <td class="chart-title ">Peers</td>
+            <td class="chart">
+                <div class="bar">
+                    <div class="segment lma" style="width:<%-msa.peers.lma_pct%>%"></div>
+                    <div class="segment mma" style="width:<%-msa.peers.mma_pct%>%"></div>
+                    <div class="segment hma" style="width:<%-msa.peers.hma_pct%>%"></div>
+                </div>
+            </td>
+            <td class="lar lma_ct"><%-msa.peers.lma%></td>
+            <td class="lar mma_ct"><%-msa.peers.mma%></td>
+            <td class="lar hma_ct"><%-msa.peers.hma%></td>
+            <td class="lar lma_pct"><%-msa.peers.lma_pct%>%</td>
+            <td class="lar mma_pct"><%-msa.peers.mma_pct%>%</td>
+            <td class="lar hma_pct"><%-msa.peers.hma_pct%>%</td>
+            <td class="odds_ratio lma_ratio"></td>
+            
+        </tr>
+        <% } %>
+  </tbody>
+  
+  <% _.each(msa.counties, function (county, key) {  %>
+        <tbody class="county-tbody">
+            <tr class="county-row target-row">
+                <td class="expander ">
+                    <span class="expandable_cue-open">
+                        <span class="cf-icon cf-icon-plus-round"></span>
+                    </span>
+                    <span class="expandable_cue-close">
+                        <span class="cf-icon cf-icon-minus-round"></span>
+                    </span>
+                </td>
+                <td class="name">
+                    <div class="row-contents name-contents">
+                        <div>COUNTY <span class="target-row-identifier"><%- key %></span></div>
+                    </div>
+                </td>
+                <td class="chart-title "><% if (county.showPeers) { %>Target<%}%></td>
+                <td class="chart">
+                    <div class="bar">
+                        <div class="segment lma" style="width:<%-county.lma_pct%>%"></div>
+                        <div class="segment mma" style="width:<%-county.mma_pct%>%"></div>
+                        <div class="segment hma" style="width:<%-county.hma_pct%>%"></div>
+                    </div>
+                </td>
+                <td class="lar lma_ct"><%-county.lma%></td>
+                <td class="lar mma_ct"><%-county.mma%></td>
+                <td class="lar hma_ct"><%-county.hma%></td>
+                <td class="lar lma_pct"><%-county.lma_pct%>%</td>
+                <td class="lar mma_pct"><%-county.mma_pct%>%</td>
+                <td class="lar hma_pct"><%-county.hma_pct%>%</td>
+                <% if (county.showPeers) { %>
+                <td class="odds_ratio lma_ratio"></td>
+
+                <% } %>
+
+            </tr>
+            <% if (msa.showPeers) { %>
+            <tr class="tablesorter-childRow county-row peer-row">
+                <td class="expander "></td>
+                <td class="name county-name">
+                    <div><%- county.geoid %></div>
+                </td>
+                <td class="chart-title ">Peers</td>
+                <td class="chart">
+                    <div class="bar peer" style="display:none;">
+                        <div class="segment lma" style="width:<%-county.lma_pct%>%"></div>
+                        <div class="segment mma" style="width:<%-county.mma_pct%>%"></div>
+                        <div class="segment hma" style="width:<%-county.hma_pct%>%"></div>
+                    </div>
+                </td>
+                <td class="lar lma_ct"></td>
+                <td class="lar mma_ct"></td>
+                <td class="lar hma_ct"></td>
+                <td class="lar lma_pct"></td>
+                <td class="lar mma_pct"></td>
+                <td class="lar hma_pct"></td>
+                <td class="odds_ratio lma_ratio"></td>
+
+
+            </tr>
+            <% } %>
+
+        </tbody>
+        <tbody class="tablesorter-childTbody">
+            <% _.each( county.tracts, function( tract ){ %>
+                <tr class="tract-row target-row">
+                    <td class="expander "></td>
+                    <td class="name">Tract <span class="target-row-identifier"><%- tract.geoid %></span></td>
+
+                    <td class="chart-title "></td>
+                    <td class="chart">
+                    </td>
+                    <td class="lar lma_ct" ><%-tract.lma%></td>
+                    <td class="lar mma_ct"><%-tract.mma%></td>
+                    <td class="lar hma_ct"><%-tract.hma%></td>
+                    <td class="lar lma_pct"></td>
+                    <td class="lar mma_pct"></td>
+                    <td class="lar hma_pct"></td>
+                    <% if (county.showPeers) { %>
+                    <td class="odds_ratio lma_ratio"></td>
+
+                    <% } %>
+                </tr>
+                <% if (msa.showPeers) { %>
+                <tr class="tablesorter-childRow tract-row peer-row">
+                    <td class="expander "></td>
+                    <td class="name"><div><%- tract.geoid %></div></td>
+                    <td class="chart-title "></td>
+                    <td class="chart">
+
+                    </td>
+                    <td class="lar lma_ct"></td>
+                    <td class="lar mma_ct"></td>
+                    <td class="lar hma_ct"></td>
+                    <td class="lar lma_pct"></td>
+                    <td class="lar mma_pct"></td>
+                    <td class="lar hma_pct"></td>
+                    <td class="odds_ratio lma_ratio"></td>
+
+                </tr>
+                <% } %>
+
+            <% }); %>
+        </tbody>
+  <% }); %>
+  
+</table>
+</script>
+<!-- END: Data table tbody Template Definition. -->
