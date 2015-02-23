@@ -87,7 +87,9 @@ module.exports = function(grunt) {
           'frontend/bower_components/jquery.easing/js/jquery.easing.js',
           'frontend/bower_components/typeahead/dist/typeahead.bundle.js',
           'frontend/bower_components/cf-expandables/src/js/cf-expandables.js',
-          'frontend/bower_components/tooltipsy/tooltipsy.min.js'
+          'frontend/bower_components/tooltipsy/tooltipsy.min.js',
+          'frontend/bower_components/tablesorter/js/jquery.tablesorter.min.js',
+          'frontend/bower_components/tablesorter/js/jquery.tablesorter.widgets.min.js'
         ],
         dest: 'frontend/dist/basestyle/js/vendor.min.js'
       },
@@ -121,6 +123,10 @@ module.exports = function(grunt) {
           'frontend/src/js/helpers.js'
         ],
         dest: 'frontend/dist/map/js/map.min.js'
+      },
+      table: {
+        src: ['frontend/src/js/table.js'],
+        dest: 'frontend/dist/map/js/table.min.js'
       },
       map_layout: {
         src: ['frontend/src/js/map-layout.js'],

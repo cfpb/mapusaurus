@@ -18,6 +18,7 @@
     <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="{% static 'mapping/js/plots.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/js/table.min.js' %}"></script>  
 {% endblock %}
 
 {% block sidebar_content %}
@@ -39,6 +40,7 @@
     {% include 'partial/map_key.html'%}    
     </div>
 </div>
+{% endblock %}
 
 <style>
 
@@ -92,6 +94,14 @@
 
   </div>
 </svg>-->
+
+{% block data_content %}
+<div id="data-container" style="display:none;">
+    <div id="table-container" style="display:none;">
+    </div>
+    <div id="plot-container" style="display:none;">
+    </div>
+</div>    
 
 {% endblock %}
 
@@ -222,4 +232,5 @@
     </script>
     <script type="text/javascript" src="{% static 'respondents/js/metro-search.min.js' %}"></script>
 
+    {% include 'partial/summary_table_templates.html'%}
 {% endblock %}

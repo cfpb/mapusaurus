@@ -1,11 +1,13 @@
 'use strict';
 
 if (!window.console) console = {log: function() {}};
+<<<<<<< HEAD
 
     var cat, catId,
         geoQueryType = 'selected';
 
     // When the DOM is loaded, check for hash params and add event listeners
+
     $(document).ready(function(){
         var lhStatus, peerStatus, branchStatus;
 

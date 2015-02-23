@@ -21,6 +21,9 @@
     "typeahead": "git+https://github.com/twitter/typeahead.js#0.10.5",
     "blockui": "git+https://github.com/malsup/blockui#2.70",
     "tooltipsy": "git+https://github.com/briancray/tooltipsy"
+    "jquery.sparkline": "git+https://github.com/gwatts/jquery.sparkline#v2.1.2",
+    "tooltipsy": "git+https://github.com/briancray/tooltipsy",
+    "tablesorter": "git+https://github.com/Mottie/tablesorter"
   }
 
 }

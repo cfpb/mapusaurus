@@ -7,7 +7,7 @@
 
         {% include "basestyle/common/header_map.html" %}
 
-        <div class="map-wrapper">
+        <div class="map-wrapper" id="map-section">
 
             <div id="map-aside-header" class="map-aside-header">
                 {% include "partial/map_aside_header.html" %}
@@ -31,5 +31,9 @@
 
         </div><!-- ./map-wrapper -->
 
+</div>
+
+<div class="data-container">
+    {% block data_content %}{% endblock %}
 </div>
 {% endblock %}
