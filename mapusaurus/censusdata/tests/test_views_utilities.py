@@ -31,7 +31,7 @@ class ViewsUtilitiesTests(TestCase):
                 self.assertTrue(key in result_dict['lender'].keys())
         self.assertTrue(len(result_dict['counties']) > 0)
         self.assertEqual(result_dict['lender']['lar_total'], 7)
-        self.assertEqual(result_dict['peers']['lar_total'], 7)
+        self.assertEqual(result_dict['peers'], None)
         self.assertEqual(result_dict['odds'], None)
         self.assertEqual(result_dict['msa']['minority_pct'], 0.303)
         self.assertEqual(result_dict['counties']['11222']['lma'], 7)
