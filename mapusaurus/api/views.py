@@ -39,6 +39,7 @@ def msas(request):
         return HttpResponseBadRequest("Invalid bounding coordinates")
 
 def msa(request):
+    """returns simplified tract shapes for dot-density mapping, with loan volume"""
     try:
         metro = request.GET.get('metro')
         tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=metro)
