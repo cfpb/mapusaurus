@@ -10,7 +10,6 @@ from geo.management.commands.set_tract_csa_cbsa import Command as SetTractCBSA
 from geo.models import Geo
 from censusdata.models import Census2010Sex
 
-
 class ViewTest(TestCase):
     fixtures = ['many_tracts', 'test_counties']
 
@@ -46,10 +45,6 @@ class ViewTest(TestCase):
         self.assertTrue('Chicago' in str(SQS.filter.call_args))
         self.assertFalse('content' in str(SQS.filter.call_args))
         self.assertTrue('text_auto' in str(SQS.filter.call_args))
-
-
-
-
 
 class SetTractCBSATest(TestCase):
     def setUp(self):
