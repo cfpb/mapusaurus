@@ -4,7 +4,8 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from censusdata.models import Census2010RaceStats
-
+from hmda.models import LendingStats
+import api
 
 class ViewsTest(TestCase):
     fixtures = ['dummy_tracts']
@@ -30,13 +31,14 @@ class ViewsTest(TestCase):
             non_hisp_black_only=0, non_hisp_asian_only=7)
         stats.geoid_id = '1222233300'
         stats.save()
-
-
-
+        lendstats = LendingStats(
+            geo_id='10000', institution_id="736-4045996",
+            lar_median=3, lar_count=4,
+            fha_count=2, fha_bucket=2)
+        lendstats.save()
 
     def tearDown(self):
         Census2010RaceStats.objects.all().delete()
-
 
 
     def test_race_summary(self):
@@ -70,3 +72,4 @@ class ViewsTest(TestCase):
         self.assertEqual(resp['1122233400']['non_hisp_white_only_perc'], .05)
         self.assertEqual(resp['1122233400']['non_hisp_black_only_perc'], .25)
         self.assertEqual(resp['1122233400']['non_hisp_asian_only_perc'], .2)
+

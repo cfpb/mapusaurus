@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from geo.models import Geo
+from respondents.models import Institution
 
 def tract_centroids_as_json(request):
     return json.loads(tract_centroids_in_json_format(request))
@@ -23,12 +24,19 @@ def tract_centroids_in_json_format(request):
     return response % ', '.join(geo.tract_centroids_as_geojson() for geo in censusgeos)
 
 def get_censustract_geoids(request):
-    geos = get_censustract_geos(request)
+    if 'neLat' in request.GET:
+        geos = get_censustract_geos(request)
+    else:
+        MSA = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
+        geos = MSA.get_censustract_geos_by_msa()
     return geos.values_list('geoid', flat=True)
 
-def get_censustract_geos(request):
-    """ """
-    geoTypeId = 3
+def get_censustract_geos(request, metro=False):
+    """handles requests for tract-level ids or MSA ids"""
+    if metro == False:
+        geoTypeId = 3
+    else:
+        geoTypeId = 4
     northEastLat = request.GET.get('neLat')
     northEastLon = request.GET.get('neLon')
     southWestLat = request.GET.get('swLat')

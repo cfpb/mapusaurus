@@ -20,6 +20,21 @@
   {
     "model": "respondents.institution",
     "fields": {
+      "name": "CERTUSBANK",
+      "year": 1970,
+      "agency" : 9,
+      "respondent_id": "",
+      "institution_id":"10000024975",
+      "tax_id": "27-4528414",
+      "mailing_address": "123 Avenue St.",
+      "zip_code": 11111,
+      "rssd_id": "0004232881",
+      "assets": 1822137
+    }
+  },
+  {
+    "model": "respondents.institution",
+    "fields": {
       "year": 1970,
       "agency" : 9,
       "respondent_id": "22-333",
@@ -29,6 +44,36 @@
       "mailing_address": "123 Avenue St.",
       "zip_code": 11111,
       "rssd_id": "Other ID"
+    }
+  },
+  {
+    "model": "respondents.institution",
+    "fields": {
+      "year": 2013,
+      "agency" : 9,
+      "respondent_id": "0000480228",
+      "institution_id":"90000480228",
+      "tax_id": "57-0236115",
+      "name": "Bank of America",
+      "mailing_address": "123 Avenue St.",
+      "zip_code": 20171,
+      "rssd_id": "0000480228",
+      "assets": 1474077383
+    }
+  },
+  {
+    "model": "respondents.institution",
+    "fields": {
+      "year": 2013,
+      "agency" : 9,
+      "respondent_id": "0000451965",
+      "institution_id":"90000451965",
+      "tax_id": "94-1347393",
+      "name": "Wells Fargo",
+      "mailing_address": "123 Avenue St.",
+      "zip_code": 20171,
+      "rssd_id": "0000480228",
+      "assets": 1266125000
     }
   },
   {
