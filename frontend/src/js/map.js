@@ -863,7 +863,8 @@ function buildKeyCircles(){
     
     // Circles to be generated
     var circles = getRange(map._layers);
-    if( circles === [] ){
+    
+    if( circles.length === 0 ){
         return false;
     }
 
