@@ -915,7 +915,7 @@ function getRange(data){
 
     var keyCircles, keyCirclesFilter, valArray;
 
-    if ( max.volume < 4 ){
+    if ( max.volume <= 10 ){
         valArray = [min, max];
     } else if ( min.volume === 0 ){
         min = {
