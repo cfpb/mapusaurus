@@ -905,18 +905,41 @@ function getRange(data){
     // Determine the midpoint LAR counts for min / max
     var multiple = (max.volume - min.volume)/3;
     var drawNewArray = [(min.volume + multiple), (min.volume + (multiple*2))];
-    
-    // Draw a fresh circle with _mRadius properties for two middle points
-    _.each(drawNewArray, function(val){
-        addKeyLayerCircle(val);
-    });
 
-    // Retrieve the layer info for these midpoint circles
-    var keyCircles = _.matches({"keyCircle": 1 });
-    var keyCirclesFilter = _.filter(data, keyCircles);
+    var keyCircles, keyCirclesFilter, valArray;
 
-    // Add circles to our key array
-    var valArray = [ min, keyCirclesFilter[0], keyCirclesFilter[1], max ];
+    if ( max.volume < 4 ){
+        valArray = [min, max];
+    } else if ( min.volume === 0 ){
+        min = {
+            volume: 1,
+        };
+        drawNewArray = [min.volume, (min.volume + multiple), (min.volume + (multiple*2))];
+
+        // Draw a fresh circle with _mRadius properties for two middle points
+        _.each(drawNewArray, function(val){
+            addKeyLayerCircle(val);
+        });
+        
+        // Retrieve the layer info for these midpoint circles
+        keyCircles = _.matches({"keyCircle": 1 });
+        keyCirclesFilter = _.filter(data, keyCircles);
+
+        // Add circles to our key array
+        valArray = [ keyCirclesFilter[0], keyCirclesFilter[1], keyCirclesFilter[2], max ];
+    } else {
+        // Draw a fresh circle with _mRadius properties for two middle points
+        _.each(drawNewArray, function(val){
+            addKeyLayerCircle(val);
+        });
+
+        // Retrieve the layer info for these midpoint circles
+        keyCircles = _.matches({"keyCircle": 1 });
+        keyCirclesFilter = _.filter(data, keyCircles);
+
+        // Add circles to our key array
+        valArray = [ min, keyCirclesFilter[0], keyCirclesFilter[1], max ];        
+    }
 
     return valArray;
 }
