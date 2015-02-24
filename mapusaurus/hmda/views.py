@@ -41,7 +41,7 @@ def loan_originations(request):
             query = query.filter(institution=institution_selected)
     else:
         return HttpResponseBadRequest("Missing lender")
-    if geos:
+    if geos is not None:
         query = query.filter(geo__in=geos)
     else: 
         return HttpResponseBadRequest("Missing one lat/lon bounds or metro.")

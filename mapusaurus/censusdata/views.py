@@ -187,7 +187,7 @@ def odds_ratio(target_mm, target_non, peer_mm, peer_non):
 def race_summary(request):
     """Race summary statistics"""
     geos = get_censustract_geos(request)
-    if geos:
+    if geos is not None:
         query = Census2010RaceStats.objects.filter(geoid__in=geos)
         return query
     else:

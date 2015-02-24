@@ -1,13 +1,12 @@
 import json
 
 from django.http import HttpResponse, HttpResponseBadRequest
-from geo.views import geo_as_json, get_geos_by_bounds_and_type
+from geo.views import geo_as_json, get_geos_by_bounds_and_type, get_censustract_geos
 from geo.models import Geo
-from geo.utils import check_bounds
 from censusdata.views import race_summary_as_json, minority_aggregation_as_json
 from hmda.views import loan_originations_as_json
 from respondents.views import branch_locations_as_json
-# from django.views.decorators.cache import cache_page
+from geo.utils import check_bounds
 
 def all(request):
     """This endpoint allows multiple statistical queries to be made in a
@@ -95,22 +94,12 @@ def census(request):
 
 def tractCentroids(request):
     """This endpoint returns census tract centroids used to determine circle position on map"""
-    northEastLat = request.GET.get('neLat')
-    northEastLon = request.GET.get('neLon')
-    southWestLat = request.GET.get('swLat')
-    southWestLon = request.GET.get('swLon')
-    bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
-    metro = request.GET.get('metro')
-    if bounds:
-        maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
-        geos = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon)
-    elif metro:
-        msa = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=metro)
-        geos = msa.get_censustract_geos_by_msa()
+    geos = get_censustract_geos(request)
+    if geos is not None:
+        tracts_geo_json = geo_as_json(geos)
+        return HttpResponse(json.dumps(tracts_geo_json), content_type='application/json')
     else:
-        return HttpResponseBadRequest("Missing or Invalid lat/lon bounds or metro")
-    tracts_geo_json = geo_as_json(geos)
-    return HttpResponse(json.dumps(tracts_geo_json), content_type='application/json')
+        return HttpResponseBadRequest("Missing one of lat/lon bounds or metro")
 
 def branch_locations(request):
     return HttpResponse(json.dumps(branch_locations_as_json(request)), content_type='application/json')

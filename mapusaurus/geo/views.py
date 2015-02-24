@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from geo.models import Geo
+from geo.utils import check_bounds
 
 def geo_as_json(geos):
     return json.loads(format_geo_to_geojson(geos))
@@ -19,6 +20,24 @@ def format_geo_to_geojson(geos):
     response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
     response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
     return response % ', '.join(geo.tract_centroids_as_geojson() for geo in geos)
+
+def get_censustract_geos(request):
+    northEastLat = request.GET.get('neLat')
+    northEastLon = request.GET.get('neLon')
+    southWestLat = request.GET.get('swLat')
+    southWestLon = request.GET.get('swLon')
+    bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
+    metro = request.GET.get('metro')
+    geos = []
+    if bounds:
+        maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
+        geos = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon)
+    elif metro:
+        msa = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=metro)
+        geos = msa.get_censustract_geos_by_msa()
+    else:
+        return None
+    return geos
 
 def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
     """handles requests for tract-level ids or MSA ids"""
