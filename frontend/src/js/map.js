@@ -863,6 +863,10 @@ function buildKeyCircles(){
     
     // Circles to be generated
     var circles = getRange(map._layers);
+    
+    if( circles.length === 0 ){
+        return false;
+    }
 
     // Get the current scaling value from the drop-down menu.
     var $scale = $('#action-taken-selector option:selected');
@@ -898,6 +902,9 @@ function getRange(data){
     var circles = _.matches({type: "tract-circle" });
     var circleFilter = _.filter(data, circles);
 
+    if ( circleFilter.length === 0 ){
+        return [];
+    }
     // Get the min and max
     var max = _.max(data, function(circleObj){ return circleObj._mRadius; });
     var min = _.min(data, function(circleObj){ return circleObj._mRadius; });
@@ -908,7 +915,7 @@ function getRange(data){
 
     var keyCircles, keyCirclesFilter, valArray;
 
-    if ( max.volume < 4 ){
+    if ( max.volume <= 10 ){
         valArray = [min, max];
     } else if ( min.volume === 0 ){
         min = {
