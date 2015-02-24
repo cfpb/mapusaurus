@@ -1,7 +1,6 @@
 import json
 
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseBadRequest
 from haystack.inputs import AutoQuery
 from haystack.query import SearchQuerySet
 from rest_framework import serializers
@@ -9,43 +8,43 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from geo.models import Geo
-from respondents.models import Institution
+from geo.utils import check_bounds
 
-def tract_centroids_as_json(request):
-    return json.loads(tract_centroids_in_json_format(request))
+def geo_as_json(geos):
+    return json.loads(format_geo_to_geojson(geos))
 
-def tract_centroids_in_json_format(request):
-    censusgeos = get_censustract_geos(request)
+def format_geo_to_geojson(geos):
     # We already have the json strings per model pre-computed, so just place
     # them inside a static response
     response = '{"crs": {"type": "link", "properties": {"href": '
     response += '"http://spatialreference.org/ref/epsg/4326/", "type": '
     response += '"proj4"}}, "type": "FeatureCollection", "features": [%s]}'
-    return response % ', '.join(geo.tract_centroids_as_geojson() for geo in censusgeos)
+    return response % ', '.join(geo.tract_centroids_as_geojson() for geo in geos)
 
-def get_censustract_geoids(request):
-    if 'neLat' in request.GET:
-        geos = get_censustract_geos(request)
+def get_censustract_geos(request):
+    northEastLat = request.GET.get('neLat')
+    northEastLon = request.GET.get('neLon')
+    southWestLat = request.GET.get('swLat')
+    southWestLon = request.GET.get('swLon')
+    bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
+    metro = request.GET.get('metro')
+    geos = []
+    if bounds:
+        #*bounds expands the set from check_bounds
+        geos = get_geos_by_bounds_and_type(*bounds)
+    elif metro:
+        msa = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=metro)
+        geos = msa.get_censustract_geos_by_msa()
     else:
-        MSA = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
-        geos = MSA.get_censustract_geos_by_msa()
-    return geos.values_list('geoid', flat=True)
+        return None
+    return geos
 
-def get_censustract_geos(request, metro=False):
+def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
     """handles requests for tract-level ids or MSA ids"""
     if metro == False:
         geoTypeId = 3
     else:
         geoTypeId = 4
-    northEastLat = request.GET.get('neLat')
-    northEastLon = request.GET.get('neLon')
-    southWestLat = request.GET.get('swLat')
-    southWestLon = request.GET.get('swLon')
-    try:
-        maxlat, minlon, minlat, maxlon = float(northEastLat), float(southWestLon), float(southWestLat), float(northEastLon)
-    except ValueError:
-        return HttpResponseBadRequest(
-                "Bad or missing values: northEastLat, northEastLon, southWestLat, southWestLon")
     # check that any of the four points or center are inside the boundary
     query = Q(minlat__gte=minlat, minlat__lte=maxlat,
               minlon__gte=minlon, minlon__lte=maxlon)

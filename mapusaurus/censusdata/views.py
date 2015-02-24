@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 
 from hmda.models import HMDARecord
 from .models import Census2010RaceStats
-from geo.views import get_censustract_geoids
+from geo.views import get_censustract_geos
 from geo.models import Geo
 from djqscsv import render_to_csv_response
 from hmda.views import loan_originations_as_json
@@ -186,12 +186,12 @@ def odds_ratio(target_mm, target_non, peer_mm, peer_non):
 
 def race_summary(request):
     """Race summary statistics"""
-    geoids = get_censustract_geoids(request)
-    if geoids:
-        query = Census2010RaceStats.objects.filter(geoid_id__in=geoids)
-        return query
-    else:
-        return HttpResponseBadRequest("Missing geoid or county")
+    geos = get_censustract_geos(request)
+    if geos is None:
+        return HttpResponseBadRequest("Missing lat/lon or metro")
+    query = Census2010RaceStats.objects.filter(geoid__in=geos)
+    return query
+
 
 def race_summary_as_json(request_dict):
     records = race_summary(request_dict)

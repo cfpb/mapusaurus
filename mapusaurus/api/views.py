@@ -1,14 +1,12 @@
 import json
 
-from django.db.models import Count
 from django.http import HttpResponse, HttpResponseBadRequest
-from geo.views import tract_centroids_as_json, get_censustract_geoids, get_censustract_geos
+from geo.views import geo_as_json, get_geos_by_bounds_and_type, get_censustract_geos
 from geo.models import Geo
 from censusdata.views import race_summary_as_json, minority_aggregation_as_json
-from hmda.models import HMDARecord
-from hmda.views import loan_originations_as_json, loan_originations
+from hmda.views import loan_originations_as_json
 from respondents.views import branch_locations_as_json
-# from django.views.decorators.cache import cache_page
+from geo.utils import check_bounds
 
 def all(request):
     """This endpoint allows multiple statistical queries to be made in a
@@ -19,7 +17,7 @@ def all(request):
         responses = {'minority' : minority, 'loanVolume': hmda}
         return HttpResponse(json.dumps(responses), content_type='application/json')
     except:
-        return HttpResponseBadRequest("invalid endpoint")
+        return HttpResponseBadRequest("Invalid or Missing one of lender, metro or lat/lon bounds")
 
 def tables(request):
     try:
@@ -32,11 +30,19 @@ def tables(request):
 def msas(request):
     """return a list of MSA ids visible by bounding coordinates"""
     try:
-        msas = get_censustract_geos(request, metro=True)
+        northEastLat = request.GET.get('neLat')
+        northEastLon = request.GET.get('neLon')
+        southWestLat = request.GET.get('swLat')
+        southWestLon = request.GET.get('swLon')
+        bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
+        if bounds:
+            pass
+            #maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
+        msas = get_geos_by_bounds_and_type(*bounds, metro=True)
         msa_list = [metro.geoid for metro in msas]
         return HttpResponse(json.dumps(msa_list), content_type='application/json')
     except:
-        return HttpResponseBadRequest("Invalid bounding coordinates")
+        return HttpResponseBadRequest("Invalid lat/lon bounding coordinates")
 
 def msa(request):
     """returns simplified tract shapes for dot-density mapping, with loan volume"""
@@ -89,7 +95,11 @@ def census(request):
 
 def tractCentroids(request):
     """This endpoint returns census tract centroids used to determine circle position on map"""
-    return HttpResponse(json.dumps(tract_centroids_as_json(request)), content_type='application/json')
-
+    geos = get_censustract_geos(request)
+    if geos is None:
+        return HttpResponseBadRequest("Missing one of lat/lon bounds or metro")
+    tracts_geo_json = geo_as_json(geos)
+    return HttpResponse(json.dumps(tracts_geo_json), content_type='application/json')
+    
 def branch_locations(request):
     return HttpResponse(json.dumps(branch_locations_as_json(request)), content_type='application/json')
