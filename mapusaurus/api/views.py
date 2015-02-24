@@ -36,8 +36,9 @@ def msas(request):
         southWestLon = request.GET.get('swLon')
         bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
         if bounds:
-            maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
-        msas = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=True)
+            pass
+            #maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
+        msas = get_geos_by_bounds_and_type(*bounds, metro=True)
         msa_list = [metro.geoid for metro in msas]
         return HttpResponse(json.dumps(msa_list), content_type='application/json')
     except:

@@ -30,8 +30,8 @@ def get_censustract_geos(request):
     metro = request.GET.get('metro')
     geos = []
     if bounds:
-        maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
-        geos = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon)
+        #*bounds expands the set from check_bounds
+        geos = get_geos_by_bounds_and_type(*bounds)
     elif metro:
         msa = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=metro)
         geos = msa.get_censustract_geos_by_msa()
