@@ -95,11 +95,10 @@ def census(request):
 def tractCentroids(request):
     """This endpoint returns census tract centroids used to determine circle position on map"""
     geos = get_censustract_geos(request)
-    if geos is not None:
-        tracts_geo_json = geo_as_json(geos)
-        return HttpResponse(json.dumps(tracts_geo_json), content_type='application/json')
-    else:
+    if geos is None:
         return HttpResponseBadRequest("Missing one of lat/lon bounds or metro")
-
+    tracts_geo_json = geo_as_json(geos)
+    return HttpResponse(json.dumps(tracts_geo_json), content_type='application/json')
+    
 def branch_locations(request):
     return HttpResponse(json.dumps(branch_locations_as_json(request)), content_type='application/json')

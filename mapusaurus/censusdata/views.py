@@ -187,11 +187,11 @@ def odds_ratio(target_mm, target_non, peer_mm, peer_non):
 def race_summary(request):
     """Race summary statistics"""
     geos = get_censustract_geos(request)
-    if geos is not None:
-        query = Census2010RaceStats.objects.filter(geoid__in=geos)
-        return query
-    else:
+    if geos is None:
         return HttpResponseBadRequest("Missing lat/lon or metro")
+    query = Census2010RaceStats.objects.filter(geoid__in=geos)
+    return query
+
 
 def race_summary_as_json(request_dict):
     records = race_summary(request_dict)

@@ -41,10 +41,9 @@ def loan_originations(request):
             query = query.filter(institution=institution_selected)
     else:
         return HttpResponseBadRequest("Missing lender")
-    if geos is not None:
-        query = query.filter(geo__in=geos)
-    else: 
+    if geos is None:
         return HttpResponseBadRequest("Missing one lat/lon bounds or metro.")
+    query = query.filter(geo__in=geos)
     query = query.values('geo_id', 'geo__census2010households__total').annotate(volume=Count('geo_id'))
     return query; 
 
