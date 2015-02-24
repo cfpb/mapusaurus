@@ -1,8 +1,9 @@
 import json
 
 from django.http import HttpResponse, HttpResponseBadRequest
-from geo.views import geo_as_json, get_geos_by_bounds_and_type, get_censustract_geos
+from geo.views import geo_as_json, get_geos_by_bounds_and_type
 from geo.models import Geo
+from geo.utils import check_bounds
 from censusdata.views import race_summary_as_json, minority_aggregation_as_json
 from hmda.views import loan_originations_as_json
 from respondents.views import branch_locations_as_json
@@ -34,8 +35,9 @@ def msas(request):
         northEastLon = request.GET.get('neLon')
         southWestLat = request.GET.get('swLat')
         southWestLon = request.GET.get('swLon')
-        if northEastLat and northEastLon and southWestLat and southWestLon:
-            maxlat, minlon, minlat, maxlon = float(northEastLat), float(southWestLon), float(southWestLat), float(northEastLon)
+        bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
+        if bounds:
+            maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
         msas = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=True)
         msa_list = [metro.geoid for metro in msas]
         return HttpResponse(json.dumps(msa_list), content_type='application/json')
@@ -93,12 +95,22 @@ def census(request):
 
 def tractCentroids(request):
     """This endpoint returns census tract centroids used to determine circle position on map"""
-    geos = get_censustract_geos(request)
-    if geos:
-        tracts_geo_json = geo_as_json(geos)
-        return HttpResponse(json.dumps(tracts_geo_json), content_type='application/json')
+    northEastLat = request.GET.get('neLat')
+    northEastLon = request.GET.get('neLon')
+    southWestLat = request.GET.get('swLat')
+    southWestLon = request.GET.get('swLon')
+    bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
+    metro = request.GET.get('metro')
+    if bounds:
+        maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
+        geos = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon)
+    elif metro:
+        msa = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=metro)
+        geos = msa.get_censustract_geos_by_msa()
     else:
-        return HttpResponseBadRequest("Missing one of lat/lon bounds or metro")
+        return HttpResponseBadRequest("Missing or Invalid lat/lon bounds or metro")
+    tracts_geo_json = geo_as_json(geos)
+    return HttpResponse(json.dumps(tracts_geo_json), content_type='application/json')
 
 def branch_locations(request):
     return HttpResponse(json.dumps(branch_locations_as_json(request)), content_type='application/json')

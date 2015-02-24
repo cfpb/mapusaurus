@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from geo.models import Geo
+from geo.utils import check_bounds
 
 def geo_as_json(geos):
     return json.loads(format_geo_to_geojson(geos))
@@ -21,12 +22,13 @@ def format_geo_to_geojson(geos):
     return response % ', '.join(geo.tract_centroids_as_geojson() for geo in geos)
 
 def get_censustract_geos(request):
+    import pdb; pdb.set_trace()
     northEastLat = request.GET.get('neLat')
     northEastLon = request.GET.get('neLon')
     southWestLat = request.GET.get('swLat')
     southWestLon = request.GET.get('swLon')
     metro = request.GET.get('metro')
-    if northEastLat and northEastLon and southWestLat and southWestLon:
+    if check_bounds(northEastLat, northEastLon, southWestLat, southWestLon):
         maxlat, minlon, minlat, maxlon = float(northEastLat), float(southWestLon), float(southWestLat), float(northEastLon)
         geos = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon)
     elif metro:
