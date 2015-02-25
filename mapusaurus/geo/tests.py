@@ -8,8 +8,8 @@ from mock import Mock, patch
 from geo.management.commands.load_geos_from import Command as LoadGeos
 from geo.management.commands.set_tract_csa_cbsa import Command as SetTractCBSA
 from geo.models import Geo
+from geo.utils import check_bounds
 from censusdata.models import Census2010Sex
-
 
 class ViewTest(TestCase):
     fixtures = ['many_tracts', 'test_counties']
@@ -47,8 +47,13 @@ class ViewTest(TestCase):
         self.assertFalse('content' in str(SQS.filter.call_args))
         self.assertTrue('text_auto' in str(SQS.filter.call_args))
 
-
-
+class UtilsTest(TestCase):
+    def test_check_bounds(self):
+        self.assertIsNone(check_bounds('100', '100', '100', ''))
+        self.assertIsNone(check_bounds('-100', '100', '200', 'asdf'))
+        expected_bounds = (float('10.0'), float('40.1234'), float('20.20'), float('-10.123456'))
+        actual_bounds = check_bounds('10.0', '-10.123456', '20.20', '40.1234')
+        self.assertEqual(expected_bounds, actual_bounds)
 
 
 class SetTractCBSATest(TestCase):

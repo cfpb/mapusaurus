@@ -74,3 +74,8 @@ class Geo(models.Model):
         return geojson.replace(
             '"$_$"',
             self.geom.simplify(preserve_topology=True).geojson)
+
+    def get_censustract_geos_by_msa(self):
+        """returns tracts associated with an MSA"""
+        tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=self.geoid)
+        return tracts
