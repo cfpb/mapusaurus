@@ -9,7 +9,7 @@ from haystack.query import SearchQuerySet
 from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from django.http import HttpResponseBadRequest
 from respondents.models import Institution, Branch
 
 

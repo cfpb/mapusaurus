@@ -1,0 +1,30 @@
+[
+  {
+    "model": "respondents.LenderHierarchy",
+    "fields": {
+      "institution": "91000000001",
+      "organization_id": "01"
+    }
+  },
+  {
+    "model": "respondents.LenderHierarchy",
+    "fields": {
+      "institution": "91000000002",
+      "organization_id": "01"
+    }
+  },
+  {
+    "model": "respondents.LenderHierarchy",
+    "fields": {
+      "institution": "91000000003",
+      "organization_id": "02"
+    }
+  },
+  {
+    "model": "respondents.LenderHierarchy",
+    "fields": {
+      "institution": "11000000001",
+      "organization_id": "01"
+    }
+  }
+]

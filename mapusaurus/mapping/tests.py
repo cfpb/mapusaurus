@@ -6,7 +6,6 @@ from mock import Mock, patch
 
 from geo.models import Geo
 from mapping.views import lookup_median, make_download_url
-from mapping.views import make_download_url
 from respondents.models import Institution
 
 
@@ -37,9 +36,7 @@ class ViewTest(TestCase):
         resp = self.client.get(reverse('map'), {'lender': '922-333'})
         self.assertTrue('lender-info' in resp.content)
         self.assertTrue('Some Bank' in resp.content)
-        self.assertTrue('123 Avenue St.' in resp.content)
         self.assertTrue('1970' in resp.content)
-        self.assertTrue('11111' in resp.content)
         self.assertTrue('Somewhere' in resp.content)
         self.assertTrue('NE' in resp.content)
 

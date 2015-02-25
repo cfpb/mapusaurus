@@ -1,0 +1,104 @@
+[
+  {
+    "pk": 100,
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "10000",
+      "geo_type": 4,
+      "name": "Dev MSA 1",
+      "csa": "100",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1,
+      "centlat": 0.5,
+      "centlon": 0.5
+    }
+  },
+  {
+    "pk": 101,
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "31740",
+      "geo_type": 4,
+      "name": "Wisalem 1",
+      "csa": "100",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 38.869704,
+      "minlon": -96.963688,
+      "maxlat": 39.566587,
+      "maxlon": -96.034612,
+      "centlat": 39.2684241,
+      "centlon": -96.5622422
+    }
+  },
+  {
+    "pk": 102,
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "45820",
+      "geo_type": 4,
+      "name": "Wisalem 2",
+      "csa": "100",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 38.433544,
+      "minlon": -96.501722,
+      "maxlat": 39.65318,
+      "maxlon": -95.179827,
+      "centlat": 39.0413888,
+      "centlon": -95.8026393
+    }
+  },
+{
+    "pk": 103,
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "10001",
+      "geo_type": 4,
+      "name": "Dev MSA 1",
+      "csa": "100",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 0,
+      "minlon": 0,
+      "maxlat": 1,
+      "maxlon": 1,
+      "centlat": 0.5,
+      "centlon": 0.5
+    }
+  },
+{
+    "pk": 104,
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "48620",
+      "geo_type": 4,
+      "name": "Wichita",
+      "csa": "556",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 36.998546,
+      "minlon": -97.808358,
+      "maxlat": 38.175081,
+      "maxlon": -96.522782,
+      "centlat": 37.6385839,
+      "centlon": -97.2460377
+    }
+  },
+{
+    "pk": 104,
+    "model": "geo.geo",
+    "fields": {
+      "geoid": "49180",
+      "geo_type": 4,
+      "name": "Winston-Salem",
+      "csa": "556",
+      "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
+      "minlat": 35.742811,
+      "minlon": -80.88218,
+      "maxlat": 36.55063,
+      "maxlon": -80.027269,
+      "centlat": 36.1905412,
+      "centlon": -80.3969029
+    }
+  }
+]

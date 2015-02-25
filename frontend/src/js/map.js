@@ -134,9 +134,9 @@ if (!window.console) console = {log: function() {}};
             updateCensusLink();
         });
 
-        //Let the application do its thing 
+        // Let the application do its thing 
         init();
-        
+
     });
     
     // Go get the tract centroids and supporting data, THEN build a data object (uses jQuery Deferreds)
@@ -157,6 +157,9 @@ if (!window.console) console = {log: function() {}};
             // Redraw the circles using the created tract object AND the layer bubble type
             redrawCircles(dataStore.tracts, layerInfo.type );
             
+            // Update the key with the correct circle size
+            buildKeyCircles();
+
             // Unblock the user interface (remove gradient)
             $.unblockUI();
             isUIBlocked = false;
@@ -469,9 +472,10 @@ if (!window.console) console = {log: function() {}};
     }
 
 
-    function drawCircle(geo, layerType){
+    function drawCircle(geo, layerType, options){
         var data = geo,
             style;
+
         // If no population exists, use the "no style" style (hidden)
         if (geo['total_pop'] === 0 || geo.volume === 0 ) {
             style = noStyle;
@@ -486,13 +490,21 @@ if (!window.console) console = {log: function() {}};
         //  We will use the geoid when redrawing
         circle.geoid = geo.geoid;
         circle.volume = geo.volume;
+        circle.type = "tract-circle";
+        circle.keyCircle = 0;
+
+        if( typeof options !== "undefined"){
+            circle.keyCircle = options.keyCircle;
+            console.log("geo: ", geo);
+        }
+
         circle.on('mouseover mousemove', function(e){
             var hisp,white,black,asian;
             hisp = (data['hispanic_perc']*100).toFixed(2);
             white = (data['non_hisp_white_only_perc']*100).toFixed(2);
             black = (data['non_hisp_black_only_perc']*100).toFixed(2);
             asian = (data['non_hisp_asian_only_perc']*100).toFixed(2);
-            new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false })
+            new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false, y_bound: 160 })
                 .setContent('<div class="bubble-header"><b>Tract '+ circle.geoid + '<br/>' +data['volume'] + '</b> LAR | <b>' + data['num_households'] + '</b> HHs</div>' +
                     '<div class="bubble-label"><b>Hispanic</b>: (' + hisp + '%)</div><div class="css-chart"><div class="css-chart-inner" data-min=' + hisp +'></div></div>' +
                     '<div class="bubble-label"><b>Black</b>: (' + black + '%)</div><div class="css-chart"><div class="css-chart-inner" data-min=' + black +'></div></div>' + 
@@ -682,7 +694,7 @@ if (!window.console) console = {log: function() {}};
             area = scale * tractData['volume'];
         //  As Pi is just a constant scalar, we can ignore it in this
         //  calculation: a = pi*r*r   or r = sqrt(a/pi)
-            return Math.sqrt(area);
+            return Math.round(Math.sqrt(area));
     }
 
     function getLayerType( layer ){
@@ -853,3 +865,116 @@ if (!window.console) console = {log: function() {}};
     /* 
         END UTILITY FUNCTIONS
     */
+
+
+/*
+    Draw the SVG Key based on radius params of existing Leaflet circle ranges
+*/
+function buildKeyCircles(){
+    var params = getHashParams();
+    var selector = $('#keySvg');
+    selector.html('');
+    
+    // Circles to be generated
+    var circles = getRange(map._layers);
+    
+    if( circles.length === 0 ){
+        return false;
+    }
+
+    // Get the current scaling value from the drop-down menu.
+    var $scale = $('#action-taken-selector option:selected');
+    var scaleMultiplier = $scale.data('scale');
+    var posx = 0;
+    var rad = 0;
+    var maxRad = _.max(circles, function(circleObj){ return circleObj._radius; })._radius;
+    var posy = maxRad*2;
+    var textPosy = posy + 16; //Add 16px for font
+
+    // Create the initial SVG element
+    var svgStr = '<svg height="' + (maxRad*2 + 20) + '">';
+
+    for( var i=0; i<circles.length; i++ ){
+        var circle = circles[i];
+        rad = circle._radius;
+        console.log("RAD: ", rad);
+        posx = posx + 45; // Move the circles horizontally, y values stay constant    
+        svgStr += '<circle cx="' + posx + '" cy="' + (posy-rad) + '" r="' + rad + '" fillColor="#111111" fill-opacity=".7" stroke=true color="#333", opacity=1/>';        
+        svgStr += '<text x="' + (posx) + '" y="' + textPosy + '" font-size="1em" text-anchor="middle">'+ circle.volume + '</text>';
+    }
+
+    svgStr += '</svg>';
+    selector.html(svgStr);
+
+}
+
+/*
+    Get the circle data for a min, max, and two points in between
+*/
+function getRange(data){
+    // Find all circles in the current leaflet layer that are LAR circles
+    var circles = _.matches({type: "tract-circle" });
+    var circleFilter = _.filter(data, circles);
+
+    if ( circleFilter.length === 0 ){
+        return [];
+    }
+    // Get the min and max
+    var max = _.max(data, function(circleObj){ return circleObj._mRadius; });
+    var min = _.min(data, function(circleObj){ return circleObj._mRadius; });
+
+    // Determine the midpoint LAR counts for min / max
+    var multiple = (max.volume - min.volume)/3;
+    var drawNewArray = [(min.volume + multiple), (min.volume + (multiple*2))];
+
+    var keyCircles, keyCirclesFilter, valArray;
+
+    if ( max.volume <= 10 ){
+        valArray = [min, max];
+    } else if ( min.volume === 0 ){
+        min = {
+            volume: 1,
+        };
+        drawNewArray = [min.volume, (min.volume + multiple), (min.volume + (multiple*2))];
+
+        // Draw a fresh circle with _mRadius properties for two middle points
+        _.each(drawNewArray, function(val){
+            addKeyLayerCircle(val);
+        });
+        
+        // Retrieve the layer info for these midpoint circles
+        keyCircles = _.matches({"keyCircle": 1 });
+        keyCirclesFilter = _.filter(data, keyCircles);
+
+        // Add circles to our key array
+        valArray = [ keyCirclesFilter[0], keyCirclesFilter[1], keyCirclesFilter[2], max ];
+    } else {
+        // Draw a fresh circle with _mRadius properties for two middle points
+        _.each(drawNewArray, function(val){
+            addKeyLayerCircle(val);
+        });
+
+        // Retrieve the layer info for these midpoint circles
+        keyCircles = _.matches({"keyCircle": 1 });
+        keyCirclesFilter = _.filter(data, keyCircles);
+
+        // Add circles to our key array
+        valArray = [ min, keyCirclesFilter[0], keyCirclesFilter[1], max ];        
+    }
+
+    return valArray;
+}
+
+function addKeyLayerCircle(volume){
+    var geo = {
+        volume: Math.round(volume),
+        centlat: map.getCenter().lat, // Center lat required as Meters per pixel varies at different latitudes
+        centlon: 1
+    };
+    var options = {
+        keyCircle: 1 // Designate this as a "key Circle" so our filter applies in getRange
+    }
+
+    // Use the existing circle draw
+    drawCircle(geo, 'seq', options);
+}
