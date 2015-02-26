@@ -1,6 +1,5 @@
 import json
 
-from django.db.models import Q
 from haystack.inputs import AutoQuery
 from haystack.query import SearchQuerySet
 from rest_framework import serializers
@@ -59,8 +58,7 @@ def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
     #Create a polygon of the entire map screen
     poly = Polygon (((point_top_left, point_bottom_left, point_bottom_right, point_top_right, point_top_left)))
     #check if geo polygon interects with the screen polygon
-    query = Q(geom__intersects=poly)
-    geos = Geo.objects.filter(geo_type = geoTypeId).filter(query)
+    geos = Geo.objects.filter(geo_type = geoTypeId).filter(geom__intersects=poly)
     return geos
 
 class GeoSerializer(serializers.ModelSerializer):
