@@ -32,7 +32,7 @@ def loan_originations(request):
             else: 
                 query = query.filter(institution=institution_selected)
         elif peers == 'true':
-            peer_list = institution_selected.get_peer_list(metro_selected, False, False)
+            peer_list = institution_selected.get_peer_list(metro_selected, True, False)
             if len(peer_list) > 0:
                 query = query.filter(institution__in=peer_list)
             else:
