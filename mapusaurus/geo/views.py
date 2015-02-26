@@ -9,6 +9,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from geo.models import Geo
 from geo.utils import check_bounds
+from django.contrib.gis.geos import Point, Polygon
 
 def geo_as_json(geos):
     return json.loads(format_geo_to_geojson(geos))
@@ -28,10 +29,15 @@ def get_censustract_geos(request):
     southWestLon = request.GET.get('swLon')
     bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
     metro = request.GET.get('metro')
+    geo_type = request.GET.get('geoType')
     geos = []
     if bounds:
-        #*bounds expands the set from check_bounds
-        geos = get_geos_by_bounds_and_type(*bounds)
+        if geo_type == "msa":
+            #*bounds expands the set from check_bounds
+            msas = get_geos_by_bounds_and_type(*bounds, metro=True)
+            geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
+        else:
+            geos = get_geos_by_bounds_and_type(*bounds)
     elif metro:
         msa = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=metro)
         geos = msa.get_censustract_geos_by_msa()
@@ -45,17 +51,16 @@ def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
         geoTypeId = 3
     else:
         geoTypeId = 4
-    # check that any of the four points or center are inside the boundary
-    query = Q(minlat__gte=minlat, minlat__lte=maxlat,
-              minlon__gte=minlon, minlon__lte=maxlon)
-    query = query | Q(minlat__gte=minlat, minlat__lte=maxlat,
-                      maxlon__gte=minlon, maxlon__lte=maxlon)
-    query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
-                      minlon__gte=minlon, minlon__lte=maxlon)
-    query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
-                      maxlon__gte=minlon, maxlon__lte=maxlon)
-    query = query | Q(centlat__gte=minlat, centlat__lte=maxlat,
-                      centlon__gte=minlon, centlon__lte=maxlon)
+    
+    #Create bound points 
+    point_top_right = Point(maxlon, maxlat)
+    point_top_left = Point(minlon, maxlat)
+    point_bottom_left = Point(minlon, minlat)
+    point_bottom_right = Point(maxlon, minlat)
+    #Create a polygon of the entire map screen
+    poly = Polygon (((point_top_left, point_bottom_left, point_bottom_right, point_top_right, point_top_left)))
+    #check if geo polygon interects with the screen polygon
+    query = Q(geom__intersects=poly) 
     geos = Geo.objects.filter(geo_type = geoTypeId).filter(query)
     return geos
 
