@@ -1,12 +1,12 @@
 import json
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseNotFound, HttpRequest, HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseNotFound
 
 from django.test import TestCase
-from mock import Mock, patch
+from mock import Mock
 
-from utils import use_GET_in, state_county_filter
+from utils import use_GET_in
 from api.views import msa, msas, tables
 
 class ConversionTest(TestCase):
