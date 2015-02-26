@@ -60,11 +60,6 @@ def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
     poly = Polygon (((point_top_left, point_bottom_left, point_bottom_right, point_top_right, point_top_left)))
     #check if geo polygon interects with the screen polygon
     query = Q(geom__intersects=poly)
-    query = query | Q(geom__overlaps=poly)
-    query = query | Q(geom__within=poly)
-    query = query | Q(geom__contains=poly) 
-    query = query | Q(geom__equals=poly)
-
     geos = Geo.objects.filter(geo_type = geoTypeId).filter(query)
     return geos
 
