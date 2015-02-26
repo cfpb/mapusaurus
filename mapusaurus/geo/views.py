@@ -51,7 +51,6 @@ def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
         geoTypeId = 3
     else:
         geoTypeId = 4
-    
     #Create bound points 
     point_top_right = Point(maxlon, maxlat)
     point_top_left = Point(minlon, maxlat)
@@ -60,7 +59,12 @@ def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
     #Create a polygon of the entire map screen
     poly = Polygon (((point_top_left, point_bottom_left, point_bottom_right, point_top_right, point_top_left)))
     #check if geo polygon interects with the screen polygon
-    query = Q(geom__intersects=poly) 
+    query = Q(geom__intersects=poly)
+    query = query | Q(geom__overlaps=poly)
+    query = query | Q(geom__within=poly)
+    query = query | Q(geom__contains=poly) 
+    query = query | Q(geom__equals=poly)
+
     geos = Geo.objects.filter(geo_type = geoTypeId).filter(query)
     return geos
 
