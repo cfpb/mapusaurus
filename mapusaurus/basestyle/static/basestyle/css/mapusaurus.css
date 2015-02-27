@@ -6998,11 +6998,11 @@ select b {
 .lt-ie9 .summary-data-table tbody tr.msa-row {
   font-weight: normal !important;
 }
-.summary-data-table tbody tr.peer-row {
+.summary-data-table tbody tr.peers-row {
   color: #75787b;
   border-bottom: 1px solid #bababa;
 }
-.summary-data-table tbody tr.peer-row td {
+.summary-data-table tbody tr.peers-row td {
   padding-top: 0;
   padding-bottom: .5em;
 }

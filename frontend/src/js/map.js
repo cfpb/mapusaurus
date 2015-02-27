@@ -1,7 +1,9 @@
 'use strict';
 
 if (!window.console) console = {log: function() {}};
-    var showDataContainer, destroyLarChart;
+    // globals for table.js
+    var showDataContainer; 
+    var destroyLarChart;
     
     // When the DOM is loaded, check for params and add listeners:
     $(document).ready(function(){
@@ -162,7 +164,6 @@ if (!window.console) console = {log: function() {}};
 
             // Unblock the user interface (remove gradient)
             $.unblockUI();
-	    plotLarVolume();
             isUIBlocked = false;
         });
     }
