@@ -6894,4 +6894,216 @@ select b {
     text-align: center;
   }
 }
+<<<<<<< HEAD
+=======
+.show-data .leaflet-control-minimap {
+  display: none;
+}
+.chart-toggle {
+  cursor: pointer;
+}
+#map-aside {
+  overflow: hidden;
+}
+#data-container {
+  border-top: 3px solid #777;
+  overflow-y: auto;
+  position: relative;
+}
+.summary-data-table {
+  margin-bottom: 0;
+  width: 100%;
+  border-collapse: collapse;
+}
+.summary-data-table thead {
+  border-bottom: 1px solid #bababa;
+}
+.summary-data-table thead th {
+  color: #75787b;
+  background: #f8f8f8;
+}
+.summary-data-table thead th .color-coded {
+  position: relative;
+  padding-left: 1em;
+}
+.summary-data-table thead th .color-coded:before {
+  content: '\2022';
+  line-height: 1;
+  position: absolute;
+  left: 0;
+  font-size: 1.5em;
+  top: -2px;
+}
+.summary-data-table thead th.lar.lma_ct .color-coded:before,
+.summary-data-table thead th.lar.lma_pct .color-coded:before {
+  color: #eae9e5;
+}
+.summary-data-table thead th.lar.mma_ct .color-coded:before,
+.summary-data-table thead th.lar.mma_pct .color-coded:before {
+  color: #b8cad9;
+}
+.summary-data-table thead th.lar.hma_ct .color-coded:before,
+.summary-data-table thead th.lar.hma_pct .color-coded:before {
+  color: #7ea4be;
+}
+.summary-data-table thead th .sortable-content,
+.summary-data-table thead th .arrows {
+  float: left;
+}
+.summary-data-table thead th .arrows {
+  position: relative;
+  margin-left: 4px;
+}
+.summary-data-table thead th .cf-icon-up,
+.summary-data-table thead th .cf-icon-down {
+  font-size: 0.75em;
+}
+.summary-data-table thead th .cf-icon-up {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.summary-data-table thead th .cf-icon-down {
+  position: absolute;
+  left: 0;
+  top: 7px;
+}
+.summary-data-table thead th.tablesorter-headerAsc .cf-icon-down {
+  color: #e3e4e5;
+}
+.summary-data-table thead th.tablesorter-headerDesc .cf-icon-up {
+  color: #e3e4e5;
+}
+.summary-data-table .sortable-header th {
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.summary-data-table .header-one th {
+  padding-bottom: .5em;
+  font-size: 1em;
+}
+.summary-data-table .header-two th {
+  padding-top: .2em;
+  font-size: 0.8125em;
+}
+.summary-data-table td,
+.summary-data-table th {
+  border-right: 1px solid #dddddd;
+}
+.summary-data-table th.name,
+.summary-data-table td.name,
+.summary-data-table td.chart-title,
+.summary-data-table .expander {
+  border-right-width: 0;
+}
+.summary-data-table td.chart,
+.summary-data-table th.name-span,
+.summary-data-table .hma_ct,
+.summary-data-table .hma_pct,
+.summary-data-table .header-one th.title,
+.summary-data-table .header-one th.number,
+.summary-data-table .header-one th.percentage,
+.summary-data-table .header-two th.name {
+  border-color: #bababa;
+}
+.summary-data-table .lar {
+  width: 3em;
+}
+.summary-data-table .odds_ratio {
+  width: 6em;
+}
+.summary-data-table .chart-title {
+  width: 3em;
+}
+.summary-data-table .chart {
+  width: 125px;
+}
+.summary-data-table .chart .bar {
+  width: 125px;
+  height: 16px;
+  display: inline-block;
+}
+.lt-ie8 .summary-data-table .chart .bar {
+  display: inline;
+}
+.summary-data-table .chart .bar .segment {
+  height: 16px;
+  float: left;
+}
+.summary-data-table .chart .bar .segment.lma {
+  background-color: #eae9e5;
+}
+.summary-data-table .chart .bar .segment.mma {
+  background-color: #b8cad9;
+}
+.summary-data-table .chart .bar .segment.hma {
+  background-color: #7ea4be;
+}
+.summary-data-table .chart .bar.peer {
+  height: 8px;
+}
+.summary-data-table .chart .bar.peer .segment {
+  height: 8px;
+}
+.summary-data-table .expander {
+  width: 1em;
+  padding-right: 0px;
+}
+.summary-data-table .expander .cf-icon {
+  color: #babbbd;
+}
+.summary-data-table tbody:hover {
+  background-color: #f8f8f8;
+}
+.summary-data-table tbody.county-tbody {
+  cursor: pointer;
+}
+.summary-data-table tbody tr.msa-row {
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 .summary-data-table tbody tr.msa-row {
+  font-weight: normal !important;
+}
+.summary-data-table tbody tr.peers-row {
+  color: #75787b;
+  border-bottom: 1px solid #bababa;
+}
+.summary-data-table tbody tr.peers-row td {
+  padding-top: 0;
+  padding-bottom: .5em;
+}
+.summary-data-table tbody tr.tract-row .name {
+  /* padding-left: 2em; */
+}
+.summary-data-table tbody tr.county-row .lar,
+.summary-data-table tbody tr.tract-row .lar,
+.summary-data-table tbody tr.county-row .lar_pct,
+.summary-data-table tbody tr.tract-row .lar_pct {
+  font-size: 14px;
+}
+.summary-data-table tbody tr td {
+  background-color: inherit;
+  vertical-align: top;
+}
+.summary-data-table tbody tr td.chart {
+  vertical-align: middle;
+}
+.summary-data-table tbody tr td.lar_pct,
+.summary-data-table tbody tr td.odds_ratio,
+.summary-data-table tbody tr td.lar {
+  text-align: right;
+}
+.summary-data-table.peer-table .target-row td {
+  padding-top: .5em;
+  padding-bottom: 0;
+}
+.summary-data-table.peer-table .target-row-identifier {
+  display: none;
+}
+.summary-data-table.basic-table .target-row td {
+  border-bottom: 1px solid #bababa;
+}
+>>>>>>> Generate tables with multiple templates
 /*# sourceMappingURL=/static/basestyle/css/mapusaurus_sourcemap.css.map */

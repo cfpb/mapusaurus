@@ -1,13 +1,18 @@
 'use strict';
 
 if (!window.console) console = {log: function() {}};
-<<<<<<< HEAD
+
 
     var cat, catId,
         geoQueryType = 'selected';
 
     // When the DOM is loaded, check for hash params and add event listeners
 
+    // globals for table.js
+    var showDataContainer; 
+    var destroyLarChart;
+    
+    // When the DOM is loaded, check for params and add listeners:
     $(document).ready(function(){
         var lhStatus, peerStatus, branchStatus;
 
