@@ -5,7 +5,6 @@ from django.test import TestCase
 
 from censusdata.models import Census2010RaceStats
 from hmda.models import LendingStats
-import api
 
 class ViewsTest(TestCase):
     fixtures = ['dummy_tracts']
@@ -43,10 +42,10 @@ class ViewsTest(TestCase):
 
     def test_race_summary(self):
         resp = self.client.get(reverse('censusdata:race_summary'),
-                               {'neLat':'0',
+                               {'neLat':'1',
                                     'neLon':'1',
                                     'swLat':'0',
-                                    'swLon':'1',
+                                    'swLon':'0',
                                     'year':'2013',
                                     'action_taken':'1,2,3,4,5',
                                     'lender':'736-4045996'})
