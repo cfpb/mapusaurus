@@ -1,10 +1,11 @@
 import json
-
+import csv
+from django.utils.encoding import smart_str
 from django.db.models import Count
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 
 from hmda.models import HMDARecord
-from .models import Census2010RaceStats
+from .models import Census2010RaceStats, Census2010Households
 from geo.views import get_censustract_geos
 from geo.models import Geo
 from djqscsv import render_to_csv_response
@@ -221,7 +222,40 @@ def race_summary_csv(request):
     metro = request.GET.get('metro')
     action_taken_param = request.GET.get('action_taken')
     action_taken_selected = action_taken_param.split(',')
-    tracts_in_msa = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=metro).values_list('geoid', flat=True)
-    query = HMDARecord.objects.filter(institution_id=institution_id, geo_id__in=tracts_in_msa, property_type__in=[1,2], owner_occupancy=1, lien_status=1, action_taken__in=action_taken_selected).values('geo_id', 'geo__census2010households__total', 'geo__census2010racestats__total_pop', 'geo__census2010racestats__hispanic_perc', 'geo__census2010racestats__non_hisp_white_only_perc', 'geo__census2010racestats__non_hisp_black_only_perc', 'geo__census2010racestats__non_hisp_asian_only_perc').annotate(lar_count=Count('geo_id'))
-    
-    return render_to_csv_response(query)
+    tracts_in_msa = get_censustract_geos(request)
+    queryset = Census2010RaceStats.objects.filter(geoid__in=tracts_in_msa)
+    file_name = 'HMDA-Census-Tract_2013_Lender%s_MSA%s.csv' % (institution_id, metro)
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=%s' % file_name
+    writer = csv.writer(response, csv.excel)
+    #response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+    writer.writerow([
+        smart_str(u"geoid"),
+        smart_str(u"Total Population"),
+        smart_str(u"Hispanic Percentage"),
+        smart_str(u"White Only Percentage"),
+        smart_str(u"Non Hispanic Black Only Percentage"),
+        smart_str(u"Non Hispanic Asian Only Percentage"),
+        smart_str(u"HMDA LAR Count"),
+        smart_str(u"Total Households"),
+    ])
+    for obj in queryset:
+        geoid = "'%s'" % str(obj.geoid.geoid)
+        lar_count = HMDARecord.objects.filter(institution_id=institution_id, geo=obj.geoid, property_type__in=[1,2], owner_occupancy=1, lien_status=1, action_taken__in=action_taken_selected).count()
+        census_households = Census2010Households.objects.filter(geoid=obj.geoid).first()
+        if census_households:
+            num_households = census_households.total
+        else:
+            num_households = 0
+        writer.writerow([
+            smart_str(geoid),
+            smart_str(obj.total_pop),
+            smart_str(obj.hispanic_perc * 100),
+            smart_str(obj.non_hisp_white_only_perc * 100),
+            smart_str(obj.non_hisp_black_only_perc * 100),
+            smart_str(obj.non_hisp_asian_only_perc * 100),
+            smart_str(lar_count),
+            smart_str(num_households),
+        ])
+    return response
+
