@@ -8,7 +8,6 @@ from hmda.models import HMDARecord
 from .models import Census2010RaceStats, Census2010Households
 from geo.views import get_censustract_geos
 from geo.models import Geo
-from djqscsv import render_to_csv_response
 from hmda.views import loan_originations_as_json
 from respondents.models import Institution
 
