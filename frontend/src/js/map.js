@@ -864,7 +864,9 @@ function buildKeyCircles(){
     // Circles to be generated
     var circles = getRange(map._layers);
     
+    // Handle return of empty array (no tracts or no records)
     if( circles.length === 0 ){
+        selector.html('No records found');
         return false;
     }
 
@@ -902,26 +904,34 @@ function getRange(data){
     var circles = _.matches({type: "tract-circle" });
     var circleFilter = _.filter(data, circles);
 
+    // If no tracts in view, return blank array
     if ( circleFilter.length === 0 ){
-        return [];
+        return valArray = [];
     }
+
     // Get the min and max
     var max = _.max(data, function(circleObj){ return circleObj._mRadius; });
     var min = _.min(data, function(circleObj){ return circleObj._mRadius; });
 
     // Determine the midpoint LAR counts for min / max
-    var multiple = (max.volume - min.volume)/3;
-    var drawNewArray = [(min.volume + multiple), (min.volume + (multiple*2))];
+    var multiple = (max.volume - min.volume)/2;
+    var drawNewArray = [(min.volume + multiple)];
 
     var keyCircles, keyCirclesFilter, valArray;
+    
+    // If the maximum volume is less than 2, only return the single max point.
+    if ( max.volume < 2 && max.volume > 0){
+        return valArray = [max];
+    // if max volume for all tracts for the lender is zero, return empty array
+    } else if ( max.volume === 0 ){
+        return valArray = [];
+    }
 
-    if ( max.volume <= 10 ){
-        valArray = [min, max];
-    } else if ( min.volume === 0 ){
+    if ( min.volume === 0 ){
         min = {
             volume: 1,
         };
-        drawNewArray = [min.volume, (min.volume + multiple), (min.volume + (multiple*2))];
+        drawNewArray = [min.volume, (min.volume + multiple), max.volume];
 
         // Draw a fresh circle with _mRadius properties for two middle points
         _.each(drawNewArray, function(val){
@@ -933,7 +943,7 @@ function getRange(data){
         keyCirclesFilter = _.filter(data, keyCircles);
 
         // Add circles to our key array
-        valArray = [ keyCirclesFilter[0], keyCirclesFilter[1], keyCirclesFilter[2], max ];
+        valArray = [ keyCirclesFilter[0], keyCirclesFilter[1], max ];
     } else {
         // Draw a fresh circle with _mRadius properties for two middle points
         _.each(drawNewArray, function(val){
@@ -945,8 +955,13 @@ function getRange(data){
         keyCirclesFilter = _.filter(data, keyCircles);
 
         // Add circles to our key array
-        valArray = [ min, keyCirclesFilter[0], keyCirclesFilter[1], max ];        
+        valArray = [ min, keyCirclesFilter[0], max ];        
     }
+
+    if ( max.volume < 5 ){
+        valArray = [valArray[0], valArray[2]];
+    }
+
 
     return valArray;
 }
