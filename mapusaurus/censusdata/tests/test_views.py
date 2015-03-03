@@ -5,7 +5,6 @@ from django.test import TestCase
 
 from censusdata.models import Census2010RaceStats
 from hmda.models import LendingStats
-import api
 
 class ViewsTest(TestCase):
     fixtures = ['dummy_tracts']
@@ -72,4 +71,16 @@ class ViewsTest(TestCase):
         self.assertEqual(resp['1122233400']['non_hisp_white_only_perc'], .05)
         self.assertEqual(resp['1122233400']['non_hisp_black_only_perc'], .25)
         self.assertEqual(resp['1122233400']['non_hisp_asian_only_perc'], .2)
+
+    def test_race_summary_csv(self):
+        resp = self.client.get(reverse('censusdata:race_summary_csv'),
+            {'metro':'10000', 'lender':'736-4045996', 'action_taken':'1,2,3,4'})
+        resp = resp.content
+        self.assertTrue('1122233300' in resp)
+        self.assertTrue('1122233400' in resp)
+        self.assertTrue('1122333300' in resp)
+
+
+
+
 
