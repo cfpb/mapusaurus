@@ -1,11 +1,16 @@
 import json
 
+from django.db.models import Q
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseBadRequest
 from hmda.models import HMDARecord
 from geo.models import Geo
 from geo.views import get_censustract_geos 
 from respondents.models import Institution
+
+def base_hmda_query():
+    query = Q(property_type__in=[1,2], owner_occupancy=1, lien_status=1)
+    return query
 
 def loan_originations(request):
     institution_id = request.GET.get('lender')
@@ -20,8 +25,7 @@ def loan_originations(request):
         action_taken_selected = action_taken_param.split(',')
     else:
         action_taken_selected = []
-    query = HMDARecord.objects.filter(
-            property_type__in=[1,2], owner_occupancy=1, lien_status=1)
+    query = HMDARecord.objects.filter(base_hmda_query())
     if action_taken_selected:
         query = query.filter(action_taken__in=action_taken_selected)
     if institution_selected:
