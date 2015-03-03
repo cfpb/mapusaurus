@@ -8,7 +8,7 @@ from hmda.models import HMDARecord
 from .models import Census2010RaceStats, Census2010Households
 from geo.views import get_censustract_geos
 from geo.models import Geo
-from hmda.views import loan_originations_as_json
+from hmda.views import loan_originations_as_json, base_hmda_query
 from respondents.models import Institution
 
 def sum_lar_tuples(tups):
@@ -240,7 +240,7 @@ def race_summary_csv(request):
     ])
     for obj in queryset:
         geoid = "'%s'" % str(obj.geoid.geoid)
-        lar_count = HMDARecord.objects.filter(institution_id=institution_id, geo=obj.geoid, property_type__in=[1,2], owner_occupancy=1, lien_status=1, action_taken__in=action_taken_selected).count()
+        lar_count = HMDARecord.objects.filter(institution_id=institution_id, geo=obj.geoid, action_taken__in=action_taken_selected).filter(base_hmda_query()).count()
         census_households = Census2010Households.objects.filter(geoid=obj.geoid).first()
         if census_households:
             num_households = census_households.total
