@@ -103,7 +103,7 @@
       "state": "12",
       "county": "222",
       "tract": "33300",
-      "cbsa": "10000",
+      "cbsa": "10001",
       "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
       "minlat": 0,
       "minlon": 0,
