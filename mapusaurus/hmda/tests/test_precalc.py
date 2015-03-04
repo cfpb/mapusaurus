@@ -3,7 +3,7 @@ from mock import Mock
 
 from geo.models import Geo
 from hmda.management.commands.calculate_loan_stats import (
-     calculate_median_loans, calculate_lar_count, calculate_fha_count, Command)
+     calculate_median_loans, calculate_lar_count, get_fha_bucket, Command)
 from hmda.models import HMDARecord, LendingStats
 from respondents.models import Institution, Agency, ZipcodeCityState
 
@@ -104,6 +104,43 @@ class PrecalcTest(TestCase):
         self.assertEqual(3, calculate_median_loans(lender_id, self.metro))
         # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4; 7 in 5, 16 in 6; avg:6, med:7
         self.assertEqual(7, calculate_median_loans(lender_id, None))
+
+    def test_get_fha_bucket(self):
+        fha_percentage = float(0)
+        expected_bucket = 0
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.05)
+        expected_bucket = 1
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.2)
+        expected_bucket = 2
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.3)
+        expected_bucket = 2
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.4)
+        expected_bucket = 3
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.6)
+        expected_bucket = 4
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.9)
+        expected_bucket = 5
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
 
     def test_saves_stats(self):
         lender_id = self.respondent.institution_id

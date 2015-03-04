@@ -89,7 +89,7 @@ class ViewsTest(TestCase):
         HMDARecord.objects.all().delete()
         LendingStats.objects.all().delete()
 
-    def test_get_peer_list(self):
+    def test_calculate_loan_stats(self):
         """Case: Institution has no peers but itself in selected metro"""
         institution = Institution.objects.filter(institution_id="11000000001").first()
         metro = Geo.objects.filter(geoid="10000").first()
