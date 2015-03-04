@@ -98,8 +98,21 @@ class LenderHierarchyTest(TestCase):
         self.assertEqual(len(hierarchy_list_exclude_order), 2)
 
 class ViewTest(TestCase):
-    fixtures = ['agency', 'fake_respondents', 'fake_hierarchy']
+    fixtures = ['agency', 'fake_respondents', 'fake_hierarchy', 'fake_branches']
  
+    def test_branch_locations(self):
+        resp = self.client.get(reverse('branchLocations'), 
+            {'lender':'91000000001',
+            'neLat':'1',
+            'neLon':'1',
+            'swLat':'0',
+            'swLon':'0'})
+        resp = json.loads(resp.content)
+        self.assertEquals('91000000001', resp['features'][0]['properties']['institution_id'])
+        self.assertEquals('Dev Test Branch 2', resp['features'][0]['properties']['name'])
+        self.assertEquals('91000000001', resp['features'][1]['properties']['institution_id'])
+        self.assertEquals('Dev Test Branch 1', resp['features'][1]['properties']['name'])
+
     def test_select_metro(self):
         results = self.client.get(
             reverse('respondents:select_metro',
