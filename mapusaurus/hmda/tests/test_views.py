@@ -1,6 +1,8 @@
-from django.core.management import call_command
-from django.test import TestCase
+import json
 
+from django.core.management import call_command
+from django.core.urlresolvers import reverse
+from django.test import TestCase
 from censusdata.models import Census2010Households
 from hmda.models import HMDARecord, LendingStats
 from respondents.models import Institution
@@ -109,4 +111,20 @@ class ViewsTest(TestCase):
         peer_list_order_exclude = institution.get_peer_list(metro, True, True)
         self.assertEqual(peer_list_order_exclude[0].institution_id, "91000000002")
         self.assertEqual(len(peer_list_exclude), 2) 
+
+    def test_loan_orginations_http(self):
+        resp = self.client.get(reverse('hmda:volume'), {'neLat':'2',
+                                    'neLon':'2',
+                                    'swLat':'0',
+                                    'swLon':'0',
+                                    'year':'2013',
+                                    'action_taken':'1,2,3,4,5',
+                                    'lender':'91000000001'})
+        resp = json.loads(resp.content)
+        self.assertTrue('1122233300' in resp)
+        self.assertEqual(resp['1122233300']['volume'], 4)
+        self.assertEqual(resp['1122233300']['num_households'], 100)
+        self.assertTrue('1122233400' in resp)
+        self.assertEqual(resp['1122233400']['volume'], 1)
+        self.assertEqual(resp['1122233400']['num_households'], 1000)
 
