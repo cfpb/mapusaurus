@@ -2,6 +2,8 @@
 
 if (!window.console) console = {log: function() {}};
 
+    var geoQueryType = 'selected';
+
     // When the DOM is loaded, check for params and add listeners:
     $(document).ready(function(){
         var lhStatus, peerStatus, branchStatus;
@@ -54,6 +56,28 @@ if (!window.console) console = {log: function() {}};
             $('#peerSelect').prop('disabled', status);
             init();
         });
+
+        // Set a global variable that determines which data will be pulled through on "init" function
+        // Bounds should be passed for MSA and All, but not for the selected MSA.
+        // If no bounds and Metro, then just that MSA
+        // If bounds and type MSA, then all MSAs
+        // If bounds and no type, then Everything.  
+
+        if( typeof loadParams.geo_query_type !== 'undefined'){
+            console.log("geoQueryType: ", loadParams.geo_query_type.values);
+            geoQueryType = loadParams.geo_query_type.values;
+        } else {
+            addParam('geo_query_type', 'selected' );
+        }
+
+        // On Branch selection, change params and use the toggle helper
+        $('#geoQueryTypeSelect').change( function(){
+            var el = $('#gepQueryTypeSelect');
+            geoQueryType = el.prop('selected').val();
+            addParam('geo_query_type', geoQueryType );
+        });
+
+        // End geoQueryType stuff        
 
         // Check for branch parameters
         if( typeof loadParams.branches !== 'undefined'){
@@ -120,7 +144,7 @@ if (!window.console) console = {log: function() {}};
             }
         });
 
-        map.on('moveend', _.debounce(init, 500) );
+        map.on('moveend', _.debounce(moveEndAction[geoQueryType], 500));
 
         // When the page loads, update the print link, and update it whenever the hash changes
         updatePrintLink();
@@ -131,37 +155,119 @@ if (!window.console) console = {log: function() {}};
         $( window ).on('hashchange', function(){
             updatePrintLink();
             updateCensusLink();
+            initCalls(geoQueryType);
         });
 
         // Let the application do its thing 
-        init();
+        initCalls(geoQueryType);
 
     });
     
-    // Go get the tract centroids and supporting data, THEN build a data object (uses jQuery Deferreds)
-    function init(){
-        blockStuff();
-        $.when( getTractsInBounds( getBoundParams() ), getTractData( getBoundParams(), getActionTaken( $('#action-taken-selector option:selected').val() ))).done( function(data1, data2){
-            // Get the information about the currently selected layer so we can pass bubble styles to redraw
-            var hashInfo = getHashParams(),
-                layerInfo = getLayerType(hashInfo.category.values);
 
-            // Create our two global data objects with our returned data
-            rawGeo = data1[0];
-            rawData = data2[0];
+    // Global variable to store the MSAMD codes for those MSAs on the map
+    var msaArray = [];
 
-            // Create our Tract Data Object (Datastore.tracts) from the raw sources
-            createTractDataObj(); 
+    // Global object with methods to perform when the map moves.
+    var moveEndAction = {};
+    moveEndAction.selected = function(){
+        // no action required.
+    };
+    moveEndAction.all_msa = function(){
+        // go get our MSA list.
+        var oldMsaArray = msaArray.slice(0);
+        $.when( getMsasInBounds() ).done(function(data){
+            var intersect = _.intersection(oldMsaArray, data);
+            // console.log("Intersection: ", intersect);
+            // console.log("oldMSA Array: ", oldMsaArray);
+            if (intersect.length !== oldMsaArray.length ){ // If the intersection is not the same, init
+                initCalls(geoQueryType);
+            } else if (data.length !== intersect.length){ // Length of intersect and new data must be same
+                initCalls(geoQueryType);
+            } else {
+                // console.log('No call required - MSAs are the same');
+            }
+        });
+    };
+    moveEndAction.all = function(){
+        initCalls(geoQueryType);
+    };
 
-            // Redraw the circles using the created tract object AND the layer bubble type
-            redrawCircles(dataStore.tracts, layerInfo.type );
-            
-            // Update the key with the correct circle size
-            buildKeyCircles();
+    function initCalls(geoQueryType){
+        var gt = geoQueryType;
+        // console.log("GT EQUALS: ", gt);
+        var action = getActionTaken( $('#action-taken-selector option:selected').val() );
+        if( gt === 'selected'){
+            // run init with no bounds and no geo_type
+            blockStuff();
+            $.when( getTractsInBounds(false, false), getTractData(action, false, false) ).done( function(data1, data2){
+                init(data1, data2);
+            });
+        } else if ( gt === 'all_msa'){
+            // run init with bounds and geo_type = msa
+            blockStuff();
+            $.when( getTractsInBounds(getBoundParams(), 'msa'), getTractData(action, getBoundParams(), 'msa') ).done( function(data1, data2){
+                init(data1, data2);  
+            });
+            // get msa info and create list of MSAs
+            // on mousemoveend check if MSA list changes. If yes, get data with current bounds, else do nothing
+        } else if ( gt === 'all'){
+            // run init with bounds and geo_type = false
+            blockStuff();
+            $.when( getTractsInBounds( getBoundParams(), false ), getTractData(action, getBoundParams(), false )).done( function(data1, data2){
+                init(data1, data2);
+            });
+        }
 
-            // Unblock the user interface (remove gradient)
-            $.unblockUI();
-            isUIBlocked = false;
+    }
+
+    // Do what you need to do with the received data to build the map
+    function init(data1, data2){
+        // console.log("Data 1: ", data1);
+        // console.log("Data 2: ", data2);
+        // Get the information about the currently selected layer so we can pass bubble styles to redraw
+        var hashInfo = getHashParams(),
+            layerInfo = getLayerType(hashInfo.category.values);
+
+        // Create our two global data objects with our returned data
+        rawGeo = data1[0];
+        rawData = data2[0];
+
+        // Create our Tract Data Object (Datastore.tracts) from the raw sources
+        createTractDataObj(); 
+
+        // Redraw the circles using the created tract object AND the layer bubble type
+        redrawCircles(dataStore.tracts, layerInfo.type );
+        
+        // Update the key with the correct circle size
+        buildKeyCircles();
+
+        // Get list of MSAs and assign it to the global var
+        $.when( getMsasInBounds() ).done(function(data){
+            msaArray = data;
+        });
+
+        // Unblock the user interface (remove gradient)
+        $.unblockUI();
+        isUIBlocked = false;
+    }
+
+    function getMsasInBounds(){
+        var endpoint = '/api/msas', 
+            params = {},
+            bounds = getBoundParams();
+
+        params.neLat = bounds.neLat;
+        params.neLon = bounds.neLon;
+        params.swLat = bounds.swLat;
+        params.swLon = bounds.swLon;
+
+        return $.ajax({
+            url: endpoint, data: params, traditional: true,
+            success: function(data){
+                // console.log("MSA Data for bounds successfully obtained: ", data);
+            }
+        }).fail( function( status ){
+            console.log( 'no MSA data was available at' + endpoint + '. status: ' + status );
         });
     }
 
@@ -279,16 +385,42 @@ if (!window.console) console = {log: function() {}};
     dataStore.tracts = {};
     
     // Get the census tracts that are in bounds for the current map view. Return a promise.
-    function getTractsInBounds( bounds ){
+    function getTractsInBounds(bounds, geoType){
 
         $('#bubbles_loading').show();
 
         // Create the appropriate URL path to return values
         var endpoint = '/api/tractCentroids/', 
-            params = { neLat: bounds.neLat,
-                       neLon: bounds.neLon,
-                       swLat: bounds.swLat,
-                       swLon: bounds.swLon };
+            params = {};
+
+        if( bounds && typeof bounds === 'object' ){
+            params.neLat = bounds.neLat;
+            params.neLon = bounds.neLon;
+            params.swLat = bounds.swLat;
+            params.swLon = bounds.swLon;
+        }
+
+        // console.log("Bounds: ", bounds);
+        // console.log("Param Bounds: ", params.bounds);
+
+        if( geoType ){
+            params.geoType = geoType;
+        }
+
+        if ( urlParam('metro') ){
+            params.metro = urlParam('metro');
+        } else {
+            console.log("No metro area provided");
+        }
+
+        // Set the lender parameter based on the current URL param
+        if ( urlParam('lender') ){
+            params['lender'] = urlParam('lender');
+        } else {
+            console.log(' Lender parameter is required.');
+            return false;
+        }
+
         return $.ajax({
             url: endpoint, data: params, traditional: true,
             success: console.log('tract Get successful')
@@ -300,16 +432,27 @@ if (!window.console) console = {log: function() {}};
 
     // Get minority and LAR data for census Tracts within the bounding box, for a specific criteria (actionTaken)
     // Return a promise.
-    function getTractData( bounds, actionTakenVal ){
+    function getTractData( actionTakenVal, bounds, geoType ){
         $('#bubbles_loading').show();
         var endpoint = '/api/all/',
             params = { year: 2013,
                         'lh': false,
                         'peers': false,
-                        'neLat': bounds.neLat,
-                        'neLon': bounds.neLon,
-                        'swLat': bounds.swLat,
-                        'swLon': bounds.swLon };
+                        'geo_type': geoType };
+
+        if( bounds && typeof bounds === 'object'){
+            params.neLat = bounds.neLat;
+            params.neLon = bounds.neLon;
+            params.swLat = bounds.swLat;
+            params.swLon = bounds.swLon;
+        }
+
+        console.log("Bounds: ", bounds);
+        console.log("Param Bounds: ", params.bounds);
+        if( geoType ){
+            params.geoType = geoType;
+        }
+
         var hash = getHashParams();
 
         // Check to see if Lender Hierarchy (lh) exists.
@@ -326,7 +469,6 @@ if (!window.console) console = {log: function() {}};
             params.year = urlParam('year');
         }
 
-        //
         if ( urlParam('metro') ){
             params.metro = urlParam('metro');
         } else {
@@ -361,6 +503,7 @@ if (!window.console) console = {log: function() {}};
 
     // Creates the dataStore.tracts object global for use by application (depends upon rawGeo / rawData)
     function createTractDataObj( callback ){
+        var count = 0;
         dataStore.tracts = {};
 
         // For each top-level data element returned (minority, loanVolume)
@@ -376,9 +519,10 @@ if (!window.console) console = {log: function() {}};
             } else {
                 dataStore.tracts[geoid].volume = 0;
             }
-
+            count++;
         });
 
+        // console.log("DataSTore Count: ", count);
         if( typeof callback === 'function' && callback() ){
             callback();
         }
@@ -481,7 +625,6 @@ if (!window.console) console = {log: function() {}};
 
         if( typeof options !== "undefined"){
             circle.keyCircle = options.keyCircle;
-            console.log("geo: ", geo);
         }
 
         circle.on('mouseover mousemove', function(e){
@@ -885,7 +1028,6 @@ function buildKeyCircles(){
     for( var i=0; i<circles.length; i++ ){
         var circle = circles[i];
         rad = circle._radius;
-        console.log("RAD: ", rad);
         posx = posx + 45; // Move the circles horizontally, y values stay constant    
         svgStr += '<circle cx="' + posx + '" cy="' + (posy-rad) + '" r="' + rad + '" fillColor="#111111" fill-opacity=".7" stroke=true color="#333", opacity=1/>';        
         svgStr += '<text x="' + (posx) + '" y="' + textPosy + '" font-size="1em" text-anchor="middle">'+ circle.volume + '</text>';
