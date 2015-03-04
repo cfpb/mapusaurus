@@ -180,15 +180,6 @@ def branch_locations(request):
     except ValueError:
         return HttpResponseBadRequest(
                 "Bad or missing values: northEastLat, northEastLon, southWestLat, southWestLon")
-    # check that any of the four points or center are inside the boundary
-    #query = Q(minlat__gte=minlat, minlat__lte=maxlat,
-    #          minlon__gte=minlon, minlon__lte=maxlon)
-    #query = query | Q(minlat__gte=minlat, minlat__lte=maxlat,
-    #                  maxlon__gte=minlon, maxlon__lte=maxlon)
-    #query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
-    #                  minlon__gte=minlon, minlon__lte=maxlon)
-    #query = query | Q(maxlat__gte=minlat, maxlat__lte=maxlat,
-    #                  maxlon__gte=minlon, maxlon__lte=maxlon)
     query = Q(lat__gte=minlat, lat__lte=maxlat,
                       lon__gte=minlon, lon__lte=maxlon)
     branches = Branch.objects.filter(institution_id=lender).filter(query)

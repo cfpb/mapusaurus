@@ -3,7 +3,7 @@ from mock import Mock
 
 from geo.models import Geo
 from hmda.management.commands.calculate_loan_stats import (
-     calculate_median_loans, calculate_lar_count, calculate_fha_count, Command)
+     calculate_median_loans, calculate_lar_count, calculate_fha_count, get_fha_bucket, Command)
 from hmda.models import HMDARecord, LendingStats
 from respondents.models import Institution, Agency, ZipcodeCityState
 
@@ -43,7 +43,7 @@ class PrecalcTest(TestCase):
 
         hmda_params = {
             'as_of_year': 2010, 'respondent_id': self.respondent.respondent_id,
-            'agency_code': str(self.respondent.agency_id), 'loan_type': 1,
+            'agency_code': str(self.respondent.agency_id),
             'property_type': 1, 'loan_purpose': 1, 'owner_occupancy': 1,
             'loan_amount_000s': 100, 'preapproval': '1', 'action_taken': 1, 
             'msamd': '01234', 'statefp': '11', 'countyfp': '111',
@@ -57,19 +57,19 @@ class PrecalcTest(TestCase):
             'application_date_indicator':1}
         self.hmdas = []
         self.hmdas.append(HMDARecord.objects.create(
-            geo=self.city_tract1, institution=self.respondent, **hmda_params))
+            geo=self.city_tract1, institution=self.respondent, loan_type=2, **hmda_params))
         for i in range(3):
             self.hmdas.append(HMDARecord.objects.create(
-                geo=self.city_tract2, institution=self.respondent, **hmda_params))
+                geo=self.city_tract2, institution=self.respondent, loan_type=1, **hmda_params))
         for i in range(8):
             self.hmdas.append(HMDARecord.objects.create(
-                geo=self.city_tract3, institution=self.respondent, **hmda_params))
+                geo=self.city_tract3, institution=self.respondent, loan_type=1, **hmda_params))
         for i in range(7):
             self.hmdas.append(HMDARecord.objects.create(
-                geo =self.non_city_tract1, institution=self.respondent, **hmda_params))
+                geo =self.non_city_tract1, institution=self.respondent, loan_type=1, **hmda_params))
         for i in range(11):
             self.hmdas.append(HMDARecord.objects.create(
-                geo=self.non_city_tract2, institution=self.respondent, **hmda_params))
+                geo=self.non_city_tract2, institution=self.respondent, loan_type=2, **hmda_params))
 
         hmda_params['respondent_id'] = 'other'
         self.zipcode = ZipcodeCityState.objects.create(
@@ -81,7 +81,7 @@ class PrecalcTest(TestCase):
         # these should not affect the results, since they are another lender
         for i in range(3):
             self.hmdas.append(HMDARecord.objects.create(
-                geo=self.city_tract2, institution=self.inst1, **hmda_params))
+                geo=self.city_tract2, institution=self.inst1, loan_type=1, **hmda_params))
 
     def tearDown(self):
         for hmda in self.hmdas:
@@ -104,6 +104,46 @@ class PrecalcTest(TestCase):
         self.assertEqual(3, calculate_median_loans(lender_id, self.metro))
         # 1 in tract 1, 3 in 2, 8 in 3, 0 in 4; 7 in 5, 16 in 6; avg:6, med:7
         self.assertEqual(7, calculate_median_loans(lender_id, None))
+
+    def test_get_fha_bucket(self):
+        fha_percentage = float(0)
+        expected_bucket = 0
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.05)
+        expected_bucket = 1
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.2)
+        expected_bucket = 2
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.3)
+        expected_bucket = 2
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.4)
+        expected_bucket = 3
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.6)
+        expected_bucket = 4
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+        fha_percentage = float(0.9)
+        expected_bucket = 5
+        actual_bucket = get_fha_bucket(fha_percentage)
+        self.assertEqual(expected_bucket, actual_bucket)
+
+    def test_calculate_fha_count(self):
+        lender_id = self.respondent.institution_id
+        self.assertEqual(1, calculate_fha_count(lender_id, self.metro))
 
     def test_saves_stats(self):
         lender_id = self.respondent.institution_id

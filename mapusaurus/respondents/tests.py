@@ -1,6 +1,5 @@
 import json
 
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory, TestCase
 from mock import Mock, patch
@@ -8,7 +7,7 @@ from mock import Mock, patch
 from geo.models import Geo
 from hmda.models import HMDARecord
 from respondents import views, zipcode_utils
-from respondents.models import Agency, Institution, ZipcodeCityState, LenderHierarchy
+from respondents.models import Agency, Institution, ZipcodeCityState
 from respondents.management.commands import load_reporter_panel
 from respondents.management.commands import load_transmittal
 from respondents.search_indexes import InstitutionIndex
@@ -67,8 +66,7 @@ class LoadTransmittalTests(TestCase):
         self.assertEqual(inst.agency_id, 1)
         self.assertEqual(inst.assets, 121212)
 
-
-class ViewTest(TestCase):
+class LenderHierarchyTest(TestCase):
     fixtures = ['agency', 'fake_respondents', 'fake_hierarchy']
 
     def test_get_lender_hierarchy(self):
@@ -97,8 +95,24 @@ class ViewTest(TestCase):
         self.assertEqual(hierarchy_list_order[0].institution_id, "91000000001")
         hierarchy_list_exclude_order = institution.get_lender_hierarchy(True, True)
         self.assertEqual(hierarchy_list_exclude_order[0].institution_id, "91000000002")        
-        self.assertEqual(len(hierarchy_list_exclude_order), 2)        
+        self.assertEqual(len(hierarchy_list_exclude_order), 2)
+
+class ViewTest(TestCase):
+    fixtures = ['agency', 'fake_respondents', 'fake_hierarchy', 'fake_branches']
  
+    def test_branch_locations(self):
+        resp = self.client.get(reverse('branchLocations'), 
+            {'lender':'91000000001',
+            'neLat':'1',
+            'neLon':'1',
+            'swLat':'0',
+            'swLon':'0'})
+        resp = json.loads(resp.content)
+        self.assertEquals('91000000001', resp['features'][0]['properties']['institution_id'])
+        self.assertEquals('Dev Test Branch 2', resp['features'][0]['properties']['name'])
+        self.assertEquals('91000000001', resp['features'][1]['properties']['institution_id'])
+        self.assertEquals('Dev Test Branch 1', resp['features'][1]['properties']['name'])
+
     def test_select_metro(self):
         results = self.client.get(
             reverse('respondents:select_metro',

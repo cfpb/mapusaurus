@@ -20,19 +20,7 @@ class Command(BaseCommand):
                 lar = calculate_lar_count(lender_str, metro)
                 fha = calculate_fha_count(lender_str, metro)
                 fha_percentage = fha/float(lar) 
-                if fha_percentage == 0:
-                    bucket = 0 
-                elif fha_percentage > 0 and fha_percentage <= .1:
-                    bucket = 1 
-                elif fha_percentage > .10 and fha_percentage <= .3:
-                    bucket = 2 
-                elif fha_percentage > .3 and fha_percentage <= .5:
-                    bucket = 3
-                elif fha_percentage > .5 and fha_percentage <= .7:
-                    bucket = 4
-                elif fha_percentage > .7:
-                    bucket =5
- 
+                bucket = get_fha_bucket(fha_percentage)
                 LendingStats.objects.create(
                     institution_id=lender_str, geo=metro, lar_median=median, lar_count=lar, fha_count=fha, fha_bucket=bucket)
 
@@ -47,6 +35,21 @@ def calculate_lar_count(lender_str, metro):
 def calculate_fha_count(lender_str, metro):
     lar = lar_query(lender_str, metro)
     return lar.filter(loan_type=2).count()
+
+def get_fha_bucket(fha_percentage):
+    if fha_percentage == 0:
+        bucket = 0 
+    elif fha_percentage > 0 and fha_percentage <= .1:
+        bucket = 1 
+    elif fha_percentage > .10 and fha_percentage <= .3:
+        bucket = 2 
+    elif fha_percentage > .3 and fha_percentage <= .5:
+        bucket = 3
+    elif fha_percentage > .5 and fha_percentage <= .7:
+        bucket = 4
+    elif fha_percentage > .7:
+        bucket =5
+    return bucket
 
 def calculate_median_loans(lender_str, metro):
     """For a given lender, find the median loans per census tract. Limit to
