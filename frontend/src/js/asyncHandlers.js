@@ -126,6 +126,7 @@
 
     }
 
+
     // Get the Metro Areas currently shown on the map (used to check if we need to load new data on move)
     function getMsasInBounds(){
         var endpoint = '/api/msas', 
@@ -178,7 +179,6 @@
         });
 
     } 
-
 
     /*
         END GET DATA SECTION

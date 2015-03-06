@@ -15,6 +15,7 @@ if (!window.console) console = {log: function() {}};
     var geoQueryType = 'selected';
 
     // When the DOM is loaded, check for params and add listeners:
+
     $(document).ready(function(){
         var lhStatus, peerStatus, branchStatus;
 
@@ -60,15 +61,16 @@ if (!window.console) console = {log: function() {}};
 
         if( typeof loadParams.geo_query_type !== 'undefined'){
             geoQueryType = loadParams.geo_query_type.values;
+            $('#geoTypeQuerySelector').val(geoQueryType);
         } else {
             addParam('geo_query_type', 'selected' );
         }
 
-        // On Branch selection, change params and use the toggle helper
         $('#geoTypeQuerySelector').change( function(){
             var el = $('#geoTypeQuerySelector option:selected');
             geoQueryType = el.val();
             addParam('geo_query_type', geoQueryType );
+            moveEndAction[geoQueryType]();
         });
         // End geoQueryType stuff        
 
@@ -180,7 +182,6 @@ if (!window.console) console = {log: function() {}};
         $( window ).on('hashchange', function(){
             updatePrintLink();
             updateCensusLink();
-            moveEndAction[geoQueryType]();
         });
         // Update links to peers
         getPeerLinks();
@@ -189,6 +190,7 @@ if (!window.console) console = {log: function() {}};
         initCalls(geoQueryType);
 
     });
+
         // Let the application do its thing 
 
     // Global variable to store the MSAMD codes for those MSAs on the map
@@ -213,8 +215,10 @@ if (!window.console) console = {log: function() {}};
                 var intersect = _.difference(data, oldMsaArray);
                 if (intersect.length > 0 ){ // If the intersection is not the same, init
                     initCalls(geoQueryType);
+                    oldEndAction = 'all_msa';                    
                 } else if (intersect.length === 0){
                     console.log('No call required - MSAs are the same');
+                    oldEndAction = 'all_msa';
                 }
             });
         } else {

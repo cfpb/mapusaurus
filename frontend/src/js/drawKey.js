@@ -16,11 +16,6 @@ function buildKeyCircles(){
         return false;
     }
 
-    // Get max, middle, min
-    // Draw new circles for each in Leaflet with index IDs
-    // Put those index IDs into an array
-    // Copy those SVG elements using jQuery to the Key
-
     // Get the current scaling value from the drop-down menu.
     var $scale = $('#action-taken-selector option:selected');
     var scaleMultiplier = $scale.data('scale');
@@ -37,7 +32,7 @@ function buildKeyCircles(){
         var circle = circles[i];
         rad = circle._radius;
         posx = posx + 45; // Move the circles horizontally, y values stay constant    
-        svgStr += '<circle cx="' + posx + '" cy="' + (posy-rad) + '" r="' + rad + '" fillColor="#111111" fill-opacity=".7" stroke=false color="#333"/>';        
+        svgStr += '<circle cx="' + posx + '" cy="' + (posy-rad) + '" r="' + rad + '" fillColor="#111111" fill-opacity=".7" stroke=false color="#333"/>';
         svgStr += '<text x="' + (posx) + '" y="' + textPosy + '" font-size="1em" text-anchor="middle">'+ circle.volume + '</text>';
     }
 
