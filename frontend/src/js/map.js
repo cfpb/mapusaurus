@@ -64,7 +64,6 @@ if (!window.console) console = {log: function() {}};
         // If bounds and no type, then Everything.  
 
         if( typeof loadParams.geo_query_type !== 'undefined'){
-            console.log("geoQueryType: ", loadParams.geo_query_type.values);
             geoQueryType = loadParams.geo_query_type.values;
         } else {
             addParam('geo_query_type', 'selected' );
@@ -529,7 +528,6 @@ if (!window.console) console = {log: function() {}};
             count++;
         });
 
-        console.log("DataSTore Count: ", count);
         if( typeof callback === 'function' && callback() ){
             callback();
         }
