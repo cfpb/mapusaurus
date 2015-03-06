@@ -67,9 +67,11 @@
             </div> 
             <div class="map-divider">
                 <h4>Select the Geography in which you'd like to display LAR circles:</h4>
-                <input type="button" value="Selected MSA" class="btn btn__grouped-first">
-                <input type="button" value="Any MSA" class="btn btn__grouped">
-                <input type="button" value="All LARs" class="btn btn__grouped-last">
+                <select name="geoTypeQuerySelector" id="geoTypeQuerySelector">
+                    <option value="selected" selected=true >Show LAR for Selected MSA</option>
+                    <option value="all_msa">Show LAR for All MSAs on Map</option>
+                    <option value="all">Show all LAR on Map</option>
+                </select>
             </div>
         </div>
     {% endif %}

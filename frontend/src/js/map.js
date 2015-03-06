@@ -54,7 +54,7 @@ if (!window.console) console = {log: function() {}};
             var status = el.prop('checked');
             toggleSuper(status);
             $('#peerSelect').prop('disabled', status);
-            init();
+            initCalls(geoQueryType);
         });
 
         // Set a global variable that determines which data will be pulled through on "init" function
@@ -71,9 +71,10 @@ if (!window.console) console = {log: function() {}};
         }
 
         // On Branch selection, change params and use the toggle helper
-        $('#geoQueryTypeSelect').change( function(){
-            var el = $('#gepQueryTypeSelect');
-            geoQueryType = el.prop('selected').val();
+        $('#geoTypeQuerySelector').change( function(){
+            var el = $('#geoTypeQuerySelector option:selected');
+            geoQueryType = el.val();
+            console.log('geoQueryType: ', geoQueryType);
             addParam('geo_query_type', geoQueryType );
         });
 
@@ -115,13 +116,13 @@ if (!window.console) console = {log: function() {}};
             var status = el.prop('checked');
             togglePeers(status);
             $('#superSelect').prop('disabled', status);
-            init();
+            initCalls(geoQueryType);
         });
 
         // When the user changes the action taken data selector, re-initialize
         $('#action-taken-selector').on('change', function(){
             addParam( 'action', $('#action-taken-selector option:selected').val() );
-            init();
+            initCalls(geoQueryType);
         });
 
         // Generate the tool-tip listener for anything with that class
@@ -155,10 +156,10 @@ if (!window.console) console = {log: function() {}};
         $( window ).on('hashchange', function(){
             updatePrintLink();
             updateCensusLink();
-            initCalls(geoQueryType);
+            moveEndAction[geoQueryType]();
         });
 
-        // Let the application do its thing 
+        // Kick off the application
         initCalls(geoQueryType);
 
     });
@@ -169,27 +170,38 @@ if (!window.console) console = {log: function() {}};
 
     // Global object with methods to perform when the map moves.
     var moveEndAction = {};
+    // Store the last action so we can check if it's different and redraw.
+    var oldEndAction = ''; 
     moveEndAction.selected = function(){
-        // no action required.
+        if( oldEndAction === 'selected'){
+            console.log("No action required for 'selected' status. Nothing happens.");
+            oldEndAction = 'selected';
+        } else { 
+            initCalls(geoQueryType);
+            oldEndAction = 'selected';   
+        }
+        
     };
     moveEndAction.all_msa = function(){
-        // go get our MSA list.
         var oldMsaArray = msaArray.slice(0);
-        $.when( getMsasInBounds() ).done(function(data){
-            var intersect = _.intersection(oldMsaArray, data);
-            // console.log("Intersection: ", intersect);
-            // console.log("oldMSA Array: ", oldMsaArray);
-            if (intersect.length !== oldMsaArray.length ){ // If the intersection is not the same, init
-                initCalls(geoQueryType);
-            } else if (data.length !== intersect.length){ // Length of intersect and new data must be same
-                initCalls(geoQueryType);
-            } else {
-                // console.log('No call required - MSAs are the same');
-            }
-        });
+        if( oldEndAction === 'all_msa'){
+            $.when( getMsasInBounds() ).done(function(data){
+                var intersect = _.difference(data, oldMsaArray);
+                if (intersect.length > 0 ){ // If the intersection is not the same, init
+                    initCalls(geoQueryType);
+                } else if (intersect.length === 0){
+                    console.log('No call required - MSAs are the same');
+                }
+            });
+            oldEndAction = 'all_msa';
+        } else {
+            initCalls(geoQueryType);
+            oldEndAction = 'all_msa';
+        }
     };
     moveEndAction.all = function(){
         initCalls(geoQueryType);
+        oldEndAction = 'all';
     };
 
     function initCalls(geoQueryType){
@@ -400,9 +412,6 @@ if (!window.console) console = {log: function() {}};
             params.swLon = bounds.swLon;
         }
 
-        // console.log("Bounds: ", bounds);
-        // console.log("Param Bounds: ", params.bounds);
-
         if( geoType ){
             params.geoType = geoType;
         }
@@ -447,8 +456,6 @@ if (!window.console) console = {log: function() {}};
             params.swLon = bounds.swLon;
         }
 
-        console.log("Bounds: ", bounds);
-        console.log("Param Bounds: ", params.bounds);
         if( geoType ){
             params.geoType = geoType;
         }
@@ -522,7 +529,7 @@ if (!window.console) console = {log: function() {}};
             count++;
         });
 
-        // console.log("DataSTore Count: ", count);
+        console.log("DataSTore Count: ", count);
         if( typeof callback === 'function' && callback() ){
             callback();
         }
