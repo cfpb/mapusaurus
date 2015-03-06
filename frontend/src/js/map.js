@@ -60,36 +60,14 @@ if (!window.console) console = {log: function() {}};
 
         if( typeof loadParams.geo_query_type !== 'undefined'){
             geoQueryType = loadParams.geo_query_type.values;
-            $('#geoTypeQuerySelector').val(geoQueryType);
-        } else {
-            addParam('geo_query_type', 'selected' );
-        }
-
-        $('#geoTypeQuerySelector').change( function(){
-            var el = $('#geoTypeQuerySelector');
-            geoQueryType = el.val();
-            addParam('geo_query_type', geoQueryType );
-            moveEndAction[geoQueryType]();
-        });
-
-
-        // Set a global variable that determines which data will be pulled through on "init" function
-        // Bounds should be passed for MSA and All, but not for the selected MSA.
-        // If no bounds and Metro, then just that MSA
-        // If bounds and type MSA, then all MSAs
-        // If bounds and no type, then Everything.  
-
-        if( typeof loadParams.geo_query_type !== 'undefined'){
-            console.log("geoQueryType: ", loadParams.geo_query_type.values);
-            geoQueryType = loadParams.geo_query_type.values;
         } else {
             addParam('geo_query_type', 'selected' );
         }
 
         // On Branch selection, change params and use the toggle helper
-        $('#geoQueryTypeSelect').change( function(){
-            var el = $('#gepQueryTypeSelect');
-            geoQueryType = el.prop('selected').val();
+        $('#geoTypeQuerySelector').change( function(){
+            var el = $('#geoTypeQuerySelector option:selected');
+            geoQueryType = el.val();
             addParam('geo_query_type', geoQueryType );
         });
         // End geoQueryType stuff        
@@ -202,10 +180,8 @@ if (!window.console) console = {log: function() {}};
         $( window ).on('hashchange', function(){
             updatePrintLink();
             updateCensusLink();
-            initCalls(geoQueryType);
+            moveEndAction[geoQueryType]();
         });
-
-<<<<<<< HEAD
         // Update links to peers
         getPeerLinks();
         
@@ -213,172 +189,7 @@ if (!window.console) console = {log: function() {}};
         initCalls(geoQueryType);
 
     });
-=======
         // Let the application do its thing 
-        initCalls(geoQueryType);
-
-    });
-    
->>>>>>> updated init functions to handle msa clipping cases
-
-    // Global variable to store the MSAMD codes for those MSAs on the map
-    var msaArray = [];
-
-    // Global object with methods to perform when the map moves.
-    var moveEndAction = {};
-    moveEndAction.selected = function(){
-        // no action required.
-    };
-    moveEndAction.all_msa = function(){
-        // go get our MSA list.
-        var oldMsaArray = msaArray.slice(0);
-        $.when( getMsasInBounds() ).done(function(data){
-            var intersect = _.intersection(oldMsaArray, data);
-            // console.log("Intersection: ", intersect);
-            // console.log("oldMSA Array: ", oldMsaArray);
-            if (intersect.length !== oldMsaArray.length ){ // If the intersection is not the same, init
-                initCalls(geoQueryType);
-            } else if (data.length !== intersect.length){ // Length of intersect and new data must be same
-                initCalls(geoQueryType);
-            } else {
-                // console.log('No call required - MSAs are the same');
-            }
-        });
-    };
-    moveEndAction.all = function(){
-        initCalls(geoQueryType);
-    };
-
-    function initCalls(geoQueryType){
-        var gt = geoQueryType;
-        // console.log("GT EQUALS: ", gt);
-        var action = getActionTaken( $('#action-taken-selector option:selected').val() );
-        if( gt === 'selected'){
-            // run init with no bounds and no geo_type
-            blockStuff();
-            $.when( getTractsInBounds(false, false), getTractData(action, false, false) ).done( function(data1, data2){
-                init(data1, data2);
-            });
-        } else if ( gt === 'all_msa'){
-            // run init with bounds and geo_type = msa
-            blockStuff();
-            $.when( getTractsInBounds(getBoundParams(), 'msa'), getTractData(action, getBoundParams(), 'msa') ).done( function(data1, data2){
-                init(data1, data2);  
-            });
-            // get msa info and create list of MSAs
-            // on mousemoveend check if MSA list changes. If yes, get data with current bounds, else do nothing
-        } else if ( gt === 'all'){
-            // run init with bounds and geo_type = false
-            blockStuff();
-            $.when( getTractsInBounds( getBoundParams(), false ), getTractData(action, getBoundParams(), false )).done( function(data1, data2){
-                init(data1, data2);
-            });
-        }
-
-    }
-
-    // Do what you need to do with the received data to build the map
-    function init(data1, data2){
-        // console.log("Data 1: ", data1);
-        // console.log("Data 2: ", data2);
-        // Get the information about the currently selected layer so we can pass bubble styles to redraw
-        var hashInfo = getHashParams(),
-            layerInfo = getLayerType(hashInfo.category.values);
-
-        // Create our two global data objects with our returned data
-        rawGeo = data1[0];
-        rawData = data2[0];
-
-        // Create our Tract Data Object (Datastore.tracts) from the raw sources
-        createTractDataObj(); 
-
-        // Redraw the circles using the created tract object AND the layer bubble type
-        redrawCircles(dataStore.tracts, layerInfo.type );
-        
-        // Update the key with the correct circle size
-        buildKeyCircles();
-
-        // Get list of MSAs and assign it to the global var
-        $.when( getMsasInBounds() ).done(function(data){
-            msaArray = data;
-        });
-
-        // Unblock the user interface (remove gradient)
-        $.unblockUI();
-        isUIBlocked = false;
-    }
-
-    function getMsasInBounds(){
-        var endpoint = '/api/msas', 
-            params = {},
-            bounds = getBoundParams();
-
-        params.neLat = bounds.neLat;
-        params.neLon = bounds.neLon;
-        params.swLat = bounds.swLat;
-        params.swLon = bounds.swLon;
-
-        return $.ajax({
-            url: endpoint, data: params, traditional: true,
-            success: function(data){
-                // console.log("MSA Data for bounds successfully obtained: ", data);
-            }
-        }).fail( function( status ){
-            console.log( 'no MSA data was available at' + endpoint + '. status: ' + status );
-        });
-    }
-    
-    function destroyLarChart() {
-        d3.select("#plot-container").selectAll("*").remove();
-    }
-
-    function plotLarVolume() {
-
-	var margin = {top: 20, right: 20, bottom: 30, left: 40},
-	    width = 1180 - margin.left - margin.right,
-	    height = 200 - margin.top - margin.bottom;
-	var barWidth = width / larVolume.length;
-
-	var data = _.zip(pctMinority, larVolume);
-	data = _.sortBy(data, function(item) { return item[0]; });
-	data = _.zip.apply(_, data);
-	pctMinority = data[0];
-	larVolume = data[1];
-
-	var colorMap = d3.scale.quantile().domain([0, 0.5, 0.8, 1.0]).range(["#E8E7E3", "#B7C8D6", "#7FA2BB"]);
-
-	d3.select("#plot-container").selectAll("*").remove();
-	
-	var larSvg = d3.select("#plot-container")
-		.append("svg")
-                .attr("width", width)
-                .attr("height", height);
-
-	var minSvg = d3.select("#plot-container")
-		.append("svg")
-		.attr("width", width)
-		.attr("height", height);
-	
-	var larChart = larSvg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	var minChart = minSvg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-	var larX = d3.scale.ordinal().rangeRoundBands([0, width], 0.1);
-	var larY = d3.scale.linear().range([height, 0]);
-	var larXAxis = d3.svg.axis().scale(larX).orient("bottom");
-	var larYAxis = d3.svg.axis().scale(larY).orient("left");
-
-	var minX = d3.scale.ordinal().rangeRoundBands([0, width], 0.1);
-	var minY = d3.scale.linear().range([height, 0]);
-	var minXAxis = d3.svg.axis().scale(minX).orient("bottom");
-	var minYAxis = d3.svg.axis().scale(minY).orient("left");
-
-	larX.domain(geoIds);
-	larY.domain([0, d3.max(larVolume, function(d) { return d; })]);
-
-	minX.domain(geoIds);
-	minY.domain([0, d3.max(pctMinority, function(d) { return d; })]);
-
->>>>>>> updated init functions to handle msa clipping cases
 
     // Global variable to store the MSAMD codes for those MSAs on the map
     var msaArray = [];
@@ -393,8 +204,7 @@ if (!window.console) console = {log: function() {}};
         } else { 
             initCalls(geoQueryType);
             oldEndAction = 'selected';   
-        }
-        
+        }        
     };
     moveEndAction.all_msa = function(){
         var oldMsaArray = msaArray.slice(0);
