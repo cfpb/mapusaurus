@@ -71,7 +71,7 @@ if (!window.console) console = {log: function() {}};
         }
 
         $('#geoTypeQuerySelector').change( function(){
-            var el = $('#geoTypeQuerySelector option:selected');
+            var el = $('#geoTypeQuerySelector');
             geoQueryType = el.val();
             addParam('geo_query_type', geoQueryType );
             moveEndAction[geoQueryType]();
@@ -144,7 +144,10 @@ if (!window.console) console = {log: function() {}};
             }
         });
 
-        map.on('moveend', _.debounce(moveEndAction[geoQueryType], 500));
+        map.on('moveend', function(){
+            console.log("gqt in moveend: ", geoQueryType);
+            moveEndAction[geoQueryType]();
+        });
 
         // When the page loads, update the print link, and update it whenever the hash changes
         updatePrintLink();
@@ -161,7 +164,6 @@ if (!window.console) console = {log: function() {}};
         initCalls(geoQueryType);
 
     });
-    
 
     // Global variable to store the MSAMD codes for those MSAs on the map
     var msaArray = [];
@@ -169,11 +171,10 @@ if (!window.console) console = {log: function() {}};
     // Global object with methods to perform when the map moves.
     var moveEndAction = {};
     // Store the last action so we can check if it's different and redraw.
-    var oldEndAction = 'selected'; 
+    var oldEndAction = geoQueryType; 
     moveEndAction.selected = function(){
         if( oldEndAction === 'selected'){
             console.log("No action required for 'selected' status. Nothing happens.");
-            oldEndAction = 'selected';
         } else { 
             initCalls(geoQueryType);
             oldEndAction = 'selected';   
@@ -187,10 +188,8 @@ if (!window.console) console = {log: function() {}};
                 var intersect = _.difference(data, oldMsaArray);
                 if (intersect.length > 0 ){ // If the intersection is not the same, init
                     initCalls(geoQueryType);
-                    oldEndAction = 'all_msa';                    
                 } else if (intersect.length === 0){
                     console.log('No call required - MSAs are the same');
-                    oldEndAction = 'all_msa';
                 }
             });
         } else {
