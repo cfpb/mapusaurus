@@ -67,7 +67,7 @@ if (!window.console) console = {log: function() {}};
         }
 
         $('#geoTypeQuerySelector').change( function(){
-            var el = $('#geoTypeQuerySelector option:selected');
+            var el = $('#geoTypeQuerySelector');
             geoQueryType = el.val();
             addParam('geo_query_type', geoQueryType );
             moveEndAction[geoQueryType]();
@@ -215,10 +215,8 @@ if (!window.console) console = {log: function() {}};
                 var intersect = _.difference(data, oldMsaArray);
                 if (intersect.length > 0 ){ // If the intersection is not the same, init
                     initCalls(geoQueryType);
-                    oldEndAction = 'all_msa';                    
                 } else if (intersect.length === 0){
                     console.log('No call required - MSAs are the same');
-                    oldEndAction = 'all_msa';
                 }
             });
         } else {
