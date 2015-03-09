@@ -92,6 +92,37 @@ select {
   }
 
 }
+.map-divider-minor {
+  border-bottom: 1px solid @gray-50;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  position: relative;
+
+  .sub-header-name{
+    margin-left: 30px;
+    display:inline-block;
+  }
+  i {
+    font-size: .75em;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+  }
+
+  h6 {
+    line-height: 1.375;
+  }
+}
+.map-divider-minor.option:hover{
+    background: @gray-20;
+}
+.map-divider-minor.option.active{
+  background: @green-tint;
+}
+.map-divider-minor.option.active:hover{
+    background: @green-midtone;
+}
 
 .header-group {
   padding-bottom: 10px;
@@ -99,10 +130,13 @@ select {
 }
 
 .lighter {
-    background-color: @gray-5;
+  background-color: @gray-5;
 }
 .darker {
-    background-color: @gray-10;
+  background-color: @gray-10;
+}
+.darker-still {
+  background-color: @gray-20;
 }
 
 .green-highlight {

@@ -31,6 +31,33 @@ if (!window.console) console = {log: function() {}};
             layerUpdate( 'inv_non_hisp_white_only_perc' );
         }
 
+        if( typeof loadParams.category !== 'undefined'){
+            var cat = loadParams.category.values;
+            $('#' + cat ).addClass('active');
+            layerUpdate( cat );
+        }
+        
+        var mapDividerOptions = $('.map-divider-minor.option');
+        
+        mapDividerOptions.on('click', function(e){
+            mapDividerOptions.removeClass('active');
+            var selectedOption = $(this);
+            var optionVal = selectedOption.attr('id');
+            selectedOption.addClass('active');
+            addParam( 'category', optionVal );
+            layerUpdate( optionVal );
+            console.log("THIS CHANGE FOR MINOR OPTION: ", $(this));
+            console.log("E FOR MINOR OPTION CHANGE: ", e);
+        });
+
+        // Map divider on click change class and fire event for that change
+        // on('click', function(e){
+        //     removeClass('active') for all other elements
+        //     addClass('active') to this specific element
+        //     change the hash of the page.
+        //     layerUpdate();
+        // })
+
         // Check to see if we have any parameters for action-taken
         if( typeof loadParams.action !== 'undefined'){
             $('#action-taken-selector').val( loadParams.action.values );

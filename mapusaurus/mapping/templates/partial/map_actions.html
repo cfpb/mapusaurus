@@ -1,4 +1,49 @@
 <div id="map-aside-header__tabpanels" class="tabpanels">
+    <div id="map-aside__msa-analysis" class="map-aside__msa-analysis">
+        <div class="map-divider"><h6 class="tab-title">Analysis Themes</h6></div>
+            <div class="map-divider">
+                <h4>Select the Geography in which you'd like to display LAR circles:</h4>
+                <select name="geoTypeQuerySelector" id="geoTypeQuerySelector">
+                    <option value="selected">Show LAR for Selected MSA</option>
+                    <option value="all_msa">Show LAR for All MSAs on Map</option>
+                    <option value="all">Show all LAR on Map</option>
+                </select>
+            </div>
+            <div id="demographics" class="map-divider-minor darker-still">
+                <h6 class="main-header-name" >Demographics</h6>
+            </div>   
+            <div id="inv_non_hisp_white_only_perc" class="map-divider-minor option darker">
+                <h6 class="sub-header-name">% Minority</h6><i class="cf-icon cf-icon-arrow-right"></i>
+            </div> 
+            <div id="plurality" class="map-divider-minor option darker">
+                <h6 class="sub-header-name">Minority Plurality</h6><i class="cf-icon cf-icon-arrow-right"></i>
+            </div> 
+            <div id="non_hisp_black_only_perc" class="map-divider-minor option darker">
+                <h6 class="sub-header-name">% Black / AA</h6><i class="cf-icon cf-icon-arrow-right"></i>
+            </div> 
+            <div id="non_hisp_asian_only_perc" class="map-divider-minor option darker">
+                <h6 class="sub-header-name">% Asian</h6><i class="cf-icon cf-icon-arrow-right"></i>
+            </div> 
+            <div id="hispanic_perc" class="map-divider-minor option darker">
+                <h6 class="sub-header-name">% Non-white Hispanic</h6><i class="cf-icon cf-icon-arrow-right"></i>
+            </div>                                     
+            <div id="non_hisp_white_only_perc" class="map-divider-minor option darker">
+                <h6 class="sub-header-name">% Non-Hispanic White</h6><i class="cf-icon cf-icon-arrow-right"></i>
+            </div>  
+            <div id="marketCriteria" class="map-divider-minor darker-still">
+                <h6 class="main-header-name" >Market Criteria</h6>
+            </div>     
+            <div id="median_family_income" class="map-divider-minor option darker">
+                <h6 class="sub-header-name">Median Family Income</h6><i class="cf-icon cf-icon-arrow-right"></i>
+            </div> 
+            <div id="owner_occupancy" class="map-divider-minor option darker">
+                <h6 class="sub-header-name">Owner Occupancy</h6><i class="cf-icon cf-icon-arrow-right"></i>
+            </div> 
+            <div id="fico_scores" class="map-divider-minor option lighter">
+                <h6 class="sub-header-name">FICO Scores</h6><i class="cf-icon cf-icon-arrow-right"></i>
+            </div>                                                        
+
+    </div><!-- /.tabpanel -->    
     {% if lender %}
         <div id="map-aside__lender-details" class="map-aside__lender-details">
             <div class="map-divider"><h6 class="tab-title">Lender Details - HMDA {{ lender.year }} </div>
