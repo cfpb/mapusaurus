@@ -5580,6 +5580,12 @@ select b {
 .map-divider h6 {
   line-height: 1.375;
 }
+.map-divider select {
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: large;
+}
 .map-divider .tab-title {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
@@ -5662,17 +5668,19 @@ select b {
   position: relative;
 }
 .map-divider-minor .sub-header-name {
-  margin-left: 30px;
+  margin-left: 25px;
   display: inline-block;
 }
 .map-divider-minor i {
   font-size: .75em;
   position: absolute;
   right: 30px;
-  top: 10px;
+  top: 12px;
 }
 .map-divider-minor h6 {
   line-height: 1.375;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 .map-divider-minor.option:hover {
   background: #e3e4e5;
@@ -5938,11 +5946,6 @@ select b {
 #key label {
   font-size: larger;
   font-weight: bold;
-}
-#key select {
-  width: 100%;
-  margin-top: 5px;
-  font-size: large;
 }
 .tooltip-li {
   margin-left: 10px;
