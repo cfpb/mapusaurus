@@ -252,6 +252,7 @@
         }
 
         return { 'type': type, 'layer': layer, 'keyPath': keyPath };
+
     }
 
     // Gets non-hash URL parameters

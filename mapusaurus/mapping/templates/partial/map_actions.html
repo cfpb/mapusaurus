@@ -4,8 +4,10 @@
             <div class="map-divider">
                 <h4 class="selector-label item-sub">Select the Geography in which you'd like to display LAR circles:</h4>
                 <select name="geoTypeQuerySelector" id="geoTypeQuerySelector" class="selector">
-                <h4>Select the Geography in which you'd like to display LAR circles:</h4>
-                <select name="geoTypeQuerySelector" id="geoTypeQuerySelector">
+                    <option value="selected">Show LAR for Selected MSA</option>
+                    <option value="all_msa">Show LAR for All MSAs on Map</option>
+                    <option value="all">Show all LAR on Map</option>
+                </select>
                 <h4 class="selector-label item-sub">Select the LAR Actions you would like to display:</h4>
                 <select id="action-taken-selector" class="selector">
                     <option value="all-apps-5" selected data-scale="{{ scaled_median_loans }}">All applications</option>
