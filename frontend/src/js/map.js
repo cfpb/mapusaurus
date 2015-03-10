@@ -239,15 +239,18 @@ if (!window.console) console = {log: function() {}};
                 } else if (intersect.length === 0){
                     console.log('No call required - MSAs are the same');
                 }
+                buildKeyCircles();
             });
         } else {
             initCalls(geoQueryType);
             oldEndAction = 'all_msa';
+            buildKeyCircles();
         }
     };
     moveEndAction.all = function(){
         initCalls(geoQueryType);
         oldEndAction = 'all';
+        buildKeyCircles();
     };
 
     function initCalls(geoQueryType){
