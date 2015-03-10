@@ -17,9 +17,20 @@
     <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
 {% endblock %}
 
-
 {% block body%}
 {% include "basestyle/common/predecisional_banner.html" %}
+
+{% block sidebar_content %}
+
+    <div class="map_aside__tabpanels tabpanels hidden">
+
+        {% include 'partial/map_lender_info.html'%}
+
+        {% include 'partial/map_actions.html'%}
+
+    </div>
+
+{% endblock %}
 
 <div id="main-container" style="padding:15px;">
     <header id="header" class="header" role="banner">
@@ -134,11 +145,11 @@
         // Initialize all of our layers
         var layers = {
             MBBase: L.mapbox.tileLayer('cfpb.k55b27gd'),
-            Base: L.mapbox.tileLayer('cfpb.k93n4cdg'),
+            Base: L.mapbox.tileLayer('cfpb.a760eab8'),
             Water: L.mapbox.tileLayer('cfpb.FL_WATER_all_US'),
-            Boundaries: L.mapbox.tileLayer('cfpb.FL_BORDERS_all_US'),
+            Boundaries: L.mapbox.tileLayer('cfpb.4da32f68'),
             CountyLabels: L.mapbox.tileLayer('cfpb.FL_COUNTY_labels'),
-            MSALabels: L.mapbox.tileLayer('cfpb.FL_MSA_labels'),
+            MSALabels: L.mapbox.tileLayer('cfpb.5de9fd0f'),
             PctMinority: L.mapbox.tileLayer('cfpb.FL_TRACT_per-min_US'),
             PctHispanic: L.mapbox.tileLayer('cfpb.FL_TRACT_per-hsp_US'),
             PctBlack: L.mapbox.tileLayer('cfpb.FL_TRACT_per-blk_US'),
