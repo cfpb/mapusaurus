@@ -35,16 +35,16 @@ if (!window.console) console = {log: function() {}};
         } else {
             assignCat('sequential3');
             layerUpdate( cat );
-            $( catId ).addClass('active');
+            $( catId ).addClass('active-layer');
         }
         
         var categoryOptions = $('.map-divider-minor.option');
         
         categoryOptions.on('click', function(e){
-            categoryOptions.removeClass('active');
+            categoryOptions.removeClass('active-layer');
             var selectedOption = $(this);
             assignCat( selectedOption.attr('id') );
-            selectedOption.addClass('active');
+            selectedOption.addClass('active-layer');
             layerUpdate( cat );
         });
 
