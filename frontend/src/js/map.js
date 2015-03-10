@@ -224,10 +224,12 @@ if (!window.console) console = {log: function() {}};
     moveEndAction.selected = function(){
         if( oldEndAction === 'selected'){
             console.log("No action required for 'selected' status. Nothing happens.");
+            buildKeyCircles();
         } else { 
             initCalls(geoQueryType);
             oldEndAction = 'selected';   
-        }        
+            buildKeyCircles();
+        }
     };
     moveEndAction.all_msa = function(){
         var oldMsaArray = msaArray.slice(0);
