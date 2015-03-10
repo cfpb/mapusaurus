@@ -5685,10 +5685,10 @@ select b {
 .map-divider-minor.option:hover {
   background: #e3e4e5;
 }
-.map-divider-minor.option.active {
+.map-divider-minor.option.active-layer {
   background: #dbedd4;
 }
-.map-divider-minor.option.active:hover {
+.map-divider-minor.option.active-layer:hover {
   background: #addc91;
 }
 .header-group {
