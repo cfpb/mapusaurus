@@ -5580,6 +5580,12 @@ select b {
 .map-divider h6 {
   line-height: 1.375;
 }
+.map-divider select {
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: large;
+}
 .map-divider .tab-title {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
@@ -5654,6 +5660,37 @@ select b {
 .lt-ie9 .map-divider .inst-id {
   font-weight: normal !important;
 }
+.map-divider-minor {
+  border-bottom: 1px solid #babbbd;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  position: relative;
+}
+.map-divider-minor .sub-header-name {
+  margin-left: 25px;
+  display: inline-block;
+}
+.map-divider-minor i {
+  font-size: .75em;
+  position: absolute;
+  right: 30px;
+  top: 12px;
+}
+.map-divider-minor h6 {
+  line-height: 1.375;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.map-divider-minor.option:hover {
+  background: #e3e4e5;
+}
+.map-divider-minor.option.active {
+  background: #dbedd4;
+}
+.map-divider-minor.option.active:hover {
+  background: #addc91;
+}
 .header-group {
   padding-bottom: 10px;
 }
@@ -5662,6 +5699,9 @@ select b {
 }
 .darker {
   background-color: #f1f2f2;
+}
+.darker-still {
+  background-color: #e3e4e5;
 }
 .green-highlight {
   background-color: #dbedd4;
@@ -5906,11 +5946,6 @@ select b {
 #key label {
   font-size: larger;
   font-weight: bold;
-}
-#key select {
-  width: 100%;
-  margin-top: 5px;
-  font-size: large;
 }
 .tooltip-li {
   margin-left: 10px;

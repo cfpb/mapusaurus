@@ -1,7 +1,7 @@
     /*
         ---- ASYNC HELPERS / DRAWERS ----
     */
-    
+
     function drawBranches(){
         $.when( getBranchesInBounds( getBoundParams() ) ).then( function(branches){
             $.each( branches.features, function( i, val){
@@ -256,7 +256,7 @@
             layers.CountyLabels.bringToFront();
         }
         
-        addParam( 'category', $('#category-selector option:selected').val() );
+        addParam( 'category', layer );
         updateCircles( layerType );
     }
 
@@ -321,6 +321,11 @@
         return _.uniq( arr );
     }
 
+    // Write the new value of the active layer category and DOM selector ID
+    function assignCat( catVal ){
+        cat = catVal.toString();
+        catId = '#' + cat;
+    }
     /* 
         END UTILITY FUNCTIONS
     */

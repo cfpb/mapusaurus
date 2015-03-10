@@ -178,7 +178,7 @@
 
     //  Using the selector, determine which statistic to display.
     function minorityPercent(tractData) {
-        var fieldName = $('#category-selector option:selected').val();
+        var fieldName = cat;
         if (fieldName.substring(0, 4) === 'inv_') {
             return 1 - tractData[fieldName.substr(4)];
         } else {

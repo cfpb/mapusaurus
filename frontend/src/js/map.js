@@ -2,7 +2,8 @@
 
 if (!window.console) console = {log: function() {}};
 
-    var geoQueryType = 'selected';
+    var cat, catId,
+        geoQueryType = 'selected';
 
     // When the DOM is loaded, check for hash params and add event listeners
     $(document).ready(function(){
@@ -16,20 +17,25 @@ if (!window.console) console = {log: function() {}};
             setMapHeight();
         });
 
-        // When minority changes, redraw the circles with appropriate styles
-        $('#category-selector').on('change', function(e) {
-            var val = $('#category-selector').val();
-            layerUpdate(val);  
-        });
-
-        // Check to see if we have any parameters for category-selector
         if( typeof loadParams.category !== 'undefined'){
-            $('#category-selector').val( loadParams.category.values );
-            layerUpdate( loadParams.category.values );
+            assignCat(loadParams.category.values);
+            layerUpdate( cat );
+            $( catId ).addClass('active');
         } else {
-            addParam( 'category', 'inv_non_hisp_white_only_perc' );
-            layerUpdate( 'inv_non_hisp_white_only_perc' );
+            assignCat('sequential3');
+            layerUpdate( cat );
+            $( catId ).addClass('active');
         }
+        
+        var categoryOptions = $('.map-divider-minor.option');
+        
+        categoryOptions.on('click', function(e){
+            categoryOptions.removeClass('active');
+            var selectedOption = $(this);
+            assignCat( selectedOption.attr('id') );
+            selectedOption.addClass('active');
+            layerUpdate( cat );
+        });
 
         // Check to see if we have any parameters for action-taken
         if( typeof loadParams.action !== 'undefined'){
@@ -153,7 +159,7 @@ if (!window.console) console = {log: function() {}};
         updatePrintLink();
         updateCensusLink();
 
-        layerUpdate( $('#category-selector').val() );
+        layerUpdate( $(catId).val() );
 
         $( window ).on('hashchange', function(){
             updatePrintLink();
@@ -175,9 +181,11 @@ if (!window.console) console = {log: function() {}};
     moveEndAction.selected = function(){
         if( oldEndAction === 'selected'){
             console.log("No action required for 'selected' status. Nothing happens.");
+            buildKeyCircles();
         } else { 
             initCalls(geoQueryType);
             oldEndAction = 'selected';   
+            buildKeyCircles();
         }
         
     };
@@ -191,15 +199,18 @@ if (!window.console) console = {log: function() {}};
                 } else if (intersect.length === 0){
                     console.log('No call required - MSAs are the same');
                 }
+                buildKeyCircles();
             });
         } else {
             initCalls(geoQueryType);
             oldEndAction = 'all_msa';
+            buildKeyCircles();
         }
     };
     moveEndAction.all = function(){
         initCalls(geoQueryType);
         oldEndAction = 'all';
+        buildKeyCircles();
     };
 
     function initCalls(geoQueryType){
