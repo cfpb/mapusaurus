@@ -47,6 +47,9 @@
             success: console.log('tract Get successful')
         }).fail( function( status ){
             console.log( 'no data was available at' + endpoint + '. status: ' + status );
+            // Unblock the user interface (remove gradient)
+            $.unblockUI();
+            isUIBlocked = false;
         });
 
     }    
@@ -116,34 +119,11 @@
             success: console.log('get API All Data request successful')
         }).fail( function( status ){
             console.log( 'no data was available at' + endpoint + '. status: ' + status );
+            // Unblock the user interface (remove gradient)
+            $.unblockUI();
+            isUIBlocked = false;
         });
 
-    }
-
-    // Creates the dataStore.tracts object global for use by application (depends upon rawGeo / rawData)
-    function createTractDataObj( callback ){
-        var count = 0;
-        dataStore.tracts = {};
-
-        // For each top-level data element returned (minority, loanVolume)
-        _.each( rawGeo.features, function(feature, key){
-            // Loop through each tract and merge the dataset (this could be done server side as well if faster)
-            // Make sure the tracts object exists before writing to it.
-            var geoid = feature.properties.geoid;
-            dataStore.tracts[geoid] = feature.properties;
-            _.extend( dataStore.tracts[geoid], rawData.minority[geoid] );
-
-            if( typeof rawData.loanVolume[geoid] !== 'undefined'){
-                _.extend( dataStore.tracts[geoid], rawData.loanVolume[geoid] );
-            } else {
-                dataStore.tracts[geoid].volume = 0;
-            }
-            count++;
-        });
-
-        if( typeof callback === 'function' && callback() ){
-            callback();
-        }
     }
 
     // Get the Metro Areas currently shown on the map (used to check if we need to load new data on move)
@@ -164,6 +144,9 @@
             }
         }).fail( function( status ){
             console.log( 'no MSA data was available at' + endpoint + '. status: ' + status );
+            // Unblock the user interface (remove gradient)
+            $.unblockUI();
+            isUIBlocked = false;
         });
     }
 
@@ -196,13 +179,6 @@
 
     } 
 
-    function drawBranches(){
-        $.when( getBranchesInBounds( getBoundParams() ) ).then( function(branches){
-            $.each( branches.features, function( i, val){
-                drawMarker(val.properties);
-            });
-        });
-    }
 
     /*
         END GET DATA SECTION
