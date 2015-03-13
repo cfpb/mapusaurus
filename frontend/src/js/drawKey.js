@@ -16,6 +16,11 @@ function buildKeyCircles(){
         return false;
     }
 
+    // Get max, middle, min
+    // Draw new circles for each in Leaflet with index IDs
+    // Put those index IDs into an array
+    // Copy those SVG elements using jQuery to the Key
+
     // Get the current scaling value from the drop-down menu.
     var $scale = $('#action-taken-selector option:selected');
     var scaleMultiplier = $scale.data('scale');

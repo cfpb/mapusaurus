@@ -8,7 +8,7 @@
     var noStyle = {stroke: false, weight: 0, fill: false};
 
     function redrawCircles( geoData ){
-
+        // Show data load icon
         $('#bubbles_loading').show();     
         layers.Centroids.clearLayers();
         _.each(geoData, function(geo) {

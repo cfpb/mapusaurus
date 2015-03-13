@@ -158,6 +158,7 @@
         //  calculation: a = pi*r*r   or r = sqrt(a/pi)
             return Math.sqrt(area);
 
+
     }
 
     // Helper that ensures when a new layer is selected, all others are hidden and primaries stay up front
@@ -252,6 +253,7 @@
         }
 
         return { 'type': type, 'layer': layer, 'keyPath': keyPath };
+
 
     }
 
