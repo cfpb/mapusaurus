@@ -250,10 +250,10 @@
         mbLayer.bringToFront();
         layers.Water.bringToFront();
         layers.Boundaries.bringToFront();
-        layers.MSALabels.bringToFront();
+        layers.CountyLabels.bringToFront();
 
-        if( map.hasLayer(layers.CountyLabels) ){
-            layers.CountyLabels.bringToFront();
+        if( map.hasLayer(layers.MSALabels) ){
+            layers.MSALabels.bringToFront();
         }
         
         addParam( 'category', layer );

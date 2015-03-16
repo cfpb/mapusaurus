@@ -189,8 +189,8 @@
         layers.Base.addTo(map);
         layers.Water.addTo(map);
         layers.Boundaries.addTo(map);
-        layers.MSALabels.addTo(map);
-        layers.PctMinority.addTo(map);
+        layers.CountyLabels.addTo(map);
+        layers.Sequential3.addTo(map);
 
         // Create a layer for our circles
         layers.Centroids.addTo(map);
@@ -204,14 +204,14 @@
         
         // Make sure water and boundaries are above everything else
         layers.Water.bringToFront();
-        layers.PctMinority.bringToFront();
+        layers.Sequential3.bringToFront();
         layers.Boundaries.bringToFront();
-        layers.MSALabels.bringToFront();
+        layers.CountyLabels.bringToFront();
 
-        if( map.hasLayer(layers.CountyLabels) ){
-            layers.CountyLabels.bringToFront();
+        if( map.hasLayer(layers.MSALabels) ){
+            layers.MSALabels.bringToFront();
         }
-
+        
         // Add the HTML Template key as a key in the top right
         var key = L.control();
         key.onAdd = function() {
