@@ -17,26 +17,6 @@ if (!window.console) console = {log: function() {}};
             setMapHeight();
         });
 
-        if( typeof loadParams.category !== 'undefined'){
-            assignCat(loadParams.category.values);
-            layerUpdate( cat );
-            $( catId ).addClass('active');
-        } else {
-            assignCat('sequential3');
-            layerUpdate( cat );
-            $( catId ).addClass('active-layer');
-        }
-        
-        var categoryOptions = $('.map-divider-minor.option');
-        
-        categoryOptions.on('click', function(e){
-            categoryOptions.removeClass('active-layer');
-            var selectedOption = $(this);
-            assignCat( selectedOption.attr('id') );
-            selectedOption.addClass('active-layer');
-            layerUpdate( cat );
-        });
-
         // Check to see if we have any parameters for action-taken
         if( typeof loadParams.action !== 'undefined'){
             $('#action-taken-selector').val( loadParams.action.values );
@@ -142,6 +122,26 @@ if (!window.console) console = {log: function() {}};
             }
         });
 
+        if( typeof loadParams.category !== 'undefined'){
+            assignCat(loadParams.category.values);
+            layerUpdate( cat );
+            $( catId ).addClass('active-layer');
+        } else {
+            assignCat('sequential3');
+            layerUpdate( cat );
+            $( catId ).addClass('active-layer');
+        }
+        
+        var categoryOptions = $('.map-divider-minor.option');
+        
+        categoryOptions.on('click', function(e){
+            categoryOptions.removeClass('active-layer');
+            var selectedOption = $(this);
+            assignCat( selectedOption.attr('id') );
+            selectedOption.addClass('active-layer');
+            layerUpdate( cat );
+        });
+
         // When the user has stopped moving the map, check for new branches,
         // and run init(), with a slight delay to ensure many moves in a row do not crowd the queue
         map.on('moveend', function(e){
@@ -151,15 +151,17 @@ if (!window.console) console = {log: function() {}};
         });
 
         map.on('moveend', function(){
-            console.log("gqt in moveend: ", geoQueryType);
             moveEndAction[geoQueryType]();
         });
+        map.on('zoomend', function(){
+            buildKeyCircles();
+        })
 
         // When the page loads, update the print link, and update it whenever the hash changes
         updatePrintLink();
         updateCensusLink();
 
-        layerUpdate( $(catId).val() );
+        layerUpdate( cat );
 
         $( window ).on('hashchange', function(){
             updatePrintLink();
@@ -181,11 +183,9 @@ if (!window.console) console = {log: function() {}};
     moveEndAction.selected = function(){
         if( oldEndAction === 'selected'){
             console.log("No action required for 'selected' status. Nothing happens.");
-            buildKeyCircles();
         } else { 
             initCalls(geoQueryType);
             oldEndAction = 'selected';   
-            buildKeyCircles();
         }
         
     };
@@ -199,18 +199,15 @@ if (!window.console) console = {log: function() {}};
                 } else if (intersect.length === 0){
                     console.log('No call required - MSAs are the same');
                 }
-                buildKeyCircles();
             });
         } else {
             initCalls(geoQueryType);
             oldEndAction = 'all_msa';
-            buildKeyCircles();
         }
     };
     moveEndAction.all = function(){
         initCalls(geoQueryType);
         oldEndAction = 'all';
-        buildKeyCircles();
     };
 
     function initCalls(geoQueryType){

@@ -16,6 +16,11 @@ function buildKeyCircles(){
         return false;
     }
 
+    // Get max, middle, min
+    // Draw new circles for each in Leaflet with index IDs
+    // Put those index IDs into an array
+    // Copy those SVG elements using jQuery to the Key
+
     // Get the current scaling value from the drop-down menu.
     var $scale = $('#action-taken-selector option:selected');
     var scaleMultiplier = $scale.data('scale');
@@ -32,7 +37,7 @@ function buildKeyCircles(){
         var circle = circles[i];
         rad = circle._radius;
         posx = posx + 45; // Move the circles horizontally, y values stay constant    
-        svgStr += '<circle cx="' + posx + '" cy="' + (posy-rad) + '" r="' + rad + '" fillColor="#111111" fill-opacity=".7" stroke=true color="#333", opacity=1/>';        
+        svgStr += '<circle cx="' + posx + '" cy="' + (posy-rad) + '" r="' + rad + '" fillColor="#111111" fill-opacity=".7" stroke=false color="#333"/>';        
         svgStr += '<text x="' + (posx) + '" y="' + textPosy + '" font-size="1em" text-anchor="middle">'+ circle.volume + '</text>';
     }
 
@@ -79,8 +84,8 @@ function getRange(data){
         drawNewArray = [min.volume, (min.volume + multiple), max.volume];
 
         // Draw a fresh circle with _mRadius properties for two middle points
-        _.each(drawNewArray, function(val){
-            addKeyLayerCircle(val);
+        _.each(drawNewArray, function(val, i){
+            addKeyLayerCircle(val,i);
         });
         
         // Retrieve the layer info for these midpoint circles
@@ -91,8 +96,8 @@ function getRange(data){
         valArray = [ keyCirclesFilter[0], keyCirclesFilter[1], max ];
     } else {
         // Draw a fresh circle with _mRadius properties for two middle points
-        _.each(drawNewArray, function(val){
-            addKeyLayerCircle(val);
+        _.each(drawNewArray, function(val, i){
+            addKeyLayerCircle(val, i);
         });
 
         // Retrieve the layer info for these midpoint circles
@@ -111,16 +116,17 @@ function getRange(data){
     return valArray;
 }
 
-function addKeyLayerCircle(volume){
+function addKeyLayerCircle(volume, index){
     var geo = {
         volume: Math.round(volume),
         centlat: map.getCenter().lat, // Center lat required as Meters per pixel varies at different latitudes
-        centlon: 1
+        centlon: 1,
+        geoid: index
     };
     var options = {
         keyCircle: 1 // Designate this as a "key Circle" so our filter applies in getRange
-    }
+    };
 
     // Use the existing circle draw
-    drawCircle(geo, 'seq', options);
+    drawCircle(geo, options);
 }

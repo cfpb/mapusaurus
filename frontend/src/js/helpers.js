@@ -153,7 +153,7 @@
             area = scale * tractData['volume'];
         //  As Pi is just a constant scalar, we can ignore it in this
         //  calculation: a = pi*r*r   or r = sqrt(a/pi)
-            return Math.round(Math.sqrt(area));
+            return Math.sqrt(area);
     }
 
     function getLayerType( layer ){
@@ -206,7 +206,7 @@
         // Type determines which style scale is used to fill circles
 
         if ( !layer ){
-            console.log('The layer you\'ve requested does not exist.');
+            console.log('The layer you\'ve requested does not exist: ', layer);
             return false;
         }
 
@@ -257,7 +257,6 @@
         }
         
         addParam( 'category', layer );
-        updateCircles( layerType );
     }
 
     // Gets non-hash URL parameters
