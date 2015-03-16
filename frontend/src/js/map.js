@@ -155,7 +155,12 @@ if (!window.console) console = {log: function() {}};
         });
         map.on('zoomend', function(){
             buildKeyCircles();
-        })
+        });
+        map.on('overlayadd', function(){
+            if( map.hasLayer(layers.MSALabels) ){
+                layers.MSALabels.bringToFront();
+            }
+        });
 
         // When the page loads, update the print link, and update it whenever the hash changes
         updatePrintLink();
