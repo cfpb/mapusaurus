@@ -12,7 +12,8 @@
 {% endblock %}
 
 {% block head_scripts %}
-    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
+    <script src='https://s3.amazonaws.com/sc-proj-dash/leaflet-master/leaflet.js'></script>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.standalone.js'></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-vendor.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
@@ -56,14 +57,14 @@
         L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
         
         // Initialize the map
-        var map = L.mapbox.map('map', null, { attributionControl: false })
+        var map = L.map('map');
         
         // If we have a metro parameter, center the map on this lat / lon
         {% if metro %}
-            map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 11);
+            map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 10);
         {% else %}
             // Otherwise, somewhere near Chicago for grins
-            map.setView([40, -74.50], 11);
+            map.setView([40, -74.50], 10);
         {% endif %}
         
         // Using our modified Leaflet-Hash plugin, check to see if we need to move the map somewhere else.
@@ -83,20 +84,20 @@
 
         // Initialize all of our layers
         var layers = {
-            MBBase: L.mapbox.tileLayer('cfpb.k55b27gd'),
-            Base: L.mapbox.tileLayer('cfpb.a760eab8'),
-            Water: L.mapbox.tileLayer('cfpb.FL_WATER_all_US'),
-            Boundaries: L.mapbox.tileLayer('cfpb.4da32f68'),
-            CountyLabels: L.mapbox.tileLayer('cfpb.FL_COUNTY_labels'),
-            MSALabels: L.mapbox.tileLayer('cfpb.5de9fd0f'),
-            PctMinority: L.mapbox.tileLayer('cfpb.FL_TRACT_per-min_US'),
-            PctHispanic: L.mapbox.tileLayer('cfpb.FL_TRACT_per-hsp_US'),
-            PctBlack: L.mapbox.tileLayer('cfpb.FL_TRACT_per-blk_US'),
-            PctAsian: L.mapbox.tileLayer('cfpb.FL_TRACT_per-asn_US'),
-            PctNonWhite: L.mapbox.tileLayer('cfpb.FL_TRACT_pct_nhwht_US'),
-            Sequential3: L.mapbox.tileLayer('cfpb.FL_TRACT_seq_pct_minorv1_US'),
-            Sequential10: L.mapbox.tileLayer('cfpb.FL_TRACT_seq-10_minorv1_US'),
-            Plurality: L.mapbox.tileLayer('cfpb.FL_TRACT_minor_plurality_US'),
+            MBBase: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.k55b27gd/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            Base: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.a760eab8/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            Water: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_WATER_all_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Boundaries: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.4da32f68/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            CountyLabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_COUNTY_labels/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MSALabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.5de9fd0f/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctMinority: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-min_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            PctHispanic: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-hsp_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            PctBlack: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-blk_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            PctAsian: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-asn_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            PctNonWhite: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_pct_nhwht_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            Sequential3: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_seq_pct_minorv1_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            Sequential10: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_seq-10_minorv1_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            Plurality: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_minor_plurality_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
             Centroids: L.layerGroup([]),
             Branches: L.layerGroup([])
         };
