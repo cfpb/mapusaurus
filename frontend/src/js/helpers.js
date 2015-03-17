@@ -157,8 +157,6 @@
         //  As Pi is just a constant scalar, we can ignore it in this
         //  calculation: a = pi*r*r   or r = sqrt(a/pi)
             return Math.sqrt(area);
-
-
     }
 
     // Helper that ensures when a new layer is selected, all others are hidden and primaries stay up front
@@ -191,7 +189,6 @@
             $('#altScale').addClass('hidden');
             $('#scale').removeClass('hidden');
         }
-
 
         map.addLayer( mbLayer );
         mbLayer.bringToFront();
@@ -253,7 +250,6 @@
         }
 
         return { 'type': type, 'layer': layer, 'keyPath': keyPath };
-
 
     }
 
