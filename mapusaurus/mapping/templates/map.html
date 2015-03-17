@@ -94,8 +94,6 @@
             PctBlack: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-blk_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
             PctAsian: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-asn_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
             PctNonWhite: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_pct_nhwht_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-            Sequential3: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_seq_pct_minorv1_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-            Sequential10: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_seq-10_minorv1_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
             Plurality: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_minor_plurality_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
             Centroids: L.layerGroup([]),
             Branches: L.layerGroup([])
@@ -121,15 +119,14 @@
         var miniMap = new L.Control.MiniMap(miniLayer).addTo(map);
 
         // This array allows us to remove them from the map when a new one is selected (later)
-        var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctNonWhite,
-                                layers.Sequential3, layers.Sequential10, layers.Plurality];
+        var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctNonWhite, layers.Plurality];
 
         // Add all our primary default layers to the map up front
         layers.Base.addTo(map);
         layers.Water.addTo(map);
         layers.Boundaries.addTo(map);
         layers.CountyLabels.addTo(map);
-        layers.Sequential3.addTo(map);
+        layers.PctMinority.addTo(map);
 
         // Create a layer for our circles
         layers.Centroids.addTo(map);
@@ -143,7 +140,7 @@
         
         // Make sure water and boundaries are above everything else
         layers.Water.bringToFront();
-        layers.Sequential3.bringToFront();
+        layers.PctMinority.bringToFront();
         layers.Boundaries.bringToFront();
         layers.CountyLabels.bringToFront();
 
