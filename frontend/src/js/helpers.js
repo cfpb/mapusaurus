@@ -156,47 +156,6 @@
             return Math.sqrt(area);
     }
 
-    function getLayerType( layer ){
-        var type;
-
-        switch( layer ){
-            case 'inv_non_hisp_white_only_perc':
-                layer = layers.PctMinority;
-                type = 'minority';
-                break;
-            case 'hispanic_perc':
-                layer = layers.PctHispanic;
-                type = 'minority';
-                break;
-            case 'non_hisp_black_only_perc':
-                layer = layers.PctBlack;
-                type = 'minority';
-                break;
-            case 'non_hisp_asian_only_perc':
-                layer = layers.PctAsian;
-                type = 'minority';
-                break;
-            case 'non_hisp_white_only_perc':
-                layer = layers.PctNonWhite;
-                type = 'minority';
-                break;
-            case 'sequential3':
-                layer = layers.Sequential3;
-                type = 'seq';
-                break;
-            case 'sequential10':
-                layer = layers.Sequential10;
-                type = 'seq';
-                break;
-            case 'plurality':
-                layer = layers.Plurality;
-                type = 'seq';
-                break;
-        }
-
-        return { 'type': type, 'layer': layer };
-    }
-
     // Helper that ensures when a new layer is selected, all others are hidden and primaries stay up front
     function layerUpdate( layer ){
 
@@ -214,24 +173,10 @@
             map.removeLayer(minorityLayers[i]);
         }
 
-        //Custom Key / replacement handling because of the different scales.
-        // Check which layer is being presented and replace the key appropriately
-        // Then hide the minority scale if required. If we agree on these scales
-        // Then we should code this as HTML like the existing key because
-        // This is relatively hacky, and hard-codes the static files directory
-        switch( layer ){
-            case 'sequential3':
-                keyPath = '/static/basestyle/img/fl_color-ramp_seq-03.png';
-                break;
-            case 'sequential10':
-                keyPath = '/static/basestyle/img/fl_color-ramp_seq-10.png';
-                break;
-            case 'plurality':
-                keyPath = '/static/basestyle/img/fl_color-ramp_plurality.png';                
-                break;
-            case 'default':
-                keyPath = false;
-        }
+        layerEval = getLayerType( layer );
+        mbLayer = layerEval.layer;
+        layerType = layerEval.type;
+        keyPath = layerEval.keyPath;
 
         if( keyPath ){
             $('#altScaleImg').attr('src', keyPath);
@@ -241,10 +186,6 @@
             $('#altScale').addClass('hidden');
             $('#scale').removeClass('hidden');
         }
-
-        layerEval = getLayerType( layer );
-        mbLayer = layerEval.layer;
-        layerType = layerEval.type;
 
         map.addLayer( mbLayer );
         mbLayer.bringToFront();
@@ -257,6 +198,55 @@
         }
         
         addParam( 'category', layer );
+
+        // NOTE: layerType is an artifact from when we used multiple keys for a single
+        // layer type called "Minority" that used a scaled circle draw. I've kept the function
+        // in the code in case we want to assign keys or other attributes based on a layer group
+        // or layer type.
+    }
+
+    function getLayerType( layer ){
+        var type, keyPath;
+
+        switch( layer ){
+            case 'inv_non_hisp_white_only_perc':
+                layer = layers.PctMinority;
+                type = 'seq';
+                keyPath = '/static/basestyle/img/key_pct-minority.png';
+                break;
+            case 'hispanic_perc':
+                layer = layers.PctHispanic;
+                type = 'seq';
+                keyPath = '/static/basestyle/img/key_pct-hisp.png';
+                break;
+            case 'non_hisp_black_only_perc':
+                layer = layers.PctBlack;
+                type = 'seq';
+                keyPath = '/static/basestyle/img/key_pct-black.png';
+                break;
+            case 'non_hisp_asian_only_perc':
+                layer = layers.PctAsian;
+                type = 'seq';
+                keyPath = '/static/basestyle/img/key_pct-asian.png';
+                break;
+            case 'non_hisp_white_only_perc':
+                layer = layers.PctNonWhite;
+                type = 'seq';
+                keyPath = '/static/basestyle/img/key_pct-white.png';
+                break;              
+            case 'plurality':
+                layer = layers.Plurality;
+                type = 'seq';
+                keyPath = '/static/basestyle/img/key_min-plurality.png';
+                break;
+            default:
+                layer = layers.PctMinority;
+                type = 'seq';
+                keyPath = false;
+                break;
+        }
+
+        return { 'type': type, 'layer': layer, 'keyPath': keyPath };
     }
 
     // Gets non-hash URL parameters
