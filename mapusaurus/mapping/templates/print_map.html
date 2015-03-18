@@ -150,12 +150,12 @@
             Boundaries: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.4da32f68/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             CountyLabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_COUNTY_labels/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             MSALabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.5de9fd0f/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctMinority: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-min_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-            PctHispanic: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-hsp_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-            PctBlack: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-blk_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-            PctAsian: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-asn_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-            PctNonWhite: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_pct_nhwht_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-            Plurality: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_minor_plurality_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            PctMinority: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-min_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctHispanic: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-hsp_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctBlack: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-blk_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctAsian: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-asn_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctNonWhite: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_pct_nhwht_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Plurality: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_minor_plurality_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             Centroids: L.layerGroup([]),
             Branches: L.layerGroup([])
         };
