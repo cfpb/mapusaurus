@@ -113,6 +113,37 @@ class ViewsTest(TestCase):
         self.assertEqual(len(peer_list_exclude), 2) 
 
     def test_loan_orginations_http(self):
+        #invalid institution_id
+        resp = self.client.get(reverse('hmda:volume'), {'neLat':'2',
+                                    'neLon':'2',
+                                    'swLat':'0',
+                                    'swLon':'0',
+                                    'action_taken':'1,2,3,4,5',
+                                    'lender':'91000000011'})
+        self.assertEqual(resp.status_code, 400)
+
+        #invalid metro
+        resp = self.client.get(reverse('hmda:volume'), {'metro':'10011',
+                                    'action_taken':'1,2,3,4,5',
+                                    'lender':'91000000011'})
+        self.assertEqual(resp.status_code, 400)
+
+        #valid metro and institution_id
+        resp = self.client.get(reverse('hmda:volume'), {'metro':'10000',
+                                    'action_taken':'1,2,3,4,5',
+                                    'lender':'91000000001'})
+        self.assertEqual(resp.status_code, 200)
+
+        #no institution_id
+        resp = self.client.get(reverse('hmda:volume'), {'metro':'10000',
+                                    'action_taken':'1,2,3,4,5'})
+        self.assertEqual(resp.status_code, 200)
+
+        #no metro
+        resp = self.client.get(reverse('hmda:volume'), {'action_taken':'1,2,3,4,5',
+                                    'lender':'91000000001'})
+        self.assertEqual(resp.status_code, 200)
+
         resp = self.client.get(reverse('hmda:volume'), {'neLat':'2',
                                     'neLon':'2',
                                     'swLat':'0',
@@ -120,6 +151,7 @@ class ViewsTest(TestCase):
                                     'year':'2013',
                                     'action_taken':'1,2,3,4,5',
                                     'lender':'91000000001'})
+        self.assertEqual(resp.status_code, 200)
         resp = json.loads(resp.content)
         self.assertTrue('1122233300' in resp)
         self.assertEqual(resp['1122233300']['volume'], 4)

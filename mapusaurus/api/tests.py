@@ -32,7 +32,7 @@ class ViewsTests(TestCase):
 
     def test_api_all_user_errors(self):
         resp = self.client.get(reverse('all'))
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 200)
 
         resp = self.client.get(reverse('all'), {'neLat':'42.048794',
                                     'neLon':'-87.430698',
@@ -55,7 +55,8 @@ class ViewsTests(TestCase):
 
     def test_api_msas_user_errors(self):
         resp = self.client.get(reverse('msas'))
-        self.assertEqual(resp.status_code, 400)
+        import pdb; pdb.set_trace()
+        self.assertEqual(resp.status_code, 200)
 
         resp = self.client.get(reverse('msas'), {'neLat':'42.048794',
                                     'neLon':'-87.430698',

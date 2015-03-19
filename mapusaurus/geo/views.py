@@ -38,10 +38,11 @@ def get_censustract_geos(request):
         else:
             geos = get_geos_by_bounds_and_type(*bounds)
     elif metro:
-        msa = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=metro)
-        geos = msa.get_censustract_geos_by_msa()
-    else:
-        return None
+        msa = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
+        if msa:
+            geos = msa.get_censustract_geos_by_msa()
+        else:
+            return None
     return geos
 
 def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):

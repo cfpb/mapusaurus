@@ -189,9 +189,11 @@ def race_summary(request):
     geos = get_censustract_geos(request)
     if geos is None:
         return HttpResponseBadRequest("Missing lat/lon or metro")
-    query = Census2010RaceStats.objects.filter(geoid__in=geos)
+    elif len(geos) > 0:
+        query = Census2010RaceStats.objects.filter(geoid__in=geos)
+    else:
+        query = Census2010RaceStats.objects.all()
     return query
-
 
 def race_summary_as_json(request_dict):
     records = race_summary(request_dict)
