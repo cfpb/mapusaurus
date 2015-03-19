@@ -44,7 +44,7 @@ class ViewTest(TestCase):
         resp = self.client.get(reverse('map'), {'metro': '12121'})
         self.assertTrue('45.4545' in resp.content)
         self.assertTrue('67.6767' in resp.content)
-        self.assertTrue('11' in resp.content)
+        self.assertTrue('10' in resp.content)
         self.assertTrue('12' in resp.content)
         self.assertTrue('MetMetMet' in resp.content)
 

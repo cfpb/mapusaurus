@@ -127,7 +127,7 @@ if (!window.console) console = {log: function() {}};
             layerUpdate( cat );
             $( catId ).addClass('active-layer');
         } else {
-            assignCat('sequential3');
+            assignCat('inv_non_hisp_white_only_perc');
             layerUpdate( cat );
             $( catId ).addClass('active-layer');
         }
