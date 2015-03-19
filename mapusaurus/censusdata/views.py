@@ -11,42 +11,70 @@ from geo.models import Geo
 from hmda.views import loan_originations_as_json, base_hmda_query
 from respondents.models import Institution
 
-def assemble_stats(lar_data, tracts):
+def get_minority_area_stats(target_lar_data, peer_lar_data, tracts):
+    lma_sum = 0
+    mma_sum = 0
+    hma_sum = 0
+
+    peer_lma_sum = 0
+    peer_mma_sum = 0
+    peer_hma_sum = 0
+    for tract in tracts:
+        target_tract_volume = 0
+        peer_tract_volume = 0
+        racestats = tract.census2010racestats
+        if tract.geoid in target_lar_data.keys():
+            target_tract_volume = target_lar_data[tract.geoid]['volume']
+        if tract.geoid in peer_lar_data.keys():
+                peer_tract_volume = peer_lar_data[tract.geoid]['volume']
+        if racestats.non_hisp_white_only_perc:
+            minority_pct = 1 - racestats.non_hisp_white_only_perc
+            if minority_pct < .5:
+                lma_sum += target_tract_volume
+                peer_lma_sum += peer_tract_volume
+            elif minority_pct < .8:
+                mma_sum += target_tract_volume
+                peer_mma_sum += peer_tract_volume
+
+            else:
+                hma_sum += target_tract_volume
+                peer_hma_sum += peer_tract_volume
+
+    minority_area_stats = (lma_sum, mma_sum, hma_sum, peer_lma_sum, peer_mma_sum, peer_hma_sum)
+    return minority_area_stats
+
+def assemble_stats(lma_sum, mma_sum, hma_sum, peer_lma_sum, peer_mma_sum, peer_hma_sum):
     """
     assembles a lender's applications by those made
     in low, medium and high minority areas;
     we might be assembling stats for a lender or peer;
     """
-    lma_sum = 0
-    mma_sum = 0
-    hma_sum = 0
-    for tract in tracts:
-        tract_volume = 0
-        stats = tract.census2010racestats
-        if tract.geoid in lar_data.keys():
-            tract_volume = lar_data[tract.geoid]['volume']
-        if stats.non_hisp_white_only_perc:
-            minority_pct = 1 - stats.non_hisp_white_only_perc
-            if minority_pct < .5:
-                lma_sum += tract_volume
-            elif minority_pct < .8:
-                mma_sum += tract_volume
-            else:
-                hma_sum += tract_volume
-    lar_total = lma_sum + mma_sum + hma_sum
-    if lar_total:
-        lar_stats = {
+    lma_pct = 0.0
+    mma_pct = 0.0
+    hma_pct = 0.0
+
+    peer_lma_pct = 0.0
+    peer_mma_pct = 0.0
+    peer_hma_pct = 0.0
+
+    stats = {}
+
+    target_lar_total = lma_sum + mma_sum + hma_sum
+    if target_lar_total:
+        lma_pct = round(1.0 * lma_sum / target_lar_total, 3)
+        mma_pct = round(1.0 * mma_sum / target_lar_total, 3)
+        hma_pct = round(1.0 * hma_sum / target_lar_total, 3)
+        stats.update({
                 'lma': lma_sum, 
-                'lma_pct': round(1.0 * lma_sum / lar_total, 3), 
+                'lma_pct': lma_pct, 
                 'mma': mma_sum,
-                'mma_pct': round(1.0 * mma_sum / lar_total, 3),
+                'mma_pct': mma_pct,
                 'hma': hma_sum,
-                'hma_pct': round(1.0 * hma_sum / lar_total, 3),
-                'lar_total': lar_total
-                }
-        return lar_stats
+                'hma_pct': hma_pct,
+                'lar_total': target_lar_total
+        })
     else:
-        return {
+        stats.update({
             'lar_total': 0,
             'lma': 0, 
             'lma_pct': 0, 
@@ -54,7 +82,43 @@ def assemble_stats(lar_data, tracts):
             'mma_pct': 0,
             'hma': 0,
             'hma_pct': 0
-            }
+        })
+    #assemble peer data
+    peer_lar_total = peer_lma_sum + peer_mma_sum + peer_hma_sum
+    if peer_lar_total:
+        peer_lma_pct = round(1.0 * peer_lma_sum / peer_lar_total, 3)
+        peer_mma_pct = round(1.0 * peer_mma_sum / peer_lar_total, 3)
+        peer_hma_pct = round(1.0 * peer_hma_sum / peer_lar_total, 3)
+        stats.update({
+                'peer_lma': peer_lma_sum, 
+                'peer_lma_pct': peer_lma_pct, 
+                'peer_mma': peer_mma_sum,
+                'peer_mma_pct': peer_mma_pct,
+                'peer_hma': peer_hma_sum,
+                'peer_hma_pct': peer_hma_pct,
+                'peer_lar_total': peer_lar_total
+        })
+    else:
+        stats.update({
+            'peer_lma': 0,
+            'peer_lma_pct': 0, 
+            'peer_mma': 0, 
+            'peer_mma_pct': 0,
+            'peer_hma': 0,
+            'peer_hma_pct': 0,
+            'peer_lar_total': 0
+        })
+
+    odds_lma = odds_ratio(lma_pct, peer_lma_pct)
+    odds_mma = odds_ratio(mma_pct, peer_mma_pct)
+    odds_hma = odds_ratio(hma_pct, peer_hma_pct)
+    stats.update({
+        'odds_lma':odds_lma,
+        'odds_mma':odds_mma,
+        'odds_hma':odds_hma
+    })
+    return stats
+    
 
 def odds_ratio(target_pct, peer_pct):
     """
@@ -74,11 +138,24 @@ def minority_aggregation_as_json(request):
     for a lender in an MSA
     by tract, msa and county
     """
+    msa_target_stats = {}
+    msa_target_lma_sum = 0
+    msa_target_mma_sum = 0
+    msa_target_hma_sum = 0
+
+    msa_peer_stats = {}
+    msa_peer_lma_sum = 0
+    msa_peer_mma_sum = 0
+    msa_peer_hma_sum = 0
+
+    odds_lender = {}
+
+    msa_stats = {}
+
     lender = Institution.objects.get(institution_id=request.GET.get('lender'))
     metro = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
-    tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=request.GET.get('metro'))
+    tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=request.GET.get('metro')) #NOT NEEDED
     lar_data = loan_originations_as_json(request)
-    lender_stats = assemble_stats(lar_data, tracts)
 
     peer_request = HttpRequest()
     peer_request.GET['lender'] = lender.institution_id
@@ -86,62 +163,30 @@ def minority_aggregation_as_json(request):
     peer_request.GET['peers'] = 'true'
     peer_request.GET['action_taken'] = '1,2,3,4,5'
     peer_lar_data = loan_originations_as_json(peer_request)
-    odds_lender = {}
-    peer_stats = assemble_stats(peer_lar_data, tracts)
 
-    target_lma_pct = lender_stats['lma_pct']
-    peer_lma_pct = peer_stats['lma_pct']
-
-    target_mma_pct = lender_stats['mma_pct']
-    peer_mma_pct = peer_stats['mma_pct']
-
-    target_hma_pct = lender_stats['hma_pct']
-    peer_hma_pct = peer_stats['hma_pct']
-
-    odds_msa_lma = odds_ratio(target_lma_pct, peer_lma_pct)
-    odds_msa_mma = odds_ratio(target_mma_pct, peer_mma_pct)
-    odds_msa_hma = odds_ratio(target_hma_pct, peer_hma_pct)
-
-    odds_lender = {
-        'odds_msa_lma' : odds_msa_lma,
-        'odds_msa_mma' : odds_msa_mma,
-        'odds_msa_hma' : odds_msa_hma
-    }
-
-    county_ids = sorted(set([tract.geoid[:5] for tract in tracts]))
-    county_stats = {county_id: {} for county_id in county_ids}
-    county_peer_stats = {county_id: {} for county_id in county_ids}
-    county_odds = {county_id: {} for county_id in county_ids}
-    for county_id in county_ids:
+    msa_counties = Geo.objects.filter(geo_type=Geo.COUNTY_TYPE, cbsa=metro.geoid).values_list('geoid', flat=True)
+    county_stats = {county_id: {} for county_id in msa_counties}
+    for county_id in msa_counties:
         county_tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, state=county_id[:2], county=county_id[2:])
-        county_stats[county_id] = assemble_stats(lar_data, county_tracts)
-        county_peer_stats[county_id] = assemble_stats(peer_lar_data, county_tracts)
-        
-        target_lma_pct = county_stats[county_id]['lma_pct']
-        peer_lma_pct = county_peer_stats[county_id]['lma_pct']
+        minority_area_stats = get_minority_area_stats(lar_data, peer_lar_data, county_tracts)
+        county_stats[county_id] = assemble_stats(*minority_area_stats)
 
-        target_mma_pct = county_stats[county_id]['mma_pct']
-        peer_mma_pct = county_peer_stats[county_id]['mma_pct']
-
-        target_hma_pct = county_stats[county_id]['hma_pct']
-        peer_hma_pct = county_peer_stats[county_id]['hma_pct']
-
-        odds_county_lma = odds_ratio(target_lma_pct, peer_lma_pct)
-        odds_county_mma = odds_ratio(target_mma_pct, peer_mma_pct)
-        odds_county_hma = odds_ratio(target_hma_pct, peer_hma_pct)
-
-        county_odds[county_id]['lma_odds'] = odds_county_lma
-        county_odds[county_id]['mma_odds'] = odds_county_mma
-        county_odds[county_id]['hma_odds'] = odds_county_hma
-
+        #tally target msa counts
+        msa_target_lma_sum += county_stats[county_id]['lma']
+        msa_target_mma_sum += county_stats[county_id]['mma']
+        msa_target_hma_sum += county_stats[county_id]['hma']
+        #tally peer msa counts
+        msa_peer_lma_sum += county_stats[county_id]['peer_lma']
+        msa_peer_mma_sum += county_stats[county_id]['peer_mma']
+        msa_peer_hma_sum += county_stats[county_id]['peer_hma']
+    #msa
+    msa_minority_area_stats = (msa_target_lma_sum, msa_target_mma_sum, msa_target_hma_sum, msa_peer_lma_sum, msa_peer_mma_sum, msa_peer_hma_sum)
+    msa_stats = assemble_stats(*msa_minority_area_stats)
+    
     return {
-        #'msa': msa_stats,
-        'target_lender': lender_stats,
-        'peers': peer_stats,
-        'odds_msa': odds_lender,
+        'msa': msa_stats,
         'counties': county_stats,
-        'county_odds' : county_odds
-        }
+    }
 
 def race_summary(request):
     """Race summary statistics"""
