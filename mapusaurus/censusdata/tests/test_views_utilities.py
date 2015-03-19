@@ -5,9 +5,10 @@ tests of the helper functions for assembling tables for map page
 from django.http import HttpRequest
 from django.test import TestCase
 # from mock import Mock, patch
-from censusdata.views import minority_aggregation_as_json, assemble_stats, odds_ratio
+from censusdata.views import minority_aggregation_as_json, assemble_stats, odds_ratio, get_minority_area_stats
 from hmda.views import loan_originations_as_json
 from geo.models import Geo
+from respondents.models import Institution
 
 params = {'lender': '90000451965', 'metro': '49180'}
 request = HttpRequest()
@@ -19,26 +20,31 @@ class ViewsUtilitiesTests(TestCase):
 
     def test_minority_aggregation_as_json(self):
         """should return a dict of 5 dicts returning minority values"""
-        keys = ['target_lender', 'peers', 'odds_msa', 'counties', 'county_odds']
-        lender_keys = ['hma_pct', 'lma_pct', 'mma_pct', 'lma', 'mma', 'hma', 'lar_total']
+        keys = ['counties', 'msa']
+        lender_keys = ['hma_pct', 'lma_pct', 'mma_pct', 'lma', 'mma', 'hma', 'lar_total', 'peer_hma_pct', 'peer_lma_pct', 'peer_mma_pct', 'peer_lma', 'peer_mma', 'peer_hma', 'peer_lar_total', 'odds_lma', 'odds_mma', 'odds_hma']
         result_dict = minority_aggregation_as_json(request)
         self.assertTrue(isinstance(result_dict, dict))
         for key in keys:
             self.assertTrue(key in result_dict.keys())
         for key in lender_keys:
-                self.assertTrue(key in result_dict['target_lender'].keys())
-        self.assertTrue(len(result_dict['counties']) > 0)
-        self.assertEqual(result_dict['target_lender']['lar_total'], 7)
-        self.assertEqual(result_dict['peers']['lar_total'], 0.0)
-        self.assertEqual(result_dict['odds_msa']['odds_msa_lma'], 0.0)
-        self.assertEqual(result_dict['counties']['11222']['lma'], 7)
-        self.assertEqual(result_dict['counties']['11222']['lar_total'], 7)
+                self.assertTrue(key in result_dict['msa'].keys())
+        self.assertTrue(len(result_dict['msa']) > 0)
+        self.assertEqual(result_dict['msa']['lar_total'], 0)
+        self.assertEqual(result_dict['msa']['odds_lma'], 0.0)
 
     def test_assemble_stats(self):
         """should calculate and return a dict of lender loan totals by minority area"""
         lar_data = loan_originations_as_json(request)
+        lender = Institution.objects.get(institution_id=request.GET.get('lender'))
+        metro = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
+        peer_request = HttpRequest()
+        peer_request.GET['lender'] = lender.institution_id
+        peer_request.GET['metro']= metro.geoid
+        peer_request.GET['peers'] = 'true'
+        peer_request.GET['action_taken'] = '1,2,3,4,5'
+        peer_lar_data = loan_originations_as_json(peer_request)
         tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=request.GET.get('metro'))
-        lender_stats = assemble_stats(lar_data, tracts)
+        lender_stats = assemble_stats(*get_minority_area_stats(lar_data, peer_lar_data, tracts))
         self.assertEqual(lender_stats['hma_pct'], 0)
         self.assertEqual(lender_stats['lma_pct'], 1)
         self.assertEqual(lender_stats['mma_pct'], 0)

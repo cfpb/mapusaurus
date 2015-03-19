@@ -154,7 +154,6 @@ def minority_aggregation_as_json(request):
 
     lender = Institution.objects.get(institution_id=request.GET.get('lender'))
     metro = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
-    tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=request.GET.get('metro')) #NOT NEEDED
     lar_data = loan_originations_as_json(request)
 
     peer_request = HttpRequest()
