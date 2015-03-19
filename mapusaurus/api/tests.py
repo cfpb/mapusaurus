@@ -101,12 +101,12 @@ class ViewsTests(TestCase):
         resp = self.client.get(url, params)
         result_dict = json.loads(resp.content)
         self.assertTrue(isinstance(result_dict, dict))
-        keys = ['lender', 'peers', 'odds', 'msa', 'counties']
+        keys = ['target_lender', 'peers', 'odds_msa', 'counties', 'county_odds']
         lender_keys = ['hma_pct', 'lma_pct', 'mma_pct', 'lma', 'mma', 'hma', 'lar_total']
         for key in keys:
-            self.assertTrue(key in result_dict['table_data'].keys())
+            self.assertTrue(key in result_dict.keys())
         for key in lender_keys:
-                self.assertTrue(key in result_dict['table_data']['lender'].keys())
-        self.assertTrue(len(result_dict['table_data']['counties']) > 0)
+                self.assertTrue(key in result_dict['target_lender'].keys())
+        self.assertTrue(len(result_dict['counties']) > 0)
 
 
