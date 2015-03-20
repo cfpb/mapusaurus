@@ -19,7 +19,6 @@ def loan_originations(request):
     lender_hierarchy = request.GET.get('lh')
     peers = request.GET.get('peers')
     census_tracts = get_censustract_geos(request)
-    institution_selected = Institution.objects.filter(pk=institution_id).first()
     metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
     if action_taken_param:
         action_taken_selected = action_taken_param.split(',')
