@@ -114,15 +114,18 @@ class ViewsTest(TestCase):
 
     def test_loan_originations_http_user_errors(self):
         #invalid institution_id
-        resp = self.client.get(reverse('hmda:volume'), {'neLat':'2',
-                                    'neLon':'2',
-                                    'swLat':'0',
-                                    'swLon':'0',
+        resp = self.client.get(reverse('hmda:volume'), {'metro':'10000',
                                     'action_taken':'1,2,3,4,5',
                                     'lender':'91000000011'})
         self.assertEqual(resp.status_code, 400)
 
         #invalid metro
+        resp = self.client.get(reverse('hmda:volume'), {'metro':'10011',
+                                    'action_taken':'1,2,3,4,5',
+                                    'lender':'91000000001'})
+        self.assertEqual(resp.status_code, 400)
+
+        #invalid metro and institution_id
         resp = self.client.get(reverse('hmda:volume'), {'metro':'10011',
                                     'action_taken':'1,2,3,4,5',
                                     'lender':'91000000011'})
@@ -161,7 +164,6 @@ class ViewsTest(TestCase):
                                     'neLon':'2',
                                     'swLat':'0',
                                     'swLon':'0',
-                                    'year':'2013',
                                     'action_taken':'1,2,3,4,5',
                                     'lender':'91000000001'})
         self.assertEqual(resp.status_code, 200)

@@ -26,17 +26,20 @@ def get_censustract_geos(request):
     northEastLon = request.GET.get('neLon')
     southWestLat = request.GET.get('swLat')
     southWestLon = request.GET.get('swLon')
-    bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
     metro = request.GET.get('metro')
     geo_type = request.GET.get('geoType')
     geos = []
-    if bounds:
-        if geo_type == "msa":
-            #*bounds expands the set from check_bounds
-            msas = get_geos_by_bounds_and_type(*bounds, metro=True)
-            geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
+    if northEastLat or northEastLon or southWestLat or southWestLon:
+        bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
+        if bounds:
+            if geo_type == "msa":
+                #*bounds expands the set from check_bounds
+                msas = get_geos_by_bounds_and_type(*bounds, metro=True)
+                geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
+            else:
+                geos = get_geos_by_bounds_and_type(*bounds)
         else:
-            geos = get_geos_by_bounds_and_type(*bounds)
+            return None
     elif metro:
         msa = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
         if msa:
