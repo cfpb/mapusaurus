@@ -112,7 +112,7 @@ class ViewsTest(TestCase):
         self.assertEqual(peer_list_order_exclude[0].institution_id, "91000000002")
         self.assertEqual(len(peer_list_exclude), 2) 
 
-    def test_loan_orginations_http(self):
+    def test_loan_originations_http_user_errors(self):
         #invalid institution_id
         resp = self.client.get(reverse('hmda:volume'), {'neLat':'2',
                                     'neLon':'2',
@@ -128,6 +128,7 @@ class ViewsTest(TestCase):
                                     'lender':'91000000011'})
         self.assertEqual(resp.status_code, 400)
 
+    def test_loan_originations_http(self):        
         #valid metro and institution_id
         resp = self.client.get(reverse('hmda:volume'), {'metro':'10000',
                                     'action_taken':'1,2,3,4,5',
@@ -138,11 +139,23 @@ class ViewsTest(TestCase):
         resp = self.client.get(reverse('hmda:volume'), {'metro':'10000',
                                     'action_taken':'1,2,3,4,5'})
         self.assertEqual(resp.status_code, 200)
+        resp = json.loads(resp.content)
+        self.assertTrue('1122233400' in resp)
+        self.assertTrue('1122233300' in resp)
+        self.assertEqual(resp['1122233400']['volume'], 5)
+        self.assertEqual(resp['1122233400']['num_households'], 1000)  
+        self.assertEqual(resp['1122233300']['volume'], 20)
+        self.assertEqual(resp['1122233300']['num_households'], 100)         
 
         #no metro
         resp = self.client.get(reverse('hmda:volume'), {'action_taken':'1,2,3,4,5',
                                     'lender':'91000000001'})
         self.assertEqual(resp.status_code, 200)
+        resp = json.loads(resp.content)
+        self.assertTrue('1122233400' in resp)
+        self.assertTrue('1122233300' in resp)
+        self.assertEqual(resp['1122233400']['volume'], 1)
+        self.assertEqual(resp['1122233300']['volume'], 4)
 
         resp = self.client.get(reverse('hmda:volume'), {'neLat':'2',
                                     'neLon':'2',
