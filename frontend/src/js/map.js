@@ -12,8 +12,8 @@ if (!window.console) console = {log: function() {}};
     var showDataContainer; 
     var destroyLarChart;
 
-    var cat, catId,
-        geoQueryType = 'selected';
+    var cat, catId;
+    var geoQueryType = 'selected';
 
     // When the DOM is loaded, check for params and add listeners:
 
@@ -283,4 +283,3 @@ if (!window.console) console = {log: function() {}};
         $.unblockUI();
         isUIBlocked = false;
     }
-

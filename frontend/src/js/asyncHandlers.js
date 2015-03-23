@@ -5,6 +5,8 @@
 
     var rawGeo, rawLar, rawMinority, rawData, 
     isUIBlocked = false,
+    larVolume = [],
+    pctMinority = [],
     dataStore = {};
     dataStore.tracts = {};
     

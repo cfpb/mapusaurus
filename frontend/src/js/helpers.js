@@ -28,6 +28,16 @@
             } else {
                 dataStore.tracts[geoid].volume = 0;
             }
+            
+            pctMinority.push(1.0 - rawData.minority[geoid]['non_hisp_white_only_perc']);
+            var loanVolume = rawData.loanVolume[geoid];
+
+            if (_.isUndefined(loanVolume)) {
+              larVolume.push(0);
+            } else {
+              larVolume.push((loanVolume['volume'] / loanVolume['num_households']) * 1000);
+            }
+
             count++;
         });
 
