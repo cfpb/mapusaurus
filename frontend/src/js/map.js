@@ -113,7 +113,7 @@ if (!window.console) console = {log: function() {}};
         // Generate the tool-tip listener for anything with that class
         $('.tooltipsy').tooltipsy({
             className: 'bubbletooltip_tip',
-            offset: [10,0],
+            offset: [1,0],
             show: function (e, $el) {
                 $el.fadeIn(100);
             },

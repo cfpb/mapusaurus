@@ -5671,7 +5671,7 @@ select b {
   margin-left: 25px;
   display: inline-block;
 }
-.map-divider-minor i {
+.map-divider-minor i.cf-icon-right {
   font-size: .75em;
   position: absolute;
   right: 30px;
