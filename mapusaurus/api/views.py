@@ -22,8 +22,7 @@ def all(request):
 def tables(request):
     try:
         table_data = minority_aggregation_as_json(request)
-        context = {'table_data': table_data}
-        return HttpResponse(json.dumps(context), content_type='application/json')
+        return HttpResponse(json.dumps(table_data), content_type='application/json')
     except:
         return HttpResponseBadRequest("the following request failed: %s" % request)
 

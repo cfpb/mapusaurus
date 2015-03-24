@@ -54,7 +54,7 @@ def loan_originations(request):
         return None
     elif len(census_tracts) > 0:
         query = query.filter(geo__in=census_tracts)
-    #cound on geo_id
+    #count on geo_id
     query = query.values('geo_id', 'geo__census2010households__total').annotate(volume=Count('geo_id'))
     return query; 
 

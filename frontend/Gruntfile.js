@@ -113,6 +113,7 @@ module.exports = function(grunt) {
       map: {
         src: [
           'frontend/src/js/map.js',
+          'frontend/src/js/minorityKey.js',
           'frontend/src/js/asyncHandlers.js',
           'frontend/src/js/drawCircles.js',
           'frontend/src/js/drawKey.js',

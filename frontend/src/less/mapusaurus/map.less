@@ -110,7 +110,7 @@ select {
     margin-left: 25px;
     display:inline-block;
   }
-  i {
+  i.cf-icon-right {
     font-size: .75em;
     position: absolute;
     right: 30px;
@@ -237,16 +237,44 @@ select {
 
 
 } //end media query
-
-.css-chart-inner{
-  height: 6px;
-  background-color: @gray-80;
-  margin: 0;
+.minority-key{
+  width: 220px;
   padding: 0;
 }
-.css-chart{
-  width: 120px;
+.minority-label{
+  width: 65px;
+  border-width: 0;
+  display:inline-block;
+}
+
+.css-legend-chart{
+  width: 85px;
+  border-width: 0;
+  display:inline-block;
+  height: 8px;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4ec;
   border: 1px solid @gray-50;
+}
+
+.pct-minority-chart{
+  width: 83px;
+  height: 6px;
+  padding: 0;
+  background-color: #f4f4ec;
+}
+
+.pct-minority-value{
+  display:inline-block;
+  border-width: 0;
+}
+.pct-minority-value::after{
+  content: "%";
+}
+
+.tract-population{
+  float:right;
 }
 
 .leaflet-rrose-content{
@@ -255,10 +283,14 @@ select {
 }
 
 .bubble-header{
-  border-bottom: 1px solid @green;
+  border-bottom: 1px solid @gray-20;
 }
 .bubble-label{
   margin-top: 3px;
+}
+
+.circle-hover-label{
+  width: 40px;
 }
 
 .map-aside {
@@ -411,7 +443,7 @@ select {
 
 #key {
   .webfont-regular();
-  width: 300px;
+  width: 230px;
   border: solid 1px #000;
   background: #fff;
   padding: 5px;
@@ -421,6 +453,10 @@ select {
     font-weight: bold;    
   }
 
+}
+
+#altScaleImg{
+  width: 220px;
 }
 
 .tooltip-li{
