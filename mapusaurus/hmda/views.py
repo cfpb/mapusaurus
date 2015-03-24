@@ -19,7 +19,8 @@ def loan_originations(request):
     lender_hierarchy = request.GET.get('lh')
     peers = request.GET.get('peers')
     census_tracts = get_censustract_geos(request)
-    metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
+    if metro:
+        metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
     if action_taken_param:
         action_taken_selected = action_taken_param.split(',')
     else:
@@ -39,7 +40,7 @@ def loan_originations(request):
                     query = query.filter(institution__in=hierarchy_list) 
                 else: 
                     query = query.filter(institution=institution_selected)
-            elif peers == 'true':
+            elif peers == 'true' and metro_selected:
                 peer_list = institution_selected.get_peer_list(metro_selected, True, False)
                 if len(peer_list) > 0:
                     query = query.filter(institution__in=peer_list)
