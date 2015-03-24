@@ -5787,25 +5787,53 @@ select b {
     behavior: url('/cf-grid/custom-demo/static/css/boxsizing.htc');
   }
 }
-.css-chart-inner {
-  height: 6px;
-  background-color: #919395;
-  margin: 0;
+.minority-key {
+  width: 220px;
   padding: 0;
 }
-.css-chart {
-  width: 120px;
+.minority-label {
+  width: 65px;
+  border-width: 0;
+  display: inline-block;
+}
+.css-legend-chart {
+  width: 85px;
+  border-width: 0;
+  display: inline-block;
+  height: 8px;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4ec;
   border: 1px solid #babbbd;
+}
+.pct-minority-chart {
+  width: 83px;
+  height: 6px;
+  padding: 0;
+  background-color: #f4f4ec;
+}
+.pct-minority-value {
+  display: inline-block;
+  border-width: 0;
+}
+.pct-minority-value::after {
+  content: "%";
+}
+.tract-population {
+  float: right;
 }
 .leaflet-rrose-content {
   margin-top: 8px;
   margin-right: 10px;
 }
 .bubble-header {
-  border-bottom: 1px solid #2cb34a;
+  border-bottom: 1px solid #e3e4e5;
 }
 .bubble-label {
   margin-top: 3px;
+}
+.circle-hover-label {
+  width: 40px;
 }
 .map-aside {
   background-color: #f8f8f8;
@@ -5918,7 +5946,7 @@ select b {
   font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
   font-style: normal;
   font-weight: normal;
-  width: 300px;
+  width: 230px;
   border: solid 1px #000;
   background: #fff;
   padding: 5px;
@@ -5946,6 +5974,9 @@ select b {
 #key label {
   font-size: larger;
   font-weight: bold;
+}
+#altScaleImg {
+  width: 220px;
 }
 .tooltip-li {
   margin-left: 10px;

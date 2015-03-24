@@ -13,6 +13,7 @@
 
 {% block head_scripts %}
     <script type="text/javascript" src="{% static 'mapping/js/map-vendor.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mapping/js/leaflet.utfgrid.js' %}"></script>
     <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.standalone.js'></script>
     <script type="text/javascript" src="{% static 'mapping/js/map.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
@@ -87,9 +88,9 @@
             Base: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.a760eab8/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
             Water: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_WATER_all_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             Boundaries: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.4da32f68/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            CountyLabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_COUNTY_labels/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            CountyLabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.becdd200/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             MSALabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.5de9fd0f/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctMinority: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-min_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctMinority: L.mapbox.tileLayer('cfpb.FL_TRACT_per-min_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
             PctHispanic: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-hsp_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             PctBlack: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-blk_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             PctAsian: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-asn_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
@@ -155,6 +156,71 @@
         };
         key.setPosition('topright');
         key.addTo(map);
+
+        // // Load interactivity data into the map with a gridLayer
+        // var myGridLayer = L.mapbox.gridLayer('cfpb.FL_TRACT_per-min_US').addTo(map);
+
+        // // And use that interactivity to drive a control the user can see.
+        // var myGridControl = L.mapbox.gridControl(myGridLayer).addTo(map);  
+        var utfGrid = new L.UtfGrid('http://{s}.tiles.mapbox.com/v3/cfpb.FL_TRACT_per-min_US/{z}/{x}/{y}.grid.json?callback={cb}');
+        utfGrid.addTo(map);      
+
+        pctBlack = $('#pct_blk');
+        pctBlackData = $('.pct-black-data');
+        pctHisp = $('#pct_hisp');
+        pctHispData = $('.pct-hispanic-data');
+        pctAsian = $('#pct_asian');
+        pctAsianData = $('.pct-asian-data');
+        pctWhite = $('#pct_white');
+        pctWhiteData = $('.pct-white-data');
+        pctMinority = $('#pct_min');
+        pctMinorityData = $('.pct-minority-data');
+        tractNumber = $('.tract-number');
+        tractPop = $('.tract-population');
+
+        utfGrid.on('mouseover', function (e) {
+            var d = e.data;
+            if (d) {
+                pctMinority.text(d.pct_minv1);
+                pctMinorityData.attr('data-min', d.pct_minv1);
+                pctMinorityData.css('width', ((d.pct_minv1/100)*85).toString()+'px');
+                pctMinorityData.css('background-color', '#5c9897');
+
+                pctBlack.text(d.pct_blk);
+                pctBlackData.attr('data-min', d.pct_blk);
+                pctBlackData.css('width', ((d.pct_blk/100)*85).toString()+'px');
+                pctBlackData.css('background-color', '#7ea4be');
+
+                pctHisp.text(d.pct_hisp);
+                pctHispData.attr('data-min', d.pct_hisp);
+                pctHispData.css('width', ((d.pct_hisp/100)*85).toString()+'px');
+                pctHispData.css('background-color', '#c85954');
+                
+                pctAsian.text(d.pct_asian);
+                pctAsianData.attr('data-min', d.pct_asian);
+                pctAsianData.css('width', ((d.pct_asian/100)*85).toString()+'px');
+                pctAsianData.css('background-color', '#ff931a');
+
+                pctWhite.text(d.pct_white);
+                pctWhiteData.attr('data-min', d.pct_white);
+                pctWhiteData.css('width', ((d.pct_white/100)*85).toString()+'px');
+                pctWhiteData.css('background-color', '#b9babc');
+
+            } else {
+                pctBlack.text('No Data');
+                pctBlackData.data('min', 0);
+                pctHisp.text('No Data');
+                pctHispData.data('min', 0);
+                pctAsian.text('No Data');
+                pctAsianData.data('min', 0);
+                pctWhite.text('No Data');
+                pctWhiteData.data('min', 0);
+            }
+            tractNumber.text(d.tract);
+            tractPop.text(d.tot_pop_et + ' Persons');
+
+        });
+
 
     /* 
       END MAPBOX / LEAFLET CODE
