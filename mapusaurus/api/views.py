@@ -17,7 +17,7 @@ def all(request):
         responses = {'minority' : minority, 'loanVolume': hmda}
         return HttpResponse(json.dumps(responses), content_type='application/json')
     except:
-        return HttpResponseBadRequest("Invalid or Missing one of lender, metro or lat/lon bounds")
+        return HttpResponseBadRequest("Invalid Lender, Metro or Lat/Lon bounds")
 
 def tables(request):
     try:

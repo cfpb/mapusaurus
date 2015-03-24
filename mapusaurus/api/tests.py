@@ -31,9 +31,6 @@ class ViewsTests(TestCase):
     fixtures = ['agency.json', 'fake_msa.json', 'api_tracts.json', 'test_counties.json', 'fake_respondents.json']
 
     def test_api_all_user_errors(self):
-        resp = self.client.get(reverse('all'))
-        self.assertEqual(resp.status_code, 400)
-
         resp = self.client.get(reverse('all'), {'neLat':'42.048794',
                                     'neLon':'-87.430698',
                                     'swLat':'',
@@ -52,6 +49,7 @@ class ViewsTests(TestCase):
                                     'action_taken':'1,2,3,4,5',
                                     'lender':'736-4045996'})
         self.assertEqual(resp.status_code, 400)
+
 
     def test_api_msas_user_errors(self):
         resp = self.client.get(reverse('msas'))
