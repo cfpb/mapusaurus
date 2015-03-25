@@ -155,12 +155,7 @@
         };
         key.setPosition('topright');
         key.addTo(map);
-
-        // // Load interactivity data into the map with a gridLayer
-        // var myGridLayer = L.mapbox.gridLayer('cfpb.FL_TRACT_per-min_US').addTo(map);
-
-        // // And use that interactivity to drive a control the user can see.
-        // var myGridControl = L.mapbox.gridControl(myGridLayer).addTo(map);  
+ 
         var utfGrid = new L.UtfGrid('http://{s}.tiles.mapbox.com/v3/cfpb.FL_TRACT_per-min_US/{z}/{x}/{y}.grid.json?callback={cb}');
         utfGrid.addTo(map);      
 
