@@ -84,6 +84,8 @@ class ViewsTest(TestCase):
         mkrecord("11000000002", 1, '222', '1122233400')
         mkrecord("11000000002", 1, '222', '1122233300')
         mkrecord("11000000002", 1, '222', '1122233300')
+
+        mkrecord("91000000001", 6, '223', '1222233300')
         call_command('calculate_loan_stats')
 
     def tearDown(self):

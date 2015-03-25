@@ -19,7 +19,7 @@ class Command(BaseCommand):
                 median = calculate_median_loans(lender_str, metro) or 0
                 lar = calculate_lar_count(lender_str, metro)
                 fha = calculate_fha_count(lender_str, metro)
-                if lar:
+                if lar > 0:
                     fha_percentage = fha/float(lar)
                 else:
                     fha_percentage = 0.0
