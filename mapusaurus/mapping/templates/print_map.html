@@ -39,7 +39,7 @@
           <a href="http://www.consumerfinance.gov"><img class="logo" src="{{ STATIC_URL }}basestyle/img/logo_210.png" alt="Consumer Financial Protection Bureau"></a>
         </div>
         <div style="display:inline-block; position: relative; text-align: right; float:right;">
-            <strong>{{ lender.name }}</strong> - {{ lender.agency_id }}{{ lender.respondent_id }}<br/>
+             <span class="peers-of-true hidden">Peers of </span><strong>{{ lender.name }}</strong> - {{ lender.agency_id }}{{ lender.respondent_id }}<br/>
             {{ metro.name }}<br/>
             <strong>Context:</strong> <span id="actionValue"></span> / <span id="minorityValue"></span><br/>
             <strong>Filter:</strong> <span id="filterSpecs">First lien, Owner-occupied, 1-4 family housing (including manufactured)</span>
@@ -79,7 +79,7 @@
                 </div>
 
             </div>
-            <div class="map-divider lighter hidden" id="lender-affiliate-list">
+            <div id="lenderAffiliateList" class="map-divider lighter hidden" >
                 <h3>Affiliated Institutions included in LAR count:</h3>
                 {% for inst in institution_hierarchy %}
                     <span style="display:inline-block; min-width:250px; max-width:250px; height:60px; vertical-align:top;">
@@ -87,7 +87,7 @@
                     </span>
                 {% endfor %}
             </div>
-            <div class="map-divider lighter hidden" id="lender-peers-list">
+            <div id="lenderPeersList" class="map-divider lighter hidden" >
                 <h3>Peer Institutions included in LAR count:</h3>
                 {% for peer in institution_peers %}
                     <span style="display:inline-block; min-width:250px; max-width:250px; height:60px; vertical-align:top;">
@@ -218,6 +218,11 @@
         key.setPosition('topright');
         key.addTo(map);
 
+        // // And use that interactivity to drive a control the user can see.
+        // var myGridControl = L.mapbox.gridControl(myGridLayer).addTo(map);  
+        var utfGrid = new L.UtfGrid('http://{s}.tiles.mapbox.com/v3/cfpb.FL_TRACT_per-min_US/{z}/{x}/{y}.grid.json?callback={cb}');
+        utfGrid.addTo(map);  
+
     /* 
       END MAPBOX / LEAFLET CODE
     */
@@ -232,13 +237,14 @@
             var actionValue = $('#action-taken-selector option:selected').text();
             $('#actionValue').text(actionValue);
 
+            var loadParams = getHashParams();
             console.log("LH? ", loadParams.lh.values);
             // Show or Hide the lender / peer information if checked.
-            if( loadParams.peers.values === true ){
-                $("#lender-peers-list").removeClass('hidden');
+            if( loadParams.peers.values === 'true' ){
+                $("#lenderPeersList").removeClass('hidden');
             }
-            if( loadParams.lh.values === true ){
-                $("#lender-affiliate-list").removeClass('hidden');
+            if( loadParams.lh.values == 'true' ){
+                $("#lenderAffiliateList").removeClass('hidden');
             }
         });
     </script>
