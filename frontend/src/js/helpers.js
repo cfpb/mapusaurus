@@ -104,15 +104,18 @@
         if( !status ){
             $('#lender-peers-list').addClass('hidden');
             $('#lender-peers').removeClass('green-highlight');
+            $('.peers-of-true').addClass('hidden');
             $('.tooltipsy.peer-component').addClass('hidden');
             $('#download-data').attr('href', origUrl);
         } else {
             $('#lender-peers-list').removeClass('hidden');
+            $('.peers-of-true').removeClass('hidden');
             $('#lender-peers').addClass('green-highlight');
             $('.tooltipsy.peer-component').removeClass('hidden');
             $('#download-data').attr('href', url);
         }
         addParam('peers', status);
+        getPeerLinks();
         $('#peerSelect').prop('checked', status );
 
     }     
@@ -268,6 +271,18 @@
     // Update the #printLink href to reflect the current map when "print" is clicked
     function updatePrintLink(){
         $('#printLink').attr('href', '/map/print' + window.location.search + window.location.hash );
+    }
+
+    function getPeerLinks(){
+        var peerList = $('.peer-link');
+        console.log('peer list: ', peerList);
+        $.each(peerList, function(i, val){
+            console.log("i: ", i);
+            console.log("val: ", val);
+            var instid = $(val).data('instid');
+            var href = '/map/?metro=' + urlParam('metro') + '&lender=' + instid + window.location.hash.replace('&peers=true', '');            
+            $(val).attr('href', href);
+        });
     }
 
     // Update the #censusLink href to reflect the selections of the user

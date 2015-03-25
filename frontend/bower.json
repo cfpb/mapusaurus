@@ -16,6 +16,7 @@
     "leaflet-rrose": "git+https://github.com/sephcoster/rrose.git#3775b4ca496f8dbe4f0fbcd441c99d1ad4daa3dd",
     "leaflet-hash": "git+https://github.com/sephcoster/leaflet-hash.git",
     "leaflet-MiniMap": "git+https://github.com/Norkart/Leaflet-MiniMap.git#",
+    "leaflet-utfGrid": "git+https://github.com/danzel/Leaflet.utfgrid.git#",
     "topojson": "git+https://github.com/mbostock/topojson#1.6.18",
     "typeahead": "git+https://github.com/twitter/typeahead.js#0.10.5",
     "blockui": "git+https://github.com/malsup/blockui#2.70",
