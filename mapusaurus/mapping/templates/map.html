@@ -13,8 +13,7 @@
 
 {% block head_scripts %}
     <script type="text/javascript" src="{% static 'mapping/js/map-vendor.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'mapping/js/leaflet.utfgrid.js' %}"></script>
-    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.standalone.js'></script>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.standalone.js'></script>
     <script type="text/javascript" src="{% static 'mapping/js/map.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'mapping/js/map-layout.min.js' %}"></script>
 {% endblock %}
@@ -95,7 +94,7 @@
             PctBlack: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-blk_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             PctAsian: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-asn_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             PctNonWhite: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_pct_nhwht_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            Plurality: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_minor_plurality_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Plurality: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.1bd47f29/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             Centroids: L.layerGroup([]),
             Branches: L.layerGroup([])
         };
@@ -156,12 +155,7 @@
         };
         key.setPosition('topright');
         key.addTo(map);
-
-        // // Load interactivity data into the map with a gridLayer
-        // var myGridLayer = L.mapbox.gridLayer('cfpb.FL_TRACT_per-min_US').addTo(map);
-
-        // // And use that interactivity to drive a control the user can see.
-        // var myGridControl = L.mapbox.gridControl(myGridLayer).addTo(map);  
+ 
         var utfGrid = new L.UtfGrid('http://{s}.tiles.mapbox.com/v3/cfpb.FL_TRACT_per-min_US/{z}/{x}/{y}.grid.json?callback={cb}');
         utfGrid.addTo(map);      
 

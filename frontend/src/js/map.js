@@ -173,6 +173,9 @@ if (!window.console) console = {log: function() {}};
             updateCensusLink();
         });
 
+        // Update links to peers
+        getPeerLinks();
+        
         // Kick off the application
         initCalls(geoQueryType);
 
