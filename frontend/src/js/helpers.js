@@ -275,10 +275,7 @@
 
     function getPeerLinks(){
         var peerList = $('.peer-link');
-        console.log('peer list: ', peerList);
         $.each(peerList, function(i, val){
-            console.log("i: ", i);
-            console.log("val: ", val);
             var instid = $(val).data('instid');
             var href = '/map/?metro=' + urlParam('metro') + '&lender=' + instid + window.location.hash.replace('&peers=true', '');            
             $(val).attr('href', href);
