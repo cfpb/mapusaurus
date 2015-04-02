@@ -1,96 +1,58 @@
-// The summary table is structured so that county data is contained within a tbody
-// & the county's tracts are contained in an adjacent tbody. This is mainly
-// done to allow for the possibility of applying the CF expandable to them (it is
-// not currently applied since it requires a shared parent element, but it's possible
-// that it could be adjusted to work with sibling elements without a direct parent
-// expandable.)
-// The tablesorter plugin, however, currently only sorts WITHIN tbodies, not between
-// them.
-// As per this discussion (https://github.com/Mottie/tablesorter/pull/195),
-// the maintainer of the plugin is working on a widget to allow sorting between tbodies.
-//
-// This is an interim hack, based on the outlines of the in-development widget
-// from the thread above. It should be replaced once the official widget is available.
-//
-// Alternatively, the county rows could be moved into the tract tbody and set to infoOnly.
-// This would make the widget unnecessary, but it would also be incompatible with CF expandables.
-// Instead, the display of all the tract rows would be toggled when the county was expanded.
-// NOTE: hack depends on data-sortclass attribute applied to table header cells in thead template.
+var theadTemplate,
+    rowTemplate,
+    tableData,
+    currentChart,
+    msaData;
 
-
-(function($){
-"use strict";
-var ts = $.tablesorter;
-
-ts.addWidget({
-    id: 'sortTbody',
-    priority: 100,
-    options: {
-        sortTbody_primaryCell : null,
-        sortTbody_type: 'Natural'
-    },
-    init: function(table, thisWidget, c, wo){
-        var tbodies = c.$table.children('tbody:not(".tablesorter-childTbody, .tablesorter-infoOnly")');
-        var tbodyChildren = {};
-        tbodies.each(function (i, t) {
-            var $t = $(t);
-            $t.data('rowid', i);
-            tbodyChildren[i] = $t.next('.tablesorter-childTbody')
-        });
-        c.$table
-        .unbind('sortEnd.sortTbody')
-        .bind('sortEnd.sortTbody', function(x){
-            var sortType = wo.sortTbody_type.toLowerCase() === 'text' ? 'sortText' : 'sortNatural';
-            var tbl = c.$table;
-            var method = 'sortNatural';
-            var sortedBy = tbl.find('th[aria-sort="ascending"], th[aria-sort="descending"]');
-            var direction = sortedBy.attr('aria-sort') == 'ascending' ? 0 : 1;
-            var colCl = $(sortedBy).data('sortclass');
-            tbodies.sort(function(a, b) {
-                var $a = $(direction ? b : a),
-                $b = $(direction ? a : b);
-                return ts[method]($a.find('tr:first ' + '.' + colCl).text(), $b.find('tr:first ' + '.' + colCl).text());
-            });
-
-            // hide entire table to improve sort performance
-            c.$table.hide();
-            tbodies.each(function (i, t) {
-                var $t = $(t);
-                $t.appendTo(c.$table);
-                $(tbodyChildren[$t.data('rowid')]).appendTo(c.$table);
-            })
-            c.$table.show();
-        });
-    },
-    remove : function(table, c, wo){
-        c.$table.unbind('sortEnd.sortTbody');
-    }
-});
-
-})(jQuery);
-
-
-
-$(document).ready(function(){
-    var currentChart;
-    var tableData;
-    var $dataContainer = $('#data-container');
-    var $chartContainer = $('#plot-container');
-    var $tableContainer = $('#table-container');
-    
-    // set up table templates
+$(document).ready(function () {
+    // Set up underscore table templates.
     _.templateSettings.variable = "data";
-    var theadTemplate = _.template(
+    theadTemplate = _.template(
         $( "script.thead-template" ).html()
     );
-    var rowTemplate =  _.template(
+    rowTemplate =  _.template(
         $( "script.row-template" ).html()
     );
+    
+    // Create/destroy table when chart toggle is clicked.
+    $('.chart-toggle').click(function (e) {
+        var $target = $(e.target).closest('.chart-toggle'),
+            id = $target.attr('id');
 
+        if (currentChart) {
+            destroyData();
+        }
+
+        if (currentChart != id) {
+            if (id === 'chart-toggle__basic-table' || id === 'chart-toggle__peer-table') {
+                createTable(id === 'chart-toggle__peer-table');
+                $('#table-container').show();
+            } else if (id === 'chart-toggle__lar-chart') {
+                plotLarVolume();
+                $('#chart-container').show();
+            }
+            currentChart = id;
+            toggleDataContainer(true);
+
+        } else {
+            currentChart = null;
+            toggleDataContainer(false);
+        }        
+    });
 });
 
-// get table data from api
-function getTableData(lender) {
+/**
+ * @name getTableData
+ *
+ * @description Gets 'lender' and 'metro' params from URL,
+ * and uses them to construct a request for table data from
+ * table api endpoint.
+ *
+ * @return {obj} $.ajax promise
+ * 
+ * 
+ */
+function getTableData() {
     var params = {};
     var endpoint = '/api/tables/';
 
@@ -108,9 +70,9 @@ function getTableData(lender) {
     } else {
         console.log("No metro area provided");
     }
-
+    
     return $.ajax({
-        url: endpoint, 
+        url: '/api/tables/', 
         data: params, 
         traditional: true,
         success: console.log('get API All Data request successful')
@@ -119,14 +81,69 @@ function getTableData(lender) {
     });
 }
 
+/**
+ * @name createTable
+ *
+ * @description Makes request for table data if has 
+ * not already been initiated. When table data is returned,
+ * preps table data, builds & activates table, and
+ * appends table to DOM.
+ *
+ * @params {boolean} showPeers indicates whether peer value
+ * rows should be shown in table
+ * 
+ * 
+ */
 
-// Proactively request table data to reduce lag.
-// This could be delayed until the table is actually toggled.
-var msaData = getTableData();
+function createTable(showPeers) {
+    msaData || (msaData = getTableData()); 
+    msaData.done(function (res) {
+        if (!tableData) {
+          tableData = res;
+          prepTableData(tableData);
+        }
+        var $tbl = buildTable(tableData, showPeers);
+        activateTable($tbl);
+        $tbl.appendTo($('#table-container')).show();
+    });
+}
 
+/**
+ * @name prepTableData
+ *
+ * @description Preps table data for display.
+ * Processes MSA object & each county object in 
+ * county array. Converts their '_pct' values from 
+ * decimals, and pulls their '_peer' values into a peerData object.
+ *
+ * @params {obj} data table data object to process
+ * @return {obj} processed data object
+ * 
+ */
+function prepTableData(data) {
+    var msa = data.msa;
+    _.extend(msa, prepNumbers(msa));
+    msa.peerData = getPeerData(msa);
+    
+    _.each(data.counties, function (county, key) {
+        _.extend(county, prepNumbers(county));
+        county.peerData = getPeerData(county);
+        county.geoid = key;
+    });
+    
+    return data;
+}
 
-
-/* Process data returned from api for display in table */
+/**
+ * @name decimalToPercentage
+ *
+ * @description converts decimals to percentages
+ *
+ * @params {number|string} val decimal value to convert
+ * @return {number|null} number in percentage format
+ * 
+ * 
+ */
 function decimalToPercentage(val) {
     var num = parseFloat(val);
     if (!isNaN(num)) {
@@ -134,140 +151,66 @@ function decimalToPercentage(val) {
     }
 }
 
-function prepNumbers (data) {
-    _.each(['lma_pct', 'mma_pct', 'hma_pct'], function (i) {
-        data[i] = decimalToPercentage(data[i]) || 0;
-    });
-}
-
-function prepTableData(tableData) {
-    msa = tableData.lender;
-    msa.odds = tableData.odds;
-    tableData.msa = msa;
+/**
+ * @name prepNumbers
+ *
+ * @description Checks an object for properties ending with '_pct',
+ * and then converts those properties from decimal to percentage.
+ *
+ * @params {obj} data object containing converted values
+ * 
+ * 
+ */
+function prepNumbers(data) {
+    var obj = {},
+        suffix = '_pct',
+        len = suffix.length;
     
-    _.each([tableData.lender, tableData.peers],function (i) {
-        prepNumbers(i);
-    });
-    _.each(tableData.counties, function (c) {
-        prepNumbers(c);
-        prepNumbers(c.peers);
-        _.each((c || {}).tracts, function (t){
-            prepNumbers(t);
-            prepNumbers(t.peers);
-        })
-    })
-}
-
-
-
-/* Build out a table when the toggle is clicked */
-
-function createTable(showPeers) {     
-    msaData.done(function (res) {
-        if (!tableData) {
-            tableData = res['table_data'];
-            console.log("Table Data: ", tableData);
-            prepTableData(tableData);
-        }
-        var $tbl = buildTable(tableData, showPeers);
-        activateTable($tbl);
-    });
-}
-
-function activateTable ($tbl) {
-    $tableContainer.append($tbl);
-    activateTableSorting($tbl)
-    activateExpandables($tbl);
-    $tbl.show();
-}
-
-function activateTableSorting($tbl) {
-    // activate tablesorter plugin
-    $tbl.tablesorter({
-        headerTemplate: '',
-        widgets: [ 'sortTbody', 'stickyHeaders' ],
-        widgetOptions: {
-            stickyHeaders_attachTo : '#data-container'
+    _.each(data, function (val, key) {        
+        if (key.indexOf(suffix, key.length - len) !== -1) {
+            obj[key] = decimalToPercentage(val) || 0;
         }
     });
-}
-
-function activateExpandables($tbl) {
-    // hide tract expandables
-    $tbl.find('.tablesorter-childTbody').hide();
-
-    // show tract expandables when county target is clicked
-    // Note: cf-expandables will not currently work since the 
-    // expandable target & content are adjacent tbodies and
-    // do not have a unique common parent.
-    $tbl.find('.county-tbody').click(function (e) {
-        var $target = $(e.target);
-        var $tbody = $target.closest('tbody');
-        var child = $tbody.next('.tablesorter-childTbody');
-        if ($(child).is(':visible')) {
-            $(child).hide();
-            $tbody.find('.expandable_cue-open').show();
-            $tbody.find('.expandable_cue-close').hide();
-        } else {
-            $(child).show();
-            $tbody.find('.expandable_cue-open').hide();
-            $tbody.find('.expandable_cue-close').show();
-        }
-    });
-}
-
-// destroy chart or table when toggled off
-function destroyData() {
-    if (currentChart === 'chart-toggle__lar-chart') {
-        // destroy chart
-        destroyLarChart();
-        $chartContainer.hide();
-    } else {
-        // destroy table
-        $(".summary-data-table")
-                .trigger("destroy")
-                .remove();
-        $tableContainer.hide();
-    }
-}
-
-// show or hide data container, update showDataContainer global toggle,
-// and set map height
-function toggleDataContainer(showData) {
-    showDataContainer = showData;
-    $dataContainer[showData ? 'show' : 'hide']();
-    setMapHeight();
-}
-
-/* chart/table toggle listener */
-$('.chart-toggle').click(function (e) {
-    var $target = $(e.target).closest('.chart-toggle'),
-        id = $target.attr('id');
     
-    if (currentChart) {
-        destroyData();
-    }
-    
-    if (currentChart != id) {
-        if (id === 'chart-toggle__basic-table' || id === 'chart-toggle__peer-table') {
-            createTable(id === 'chart-toggle__peer-table');
-            $tableContainer.show();
-        } else if (id === 'chart-toggle__lar-chart') {
-            plotLarVolume();
-            $chartContainer.show();
-        }
-        currentChart = id;
-        toggleDataContainer(true);
+    return obj;
+}
+
+/**
+ * @name getPeerData
+ *
+ * @description Returns an object containing all the properties
+ * on an object that start with 'peer_'.
+ *
+ * @params {obj} data object to be searched for peer values
+ * @return {obj} object containing all peer properties
+ * 
+ */
+function getPeerData(data) {
+    var peerData = {isPeer: true};
         
-    } else {
-        currentChart = null;
-        toggleDataContainer(false);
-    }        
-});
+    _.each(data, function (val, key) {
+        var strs = key.split('_');
+        if (strs[0] === 'peer') {
+            peerData[strs.slice(1).join('_')] = val;
+        }
+    });
+
+    return peerData;
+}
+
 
 /* Table Generation */
 
-// build a summary data table
+/**
+ * @name buildTable
+ *
+ * @description Builds a table.
+ *
+ * @params {obj} tableData data to use in table
+ * @params {boolean} showPeers whether to show peer rows in table
+ * @return {obj} jquery table object
+ * 
+ */
 function buildTable(tableData, showPeers) {
     // create table element
     var $tbl = $('<table>', {
@@ -281,90 +224,194 @@ function buildTable(tableData, showPeers) {
     // add contents
     var contents = buildTableContents(tableData, showPeers);
     $tbl.append(contents);
-
+    
     return $tbl;
 }
 
-// returns thead html string
+/**
+ * @name buildTableHead
+ *
+ * @description Builds thead using theadTemplate.
+ *
+ * @params {boolean} showPeers whether to show peer rows in table
+ * @return {str} theadTemplate content string
+ * 
+ */
 function buildTableHead(showPeers) {
   return theadTemplate({showPeers: showPeers});              
 }
 
-// returns array of tbodies, one for the msa, and two for each county:
-// a county tbody and a county tract tbody
+/**
+ * @name buildTableContents
+ *
+ * @description Build contents for table. 
+ * Generates one tbody containing row(s) for the MSA data. 
+ * The MSA tbody needs to be separate so the MSA rows 
+ * won't be sorted with the counties.
+ *
+ * Also generates a tbody containing rows for all the counties.
+ *
+ * @params {obj} tableData data for table
+ * @params {boolean} showPeers whether to show peer rows in table
+ * @return {array} array of tbodies for table 
+ * 
+ */
 function buildTableContents(tableData, showPeers) {
-  var tbodies = [];
-
-  // msa tbody
-  var $msaTbody = buildTableBody('MSA');
-  var msaRows = buildTableRows(tableData.msa, 'MSA', showPeers ? tableData.peers : null);
-  $msaTbody.append(msaRows);
-  tbodies.push($msaTbody);
-
-  _.each(tableData.counties, function (county) {
-      // county tbodies
-      var $countyTbody = buildTableBody('County');
-      var countyRows = buildTableRows(county, 'County', showPeers ? county.peers : null);
-      $countyTbody.append(countyRows);
-      tbodies.push($countyTbody);
-      
-      // tract tbodies
-      var $tractTbody = buildTableBody('Tract');
-      _.each(county.tracts, function (tract) {
-          var tractRows = buildTableRows(tract, 'Tract', showPeers ? tract.peers : null);
-          $tractTbody.append(tractRows);
-      });
-      tbodies.push($tractTbody);
-  });
-  return tbodies;
+    var tbodies = [];
+    
+    var msaRows = buildTableRows(tableData.msa, 'MSA', showPeers);
+    var $msaBody = $('<tbody>', {class: 'tablesorter-infoOnly'});
+    $msaBody.append(msaRows);
+    tbodies.push($msaBody);
+    
+    var $countyBody = $('<tbody>');
+    _.each(tableData.counties, function (county) {
+        var countyRows = buildTableRows(county, 'County', showPeers);
+        $countyBody.append(countyRows);
+    });
+    tbodies.push($countyBody);
+    
+    return tbodies;
 }
 
-// returns jquery tbody element with appropriate classes for this row
-function buildTableBody(rowType) {
-  // possible rowTypes are "MSA", "County", and "Tract"
-  var className = rowType.toLowerCase() + '-tbody';
-  // classes needed for tablesorter plugin
-  if (rowType === "MSA") {
-    className += " tablesorter-infoOnly";
-  } else if (rowType === "Tract") {
-    className += " tablesorter-childTbody";
-  }
 
-  return $('<tbody>', {class: className});
-}
-
-// returns array of html row strings
-// array will contain target row string
-// it will also contain peer row if peers are being shown
-function buildTableRows(data, rowType, peers) {
-  var rows = [buildRow(data, rowType, 'Target', peers)];
-  if (peers) {
-    rows.push(buildRow(peers, rowType, 'Peers', peers));
+/**
+ * @name buildTableRows
+ *
+ * @description Build table row(s) for a county or for MSA. 
+ * Generates one row for the target institution. If showPeers
+ * is true, also generates a row for the peer data.
+ *
+ * @params {obj} tableData data for table
+ * @params {str} rowType either MSA or County
+ * @params {boolean} showPeers whether to show peer rows in table
+ * @return {array} array of html row strings for this MSA or County 
+ * 
+ */
+function buildTableRows(data, rowType, showPeers) {
+  var rows = [buildRow(data, rowType, showPeers)];
+  
+  if (showPeers) {
+     rows.push(buildRow(data.peerData, rowType, showPeers));
   }
+  
   return rows;
 }
 
 // returns an html string for one table row
-function buildRow(data, rowType, institutionType, peers) {
-  var className;
+
+/**
+ * @name buildRow
+ *
+ * @description Builds a single table row. 
+ * Generates classes for row based on row type:
+ * peer or target institution, and MSA or County.
+ *
+ * @params {obj} tableData data for table
+ * @params {str} rowType either MSA or County
+ * @params {boolean} showPeers whether to show peer rows in table
+ * @return {str} html string for one table row
+ * 
+ */
+function buildRow(data, rowType, showPeers) {
+  var className, 
+      templateData;
   
   // add row & institution type information to template data
-  var templateData = _.extend({
-      institutionType: institutionType,
+  templateData = _.extend({
       rowType: rowType,
-      showPeers: peers ? true : false
+      showPeers: showPeers
   }, data);
-  // these aren't strictly necessary for underscore templates which allow
-  // comparison logic
-  templateData['is' + rowType] = true;
-  templateData['is' + institutionType] = true;
   
   // set classes based on row type
-  templateData.className = rowType.toLowerCase() + '-row ' + institutionType.toLowerCase() + '-row';
-  if (institutionType === "Peers") {
-    templateData.className += " tablesorter-childRow";
+  templateData.className = rowType.toLowerCase() + '-row ';
+
+  if (data.isPeer) {
+      // peer rows are sorted with the preceding target institution
+      // row, so they need the 'tablesorter-childRow' class.
+      templateData.className += ' peer-row tablesorter-childRow';
+  } else {
+      templateData.className += ' target-row';
   }
   
   // generate table row 
   return rowTemplate(templateData);
+}
+
+/**
+ * @name activateTable
+ *
+ * @description Activates table plugins.
+ *
+ * @params {obj} $tbl jQuery table object
+ * @return {obj} $tbl
+ * 
+ */
+function activateTable($tbl) {
+    // Activate tablesorter plugin
+    return $tbl.tablesorter({
+        headerTemplate: '',
+        widgets: [ 'stickyHeaders' ],
+        widgetOptions: {
+            stickyHeaders_attachTo : '#data-container'
+        }
+    });
+}
+
+/**
+ * @name destroyData
+ *
+ * @description Checks for type of current chart,
+ * and then calls either the table or LAR chart
+ * destroy function & hides the appropriate container
+ * element.
+ * 
+ */
+function destroyData() {
+    if (currentChart === 'chart-toggle__lar-chart') {
+        // destroy chart
+        destroyLarChart();
+        $('#chart-container').hide();
+    } else {
+        // destroy table
+        destroyTable();
+        $('#table-container').hide();
+    }
+}
+
+/**
+ * @name destroyTable
+ *
+ * @description Triggers 'destroy' event
+ * on table for tableSorter plugin, then removes
+ * table from DOM.
+ * 
+ */
+function destroyTable() {
+    $(".summary-data-table")
+        .trigger("destroy")
+        .remove();
+}
+
+/**
+ * @name toggleDataContainer
+ *
+ * @description Updates showDataContainer global, shows or hides
+ * the data & table containers, and calls setMapHeight to update
+ * map & data container heights.
+ *
+ *
+ * @params {boolean} showData whether to show or hide data container
+ *
+ */
+function toggleDataContainer(showData) {
+    showDataContainer = showData;
+    if (showData) {
+        $('#table-container').show();
+        $('#data-container').show();
+    } else {
+        $('#table-container').hide();
+        $('#data-container').hide();
+    }
+    setMapHeight();
 }

@@ -6933,15 +6933,18 @@ select b {
   top: -2px;
 }
 .summary-data-table thead th.lar.lma_ct .color-coded:before,
-.summary-data-table thead th.lar.lma_pct .color-coded:before {
+.summary-data-table thead th.lar.lma_pct .color-coded:before,
+.summary-data-table thead th.lma_ratio .color-coded:before {
   color: #eae9e5;
 }
 .summary-data-table thead th.lar.mma_ct .color-coded:before,
-.summary-data-table thead th.lar.mma_pct .color-coded:before {
+.summary-data-table thead th.lar.mma_pct .color-coded:before,
+.summary-data-table thead th.mma_ratio .color-coded:before {
   color: #b8cad9;
 }
 .summary-data-table thead th.lar.hma_ct .color-coded:before,
-.summary-data-table thead th.lar.hma_pct .color-coded:before {
+.summary-data-table thead th.lar.hma_pct .color-coded:before,
+.summary-data-table thead th.hma_ratio .color-coded:before {
   color: #7ea4be;
 }
 .summary-data-table thead th .sortable-content,
@@ -7004,13 +7007,11 @@ select b {
 .summary-data-table .header-two th.name {
   border-color: #bababa;
 }
-.summary-data-table .lar {
+.summary-data-table .lar,
+.summary-data-table .chart-title {
   width: 3em;
 }
 .summary-data-table .odds_ratio {
-  width: 6em;
-}
-.summary-data-table .chart-title {
   width: 3em;
 }
 .summary-data-table .chart {
@@ -7043,19 +7044,6 @@ select b {
 .summary-data-table .chart .bar.peer .segment {
   height: 8px;
 }
-.summary-data-table .expander {
-  width: 1em;
-  padding-right: 0px;
-}
-.summary-data-table .expander .cf-icon {
-  color: #babbbd;
-}
-.summary-data-table tbody:hover {
-  background-color: #f8f8f8;
-}
-.summary-data-table tbody.county-tbody {
-  cursor: pointer;
-}
 .summary-data-table tbody tr.msa-row {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
@@ -7064,21 +7052,16 @@ select b {
 .lt-ie9 .summary-data-table tbody tr.msa-row {
   font-weight: normal !important;
 }
-.summary-data-table tbody tr.peers-row {
+.summary-data-table tbody tr.peer-row {
   color: #75787b;
   border-bottom: 1px solid #bababa;
 }
-.summary-data-table tbody tr.peers-row td {
+.summary-data-table tbody tr.peer-row td {
   padding-top: 0;
   padding-bottom: .5em;
 }
-.summary-data-table tbody tr.tract-row .name {
-  /* padding-left: 2em; */
-}
 .summary-data-table tbody tr.county-row .lar,
-.summary-data-table tbody tr.tract-row .lar,
-.summary-data-table tbody tr.county-row .lar_pct,
-.summary-data-table tbody tr.tract-row .lar_pct {
+.summary-data-table tbody tr.county-row .lar_pct {
   font-size: 14px;
 }
 .summary-data-table tbody tr td {

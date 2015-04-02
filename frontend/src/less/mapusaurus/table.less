@@ -35,39 +35,42 @@
             color: @gray;
             background: @background-gray;
       
-        	.color-coded {
-        	    position:relative;
-        	    padding-left: 1em;
+          	.color-coded {
+          	    position:relative;
+          	    padding-left: 1em;
 
-        	    &:before {
-        		    content: '\2022';
-            		line-height: 1;
-            		position: absolute;
-             		left: 0;
-             		font-size: 1.5em;
-             		top: -2px;
-             	}
-        	}
+          	    &:before {
+          		    content: '\2022';
+              		line-height: 1;
+              		position: absolute;
+               		left: 0;
+               		font-size: 1.5em;
+               		top: -2px;
+               	}
+          	}
 
             &.lar.lma_ct,
-            &.lar.lma_pct {
+            &.lar.lma_pct,
+            &.lma_ratio {
                 .color-coded:before {
-            		color: @lma-color;
-            	}
+            		    color: @lma-color;
+            	  }
             }
 
             &.lar.mma_ct,
-            &.lar.mma_pct {
+            &.lar.mma_pct,
+            &.mma_ratio {
                 .color-coded:before {
-            		color: @mma-color;
-            	}
+            		    color: @mma-color;
+            	  }
             }
 
             &.lar.hma_ct,
-            &.lar.hma_pct {
+            &.lar.hma_pct,
+            &.hma_ratio {
                 .color-coded:before {
-            		color: @hma-color;
-            	}
+            		    color: @hma-color;
+            	  }
             }
 
             .sortable-content,
@@ -143,18 +146,15 @@
         border-color: @border-strong;
     }
     
-    .lar {
+    .lar,
+    .chart-title {
         width: 3em;
     }
     
     .odds_ratio {
-        width: 6em;
-    }
-    
-    .chart-title {
         width: 3em;
     }
-        
+    
     .chart {
         width: 125px;
         
@@ -188,30 +188,13 @@
         }
     }
     
-    .expander {
-        width: 1em;
-        padding-right: 0px;
-        
-        & .cf-icon {
-            color: @gray-50;
-        }
-    }
-    
     tbody {
-        &:hover {
-            background-color: @background-gray;
-        }
-        
-        &.county-tbody {
-            cursor: pointer;
-        }
-        
         tr {
             &.msa-row {
                 .webfont-demi() ;
             }
 
-            &.peers-row {
+            &.peer-row {
                 color: @gray;
                 border-bottom: 1px solid @border-strong;
 
@@ -221,14 +204,7 @@
                 }
             }
 
-            &.tract-row {
-                .name {
-                    /* padding-left: 2em; */
-                }
-            }
-
-            &.county-row,
-            &.tract-row {
+            &.county-row {
                 & .lar,
                 & .lar_pct {
                     font-size: 14px;
@@ -270,4 +246,3 @@
     }
    
 }
-

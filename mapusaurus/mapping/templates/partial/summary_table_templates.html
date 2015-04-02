@@ -1,28 +1,16 @@
 <!-- Begin: TR Template Definition. -->
 <script type="text/template" class="row-template">
     <tr class="<%- data.className %>">
-      <% if (!data.isMSA) { %>
-          <td class="expander">
-            <% if (data.isCounty && data.isTarget) { %>
-              <span class="expandable_cue-open">
-                  <span class="cf-icon cf-icon-plus-round"></span>
-              </span>
-              <span class="expandable_cue-close">
-                  <span class="cf-icon cf-icon-minus-round"></span>
-              </span>
-            <% } %>
-          </td>
-      <% } %>
-
-      <td class="name" <% if (data.isMSA) { %>colspan="2"<%}%> >
-          <% if (data.isTarget) { %>
-              <%-data.rowType%> <%-data.geoid%>
+      
+      <td class="name" >
+          <% if (!data.isPeer) { %>
+              <%-data.rowType%> <% if (data.geoid) { %><%-data.geoid%><% } %>
           <% } %>
       </td>
 
       <td class="chart-title">
-        <% if (!data.isTract && data.showPeers) { %>
-            <%-data.institutionType%>
+        <% if (data.showPeers) { %>
+            <%-data.isPeer ? 'Peers' : 'Target'%>
         <%}%>
       </td>
 
@@ -43,9 +31,19 @@
 
 
       <% if (data.showPeers) { %>
-      <td class="odds_ratio">
-        <% if (data.isTarget && !data.isTract) { %>
-            <%-data.odds%>
+      <td class="odds_ratio lma_ratio">
+        <% if (!data.isPeer) { %>
+            <%-data.odds_lma%>
+        <% } %>
+      </td>
+      <td class="odds_ratio mma_ratio">
+        <% if (!data.isPeer) { %>
+            <%-data.odds_mma%>
+        <% } %>
+      </td>
+      <td class="odds_ratio hma_ratio">
+        <% if (!data.isPeer) { %>
+            <%-data.odds_hma%>
         <% } %>
       </td>
       <% } %>
@@ -57,11 +55,11 @@
  <script type="text/template" class="thead-template">
     <thead>
      <tr class="header-one">
-         <th class="sorter-false title" colspan="4">Data Tables</th>
+         <th class="sorter-false title" colspan="3">Data Tables</th>
          <th class="sorter-false number" colspan="3">Number of Applications</th>
          <th class="sorter-false percentage" colspan="3">Percentage of Market</th>
          <% if (data.showPeers) { %>
-         <th class="sorter-false odds"></th>
+         <th class="sorter-false odds" colspan="3">Odds Ratio</th>
          <% } %>
      </tr>
      <tr class="sortable-header header-two">
@@ -72,7 +70,7 @@
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
-         <th class="sorter-false name-span" colspan="2"></th>
+         <th class="sorter-false name-span" ></th>
          <th class="lar lma_ct" data-sortclass="lma_ct">
              <span class="color-coded sortable-content">LMA</span>
              <div class="arrows">
@@ -116,14 +114,27 @@
              </div>
          </th>
          <% if (data.showPeers) { %>
-         <th class="odds_ratio lma_ratio" data-sortclass="odds_ratio">
-             <span class="sortable-content">Odds Ratio</span>
+         <th class="odds_ratio lma_ratio">
+             <span class="color-coded sortable-content">LMA</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
-
+         <th class="odds_ratio mma_ratio">
+              <span class="color-coded sortable-content">MMA</span>
+              <div class="arrows">
+                  <div class="cf-icon cf-icon-up"></div>
+                  <div class="cf-icon cf-icon-down"></div>
+              </div>
+          </th>
+          <th class="odds_ratio hma_ratio">
+              <span class="color-coded sortable-content">HMA</span>
+              <div class="arrows">
+                  <div class="cf-icon cf-icon-up"></div>
+                  <div class="cf-icon cf-icon-down"></div>
+              </div>
+          </th>
          <% } %>
      </tr>
      </thead>

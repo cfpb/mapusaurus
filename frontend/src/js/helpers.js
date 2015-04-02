@@ -1,7 +1,6 @@
     /*
         ---- ASYNC HELPERS / DRAWERS ----
     */
-
     function drawBranches(){
         $.when( getBranchesInBounds( getBoundParams() ) ).then( function(branches){
             $.each( branches.features, function( i, val){
@@ -58,9 +57,22 @@
         var warningBannerHeight = $('#warning-banner').outerHeight();
         var headerHeight = $('#header').outerHeight();
         var mapHeaderHeight = $('#map-header').outerHeight();
-        var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
+        var combinedHeadersHeight = warningBannerHeight + headerHeight + mapHeaderHeight;
+        var mapHeight = viewportHeight - combinedHeadersHeight;
         $('#map-aside').css('height', mapHeight);
-        $('#map').css('height', mapHeight);
+        $('#map-container').css('height', mapHeight);
+        if (showDataContainer) {
+            $('.map-container').css({'height': (mapHeight * .5) + combinedHeadersHeight, 'overflow': 'hidden'});
+            $('#map').css('height', mapHeight * .5);
+            $('#map-aside').css('height', mapHeight * .5);
+            $('#data-container').css('height', (mapHeight * .5) - 5);
+            $('body').addClass('show-data');
+        } else {
+            $('#map-aside').css('height', mapHeight);
+            $('.map-container').css('height', 'auto');
+            $('#map').css('height', mapHeight);
+            $('body').removeClass('show-data');
+        }
     }
 
     // Helper function that takes care of all the DOM interactions when "Lender Hierarchy" is checked
