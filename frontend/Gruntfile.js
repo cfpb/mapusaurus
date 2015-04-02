@@ -26,7 +26,7 @@ module.exports = function(grunt) {
       },
       map: {
         src: [
-          'frontend/dist/map/css/leaflet.rrose.css',
+          'frontend/bower_components/leaflet-rrose/leaflet.rrose.css',
           'frontend/bower_components/leaflet-MiniMap/src/Control.MiniMap.css'
         ],
         dest: 'frontend/dist/map/css/vendor.css',
@@ -97,7 +97,7 @@ module.exports = function(grunt) {
         src: [
           'frontend/bower_components/underscore/underscore.js',
           'frontend/bower_components/blockui/jquery.blockUI.js',
-          'frontend/bower_components/leaflet/dist/leaflet.js',
+          'frontend/src/js/leaflet/leaflet.js',
           'frontend/bower_components/leaflet-hash/leaflet-hash.js',
           'frontend/bower_components/leaflet-utfgrid/src/leaflet.utfgrid.js',
           'frontend/bower_components/leaflet-rrose/rrose-src.js',

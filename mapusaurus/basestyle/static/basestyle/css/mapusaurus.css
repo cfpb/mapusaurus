@@ -7065,7 +7065,6 @@ select b {
   font-size: 14px;
 }
 .summary-data-table tbody tr td {
-  background-color: inherit;
   vertical-align: top;
 }
 .summary-data-table tbody tr td.chart {
@@ -7085,6 +7084,12 @@ select b {
 }
 .summary-data-table.basic-table .target-row td {
   border-bottom: 1px solid #bababa;
+}
+td.odds-warning {
+  background-color: #e8a091;
+}
+td.odds-caution {
+  background-color: #f6d9d3;
 }
 #plot-container div {
   font: 10px sans-serif;

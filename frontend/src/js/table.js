@@ -24,15 +24,12 @@ $(document).ready(function () {
         }
 
         if (currentChart != id) {
-            if (id === 'chart-toggle__basic-table' || id === 'chart-toggle__peer-table') {
-                createTable(id === 'chart-toggle__peer-table');
-                $('#table-container').show();
-            } else if (id === 'chart-toggle__lar-chart') {
-                plotLarVolume();
-                $('#chart-container').show();
-            }
-            currentChart = id;
-            toggleDataContainer(true);
+
+        createTable(id === 'chart-toggle__peer-table');
+        $('#table-container').show();
+
+        currentChart = id;
+        toggleDataContainer(true);
 
         } else {
             currentChart = null;
@@ -78,7 +75,7 @@ function getTableData() {
         success: console.log('get API All Data request successful')
     }).fail( function( status ){
         console.log( 'no data was available at' + endpoint + '. status: ' + status );
-    });
+    });s
 }
 
 /**
@@ -97,13 +94,16 @@ function getTableData() {
 
 function createTable(showPeers) {
     msaData || (msaData = getTableData()); 
+    console.log("MSA DATA: ", msaData)
     msaData.done(function (res) {
+        console.log('msaData is done');
         if (!tableData) {
           tableData = res;
           prepTableData(tableData);
         }
         var $tbl = buildTable(tableData, showPeers);
         activateTable($tbl);
+        $('#tableLoadImage').hide();
         $tbl.appendTo($('#table-container')).show();
     });
 }
@@ -213,6 +213,7 @@ function getPeerData(data) {
  */
 function buildTable(tableData, showPeers) {
     // create table element
+    console.log('Building Table');
     var $tbl = $('<table>', {
         class: 'summary-data-table ' + (showPeers ? 'peer-table' : 'basic-table')
     });
@@ -257,6 +258,7 @@ function buildTableHead(showPeers) {
  * 
  */
 function buildTableContents(tableData, showPeers) {
+    console.log('Building table contents');
     var tbodies = [];
     
     var msaRows = buildTableRows(tableData.msa, 'MSA', showPeers);
@@ -349,6 +351,7 @@ function buildRow(data, rowType, showPeers) {
  */
 function activateTable($tbl) {
     // Activate tablesorter plugin
+    console.log("Table Sorter....");
     return $tbl.tablesorter({
         headerTemplate: '',
         widgets: [ 'stickyHeaders' ],

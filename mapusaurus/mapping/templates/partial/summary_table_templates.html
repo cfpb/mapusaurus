@@ -16,9 +16,9 @@
 
       <td class="chart">
           <div class="bar">
-              <div class="segment lma" style="width:<%-data.lma_pct%>%"></div>
-              <div class="segment mma" style="width:<%-data.mma_pct%>%"></div>
-              <div class="segment hma" style="width:<%-data.hma_pct%>%"></div>
+              <div class="segment lma" style="width:<%-data.lma_pct - .1 %>%"></div>
+              <div class="segment mma" style="width:<%-data.mma_pct - .1 %>%"></div>
+              <div class="segment hma" style="width:<%-data.hma_pct - .1 %>%"></div>
           </div>
       </td>
 
@@ -39,7 +39,7 @@
       <td class="odds_ratio mma_ratio">
         <% if (!data.isPeer) { %>
             <%-data.odds_mma%>
-        <% } %>
+        <% } else { '- ' } %>
       </td>
       <td class="odds_ratio hma_ratio">
         <% if (!data.isPeer) { %>
