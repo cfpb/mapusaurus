@@ -70,16 +70,17 @@
         
         // If we have a metro parameter, center the map on this lat / lon
         {% if metro %}
-            map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 10);
+            map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 11);
         {% else %}
             // Otherwise, somewhere near Chicago for grins
-            map.setView([40, -74.50], 10);
+            map.setView([40, -74.50], 11);
         {% endif %}
         
         // Using our modified Leaflet-Hash plugin, check to see if we need to move the map somewhere else.
         var hash = new L.Hash(map),
              hashCheck = hash.parseHash(hash),
             loadParams = getHashParams();
+            console.log("Hash Check: ", hashCheck);
 
         // If the hash already has parameters, change the view to be those exact coordinates
         if( typeof hashCheck.params != 'undefined') {
@@ -99,12 +100,14 @@
             Boundaries: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.4da32f68/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             CountyLabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.becdd200/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
             MSALabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.5de9fd0f/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctMinority: L.mapbox.tileLayer('cfpb.FL_TRACT_per-min_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctHispanic: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-hsp_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctBlack: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-blk_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctAsian: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-asn_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctNonWhite: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_pct_nhwht_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            Plurality: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.1bd47f29/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctMinority: L.mapbox.tileLayer('cfpb.b831eeca', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctHispanic: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.b5842925/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctBlack: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.58886e54/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctAsian: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.371a62d9/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctWhite: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.6c9e98c4/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Plurality: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_minor_plurality_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianIncome: L.mapbox.tileLayer('cfpb.d08a14ab', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            OwnerOccupancy: L.mapbox.tileLayer('cfpb.6b1a095b', {errorTileUrl: '/static/basestyle/img/0.png'}),
             Centroids: L.layerGroup([]),
             Branches: L.layerGroup([])
         };
@@ -129,7 +132,7 @@
         var miniMap = new L.Control.MiniMap(miniLayer).addTo(map);
 
         // This array allows us to remove them from the map when a new one is selected (later)
-        var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctNonWhite, layers.Plurality];
+        var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctWhite, layers.Plurality, layers.MedianIncome, layers.OwnerOccupancy];
 
         // Add all our primary default layers to the map up front
         layers.Base.addTo(map);

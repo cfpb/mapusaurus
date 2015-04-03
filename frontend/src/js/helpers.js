@@ -255,7 +255,7 @@
                 keyPath = '/static/basestyle/img/key_pct-asian.png';
                 break;
             case 'non_hisp_white_only_perc':
-                layer = layers.PctNonWhite;
+                layer = layers.PctWhite;
                 type = 'seq';
                 keyPath = '/static/basestyle/img/key_pct-white.png';
                 break;              
@@ -264,6 +264,16 @@
                 type = 'seq';
                 keyPath = '/static/basestyle/img/key_min-plurality.png';
                 break;
+            case 'owner_occupancy':
+                layer = layers.OwnerOccupancy;
+                type = 'seq';
+                keyPath = '';
+                break;                
+            case 'median_family_income':
+                layer = layers.MedianIncome;
+                type = 'seq';
+                keyPath = '';
+                break;                
             default:
                 layer = layers.PctMinority;
                 type = 'seq';
