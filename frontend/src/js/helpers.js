@@ -267,12 +267,12 @@
             case 'owner_occupancy':
                 layer = layers.OwnerOccupancy;
                 type = 'seq';
-                keyPath = '';
+                keyPath = '/static/basestyle/img/key_own-occupancy.png';
                 break;                
             case 'median_family_income':
                 layer = layers.MedianIncome;
                 type = 'seq';
-                keyPath = '';
+                keyPath = '/static/basestyle/img/key_med-fam-income.png';
                 break;                
             default:
                 layer = layers.PctMinority;

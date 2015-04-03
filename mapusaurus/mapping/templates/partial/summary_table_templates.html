@@ -22,9 +22,11 @@
           </div>
       </td>
 
+      <td class="lar tot_ct"><%-data.lma + data.mma + data.hma%></td>
       <td class="lar lma_ct"><%-data.lma%></td>
       <td class="lar mma_ct"><%-data.mma%></td>
       <td class="lar hma_ct"><%-data.hma%></td>
+      <td class="lar maj_ct"><%-data.mma + data.hma%></td>
       <td class="lar lma_pct"><%-data.lma_pct%>%</td>
       <td class="lar mma_pct"><%-data.mma_pct%>%</td>
       <td class="lar hma_pct"><%-data.hma_pct%>%</td>
@@ -55,8 +57,14 @@
  <script type="text/template" class="thead-template">
     <thead>
      <tr class="header-one">
-         <th class="sorter-false title" colspan="3">Data Tables</th>
-         <th class="sorter-false number" colspan="3">Number of Applications</th>
+        <th class="sorter-false title" colspan="3">
+        <% if (data.showPeers) { %>
+          Peer Summary
+        <% } else { %>
+          Basic Summary
+        <% } %>
+          Data Tables</th>
+         <th class="sorter-false number" colspan="5">Number of Applications</th>
          <th class="sorter-false percentage" colspan="3">Percentage of Market</th>
          <% if (data.showPeers) { %>
          <th class="sorter-false odds" colspan="3">Odds Ratio</th>
@@ -70,7 +78,14 @@
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
-         <th class="sorter-false name-span" ></th>
+        <th class="sorter-false name-span" ></th>
+         <th class="lar tot_ct" data-sortclass="lar_total">
+             <span class="color-coded sortable-content">Tot</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
          <th class="lar lma_ct" data-sortclass="lma_ct">
              <span class="color-coded sortable-content">LMA</span>
              <div class="arrows">
@@ -87,6 +102,13 @@
          </th>
          <th class="lar hma_ct" data-sortclass="hma_ct">
              <span class="color-coded sortable-content">HMA</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+        <th class="lar maj_ct" data-sortclass="maj_ct">
+             <span class="color-coded sortable-content">Maj</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
                  <div class="cf-icon cf-icon-down"></div>

@@ -26,7 +26,7 @@ module.exports = function(grunt) {
       },
       map: {
         src: [
-          'frontend/bower_components/leaflet-rrose/leaflet.rrose.css',
+          'frontend/src/less/leaflet.rrose.css',
           'frontend/bower_components/leaflet-MiniMap/src/Control.MiniMap.css'
         ],
         dest: 'frontend/dist/map/css/vendor.css',

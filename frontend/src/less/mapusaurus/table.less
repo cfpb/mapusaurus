@@ -108,6 +108,9 @@
             }
         }
     }
+    .tablesorter-headerRow {
+        border-bottom: 1px solid @border-light;
+    }
     
     .sortable-header th {
         text-transform: uppercase;
@@ -119,7 +122,7 @@
         font-size:  unit(16px / @base-font-size-px, em);
     }
     .header-two th {
-        padding-top: .2em;
+        padding-top: .4em;
         font-size:  unit(13px / @base-font-size-px, em);
     }
     
@@ -254,7 +257,7 @@ td.odds-caution {
 }
 
 #data-container-sizer {
-    background-color: @darkgray;
+    background-color: @gray-80;
     height:5px;
 }
 #tableLoadImage {

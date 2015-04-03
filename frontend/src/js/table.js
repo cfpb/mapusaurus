@@ -105,9 +105,7 @@ function getTableData() {
 
 function createTable(showPeers) {
     msaData || (msaData = getTableData()); 
-    console.log("MSA DATA: ", msaData)
     msaData.done(function (res) {
-        console.log('msaData is done');
         if (!tableData) {
           tableData = res;
           prepTableData(tableData);
@@ -224,7 +222,6 @@ function getPeerData(data) {
  */
 function buildTable(tableData, showPeers) {
     // create table element
-    console.log('Building Table');
     var $tbl = $('<table>', {
         class: 'summary-data-table ' + (showPeers ? 'peer-table' : 'basic-table')
     });
@@ -269,7 +266,6 @@ function buildTableHead(showPeers) {
  * 
  */
 function buildTableContents(tableData, showPeers) {
-    console.log('Building table contents');
     var tbodies = [];
     
     var msaRows = buildTableRows(tableData.msa, 'MSA', showPeers);
@@ -362,7 +358,6 @@ function buildRow(data, rowType, showPeers) {
  */
 function activateTable($tbl) {
     // Activate tablesorter plugin
-    console.log("Table Sorter....");
     return $tbl.tablesorter({
         headerTemplate: '',
         widgets: [ 'stickyHeaders' ],
