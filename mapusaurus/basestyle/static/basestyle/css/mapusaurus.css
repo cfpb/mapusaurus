@@ -7091,6 +7091,14 @@ td.odds-warning {
 td.odds-caution {
   background-color: #f6d9d3;
 }
+#data-container-sizer {
+  background-color: #43484e;
+  height: 5px;
+}
+#tableLoadImage {
+  margin: auto;
+  padding: 5px;
+}
 #plot-container div {
   font: 10px sans-serif;
   background-color: steelblue;

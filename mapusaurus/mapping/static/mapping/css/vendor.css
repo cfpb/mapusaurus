@@ -105,9 +105,9 @@ a.leaflet-rrose-close-button:hover {
 }
 
 .leaflet-rrose-content-wrapper {
-    -moz-border-radius:    20px;
-    -webkit-border-radius: 20px;
-    border-radius:         20px;
+    -moz-border-radius:    0px;
+    -webkit-border-radius: 0px;
+    border-radius:         0px;
 }
 
 .leaflet-rrose-content-wrapper-se {

@@ -36,6 +36,17 @@ $(document).ready(function () {
             toggleDataContainer(false);
         }        
     });
+
+    // $('.resizer').on('mousedown',function(e){
+    //     $('.appContainer').on('mousemove',function(e){
+    //         diff = $('.resizer').offset().top + 5 - e.pageY ;
+    //         $('.top').height($('.top').height()-diff);
+    //         $('.bot').height($('.bot').height()+diff);
+    //     });
+    // });
+    // $('.appContainer').on('mouseup',function(){
+    //     $('.appContainer').off('mousemove');
+    // });
 });
 
 /**
