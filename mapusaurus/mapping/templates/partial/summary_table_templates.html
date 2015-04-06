@@ -1,0 +1,164 @@
+<!-- Begin: TR Template Definition. -->
+<script type="text/template" class="row-template">
+    <tr class="<%- data.className %>">
+      
+      <td class="name" >
+          <% if (!data.isPeer) { %>
+              <%-data.rowType%> <% if (data.geoid) { %><%-data.geoid%><% } %>
+          <% } %>
+      </td>
+
+      <td class="chart-title">
+        <% if (data.showPeers) { %>
+            <%-data.isPeer ? 'Peers' : 'Target'%>
+        <%}%>
+      </td>
+
+      <td class="chart">
+          <div class="bar">
+              <div class="segment lma" style="width:<%-data.lma_pct - .1 %>%"></div>
+              <div class="segment mma" style="width:<%-data.mma_pct - .1 %>%"></div>
+              <div class="segment hma" style="width:<%-data.hma_pct - .1 %>%"></div>
+          </div>
+      </td>
+
+      <td class="lar tot_ct"><%-data.lma + data.mma + data.hma%></td>
+      <td class="lar lma_ct"><%-data.lma%></td>
+      <td class="lar mma_ct"><%-data.mma%></td>
+      <td class="lar hma_ct"><%-data.hma%></td>
+      <td class="lar maj_ct"><%-data.mma + data.hma%></td>
+      <td class="lar lma_pct"><%-data.lma_pct%>%</td>
+      <td class="lar mma_pct"><%-data.mma_pct%>%</td>
+      <td class="lar hma_pct"><%-data.hma_pct%>%</td>
+
+
+      <% if (data.showPeers) { %>
+      <td class="odds_ratio lma_ratio">
+        <% if (!data.isPeer) { %>
+            <%-data.odds_lma%>
+        <% } %>
+      </td>
+      <td class="odds_ratio mma_ratio">
+        <% if (!data.isPeer) { %>
+            <%-data.odds_mma%>
+        <% } else { '- ' } %>
+      </td>
+      <td class="odds_ratio hma_ratio">
+        <% if (!data.isPeer) { %>
+            <%-data.odds_hma%>
+        <% } %>
+      </td>
+      <% } %>
+    </tr>
+</script>
+<!-- End: TR Template Definition. -->
+
+<!-- BEGIN: Data table thead Template Definition. -->
+ <script type="text/template" class="thead-template">
+    <thead>
+     <tr class="header-one">
+        <th class="sorter-false title" colspan="3">
+        <% if (data.showPeers) { %>
+          Peer Summary
+        <% } else { %>
+          Basic Summary
+        <% } %>
+          Data Tables</th>
+         <th class="sorter-false number" colspan="5">Number of Applications</th>
+         <th class="sorter-false percentage" colspan="3">Percentage of Market</th>
+         <% if (data.showPeers) { %>
+         <th class="sorter-false odds" colspan="3">Odds Ratio</th>
+         <% } %>
+     </tr>
+     <tr class="sortable-header header-two">
+         <th class="name" colspan="2" data-sortclass="name">
+             <span class="sortable-content">Name</span> 
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+        <th class="sorter-false name-span" ></th>
+         <th class="lar tot_ct" data-sortclass="lar_total">
+             <span class="color-coded sortable-content">Tot</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+         <th class="lar lma_ct" data-sortclass="lma_ct">
+             <span class="color-coded sortable-content">LMA</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+         <th class="lar mma_ct" data-sortclass="mma_ct">
+             <span class="color-coded sortable-content">MMA</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+         <th class="lar hma_ct" data-sortclass="hma_ct">
+             <span class="color-coded sortable-content">HMA</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+        <th class="lar maj_ct" data-sortclass="maj_ct">
+             <span class="color-coded sortable-content">Maj</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+         <th class="lar lma_pct" data-sortclass="lma_pct">
+             <span class="color-coded sortable-content">LMA</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+         <th class="lar mma_pct" data-sortclass="mma_pct">
+             <span class="color-coded sortable-content">MMA</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+         <th class="lar hma_pct" data-sortclass="hma_pct">
+             <span class="color-coded sortable-content">HMA</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+         <% if (data.showPeers) { %>
+         <th class="odds_ratio lma_ratio">
+             <span class="color-coded sortable-content">LMA</span>
+             <div class="arrows">
+                 <div class="cf-icon cf-icon-up"></div>
+                 <div class="cf-icon cf-icon-down"></div>
+             </div>
+         </th>
+         <th class="odds_ratio mma_ratio">
+              <span class="color-coded sortable-content">MMA</span>
+              <div class="arrows">
+                  <div class="cf-icon cf-icon-up"></div>
+                  <div class="cf-icon cf-icon-down"></div>
+              </div>
+          </th>
+          <th class="odds_ratio hma_ratio">
+              <span class="color-coded sortable-content">HMA</span>
+              <div class="arrows">
+                  <div class="cf-icon cf-icon-up"></div>
+                  <div class="cf-icon cf-icon-down"></div>
+              </div>
+          </th>
+         <% } %>
+     </tr>
+     </thead>
+ </script>
+<!-- END: Data table thead Template Definition. -->

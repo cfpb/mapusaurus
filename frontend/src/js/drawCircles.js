@@ -47,21 +47,13 @@
             black = (data['non_hisp_black_only_perc']*100).toFixed(2);
             asian = (data['non_hisp_asian_only_perc']*100).toFixed(2);
             new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false, y_bound: 160 })
-                .setContent('<div class="bubble-header"><b>Tract '+ circle.geoid + '</div><div><span class="circle-hover-label">' +data['volume'] + '</span></b> LAR<br/><b><span class="circle-hover-label">' + data['num_households'] + '</span></b> Households</div>')
-                    // '<div class="bubble-label"><b>Hispanic</b>: (' + hisp + '%)</div><div class="css-chart"><div class="css-chart-inner" data-min=' + hisp +'></div></div>' +
-                    // '<div class="bubble-label"><b>Black</b>: (' + black + '%)</div><div class="css-chart"><div class="css-chart-inner" data-min=' + black +'></div></div>' + 
-                    // '<div class="bubble-label"><b>Asian</b>: (' + asian + '%)</div><div class="css-chart"><div class="css-chart-inner" data-min=' + asian +'></div></div>' + 
-                    // '<div class="bubble-label"><b>White</b>: (' + white + '%)</div><div class="css-chart"><div class="css-chart-inner" data-min=' + white +'></div></div>' )
+                .setContent('<div class="bubble-header">Tract '+ circle.geoid + 
+                    '</div><div class="lar-count"><span class="circle-hover-data">' +data['volume'] + 
+                    '</span><span class="circle-hover-label">LAR</span></div><div class="hh-count"><span class="circle-hover-data">' + data['num_households'] + 
+                    '</span><span class="circle-hover-label">Households</span></div></div>')
                 .setLatLng(e.latlng)
                 .openOn(map);
             
-            // $('.css-chart-inner').each( function(index){
-            //     var self = $( this ),
-            //         width = ( self.data('min') / 100 )*120,
-            //         widthStr = width.toString() + 'px';
-            //     self.css('width', widthStr);
-            //     self.css('background-color', '#000');
-            // });
         });
                     
         circle.on('mouseout', function(){ 

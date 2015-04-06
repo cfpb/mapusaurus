@@ -1,7 +1,6 @@
     /*
         ---- ASYNC HELPERS / DRAWERS ----
     */
-
     function drawBranches(){
         $.when( getBranchesInBounds( getBoundParams() ) ).then( function(branches){
             $.each( branches.features, function( i, val){
@@ -28,6 +27,16 @@
             } else {
                 dataStore.tracts[geoid].volume = 0;
             }
+            
+            pctMinority.push(1.0 - rawData.minority[geoid]['non_hisp_white_only_perc']);
+            var loanVolume = rawData.loanVolume[geoid];
+
+            if (_.isUndefined(loanVolume)) {
+              larVolume.push(0);
+            } else {
+              larVolume.push((loanVolume['volume'] / loanVolume['num_households']) * 1000);
+            }
+
             count++;
         });
 
@@ -48,9 +57,22 @@
         var warningBannerHeight = $('#warning-banner').outerHeight();
         var headerHeight = $('#header').outerHeight();
         var mapHeaderHeight = $('#map-header').outerHeight();
-        var mapHeight = (viewportHeight - (warningBannerHeight + headerHeight + mapHeaderHeight));
+        var combinedHeadersHeight = warningBannerHeight + headerHeight + mapHeaderHeight;
+        var mapHeight = viewportHeight - combinedHeadersHeight;
         $('#map-aside').css('height', mapHeight);
-        $('#map').css('height', mapHeight);
+        $('#map-container').css('height', mapHeight);
+        if (showDataContainer) {
+            $('.map-container').css({'height': (mapHeight * .5) + combinedHeadersHeight, 'overflow': 'hidden'});
+            $('#map').css('height', mapHeight * .5);
+            $('#map-aside').css('height', mapHeight * .5);
+            $('#data-container').css('height', (mapHeight * .5) - 5);
+            $('body').addClass('show-data');
+        } else {
+            $('#map-aside').css('height', mapHeight);
+            $('.map-container').css('height', 'auto');
+            $('#map').css('height', mapHeight);
+            $('body').removeClass('show-data');
+        }
     }
 
     // Helper function that takes care of all the DOM interactions when "Lender Hierarchy" is checked
@@ -233,7 +255,7 @@
                 keyPath = '/static/basestyle/img/key_pct-asian.png';
                 break;
             case 'non_hisp_white_only_perc':
-                layer = layers.PctNonWhite;
+                layer = layers.PctWhite;
                 type = 'seq';
                 keyPath = '/static/basestyle/img/key_pct-white.png';
                 break;              
@@ -242,6 +264,16 @@
                 type = 'seq';
                 keyPath = '/static/basestyle/img/key_min-plurality.png';
                 break;
+            case 'owner_occupancy':
+                layer = layers.OwnerOccupancy;
+                type = 'seq';
+                keyPath = '/static/basestyle/img/key_own-occupancy.png';
+                break;                
+            case 'median_family_income':
+                layer = layers.MedianIncome;
+                type = 'seq';
+                keyPath = '/static/basestyle/img/key_med-fam-income.png';
+                break;                
             default:
                 layer = layers.PctMinority;
                 type = 'seq';
@@ -250,6 +282,7 @@
         }
 
         return { 'type': type, 'layer': layer, 'keyPath': keyPath };
+
     }
 
     // Gets non-hash URL parameters
