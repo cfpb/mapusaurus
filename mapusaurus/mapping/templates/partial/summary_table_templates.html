@@ -4,7 +4,7 @@
       
       <td class="name" >
           <% if (!data.isPeer) { %>
-              <%-data.rowType%> <% if (data.geoid) { %><%-data.geoid%><% } %>
+              <% if (data.name) { %><%-data.name%><% } %> <%-data.rowType%> 
           <% } %>
       </td>
 
