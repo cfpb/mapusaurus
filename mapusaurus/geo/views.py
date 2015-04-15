@@ -57,7 +57,7 @@ def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
     point_bottom_right = Point(maxlon, minlat)
     #Create a polygon of the entire map screen
     poly = Polygon (((point_top_left, point_bottom_left, point_bottom_right, point_top_right, point_top_left)))
-    #check if geo polygon interects with the screen polygon
+    #check if geo polygon interects with the screen polygon. no get_object_or_404 since user can drag to alaska, pr, hawaii
     geos = Geo.objects.filter(geo_type = geoTypeId).filter(geom__intersects=poly)
     return geos
 
