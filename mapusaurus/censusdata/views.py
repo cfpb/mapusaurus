@@ -128,7 +128,9 @@ def odds_ratio(target_pct, peer_pct):
     is only for mocking data flow to tables
     """
     odds_ratio = 0.0
-    if peer_pct > 0.0 and target_pct < 1.0 and peer_pct < 1.0:
+    if target_pct == peer_pct:
+        odds_ratio = 1.0
+    elif peer_pct > 0.0 and target_pct < 1.0 and peer_pct < 1.0:
         odds_ratio = (target_pct/(1-target_pct))/(peer_pct/(1-peer_pct))
     return round(odds_ratio, 3)
 
@@ -158,7 +160,6 @@ def minority_aggregation_as_json(request):
     peer_request.GET['lender'] = lender.institution_id
     peer_request.GET['metro']= metro.geoid
     peer_request.GET['peers'] = 'true'
-    peer_request.GET['action_taken'] = '1,2,3,4,5'
     peer_lar_data = loan_originations_as_json(peer_request)
 
     msa_counties = Geo.objects.filter(geo_type=Geo.COUNTY_TYPE, cbsa=metro.geoid)
