@@ -2,10 +2,21 @@
 
 if (!window.console) console = {log: function() {}};
 
+
     var cat, catId,
         geoQueryType = 'selected';
 
     // When the DOM is loaded, check for hash params and add event listeners
+
+    // globals for table.js
+    var showDataContainer; 
+    var destroyLarChart;
+
+    var cat, catId;
+    var geoQueryType = 'selected';
+
+    // When the DOM is loaded, check for params and add listeners:
+
     $(document).ready(function(){
         var lhStatus, peerStatus, branchStatus;
 
@@ -62,7 +73,6 @@ if (!window.console) console = {log: function() {}};
             addParam('geo_query_type', geoQueryType );
             moveEndAction[geoQueryType]();
         });
-
         // End geoQueryType stuff        
 
         // Check for branch parameters
@@ -162,6 +172,9 @@ if (!window.console) console = {log: function() {}};
             }
         });
 
+        map.on('moveend', _.debounce(moveEndAction[geoQueryType], 500));
+
+
         // When the page loads, update the print link, and update it whenever the hash changes
         updatePrintLink();
         updateCensusLink();
@@ -172,11 +185,15 @@ if (!window.console) console = {log: function() {}};
             updatePrintLink();
             updateCensusLink();
         });
-
+        // Update links to peers
+        getPeerLinks();
+        
         // Kick off the application
         initCalls(geoQueryType);
 
     });
+
+        // Let the application do its thing 
 
     // Global variable to store the MSAMD codes for those MSAs on the map
     var msaArray = [];
@@ -192,7 +209,6 @@ if (!window.console) console = {log: function() {}};
             initCalls(geoQueryType);
             oldEndAction = 'selected';   
         }
-        
     };
     moveEndAction.all_msa = function(){
         var oldMsaArray = msaArray.slice(0);
@@ -267,4 +283,3 @@ if (!window.console) console = {log: function() {}};
         $.unblockUI();
         isUIBlocked = false;
     }
-

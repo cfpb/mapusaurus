@@ -37,7 +37,7 @@
                 <div id="non_hisp_white_only_perc" class="map-divider-minor option darker">
                     <h6 class="sub-header-name">Pct White</h6><i class="cf-icon cf-icon-right"></i>
                 </div>  
-    <!--             <div id="marketCriteria" class="map-divider-minor darker-still">
+                <div id="marketCriteria" class="map-divider-minor darker-still">
                     <h6 class="main-header-name" >Market Criteria</h6>
                 </div>     
                 <div id="median_family_income" class="map-divider-minor option darker">
@@ -46,9 +46,9 @@
                 <div id="owner_occupancy" class="map-divider-minor option darker">
                     <h6 class="sub-header-name">Owner Occupancy</h6><i class="cf-icon cf-icon-right"></i>
                 </div> 
-                <div id="fico_scores" class="map-divider-minor option lighter">
+<!--                 <div id="fico_scores" class="map-divider-minor option lighter">
                     <h6 class="sub-header-name">FICO Scores</h6><i class="cf-icon cf-icon-right"></i>
-                </div>  -->   
+                </div>   -->  
             </div>                                                    
 
     </div><!-- /.tabpanel -->    
@@ -99,7 +99,7 @@
                 <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
                     {% for peer in institution_peers %}
                         <div class="header-group divided">
-                            <h6 class="item-main">{{ peer.institution.name }}</h6>
+                            <h6 class="item-main"><a class="peer-link" data-instid="{{ peer.institution.institution_id}}" target="_blank" href="#">{{ peer.institution.name }}</a></h6>
                             <h6 class="item-sub">{{ peer.institution.institution_id }} | {{ peer.lar_count}} LAR</h6>
                         </div>
                     {% endfor %}
@@ -109,8 +109,18 @@
                     <input type="checkbox" disabled=true /><h6 class="header-name" style="display:inline-block">No Peers Available <span class="tooltipsy hidden peer-component" title="Peers are institutions that have between 50% and 200% of {{lender.name}} LAR count, and and a similar percentage of overall FHA Applications in {{ metro.name}}"><i class="cf-icon cf-icon-information-round"></i></span></h6>
                 </div>  
             {% endif %}
+        </div><!-- /.tabpanel -->            
     {% endif %}
-        </div><!-- /.tabpanel -->
+
+    <div id="map-aside__summary-tables" class="map-aside__summary-tables">
+        <div class="map-divider"><h6 class="tab-title">Summary Tables</div>
+         <div id="chart-toggle__basic-table" class="chart-toggle map-divider lighter">
+            <h6 class="header-name" style="display:inline-block">Basic Summary Data Table<span class="tooltipsy hidden peer-component" title=""><i class="cf-icon cf-icon-information-round"></i></span></h6>
+        </div>
+        <div id="chart-toggle__peer-table" class="chart-toggle map-divider lighter">
+            <h6 class="header-name" style="display:inline-block">Peer Summary Data Table<span class="tooltipsy hidden peer-component" title=""><i class="cf-icon cf-icon-information-round"></i></span></h6>
+        </div>
+    </div><!-- /.tabpanel --> 
 
     <div id="map-aside__download-export">
         <div class="map-divider darker"><h6 class="tab-title">Export Options</h6></div>

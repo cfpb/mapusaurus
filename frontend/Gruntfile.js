@@ -26,7 +26,7 @@ module.exports = function(grunt) {
       },
       map: {
         src: [
-          'frontend/dist/map/css/leaflet.rrose.css',
+          'frontend/src/less/leaflet.rrose.css',
           'frontend/bower_components/leaflet-MiniMap/src/Control.MiniMap.css'
         ],
         dest: 'frontend/dist/map/css/vendor.css',
@@ -87,7 +87,9 @@ module.exports = function(grunt) {
           'frontend/bower_components/jquery.easing/js/jquery.easing.js',
           'frontend/bower_components/typeahead/dist/typeahead.bundle.js',
           'frontend/bower_components/cf-expandables/src/js/cf-expandables.js',
-          'frontend/bower_components/tooltipsy/tooltipsy.min.js'
+          'frontend/bower_components/tooltipsy/tooltipsy.min.js',
+          'frontend/bower_components/tablesorter/dist/js/jquery.tablesorter.min.js',
+          'frontend/bower_components/tablesorter/dist/js/jquery.tablesorter.widgets.min.js'
         ],
         dest: 'frontend/dist/basestyle/js/vendor.min.js'
       },
@@ -95,8 +97,9 @@ module.exports = function(grunt) {
         src: [
           'frontend/bower_components/underscore/underscore.js',
           'frontend/bower_components/blockui/jquery.blockUI.js',
-          'frontend/dist/map/leaflet-master/leaflet.js',
+          'frontend/src/js/leaflet/leaflet.js',
           'frontend/bower_components/leaflet-hash/leaflet-hash.js',
+          'frontend/bower_components/leaflet-utfgrid/src/leaflet.utfgrid.js',
           'frontend/bower_components/leaflet-rrose/rrose-src.js',
           'frontend/bower_components/leaflet-MiniMap/src/Control.MiniMap.js'
         ],
@@ -120,6 +123,10 @@ module.exports = function(grunt) {
           'frontend/src/js/helpers.js'
         ],
         dest: 'frontend/dist/map/js/map.min.js'
+      },
+      table: {
+        src: ['frontend/src/js/table.js'],
+        dest: 'frontend/dist/map/js/table.min.js'
       },
       map_layout: {
         src: ['frontend/src/js/map-layout.js'],

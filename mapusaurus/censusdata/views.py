@@ -163,21 +163,21 @@ def minority_aggregation_as_json(request):
     peer_request.GET['action_taken'] = '1,2,3,4,5'
     peer_lar_data = loan_originations_as_json(peer_request)
 
-    msa_counties = Geo.objects.filter(geo_type=Geo.COUNTY_TYPE, cbsa=metro.geoid).values_list('geoid', flat=True)
-    county_stats = {county_id: {} for county_id in msa_counties}
-    for county_id in msa_counties:
-        county_tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, state=county_id[:2], county=county_id[2:])
+    msa_counties = Geo.objects.filter(geo_type=Geo.COUNTY_TYPE, cbsa=metro.geoid)
+    county_stats = {county_id: {} for county_id in msa_counties.values_list('geoid', flat=True)}
+    for county in msa_counties:
+        county_tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, state=county.state, county=county.county)
         minority_area_stats = get_minority_area_stats(lar_data, peer_lar_data, county_tracts)
-        county_stats[county_id] = assemble_stats(*minority_area_stats)
-
+        county_stats[county.geoid] = assemble_stats(*minority_area_stats)
+        county_stats[county.geoid]['name'] = county.name
         #tally target msa counts
-        msa_target_lma_sum += county_stats[county_id]['lma']
-        msa_target_mma_sum += county_stats[county_id]['mma']
-        msa_target_hma_sum += county_stats[county_id]['hma']
+        msa_target_lma_sum += county_stats[county.geoid]['lma']
+        msa_target_mma_sum += county_stats[county.geoid]['mma']
+        msa_target_hma_sum += county_stats[county.geoid]['hma']
         #tally peer msa counts
-        msa_peer_lma_sum += county_stats[county_id]['peer_lma']
-        msa_peer_mma_sum += county_stats[county_id]['peer_mma']
-        msa_peer_hma_sum += county_stats[county_id]['peer_hma']
+        msa_peer_lma_sum += county_stats[county.geoid]['peer_lma']
+        msa_peer_mma_sum += county_stats[county.geoid]['peer_mma']
+        msa_peer_hma_sum += county_stats[county.geoid]['peer_hma']
     #msa
     msa_minority_area_stats = (msa_target_lma_sum, msa_target_mma_sum, msa_target_hma_sum, msa_peer_lma_sum, msa_peer_mma_sum, msa_peer_hma_sum)
     msa_stats = assemble_stats(*msa_minority_area_stats)

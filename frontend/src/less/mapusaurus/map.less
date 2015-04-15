@@ -113,8 +113,8 @@ select {
   i.cf-icon-right {
     font-size: .75em;
     position: absolute;
-    right: 30px;
-    top: 12px;
+    right: 10px;
+    top: 13px;
   }
 
   h6 {
@@ -131,6 +131,13 @@ select {
 }
 .map-divider-minor.option.active-layer:hover{
     background: @green-midtone;
+}
+
+#layerOptions .option i {
+  color: @gray-50;
+}
+#layerOptions .option.active-layer i {
+  color: @darkgray;
 }
 
 .header-group {
@@ -284,13 +291,38 @@ select {
 
 .bubble-header{
   border-bottom: 1px solid @gray-20;
+  color: @gray-80;
+  font-weight: bold;
 }
 .bubble-label{
   margin-top: 3px;
 }
 
-.circle-hover-label{
-  width: 40px;
+// Mouse-over bubble formatting
+.circle-hover-label {
+  font-size: .8em;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: @gray-50;
+  display: block;
+}
+
+.circle-hover-data {
+  font-size: 1.25em;
+  font-weight: bold;
+  color: @black;
+  display: block;
+}
+
+.hh-count {
+  .grid_column(8);
+  border-width: 0;
+  text-align: right;
+}
+.lar-count {
+  .grid_column(4);
+  border-width: 0;
+  text-align: left;
 }
 
 .map-aside {

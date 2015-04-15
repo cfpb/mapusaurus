@@ -19,13 +19,16 @@ class Command(BaseCommand):
                 median = calculate_median_loans(lender_str, metro) or 0
                 lar = calculate_lar_count(lender_str, metro)
                 fha = calculate_fha_count(lender_str, metro)
-                fha_percentage = fha/float(lar) 
+                if lar > 0:
+                    fha_percentage = fha/float(lar)
+                else:
+                    fha_percentage = 0.0
                 bucket = get_fha_bucket(fha_percentage)
                 LendingStats.objects.create(
                     institution_id=lender_str, geo=metro, lar_median=median, lar_count=lar, fha_count=fha, fha_bucket=bucket)
 
 def lar_query(lender_str, metro):
-    lar_query = HMDARecord.objects.filter(institution_id=lender_str, geo__cbsa=metro.geoid, geo__geo_type=Geo.TRACT_TYPE)
+    lar_query = HMDARecord.objects.filter(institution_id=lender_str, geo__cbsa=metro.geoid, geo__geo_type=Geo.TRACT_TYPE, action_taken__in=[1,2,3,4,5])
     return lar_query
 
 def calculate_lar_count(lender_str, metro):
