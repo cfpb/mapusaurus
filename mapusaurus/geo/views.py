@@ -1,5 +1,8 @@
 import json
 
+from django.contrib.gis.geos import Point, Polygon
+from django.shortcuts import get_object_or_404
+from django.http import Http404
 from haystack.inputs import AutoQuery
 from haystack.query import SearchQuerySet
 from rest_framework import serializers
@@ -8,10 +11,6 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from geo.models import Geo
 from geo.utils import check_bounds
-from django.contrib.gis.geos import Point, Polygon
-from django.shortcuts import get_object_or_404
-from django.http import Http404
-
 
 def geo_as_json(geos):
     return json.loads(format_geo_to_geojson(geos))

@@ -1,5 +1,5 @@
 import json
-
+from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.db.models import Count
 from django.http import HttpResponse
@@ -7,7 +7,6 @@ from hmda.models import HMDARecord
 from geo.models import Geo
 from geo.views import get_censustract_geos 
 from respondents.models import Institution
-from django.shortcuts import get_object_or_404
 
 
 def base_hmda_query():

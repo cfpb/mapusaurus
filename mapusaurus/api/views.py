@@ -47,7 +47,7 @@ def msa(request):
         tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=metro)
         tract_loans = loan_originations_as_json(request)
     except:
-        return HttpResponseBadRequest("request failed; details: %s" % request)
+        return HttpResponseNotFound("request failed; details: %s" % request)
     else:
         try:
             with open("/var/www/static/tracts/%s.json" % metro, 'r') as f:

@@ -3,6 +3,7 @@ import csv
 from django.utils.encoding import smart_str
 from django.db.models import Count
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
+from django.shortcuts import get_object_or_404
 
 from hmda.models import HMDARecord
 from .models import Census2010RaceStats, Census2010Households
@@ -152,10 +153,11 @@ def minority_aggregation_as_json(request):
 
     msa_stats = {}
 
-    lender = Institution.objects.get(institution_id=request.GET.get('lender'))
-    metro = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
+   
     lar_data = loan_originations_as_json(request)
 
+    lender = get_object_or_404(Institution, pk=request.GET.get('lender'))
+    metro = get_object_or_404(Geo, geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
     peer_request = HttpRequest()
     peer_request.GET['lender'] = lender.institution_id
     peer_request.GET['metro']= metro.geoid
