@@ -17,11 +17,8 @@ def all(request):
     return HttpResponse(json.dumps(responses), content_type='application/json')
 
 def tables(request):
-    try:
-        table_data = minority_aggregation_as_json(request)
-        return HttpResponse(json.dumps(table_data), content_type='application/json')
-    except:
-        return HttpResponseNotFound("Error processing request")
+    table_data = minority_aggregation_as_json(request)
+    return HttpResponse(json.dumps(table_data), content_type='application/json')
 
 def msas(request):
     """return a list of MSA ids visible by bounding coordinates"""

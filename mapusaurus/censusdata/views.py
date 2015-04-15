@@ -1,8 +1,7 @@
 import json
 import csv
 from django.utils.encoding import smart_str
-from django.db.models import Count
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 
 from hmda.models import HMDARecord
@@ -139,17 +138,14 @@ def minority_aggregation_as_json(request):
     for a lender in an MSA
     by tract, msa and county
     """
-    msa_target_stats = {}
     msa_target_lma_sum = 0
     msa_target_mma_sum = 0
     msa_target_hma_sum = 0
 
-    msa_peer_stats = {}
     msa_peer_lma_sum = 0
     msa_peer_mma_sum = 0
     msa_peer_hma_sum = 0
 
-    odds_lender = {}
 
     msa_stats = {}
 
@@ -166,7 +162,7 @@ def minority_aggregation_as_json(request):
     peer_lar_data = loan_originations_as_json(peer_request)
 
     msa_counties = Geo.objects.filter(geo_type=Geo.COUNTY_TYPE, cbsa=metro.geoid)
-    county_stats = {county_id: {} for county_id in msa_counties.values_list('geoid', flat=True)}
+    county_stats = {}
     for county in msa_counties:
         county_tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, state=county.state, county=county.county)
         minority_area_stats = get_minority_area_stats(lar_data, peer_lar_data, county_tracts)
