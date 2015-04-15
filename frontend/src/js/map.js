@@ -114,9 +114,13 @@ if (!window.console) console = {log: function() {}};
             initCalls(geoQueryType);
         });
 
+        $('#actionTaken').text( getActionTaken( $('#action-taken-selector option:selected').val() ) );
+        
         // When the user changes the action taken data selector, re-initialize
         $('#action-taken-selector').on('change', function(){
-            addParam( 'action', $('#action-taken-selector option:selected').val() );
+            var act = $('#action-taken-selector option:selected').val();
+            addParam( 'action', act);
+            $('#actionTaken').text( getActionTaken( act ) );
             initCalls(geoQueryType);
         });
 
@@ -130,6 +134,20 @@ if (!window.console) console = {log: function() {}};
             hide: function (e, $el) {
                 $el.fadeOut(450);
             }
+        });
+
+        var keyHide = $('.hide-key');
+        var keyShow = $('.show-key');
+        var keyContents = $('.key-contents');
+        keyHide.on('click', function(e){
+            keyShow.removeClass('hidden');
+            keyContents.addClass('hidden');
+            keyHide.addClass('hidden');
+        });
+        keyShow.on('click', function(e){
+            keyHide.removeClass('hidden');
+            keyContents.removeClass('hidden');
+            keyShow.addClass('hidden');
         });
 
         if( typeof loadParams.category !== 'undefined'){

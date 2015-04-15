@@ -21,6 +21,11 @@
     border-top: 3px solid #777;
     overflow-y: auto;
     position: relative;
+    display: none;
+}
+
+#table-container {
+    display: none;
 }
 
 .summary-data-table {
@@ -257,9 +262,25 @@ td.odds-caution {
 }
 
 #data-container-sizer {
-    background-color: @gray-80;
-    height:5px;
+    width: 70px;
+    position: absolute;
+    right: 0;
+    height: 0;
+    display: none;
+    font-weight: bold;
 }
+
+.chart-toggle.close-button {
+    font-size: .85em;
+    padding: 5px 10px 5px 10px;
+    position: absolute;
+    border: 1px solid @gray-80;
+    background-color: @background-gray;
+    border-bottom: 0;
+    top: -30px;
+    width: 100%;
+}
+
 #tableLoadImage {
     margin: auto;
     padding: 5px;

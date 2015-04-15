@@ -23,6 +23,12 @@ $(document).ready(function () {
             destroyData();
         }
 
+        if (e.currentTarget.id === 'closeChart'){
+            toggleDataContainer(false);
+            currentChart = null;
+            return false;
+        }
+
         if (currentChart != id) {
 
         createTable(id === 'chart-toggle__peer-table');
@@ -86,7 +92,7 @@ function getTableData() {
         success: console.log('get API All Data request successful')
     }).fail( function( status ){
         console.log( 'no data was available at' + endpoint + '. status: ' + status );
-    });s
+    });
 }
 
 /**
@@ -416,11 +422,11 @@ function destroyTable() {
 function toggleDataContainer(showData) {
     showDataContainer = showData;
     if (showData) {
-        $('#table-container').show();
         $('#data-container').show();
+        $('#data-container-sizer').show();
     } else {
-        $('#table-container').hide();
         $('#data-container').hide();
+        $('#data-container-sizer').hide();
     }
     setMapHeight();
 }
