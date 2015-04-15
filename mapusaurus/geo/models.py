@@ -1,8 +1,8 @@
 import json
 
 from django.contrib.gis.db import models
-
-
+from django.shortcuts import get_list_or_404
+ 
 class Geo(models.Model):
     STATE_TYPE, COUNTY_TYPE, TRACT_TYPE, METRO_TYPE, MICRO_TYPE = range(1, 6)
     METDIV_TYPE, = range(6, 7)
@@ -77,5 +77,5 @@ class Geo(models.Model):
 
     def get_censustract_geos_by_msa(self):
         """returns tracts associated with an MSA"""
-        tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=self.geoid)
+        tracts = get_list_or_404(Geo, geo_type=Geo.TRACT_TYPE, cbsa=self.geoid)
         return tracts

@@ -1,6 +1,6 @@
 import json
 
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseNotFound
 from geo.views import geo_as_json, get_geos_by_bounds_and_type, get_censustract_geos
 from geo.models import Geo
 from censusdata.views import race_summary_as_json, minority_aggregation_as_json
@@ -11,20 +11,17 @@ from geo.utils import check_bounds
 def all(request):
     """This endpoint allows multiple statistical queries to be made in a
     single HTTP request"""
-    try:
-        hmda = loan_originations_as_json(request)
-        minority = race_summary_as_json(request)
-        responses = {'minority' : minority, 'loanVolume': hmda}
-        return HttpResponse(json.dumps(responses), content_type='application/json')
-    except:
-        return HttpResponseBadRequest("Invalid or Missing one of lender, metro or lat/lon bounds")
+    hmda = loan_originations_as_json(request)
+    minority = race_summary_as_json(request)
+    responses = {'minority' : minority, 'loanVolume': hmda}
+    return HttpResponse(json.dumps(responses), content_type='application/json')
 
 def tables(request):
     try:
         table_data = minority_aggregation_as_json(request)
         return HttpResponse(json.dumps(table_data), content_type='application/json')
     except:
-        return HttpResponseBadRequest("the following request failed: %s" % request)
+        return HttpResponseNotFound("Error processing request")
 
 def msas(request):
     """return a list of MSA ids visible by bounding coordinates"""
@@ -41,7 +38,7 @@ def msas(request):
         msa_list = [metro.geoid for metro in msas]
         return HttpResponse(json.dumps(msa_list), content_type='application/json')
     except:
-        return HttpResponseBadRequest("Invalid lat/lon bounding coordinates")
+        return HttpResponseNotFound("Invalid lat/lon bounding coordinates")
 
 def msa(request):
     """returns simplified tract shapes for dot-density mapping, with loan volume"""

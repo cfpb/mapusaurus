@@ -190,9 +190,10 @@ def minority_aggregation_as_json(request):
 def race_summary(request):
     """Race summary statistics"""
     geos = get_censustract_geos(request)
-    if geos is None:
-        return HttpResponseBadRequest("Missing lat/lon or metro")
-    query = Census2010RaceStats.objects.filter(geoid__in=geos)
+    if len(geos) > 0:
+        query = Census2010RaceStats.objects.filter(geoid__in=geos)
+    else:
+        query = Census2010RaceStats.objects.all()
     return query
 
 def race_summary_as_json(request_dict):
