@@ -10,6 +10,7 @@ from geo.models import Geo
 from geo.utils import check_bounds
 from django.contrib.gis.geos import Point, Polygon
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 
 def geo_as_json(geos):
@@ -33,12 +34,15 @@ def get_censustract_geos(request):
     geos = []
     if northEastLat or northEastLon or southWestLat or southWestLon:
         bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
-        if geo_type == "msa":
-            #*bounds expands the set from check_bounds
-            msas = get_geos_by_bounds_and_type(*bounds, metro=True)
-            geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
+        if bounds:
+            if geo_type == "msa":
+                #*bounds expands the set from check_bounds
+                msas = get_geos_by_bounds_and_type(*bounds, metro=True)
+                geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
+            else:
+                geos = get_geos_by_bounds_and_type(*bounds)
         else:
-            geos = get_geos_by_bounds_and_type(*bounds)
+            raise Http404("Invalid bounds")
     elif metro:
         msa = get_object_or_404(Geo, geo_type=Geo.METRO_TYPE, geoid=metro)
         geos = msa.get_censustract_geos_by_msa()

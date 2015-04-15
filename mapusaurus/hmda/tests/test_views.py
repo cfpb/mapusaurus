@@ -119,19 +119,19 @@ class ViewsTest(TestCase):
         resp = self.client.get(reverse('hmda:volume'), {'metro':'10000',
                                     'action_taken':'1,2,3,4,5',
                                     'lender':'91000000011'})
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 404)
 
         #invalid metro
         resp = self.client.get(reverse('hmda:volume'), {'metro':'10011',
                                     'action_taken':'1,2,3,4,5',
                                     'lender':'91000000001'})
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 404)
 
         #invalid metro and institution_id
         resp = self.client.get(reverse('hmda:volume'), {'metro':'10011',
                                     'action_taken':'1,2,3,4,5',
                                     'lender':'91000000011'})
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 404)
 
     def test_loan_originations_http(self):        
         #valid metro and institution_id
