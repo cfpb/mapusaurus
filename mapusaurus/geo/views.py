@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from geo.models import Geo
 from geo.utils import check_bounds
 from django.contrib.gis.geos import Point, Polygon
+from django.shortcuts import get_object_or_404
+
 
 def geo_as_json(geos):
     return json.loads(format_geo_to_geojson(geos))
@@ -31,21 +33,15 @@ def get_censustract_geos(request):
     geos = []
     if northEastLat or northEastLon or southWestLat or southWestLon:
         bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
-        if bounds:
-            if geo_type == "msa":
-                #*bounds expands the set from check_bounds
-                msas = get_geos_by_bounds_and_type(*bounds, metro=True)
-                geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
-            else:
-                geos = get_geos_by_bounds_and_type(*bounds)
+        if geo_type == "msa":
+            #*bounds expands the set from check_bounds
+            msas = get_geos_by_bounds_and_type(*bounds, metro=True)
+            geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
         else:
-            return None
+            geos = get_geos_by_bounds_and_type(*bounds)
     elif metro:
-        msa = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
-        if msa:
-            geos = msa.get_censustract_geos_by_msa()
-        else:
-            return None
+        msa = get_object_or_404(Geo, geo_type=Geo.METRO_TYPE, geoid=metro)
+        geos = msa.get_censustract_geos_by_msa()
     return geos
 
 def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):

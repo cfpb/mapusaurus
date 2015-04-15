@@ -17,7 +17,7 @@ def all(request):
         responses = {'minority' : minority, 'loanVolume': hmda}
         return HttpResponse(json.dumps(responses), content_type='application/json')
     except:
-        return HttpResponseBadRequest("Invalid Lender, Metro or Lat/Lon bounds")
+        return loan_originations_as_json(request)
 
 def tables(request):
     try:
@@ -28,20 +28,15 @@ def tables(request):
 
 def msas(request):
     """return a list of MSA ids visible by bounding coordinates"""
-    try:
-        northEastLat = request.GET.get('neLat')
-        northEastLon = request.GET.get('neLon')
-        southWestLat = request.GET.get('swLat')
-        southWestLon = request.GET.get('swLon')
-        bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
-        if bounds:
-            pass
-            #maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
-        msas = get_geos_by_bounds_and_type(*bounds, metro=True)
-        msa_list = [metro.geoid for metro in msas]
-        return HttpResponse(json.dumps(msa_list), content_type='application/json')
-    except:
-        return HttpResponseBadRequest("Invalid lat/lon bounding coordinates")
+    northEastLat = request.GET.get('neLat')
+    northEastLon = request.GET.get('neLon')
+    southWestLat = request.GET.get('swLat')
+    southWestLon = request.GET.get('swLon')
+    bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
+        #maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
+    msas = get_geos_by_bounds_and_type(*bounds, metro=True)
+    msa_list = [metro.geoid for metro in msas]
+    return HttpResponse(json.dumps(msa_list), content_type='application/json')
 
 def msa(request):
     """returns simplified tract shapes for dot-density mapping, with loan volume"""

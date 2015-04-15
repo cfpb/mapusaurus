@@ -2,11 +2,13 @@ import json
 
 from django.db.models import Q
 from django.db.models import Count
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 from hmda.models import HMDARecord
 from geo.models import Geo
 from geo.views import get_censustract_geos 
 from respondents.models import Institution
+from django.shortcuts import get_object_or_404
+
 
 def base_hmda_query():
     query = Q(property_type__in=[1,2], owner_occupancy=1, lien_status=1)
@@ -19,18 +21,12 @@ def loan_originations(request):
     lender_hierarchy = request.GET.get('lh')
     peers = request.GET.get('peers')
     census_tracts = get_censustract_geos(request)
-    if action_taken_param:
-        action_taken_selected = action_taken_param.split(',')
-    else:
-        action_taken_selected = []
-    query = HMDARecord.objects.filter(base_hmda_query())
-    if action_taken_selected:
-        query = query.filter(action_taken__in=action_taken_selected)
+
+    query = HMDARecord.objects.filter(base_hmda_query())            
+
     #if lender param key is passed in
     if institution_id:
-        #get institution_selected
-        institution_selected = Institution.objects.filter(pk=institution_id).first()
-        #if param value is valid
+        institution_selected = get_object_or_404(Institution, pk=institution_id)
         if institution_selected: 
             if lender_hierarchy == 'true':
                 hierarchy_list = institution_selected.get_lender_hierarchy(False, False)
@@ -47,15 +43,17 @@ def loan_originations(request):
                     query = query.filter(institution=institution_selected)
             else: 
                 query = query.filter(institution=institution_selected)
-        else:
-            return None
-    #if valid censustracts for metro or bounds.
-    if census_tracts is None:
-        return None
-    elif len(census_tracts) > 0:
+    
+    if len(census_tracts) > 0:
         query = query.filter(geo__in=census_tracts)
+
+    if action_taken_param:
+        action_taken_selected = action_taken_param.split(',')
+        if action_taken_selected:
+            query = query.filter(action_taken__in=action_taken_selected)
+
     #count on geo_id
-    query = query.values('geo_id', 'geo__census2010households__total').annotate(volume=Count('geo_id'))
+    query = query.values('geo_id', 'geo__census2010households__total', 'geo__centlat', 'geo__centlon').annotate(volume=Count('geo_id'))
     return query; 
 
 def loan_originations_as_json(request):
@@ -66,6 +64,8 @@ def loan_originations_as_json(request):
             data[row['geo_id']] = {
                 'volume': row['volume'],
                 'num_households': row['geo__census2010households__total'],
+                'centlat': row['geo__centlat'],
+                'centlon': row['geo__centlon'],
             }
     return data
 
@@ -73,4 +73,3 @@ def loan_originations_http(request):
     json_data = loan_originations_as_json(request)
     if json_data:
         return HttpResponse(json.dumps(json_data))
-    return HttpResponseBadRequest("Invalid Lender, Metro or Lat/Lon bounds")
