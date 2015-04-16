@@ -64,11 +64,13 @@
           Basic Summary
         <% } %>
           Data Tables</th>
-         <th class="sorter-false number" colspan="5">Number of Applications</th>
-         <th class="sorter-false percentage" colspan="3">Percentage of Market</th>
-         <% if (data.showPeers) { %>
-         <th class="sorter-false odds" colspan="3">Odds Ratio</th>
-         <% } %>
+         <th class="sorter-false number" colspan="5">Number of Applications</th>          
+        <% if (data.showPeers) { %>
+          <th class="sorter-false percentage" colspan="3">Percentage of Market</th>
+          <th class="sorter-false odds" colspan="3">Odds Ratio <span id="closeTable" class="cf-icon cf-icon-delete"></span></th>
+        <% } else { %>
+          <th class="sorter-false percentage" colspan="3">Percentage of Market <span id="closeTable" class="cf-icon cf-icon-delete"></span></th>
+          <% } %>
      </tr>
      <tr class="sortable-header header-two">
          <th class="name" colspan="2" data-sortclass="name">

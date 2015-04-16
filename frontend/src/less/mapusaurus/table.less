@@ -156,11 +156,11 @@
     
     .lar,
     .chart-title {
-        width: 3em;
+        min-width: 45px;
     }
     
     .odds_ratio {
-        width: 3em;
+        min-width: 45px;
     }
     
     .chart {
@@ -261,24 +261,20 @@ td.odds-caution {
     background-color: @redorange-20;
 }
 
-#data-container-sizer {
-    width: 70px;
-    position: absolute;
-    right: 0;
-    height: 0;
-    display: none;
-    font-weight: bold;
-}
+// #data-container-sizer {
+//     width: 70px;
+//     position: absolute;
+//     right: 0;
+//     height: 0;
+//     display: none;
+//     font-weight: bold;
+// }
 
-.chart-toggle.close-button {
-    font-size: .85em;
-    padding: 5px 10px 5px 10px;
-    position: absolute;
-    border: 1px solid @gray-80;
-    background-color: @background-gray;
-    border-bottom: 0;
-    top: -30px;
-    width: 100%;
+#closeTable{
+    float: right;
+    padding-right: 3px;
+    padding-top: 3px;  
+    color: @pacific;
 }
 
 #tableLoadImage {

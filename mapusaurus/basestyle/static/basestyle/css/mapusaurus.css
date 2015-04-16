@@ -5776,6 +5776,7 @@ select b {
   padding-left: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
+  cursor: pointer;
   position: relative;
 }
 .map-divider-minor .sub-header-name {
@@ -6241,6 +6242,7 @@ select b {
 }
 .show-hide-control {
   text-align: right;
+  cursor: pointer;
 }
 .vex-dialog-message h2 {
   font-weight: bold;
@@ -7196,10 +7198,10 @@ select b {
 }
 .summary-data-table .lar,
 .summary-data-table .chart-title {
-  width: 3em;
+  min-width: 45px;
 }
 .summary-data-table .odds_ratio {
-  width: 3em;
+  min-width: 45px;
 }
 .summary-data-table .chart {
   width: 125px;
@@ -7278,23 +7280,11 @@ td.odds-warning {
 td.odds-caution {
   background-color: #f6d9d3;
 }
-#data-container-sizer {
-  width: 70px;
-  position: absolute;
-  right: 0;
-  height: 0;
-  display: none;
-  font-weight: bold;
-}
-.chart-toggle.close-button {
-  font-size: .85em;
-  padding: 5px 10px 5px 10px;
-  position: absolute;
-  border: 1px solid #919395;
-  background-color: #f8f8f8;
-  border-bottom: 0;
-  top: -30px;
-  width: 100%;
+#closeTable {
+  float: right;
+  padding-right: 3px;
+  padding-top: 3px;
+  color: #0072ce;
 }
 #tableLoadImage {
   margin: auto;

@@ -23,19 +23,13 @@ $(document).ready(function () {
             destroyData();
         }
 
-        if (e.currentTarget.id === 'closeChart'){
-            toggleDataContainer(false);
-            currentChart = null;
-            return false;
-        }
-
         if (currentChart != id) {
 
-        createTable(id === 'chart-toggle__peer-table');
-        $('#table-container').show();
+            createTable(id === 'chart-toggle__peer-table');
+            $('#table-container').show();
 
-        currentChart = id;
-        toggleDataContainer(true);
+            currentChart = id;
+            toggleDataContainer(true);
 
         } else {
             currentChart = null;
@@ -43,16 +37,6 @@ $(document).ready(function () {
         }        
     });
 
-    // $('.resizer').on('mousedown',function(e){
-    //     $('.appContainer').on('mousemove',function(e){
-    //         diff = $('.resizer').offset().top + 5 - e.pageY ;
-    //         $('.top').height($('.top').height()-diff);
-    //         $('.bot').height($('.bot').height()+diff);
-    //     });
-    // });
-    // $('.appContainer').on('mouseup',function(){
-    //     $('.appContainer').off('mousemove');
-    // });
 });
 
 /**
@@ -120,6 +104,11 @@ function createTable(showPeers) {
         activateTable($tbl);
         $('#tableLoadImage').hide();
         $tbl.appendTo($('#table-container')).show();
+
+        $('#closeTable').on('click', function(){
+            toggleDataContainer(false);
+            currentChart = 'undefined';  
+         });
     });
 }
 
@@ -383,15 +372,9 @@ function activateTable($tbl) {
  * 
  */
 function destroyData() {
-    if (currentChart === 'chart-toggle__lar-chart') {
-        // destroy chart
-        destroyLarChart();
-        $('#chart-container').hide();
-    } else {
-        // destroy table
-        destroyTable();
-        $('#table-container').hide();
-    }
+    // destroy table        
+    destroyTable();
+    $('#table-container').hide();
 }
 
 /**
