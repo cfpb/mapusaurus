@@ -18,21 +18,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '($2ob)%vv$wv7jl-$e!=#z!+bhihs@o%$+@c0yqrz&8*f@#hhi'
+SECRET_KEY = 'OVERRIDE THIS IN LOCAL_SETTINGS.py'
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-#         'LOCATION': '/var/tmp/django_cache',
-#         'TIMEOUT': None,
-#     }
-# }
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-#         'LOCATION': '127.0.0.1:11211',
-#     }
-# }
+# SECURITY WARNING: don't run with debug turned on in production!
+#DEBUG = True
+
+#TEMPLATE_DEBUG = True
+
+# ADD HOST HERE
+#ALLOWED_HOSTS = []
 
 # Application definition
 
