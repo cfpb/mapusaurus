@@ -4228,6 +4228,51 @@ textarea.success {
     - cf-expandables
 */
 /* topdoc
+    name: JS functions
+    family: cf-expandables
+    notes:
+      - "There are a number of available functions that you can call on
+         .expandable elements."
+    patterns:
+    - name: .toggle()
+      codenotes:
+        - "Toggles the expandable."
+    - name: .expand( duration )
+      codenotes:
+        - "Expands the expandable."
+        - |
+          duration
+          Type: number
+          The animation duration.
+          Not required.
+          Defaults to `$.fn.expandable.calculateExpandDuration` or
+          `$.fn.expandable.calculateCollapseDuration` if excluded.
+    - name: .collapse( duration )
+      codenotes:
+        - "Collapses the expandable."
+        - |
+          duration
+          Type: number
+          The animation duration.
+          Not required.
+          Defaults to `$.fn.expandable.calculateExpandDuration` or
+          `$.fn.expandable.calculateCollapseDuration` if excluded.
+    - name: Example usage
+      codenotes:
+        - |
+          // HTML
+          <div class="expandable" id="my-expandable">...</div>
+
+          // JS
+          // (use .get(0) to get the HTML element, that's what the functions
+          // are bound to)
+          $('#my-expandable').get(0).expand(); // Opens the expandable
+          $('#my-expandable').get(0).collapse(); // Closes the expandable
+          $('#my-expandable').get(0).toggle(); // Toggles the expandable
+    tags:
+    - cf-expandables
+*/
+/* topdoc
     name: Barebones expandable
     family: cf-expandables
     notes:
@@ -4296,14 +4341,9 @@ textarea.success {
   background-color: transparent;
   cursor: pointer;
 }
-.expandable_cue-close {
-  display: none;
-}
-.expandable__expanded .expandable_cue-open {
-  display: none;
-}
-.expandable__expanded .expandable_cue-close {
-  display: inline;
+.expandable_target:focus {
+  outline: 1px dotted #101820;
+  outline-offset: 1px;
 }
 .expandable_content:after {
   content: "";
@@ -4376,6 +4416,70 @@ textarea.success {
 .lt-ie9 .expandable_link strong,
 .lt-ie9 .expandable_link b {
   font-weight: normal !important;
+}
+/* topdoc
+    name: Animated cues
+    family: cf-expandables
+    patterns:
+    - name: .expandable_cue-open/close__animated (modifier)
+      codenotes:
+        - |
+          .expandable_cue-open__animated
+          .expandable_cue-close__animated
+      markup: |
+        <div class="expandable">
+            <button class="expandable_target">
+                <span class="expandable_cue-open expandable_cue-open__animated">
+                    <span class="cf-icon cf-icon-down"></span>
+                </span>
+                <span class="expandable_cue-close expandable_cue-close__animated">
+                    <span class="cf-icon cf-icon-up"></span>
+                </span>
+            </button>
+            <div class="expandable_content">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing
+                    elit. Neque ipsa voluptatibus soluta nobis unde quisquam
+                    temporibus magnam debitis quidem. Ducimus ratione
+                    corporis nesciunt earum vel est quaerat blanditiis
+                    dolore ipsa?
+                </p>
+            </div>
+        </div>
+        <div class="expandable expandable__expanded">
+            <button class="expandable_target">
+                <span class="expandable_cue-open expandable_cue-open__animated">
+                    <span class="cf-icon cf-icon-down"></span>
+                </span>
+                <span class="expandable_cue-close expandable_cue-close__animated">
+                    <span class="cf-icon cf-icon-up"></span>
+                </span>
+            </button>
+            <div class="expandable_content">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing
+                    elit. Neque ipsa voluptatibus soluta nobis unde quisquam
+                    temporibus magnam debitis quidem. Ducimus ratione
+                    corporis nesciunt earum vel est quaerat blanditiis
+                    dolore ipsa?
+                </p>
+            </div>
+        </div>
+    tags:
+    - cf-expandables
+*/
+.expandable_cue-open__animated,
+.expandable_cue-close__animated {
+  transition: 0.25s transform;
+}
+.expandable_cue-close__animated {
+  transform: rotate(180deg);
+}
+.expandable__expanded .expandable_cue-close__animated {
+  transform: rotate(0);
+}
+.expandable__expanded .expandable_cue-open__animated {
+  transform: rotate(-180deg);
 }
 /* topdoc
     name: Expandable header elements
@@ -4472,6 +4576,13 @@ button.expandable_header {
 }
 .expandable__padded .expandable_content {
   margin: 0 1em 1.375em;
+}
+.expandable__padded .expandable_content:before {
+  content: '';
+  display: block;
+  height: 1px;
+  margin-bottom: 1em;
+  background: #babbbd;
 }
 /* topdoc
     name: Expandable groups
@@ -5665,6 +5776,7 @@ select b {
   padding-left: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
+  cursor: pointer;
   position: relative;
 }
 .map-divider-minor .sub-header-name {
@@ -5674,8 +5786,8 @@ select b {
 .map-divider-minor i.cf-icon-right {
   font-size: .75em;
   position: absolute;
-  right: 30px;
-  top: 12px;
+  right: 10px;
+  top: 13px;
 }
 .map-divider-minor h6 {
   line-height: 1.375;
@@ -5690,6 +5802,12 @@ select b {
 }
 .map-divider-minor.option.active-layer:hover {
   background: #addc91;
+}
+#layerOptions .option i {
+  color: #babbbd;
+}
+#layerOptions .option.active-layer i {
+  color: #43484e;
 }
 .header-group {
   padding-bottom: 10px;
@@ -6031,6 +6149,10 @@ select b {
   font-size: larger;
   font-weight: bold;
 }
+.action-taken-label {
+  color: #919395;
+  font-weight: bold;
+}
 #altScaleImg {
   width: 220px;
 }
@@ -6117,6 +6239,10 @@ select b {
   display: inline-block;
   width: 25%;
   text-align: right;
+}
+.show-hide-control {
+  text-align: right;
+  cursor: pointer;
 }
 .vex-dialog-message h2 {
   font-weight: bold;
@@ -6963,6 +7089,10 @@ select b {
   border-top: 3px solid #777;
   overflow-y: auto;
   position: relative;
+  display: none;
+}
+#table-container {
+  display: none;
 }
 .summary-data-table {
   margin-bottom: 0;
@@ -7068,10 +7198,10 @@ select b {
 }
 .summary-data-table .lar,
 .summary-data-table .chart-title {
-  width: 3em;
+  min-width: 45px;
 }
 .summary-data-table .odds_ratio {
-  width: 3em;
+  min-width: 45px;
 }
 .summary-data-table .chart {
   width: 125px;
@@ -7150,9 +7280,11 @@ td.odds-warning {
 td.odds-caution {
   background-color: #f6d9d3;
 }
-#data-container-sizer {
-  background-color: #919395;
-  height: 5px;
+#closeTable {
+  float: right;
+  padding-right: 3px;
+  padding-top: 3px;
+  color: #0072ce;
 }
 #tableLoadImage {
   margin: auto;

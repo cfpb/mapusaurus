@@ -1,53 +1,67 @@
         <div id="key">
-            <div id="altScale" class=""><img id="altScaleImg" src=""></div>
-            <div id="scale" class="hidden">
-                <label for="minority-key">Percentage Minority</label>
-                <div id="minority-key">&nbsp;</div>
-                <div id="percentage-container"><span 
-                    class="left">0%</span><span
-                    class="center">50%</span><span
-                    class="right">100%</span></div>
+            <div class="show-hide-control" data-keyhidden="06" >
+                <div class="hide-key">
+                    Hide Key <span class="cf-icon cf-icon-minus-round"></span>                   
+                </div>
+                <div class="show-key hidden">
+                    Show Key <span class="cf-icon cf-icon-plus-round"></span>
+                </div>
             </div>
-            <select id="style-selector" class="hidden">
-                <option value="minorityContinuousStyle" selected>Continuous</option>
-                <option value="minorityBucketedStyle">Bucketed</option>
-            </select>
-            <div id="branchKey" class="hidden">
-                <img class="symbol-key-img" src="/static/basestyle/img/branch-marker_off.png"> <span>Branch Location</span>
-            </div>
-            <div class="circle-key-label">
-                <hr/>
-                Loan Application Records
-            </div>
-            <div class="circle-key">
-                <div id="keySvg"></div>
-            </div>            
-            <div class="boundaries-key hidden">
-                <hr/>
-                <img src="/static/basestyle/img/boundaries-key.png" alt="Boundaries Key Image">
-            </div>
-            <div class="minority-key" id="minorityPctKey">
-                <hr/>
-                <div class="bubble-header"><b>Tract <span class="tract-number"></span></b><span class="tract-population"></span></div>
+            <div class="key-contents">
+                <div id="altScale" class=""><img id="altScaleImg" src=""></div>
+                <div id="scale" class="hidden">
+                    <label for="minority-key">Percentage Minority</label>
+                    <div id="minority-key">&nbsp;</div>
+                    <div id="percentage-container"><span 
+                        class="left">0%</span><span
+                        class="center">50%</span><span
+                        class="right">100%</span></div>
+                </div>
+                <select id="style-selector" class="hidden">
+                    <option value="minorityContinuousStyle" selected>Continuous</option>
+                    <option value="minorityBucketedStyle">Bucketed</option>
+                </select>
+                <div id="branchKey" class="hidden">
+                    <img class="symbol-key-img" src="/static/basestyle/img/branch-marker_off.png"> <span>Branch Location</span>
+                </div>
+                <div class="circle-key-label">
+                    <hr/>
+                    Loan Application Records
+                </div>
+                <div class="circle-key">
+                    <div id="keySvg"></div>
+                </div>    
+                <div class="circle-key-label">
+                    <hr/>
+                    Action Taken: <span id="actionTaken" class="action-taken-label"></span>
+                </div>        
+                <div class="boundaries-key">
+                    <hr/>
+                    <img src="/static/basestyle/img/boundaries-key.png" alt="Boundaries Key Image">
+                </div>
+                <div class="minority-key" id="minorityPctKey">
+                    <hr/>
+                    <div class="bubble-header"><b>Tract <span class="tract-number"></span></b><span class="tract-population"></span></div>
 
-                <div class="minority-label"><b>Minority</b></div>
-                <div class="css-legend-chart"><div class="pct-minority-data pct-minority-chart" data-min='0'></div></div>
-                <div class="pct-minority-value" id="pct_min">0</div>
+                    <div class="minority-label"><b>Minority</b></div>
+                    <div class="css-legend-chart"><div class="pct-minority-data pct-minority-chart" data-min='0'></div></div>
+                    <div class="pct-minority-value" id="pct_min">0</div>
 
-                <div class="minority-label"><b>Black / AA</b></div>
-                <div class="css-legend-chart"><div class="pct-black-data pct-minority-chart" data-min='0'></div></div>
-                <div class="pct-minority-value" id="pct_blk">0</div>
+                    <div class="minority-label"><b>Black / AA</b></div>
+                    <div class="css-legend-chart"><div class="pct-black-data pct-minority-chart" data-min='0'></div></div>
+                    <div class="pct-minority-value" id="pct_blk">0</div>
 
-                <div class="minority-label"><b>Hispanic</b></div>
-                <div class="css-legend-chart"><div class="pct-hispanic-data pct-minority-chart" data-min='0'></div></div>
-                <div class="pct-minority-value" id="pct_hisp">0</div>
+                    <div class="minority-label"><b>Hispanic</b></div>
+                    <div class="css-legend-chart"><div class="pct-hispanic-data pct-minority-chart" data-min='0'></div></div>
+                    <div class="pct-minority-value" id="pct_hisp">0</div>
 
-                <div class="minority-label"><b>Asian</b></div>
-                <div class="css-legend-chart"><div class="pct-asian-data pct-minority-chart" data-min='0'></div></div>
-                <div class="pct-minority-value" id="pct_asian">0</div>
+                    <div class="minority-label"><b>Asian</b></div>
+                    <div class="css-legend-chart"><div class="pct-asian-data pct-minority-chart" data-min='0'></div></div>
+                    <div class="pct-minority-value" id="pct_asian">0</div>
 
-                <div class="minority-label"><b>White</b></div>
-                <div class="css-legend-chart"><div class="pct-white-data pct-minority-chart" data-min='0'></div></div>
-                <div class="pct-minority-value" id="pct_white">0</div>           
+                    <div class="minority-label"><b>White</b></div>
+                    <div class="css-legend-chart"><div class="pct-white-data pct-minority-chart" data-min='0'></div></div>
+                    <div class="pct-minority-value" id="pct_white">0</div>           
+                </div>                
             </div>
         </div>

@@ -25,11 +25,11 @@ $(document).ready(function () {
 
         if (currentChart != id) {
 
-        createTable(id === 'chart-toggle__peer-table');
-        $('#table-container').show();
+            createTable(id === 'chart-toggle__peer-table');
+            $('#table-container').show();
 
-        currentChart = id;
-        toggleDataContainer(true);
+            currentChart = id;
+            toggleDataContainer(true);
 
         } else {
             currentChart = null;
@@ -37,16 +37,6 @@ $(document).ready(function () {
         }        
     });
 
-    // $('.resizer').on('mousedown',function(e){
-    //     $('.appContainer').on('mousemove',function(e){
-    //         diff = $('.resizer').offset().top + 5 - e.pageY ;
-    //         $('.top').height($('.top').height()-diff);
-    //         $('.bot').height($('.bot').height()+diff);
-    //     });
-    // });
-    // $('.appContainer').on('mouseup',function(){
-    //     $('.appContainer').off('mousemove');
-    // });
 });
 
 /**
@@ -86,7 +76,7 @@ function getTableData() {
         success: console.log('get API All Data request successful')
     }).fail( function( status ){
         console.log( 'no data was available at' + endpoint + '. status: ' + status );
-    });s
+    });
 }
 
 /**
@@ -114,6 +104,11 @@ function createTable(showPeers) {
         activateTable($tbl);
         $('#tableLoadImage').hide();
         $tbl.appendTo($('#table-container')).show();
+
+        $('#closeTable').on('click', function(){
+            toggleDataContainer(false);
+            currentChart = 'undefined';  
+         });
     });
 }
 
@@ -377,15 +372,9 @@ function activateTable($tbl) {
  * 
  */
 function destroyData() {
-    if (currentChart === 'chart-toggle__lar-chart') {
-        // destroy chart
-        destroyLarChart();
-        $('#chart-container').hide();
-    } else {
-        // destroy table
-        destroyTable();
-        $('#table-container').hide();
-    }
+    // destroy table        
+    destroyTable();
+    $('#table-container').hide();
 }
 
 /**
@@ -416,11 +405,11 @@ function destroyTable() {
 function toggleDataContainer(showData) {
     showDataContainer = showData;
     if (showData) {
-        $('#table-container').show();
         $('#data-container').show();
+        $('#data-container-sizer').show();
     } else {
-        $('#table-container').hide();
         $('#data-container').hide();
+        $('#data-container-sizer').hide();
     }
     setMapHeight();
 }

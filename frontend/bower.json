@@ -10,11 +10,8 @@
     "cf-grid": "git+https://github.com/cfpb/cf-grid#0.9.0",
     "cf-buttons": "git+https://github.com/cfpb/cf-buttons#1.3.0",
     "cf-forms": "git+https://github.com/cfpb/cf-forms#1.1.0",
-    "cf-expandables": "git+https://github.com/cfpb/cf-expandables#0.5.0",
+    "cf-expandables": "git+https://github.com/cfpb/cf-expandables#0.6.1",
     "cf-pagination": "git+https://github.com/cfpb/cf-pagination#0.4.0",
-    // "leaflet": "git+https://github.com/Leaflet/Leaflet#e708e37ab7090467be7a3fe83d4e0d8752a1e04d",
-    // Leaflet has to be downloaded as a package and placed into /src/leaflet because no current
-    // version has been tagged that works with proper circle drawing diameters
     "leaflet-rrose": "git+https://github.com/sephcoster/rrose.git#3775b4ca496f8dbe4f0fbcd441c99d1ad4daa3dd",
     "leaflet-hash": "git+https://github.com/sephcoster/leaflet-hash.git",
     "leaflet-MiniMap": "git+https://github.com/Norkart/Leaflet-MiniMap.git#",

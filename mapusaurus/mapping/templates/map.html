@@ -33,7 +33,7 @@
 
 
 {% block main_content %}
-<div id="map-container">
+<div id="map-container" style="z-index: 10;">
     <div id="map">
     {% include 'partial/map_key.html'%}    
     </div>
@@ -42,9 +42,8 @@
 
 
 {% block data_content %}
-<div id="data-container-sizer" class="sizer"></div>
-<div id="data-container" style="display:none;">
-    <div id="table-container" style="display:none;">
+<div id="data-container">
+    <div id="table-container">
         <div id="tableLoadImage"><h6>Loading Table Data</h6><p>(This may take a few moments...)</p><img  src="/static/basestyle/img/icon_spinner_2x.gif"> </div>
     </div>
 </div>    
@@ -67,7 +66,7 @@
         L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
         
         // Initialize the map
-        var map = L.map('map');
+        var map = L.map('map', {attributionControl: false});
         
         // If we have a metro parameter, center the map on this lat / lon
         {% if metro %}
