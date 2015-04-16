@@ -26,22 +26,21 @@ def loan_originations(request):
     #if lender param key is passed in
     if institution_id:
         institution_selected = get_object_or_404(Institution, pk=institution_id)
-        if institution_selected: 
-            if lender_hierarchy == 'true':
-                hierarchy_list = institution_selected.get_lender_hierarchy(False, False)
-                if len(hierarchy_list) > 0:
-                    query = query.filter(institution__in=hierarchy_list) 
-                else: 
-                    query = query.filter(institution=institution_selected)
-            elif peers == 'true' and metro:
-                metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
-                peer_list = institution_selected.get_peer_list(metro_selected, True, False)
-                if len(peer_list) > 0:
-                    query = query.filter(institution__in=peer_list)
-                else:
-                    query = query.filter(institution=institution_selected)
+        if lender_hierarchy == 'true':
+            hierarchy_list = institution_selected.get_lender_hierarchy(False, False)
+            if len(hierarchy_list) > 0:
+                query = query.filter(institution__in=hierarchy_list) 
             else: 
                 query = query.filter(institution=institution_selected)
+        elif peers == 'true' and metro:
+            metro_selected = Geo.objects.filter(geo_type=Geo.METRO_TYPE, geoid=metro).first()
+            peer_list = institution_selected.get_peer_list(metro_selected, True, False)
+            if len(peer_list) > 0:
+                query = query.filter(institution__in=peer_list)
+            else:
+                query = query.filter(institution=institution_selected)
+        else: 
+            query = query.filter(institution=institution_selected)
     
     if len(census_tracts) > 0:
         query = query.filter(geo__in=census_tracts)
