@@ -1,8 +1,8 @@
 import json
 import csv
 from django.utils.encoding import smart_str
-from django.db.models import Count
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404
 
 from hmda.models import HMDARecord
 from .models import Census2010RaceStats, Census2010Households
@@ -128,7 +128,9 @@ def odds_ratio(target_pct, peer_pct):
     is only for mocking data flow to tables
     """
     odds_ratio = 0.0
-    if peer_pct > 0.0 and target_pct < 1.0 and peer_pct < 1.0:
+    if target_pct == peer_pct:
+        odds_ratio = 1.0
+    elif peer_pct > 0.0 and target_pct < 1.0 and peer_pct < 1.0:
         odds_ratio = (target_pct/(1-target_pct))/(peer_pct/(1-peer_pct))
     return round(odds_ratio, 3)
 
@@ -138,33 +140,30 @@ def minority_aggregation_as_json(request):
     for a lender in an MSA
     by tract, msa and county
     """
-    msa_target_stats = {}
     msa_target_lma_sum = 0
     msa_target_mma_sum = 0
     msa_target_hma_sum = 0
 
-    msa_peer_stats = {}
     msa_peer_lma_sum = 0
     msa_peer_mma_sum = 0
     msa_peer_hma_sum = 0
 
-    odds_lender = {}
 
     msa_stats = {}
 
-    lender = Institution.objects.get(institution_id=request.GET.get('lender'))
-    metro = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
+   
     lar_data = loan_originations_as_json(request)
 
+    lender = get_object_or_404(Institution, pk=request.GET.get('lender'))
+    metro = get_object_or_404(Geo, geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
     peer_request = HttpRequest()
     peer_request.GET['lender'] = lender.institution_id
     peer_request.GET['metro']= metro.geoid
     peer_request.GET['peers'] = 'true'
-    peer_request.GET['action_taken'] = '1,2,3,4,5'
     peer_lar_data = loan_originations_as_json(peer_request)
 
     msa_counties = Geo.objects.filter(geo_type=Geo.COUNTY_TYPE, cbsa=metro.geoid)
-    county_stats = {county_id: {} for county_id in msa_counties.values_list('geoid', flat=True)}
+    county_stats = {}
     for county in msa_counties:
         county_tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, state=county.state, county=county.county)
         minority_area_stats = get_minority_area_stats(lar_data, peer_lar_data, county_tracts)
@@ -190,9 +189,10 @@ def minority_aggregation_as_json(request):
 def race_summary(request):
     """Race summary statistics"""
     geos = get_censustract_geos(request)
-    if geos is None:
-        return HttpResponseBadRequest("Missing lat/lon or metro")
-    query = Census2010RaceStats.objects.filter(geoid__in=geos)
+    if len(geos) > 0:
+        query = Census2010RaceStats.objects.filter(geoid__in=geos)
+    else:
+        query = Census2010RaceStats.objects.all()
     return query
 
 def race_summary_as_json(request_dict):
