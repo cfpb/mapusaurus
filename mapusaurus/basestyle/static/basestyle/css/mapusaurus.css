@@ -6306,6 +6306,12 @@ select b {
 .tabpanel:after {
   clear: both;
 }
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+}
 /* Shrink the default button sizes by a few pixels */
 .sort-none {
   background-image: url("../img/font-awesome/chevron-sort-none.png");
@@ -7083,7 +7089,7 @@ select b {
   cursor: pointer;
 }
 #map-aside {
-  overflow: hidden;
+  overflow: scroll;
 }
 #data-container {
   border-top: 3px solid #777;
