@@ -36,19 +36,25 @@
     <header id="header" class="header" role="banner">
       <div class="map-wrapper" style="height: 90px;">
         <div class="logo" style="display:inline-block">
-          <a href="http://www.consumerfinance.gov"><img class="logo" src="{{ STATIC_URL }}basestyle/img/logo_210.png" alt="Consumer Financial Protection Bureau"></a>
+            <a href="http://www.consumerfinance.gov"><img class="logo" src="{{ STATIC_URL }}basestyle/img/logo_210.png" alt="Consumer Financial Protection Bureau"></a>
+            <br/>
+            <span id="printLink" href="#" class="btn no-print print-button" onClick="window.print();">
+                <span class="btn_icon__left cf-icon cf-icon-print"></span>
+                Print
+            </span>
+            <p class="no-print" style="font-size: .85em; padding-bottom: 2px;">Recommended Print Setting: Landscape, no margin, enable Backgrounds / Graphics</p>
         </div>
         <div style="display:inline-block; position: relative; text-align: right; float:right;">
              <span class="peers-of-true hidden">Peers of </span><strong>{{ lender.name }}</strong> - {{ lender.agency_id }}{{ lender.respondent_id }}<br/>
             {{ metro.name }}<br/>
-            <strong>Context:</strong> <span id="actionValue"></span> / <span id="minorityValue"></span><br/>
+            <strong>Map Base: </strong><span id="minorityValue"></span><br/>
             <strong>Filter:</strong> <span id="filterSpecs">First lien, Owner-occupied, 1-4 family housing (including manufactured)</span>
         </div>
         <div id="filterStatus" style="display:inline-block; vertical-align:top; top: 5px;"></div>
       </div>
     </header>
     <div id="map-container" >
-        <div id="map" style="width:100%; height: 680px">
+        <div id="map" style="width:100%; height: 550px">
         {% include 'partial/map_key_print.html'%}    
         </div>
     </div>
@@ -106,31 +112,41 @@
     
     <script>
 
+
         /* 
           ---- MAPBOX / LEAFLET CODE ----
         */
         
-        // Size the map container for the window size
-        //setMapHeight();
+        // Size the map container for the window size (Don't do this for print view)
+        // setMapHeight();
         
         // Our Mapbox public token so we can load all these fun layers
         L.mapbox.accessToken = 'pk.eyJ1IjoiY2ZwYiIsImEiOiJodmtiSk5zIn0.VkCynzmVYcLBxbyHzlvaQw';
         
         // Initialize the map
-        var map = L.map('map', { zoomControl:false, attributionControl: false });
+        var map = L.map('map', {attributionControl: false, zoomControl: false});
+
+        // Disable drag and zoom handlers.
+        map.touchZoom.disable();
+        map.doubleClickZoom.disable();
+        map.scrollWheelZoom.disable();
+
+        // Disable tap handler, if present.
+        if (map.tap) map.tap.disable();
         
         // If we have a metro parameter, center the map on this lat / lon
         {% if metro %}
-            map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 10);
+            map.setView(["{{metro.centlat}}", "{{metro.centlon}}"], 11);
         {% else %}
             // Otherwise, somewhere near Chicago for grins
-            map.setView([40, -74.50], 10);
+            map.setView([40, -74.50], 11);
         {% endif %}
         
-       // Using our modified Leaflet-Hash plugin, check to see if we need to move the map somewhere else.
+        // Using our modified Leaflet-Hash plugin, check to see if we need to move the map somewhere else.
         var hash = new L.Hash(map),
             hashCheck = hash.parseHash(hash),
             loadParams = getHashParams();
+            console.log("Hash Check: ", hashCheck);
 
         // If the hash already has parameters, change the view to be those exact coordinates
         if( typeof hashCheck.params != 'undefined') {
@@ -139,27 +155,30 @@
 
         // Set our map options after it's been created and centered
         map.options.maxZoom = 12;
-        map.options.minZoom = 9;
+        map.options.minZoom = 7;
         map.options.inertia = false;
 
         // Initialize all of our layers
         var layers = {
             MBBase: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.k55b27gd/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-            Base: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.a760eab8/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-            Water: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_WATER_all_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            Boundaries: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.4da32f68/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            CountyLabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_COUNTY_labels/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            MSALabels: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.5de9fd0f/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctMinority: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-min_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctHispanic: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-hsp_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctBlack: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-blk_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctAsian: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_per-asn_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            PctNonWhite: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.FL_TRACT_pct_nhwht_US/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-            Plurality: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.1bd47f29/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Base: L.mapbox.tileLayer('cfpb.a760eab8', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Water: L.mapbox.tileLayer('cfpb.FL_WATER_all_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Boundaries: L.mapbox.tileLayer('cfpb.4da32f68', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            CountyLabels: L.mapbox.tileLayer('cfpb.becdd200', {errorTileUrl: '/static/basestyle/img/0.png'}),            
+            MSALabels: L.mapbox.tileLayer('cfpb.5de9fd0f', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctMinority: L.mapbox.tileLayer('cfpb.b831eeca', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctHispanic: L.mapbox.tileLayer('cfpb.b5842925', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctBlack: L.mapbox.tileLayer('cfpb.58886e54', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctAsian: L.mapbox.tileLayer('cfpb.371a62d9', {errorTileUrl: '  /static/basestyle/img/0.png'}),
+            PctWhite: L.mapbox.tileLayer('cfpb.6c9e98c4', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Plurality: L.mapbox.tileLayer('cfpb.FL_TRACT_minor_plurality_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianIncome: L.mapbox.tileLayer('cfpb.d08a14ab', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            OwnerOccupancy: L.mapbox.tileLayer('cfpb.6b1a095b', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianValue: L.mapbox.tileLayer('cfpb.FL_TRACT_med-hse-val_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianYearBuilt: L.mapbox.tileLayer('cfpb.FL_TRACT_med-yr-blt_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
             Centroids: L.layerGroup([]),
             Branches: L.layerGroup([])
         };
-
 
         // Baselayers are created here and show up in our layer selector on the screen as radio buttons
         var baseLayers = {
@@ -181,7 +200,7 @@
         var miniMap = new L.Control.MiniMap(miniLayer).addTo(map);
 
         // This array allows us to remove them from the map when a new one is selected (later)
-        var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctNonWhite,layers.Plurality];
+        var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctWhite, layers.Plurality, layers.MedianIncome, layers.OwnerOccupancy, layers.MedianValue, layers.MedianYearBuilt];
 
         // Add all our primary default layers to the map up front
         layers.Base.addTo(map);
@@ -195,8 +214,8 @@
         // Create a layer for Branch Locations
         layers.Branches.addTo(map);
 
-        // Add our +/- and layer controls to the top left
-        L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
+        // Add our +/- and layer controls to the top left - Removed for Print View
+        // L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map); 
         // Add a mile scale
         L.control.scale().addTo(map);
         
@@ -217,11 +236,9 @@
         };
         key.setPosition('topright');
         key.addTo(map);
-
-        // // And use that interactivity to drive a control the user can see.
-        // var myGridControl = L.mapbox.gridControl(myGridLayer).addTo(map);  
+ 
         var utfGrid = new L.UtfGrid('http://{s}.tiles.mapbox.com/v3/cfpb.FL_TRACT_per-min_US/{z}/{x}/{y}.grid.json?callback={cb}');
-        utfGrid.addTo(map);  
+        utfGrid.addTo(map);      
 
     /* 
       END MAPBOX / LEAFLET CODE
@@ -232,10 +249,7 @@
     <script>
         $(document).ready(function(){
             var minorityVal = $('.map-divider-minor.active-layer').attr('id');
-            $('#minorityValue').text(minorityVal);
-
-            var actionValue = $('#action-taken-selector option:selected').text();
-            $('#actionValue').text(actionValue);
+            $('#minorityValue').text( getLayerType(minorityVal).displayName + ' Layer' );
 
             var loadParams = getHashParams();
             console.log("LH? ", loadParams.lh.values);

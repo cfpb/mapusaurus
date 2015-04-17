@@ -23,9 +23,11 @@ if (!window.console) console = {log: function() {}};
         // Invoke our tabs JavaScript
         $('.tabs').show();
 
-        // On window resize, set the map height anew
+        // On window resize (when not in print view) set the map height anew
         $( window ).resize(function() {
-            setMapHeight();
+            if( window.location.href.indexOf('print') < 0){
+                setMapHeight();
+            }
         });
 
         // Check to see if we have any parameters for action-taken

@@ -110,30 +110,6 @@ a.leaflet-rrose-close-button:hover {
     border-radius:         0px;
 }
 
-.leaflet-rrose-content-wrapper-se {
-    -moz-border-radius:    0 20px 20px 20px;
-    -webkit-border-radius: 0 20px 20px 20px;
-    border-radius:         0 20px 20px 20px;
-}
-
-.leaflet-rrose-content-wrapper-sw {
-    -moz-border-radius:    20px 0 20px 20px;
-    -webkit-border-radius: 20px 0 20px 20px;
-    border-radius:         20px 0 20px 20px;
-}
-
-.leaflet-rrose-content-wrapper-nw, .leaflet-rrose-content-wrapper-w {
-    -moz-border-radius:    20px 20px 0 20px;
-    -webkit-border-radius: 20px 20px 0 20px;
-    border-radius:         20px 20px 0 20px;
-}
-
-.leaflet-rrose-content-wrapper-ne, .leaflet-rrose-content-wrapper-e {
-    -moz-border-radius:    20px 20px 20px 0;
-    -webkit-border-radius: 20px 20px 20px 0;
-    border-radius:         20px 20px 20px 0;
-}
-
 .leaflet-rrose-content {
     font: 12px/1.4 "Helvetica Neue", Arial, Helvetica, sans-serif;
 }

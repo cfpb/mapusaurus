@@ -108,6 +108,8 @@
             Plurality: L.mapbox.tileLayer('cfpb.FL_TRACT_minor_plurality_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
             MedianIncome: L.mapbox.tileLayer('cfpb.d08a14ab', {errorTileUrl: '/static/basestyle/img/0.png'}),
             OwnerOccupancy: L.mapbox.tileLayer('cfpb.6b1a095b', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianValue: L.mapbox.tileLayer('cfpb.FL_TRACT_med-hse-val_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianYearBuilt: L.mapbox.tileLayer('cfpb.FL_TRACT_med-yr-blt_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
             Centroids: L.layerGroup([]),
             Branches: L.layerGroup([])
         };
@@ -132,7 +134,7 @@
         var miniMap = new L.Control.MiniMap(miniLayer).addTo(map);
 
         // This array allows us to remove them from the map when a new one is selected (later)
-        var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctWhite, layers.Plurality, layers.MedianIncome, layers.OwnerOccupancy];
+        var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctWhite, layers.Plurality, layers.MedianIncome, layers.OwnerOccupancy, layers.MedianValue, layers.MedianYearBuilt];
 
         // Add all our primary default layers to the map up front
         layers.Base.addTo(map);
