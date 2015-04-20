@@ -30,7 +30,7 @@ class ViewsUtilitiesTests(TestCase):
                 self.assertTrue(key in result_dict['msa'].keys())
         self.assertTrue(len(result_dict['msa']) > 0)
         self.assertEqual(result_dict['msa']['lar_total'], 0)
-        self.assertEqual(result_dict['msa']['odds_lma'], 1.0)
+        self.assertIsNone(result_dict['msa']['odds_lma'])
 
     def test_assemble_stats(self):
         """should calculate and return a dict of lender loan totals by minority area"""
@@ -66,6 +66,9 @@ class ViewsUtilitiesTests(TestCase):
         self.assertEqual(odds2, 0.0)
         self.assertEqual(odds3, 0.583)
         self.assertEqual(odds4, 1.0)
+        self.assertIsNone(odds_ratio(1, 0))
+        self.assertIsNone(odds_ratio(0, 0))
+        self.assertEqual(0, odds_ratio(0, 1))
 
 
 
