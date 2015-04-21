@@ -108,7 +108,6 @@ def assemble_stats(lma_sum, mma_sum, hma_sum, peer_lma_sum, peer_mma_sum, peer_h
             'peer_hma_pct': 0,
             'peer_lar_total': 0
         })
-
     odds_lma = odds_ratio(lma_pct, peer_lma_pct)
     odds_mma = odds_ratio(mma_pct, peer_mma_pct)
     odds_hma = odds_ratio(hma_pct, peer_hma_pct)
@@ -128,7 +127,11 @@ def odds_ratio(target_pct, peer_pct):
     is only for mocking data flow to tables
     """
     odds_ratio = 0.0
-    if target_pct == peer_pct:
+    if peer_pct == 0.0:
+        return None
+    elif target_pct == 0.0:
+        odds_ratio = 0.0
+    elif target_pct == peer_pct:
         odds_ratio = 1.0
     elif peer_pct > 0.0 and target_pct < 1.0 and peer_pct < 1.0:
         odds_ratio = (target_pct/(1-target_pct))/(peer_pct/(1-peer_pct))
