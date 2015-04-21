@@ -127,13 +127,11 @@
             $('#lender-peers-list').addClass('hidden');
             $('#lender-peers').removeClass('green-highlight');
             $('.peers-of-true').addClass('hidden');
-            $('.tooltipsy.peer-component').addClass('hidden');
             $('#download-data').attr('href', origUrl);
         } else {
             $('#lender-peers-list').removeClass('hidden');
             $('.peers-of-true').removeClass('hidden');
             $('#lender-peers').addClass('green-highlight');
-            $('.tooltipsy.peer-component').removeClass('hidden');
             $('#download-data').attr('href', url);
         }
         addParam('peers', status);
@@ -380,6 +378,40 @@
     function assignCat( catVal ){
         cat = catVal.toString();
         catId = '#' + cat;
+    }
+
+    function generateTooltips(selector, offset){
+        // Generate the tool-tip listener for anything with that class - one can only do this once for 
+        // the entire app and then must do so again for any new tooltipsy elements or else the duplicates
+        // will cause UI anomalies
+        if(!offset){
+            offset = [1,0]; // Default 1px to the right
+        }
+
+        if( selector ){
+            $(selector + ' .tooltipsy').tooltipsy({
+                className: 'bubbletooltip_tip',
+                offset: offset,
+                show: function (e, $el) {
+                    $el.fadeIn(100);
+                },
+                hide: function (e, $el) {
+                    $el.fadeOut(450);
+                }
+            });            
+        } else {
+            $('.tooltipsy').tooltipsy({
+                className: 'bubbletooltip_tip',
+                offset: offset,
+                show: function (e, $el) {
+                    $el.fadeIn(100);
+                },
+                hide: function (e, $el) {
+                    $el.fadeOut(450);
+                }
+            });
+        }
+        
     }
     /* 
         END UTILITY FUNCTIONS

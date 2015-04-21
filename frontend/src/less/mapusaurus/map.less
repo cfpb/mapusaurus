@@ -178,12 +178,22 @@ select {
     background-color: @darkgray;
     // border-radius: 10px;
     position: relative;
+    a {
+      color: #fff;
+      border-bottom: 1px dotted @gray-20;
+    }
+    a:hover {
+      color: #fff;
+    }
+    a:visited {
+      color: #fff;
+    }
 }
 
 .bubbletooltip_tip:before { content: ''; position: absolute; border: 10px solid transparent; border-left-color: #000; top: 20px; left: -10; z-index: -1; }
 
 .tooltipsy {
-  color: @pacific;
+
 }
 
 .red-highlight i{

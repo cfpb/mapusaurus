@@ -5838,6 +5838,16 @@ select b {
   background-color: #43484e;
   position: relative;
 }
+.bubbletooltip_tip a {
+  color: #fff;
+  border-bottom: 1px dotted #e3e4e5;
+}
+.bubbletooltip_tip a:hover {
+  color: #fff;
+}
+.bubbletooltip_tip a:visited {
+  color: #fff;
+}
 .bubbletooltip_tip:before {
   content: '';
   position: absolute;
@@ -5846,9 +5856,6 @@ select b {
   top: 20px;
   left: -10;
   z-index: -1;
-}
-.tooltipsy {
-  color: #0072ce;
 }
 .red-highlight i {
   color: #d12124;
@@ -7270,6 +7277,12 @@ select b {
 .summary-data-table tbody tr td.lar {
   text-align: right;
 }
+.summary-data-table tbody tr td.odds-warning {
+  background-color: #e8a091;
+}
+.summary-data-table tbody tr td.odds-caution {
+  background-color: #f6d9d3;
+}
 .summary-data-table.peer-table .target-row td {
   padding-top: .5em;
   padding-bottom: 0;
@@ -7280,12 +7293,6 @@ select b {
 .summary-data-table.basic-table .target-row td {
   border-bottom: 1px solid #bababa;
 }
-td.odds-warning {
-  background-color: #e8a091;
-}
-td.odds-caution {
-  background-color: #f6d9d3;
-}
 #closeTable {
   float: right;
   padding-right: 3px;
@@ -7295,6 +7302,9 @@ td.odds-caution {
 #tableLoadImage {
   margin: auto;
   padding: 5px;
+}
+.odds .tooltipsy {
+  font-size: .85em;
 }
 #plot-container div {
   font: 10px sans-serif;

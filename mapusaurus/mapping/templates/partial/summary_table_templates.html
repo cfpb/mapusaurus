@@ -22,32 +22,32 @@
           </div>
       </td>
 
-      <td class="lar tot_ct"><%-data.lma + data.mma + data.hma%></td>
-      <td class="lar lma_ct"><%-data.lma%></td>
-      <td class="lar mma_ct"><%-data.mma%></td>
-      <td class="lar hma_ct"><%-data.hma%></td>
-      <td class="lar maj_ct"><%-data.mma + data.hma%></td>
+      <td class="lar tot_ct"><%-numeral(data.lma + data.mma + data.hma).format('0,0')%></td>
+      <td class="lar lma_ct"><%-numeral(data.lma).format('0,0')%></td>
+      <td class="lar mma_ct"><%-numeral(data.mma).format('0,0')%></td>
+      <td class="lar hma_ct"><%-numeral(data.hma).format('0,0')%></td>
+      <td class="lar maj_ct"><%-numeral(data.mma + data.hma).format('0,0')%></td>
       <td class="lar lma_pct"><%-data.lma_pct%>%</td>
       <td class="lar mma_pct"><%-data.mma_pct%>%</td>
       <td class="lar hma_pct"><%-data.hma_pct%>%</td>
 
 
       <% if (data.showPeers) { %>
-      <td class="odds_ratio lma_ratio">
         <% if (!data.isPeer) { %>
-            <%-data.odds_lma%>
+          <td class="<%-getOddsClass(data.odds_lma)%> odds_ratio lma_ratio">  
+          <%-data.odds_lma%>
+          </td>
+          <td class="<%-getOddsClass(data.odds_mma)%> odds_ratio mma_ratio">  
+          <%-data.odds_mma%>
+          </td>
+          <td class="<%-getOddsClass(data.odds_hma)%> odds_ratio hma_ratio">  
+          <%-data.odds_hma%>
+          </td>          
+        <% } else { %>
+          <td class="odds_ratio lma_ratio"></td>
+          <td class="odds_ratio mma_ratio"></td>
+          <td class="odds_ratio hma_ratio"></td>
         <% } %>
-      </td>
-      <td class="odds_ratio mma_ratio">
-        <% if (!data.isPeer) { %>
-            <%-data.odds_mma%>
-        <% } else { '- ' } %>
-      </td>
-      <td class="odds_ratio hma_ratio">
-        <% if (!data.isPeer) { %>
-            <%-data.odds_hma%>
-        <% } %>
-      </td>
       <% } %>
     </tr>
 </script>
@@ -67,7 +67,7 @@
          <th class="sorter-false number" colspan="5">Number of Applications</th>          
         <% if (data.showPeers) { %>
           <th class="sorter-false percentage" colspan="3">Percentage of Market</th>
-          <th class="sorter-false odds" colspan="3">Odds Ratio <span id="closeTable" class="cf-icon cf-icon-delete"></span></th>
+          <th class="sorter-false odds" colspan="3">Odds Ratio <span class="tooltipsy" title="Odds Ratio is the ratio of selected lender loans to average peer loans in this area. [VALIDATE LANGUAGE]"><i class="cf-icon cf-icon-information-round"></i></span> <span id="closeTable" class="cf-icon cf-icon-delete"></span></th>
         <% } else { %>
           <th class="sorter-false percentage" colspan="3">Percentage of Market <span id="closeTable" class="cf-icon cf-icon-delete"></span></th>
           <% } %>
@@ -89,49 +89,49 @@
              </div>
          </th>
          <th class="lar lma_ct" data-sortclass="lma_ct">
-             <span class="color-coded sortable-content">LMA</span>
+             <span class="color-coded sortable-content tooltipsy" title="Low Minority Areas: < 50% minority population">LMA</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
          <th class="lar mma_ct" data-sortclass="mma_ct">
-             <span class="color-coded sortable-content">MMA</span>
+             <span class="color-coded sortable-content tooltipsy" title="Mixed Minority Areas: 50% - 80% minority population">MMA</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
          <th class="lar hma_ct" data-sortclass="hma_ct">
-             <span class="color-coded sortable-content">HMA</span>
+             <span class="color-coded sortable-content tooltipsy" title="High Minority Areas: 80% - 100% minority population">HMA</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
         <th class="lar maj_ct" data-sortclass="maj_ct">
-             <span class="color-coded sortable-content">Maj</span>
+             <span class="color-coded sortable-content tooltipsy" title="Majority Minority Areas: > 50% minority population">Maj</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
          <th class="lar lma_pct" data-sortclass="lma_pct">
-             <span class="color-coded sortable-content">LMA</span>
+             <span class="color-coded sortable-content tooltipsy" title="Low Minority Areas: < 50% minority population">LMA</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
          <th class="lar mma_pct" data-sortclass="mma_pct">
-             <span class="color-coded sortable-content">MMA</span>
+             <span class="color-coded sortable-content tooltipsy" title="Mixed Minority Areas: 50% - 80% minority population">MMA</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
          <th class="lar hma_pct" data-sortclass="hma_pct">
-             <span class="color-coded sortable-content">HMA</span>
+             <span class="color-coded sortable-content tooltipsy" title="High Minority Areas: 80% - 100% minority population">HMA</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
                  <div class="cf-icon cf-icon-down"></div>
@@ -139,21 +139,21 @@
          </th>
          <% if (data.showPeers) { %>
          <th class="odds_ratio lma_ratio">
-             <span class="color-coded sortable-content">LMA</span>
+             <span class="color-coded sortable-content tooltipsy" title="Low Minority Areas: < 50% minority population">LMA</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
          <th class="odds_ratio mma_ratio">
-              <span class="color-coded sortable-content">MMA</span>
+              <span class="color-coded sortable-content tooltipsy" title="Mixed Minority Areas: 50% - 80% minority population">MMA</span>
               <div class="arrows">
                   <div class="cf-icon cf-icon-up"></div>
                   <div class="cf-icon cf-icon-down"></div>
               </div>
           </th>
           <th class="odds_ratio hma_ratio">
-              <span class="color-coded sortable-content">HMA</span>
+              <span class="color-coded sortable-content tooltipsy" title="High Minority Areas: 80% - 100% minority population">HMA</span>
               <div class="arrows">
                   <div class="cf-icon cf-icon-up"></div>
                   <div class="cf-icon cf-icon-down"></div>
