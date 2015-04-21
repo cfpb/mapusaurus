@@ -22,32 +22,32 @@
           </div>
       </td>
 
-      <td class="lar tot_ct"><%-data.lma + data.mma + data.hma%></td>
-      <td class="lar lma_ct"><%-data.lma%></td>
-      <td class="lar mma_ct"><%-data.mma%></td>
-      <td class="lar hma_ct"><%-data.hma%></td>
-      <td class="lar maj_ct"><%-data.mma + data.hma%></td>
+      <td class="lar tot_ct"><%-numeral(data.lma + data.mma + data.hma).format('0,0')%></td>
+      <td class="lar lma_ct"><%-numeral(data.lma).format('0,0')%></td>
+      <td class="lar mma_ct"><%-numeral(data.mma).format('0,0')%></td>
+      <td class="lar hma_ct"><%-numeral(data.hma).format('0,0')%></td>
+      <td class="lar maj_ct"><%-numeral(data.mma + data.hma).format('0,0')%></td>
       <td class="lar lma_pct"><%-data.lma_pct%>%</td>
       <td class="lar mma_pct"><%-data.mma_pct%>%</td>
       <td class="lar hma_pct"><%-data.hma_pct%>%</td>
 
 
       <% if (data.showPeers) { %>
-      <td class="odds_ratio lma_ratio">
         <% if (!data.isPeer) { %>
-            <%-data.odds_lma%>
+          <td class="<%-getOddsClass(data.odds_lma)%> odds_ratio lma_ratio">  
+          <%-data.odds_lma%>
+          </td>
+          <td class="<%-getOddsClass(data.odds_mma)%> odds_ratio mma_ratio">  
+          <%-data.odds_mma%>
+          </td>
+          <td class="<%-getOddsClass(data.odds_hma)%> odds_ratio hma_ratio">  
+          <%-data.odds_hma%>
+          </td>          
+        <% } else { %>
+          <td class="odds_ratio lma_ratio"></td>
+          <td class="odds_ratio mma_ratio"></td>
+          <td class="odds_ratio hma_ratio"></td>
         <% } %>
-      </td>
-      <td class="odds_ratio mma_ratio">
-        <% if (!data.isPeer) { %>
-            <%-data.odds_mma%>
-        <% } else { '- ' } %>
-      </td>
-      <td class="odds_ratio hma_ratio">
-        <% if (!data.isPeer) { %>
-            <%-data.odds_hma%>
-        <% } %>
-      </td>
       <% } %>
     </tr>
 </script>

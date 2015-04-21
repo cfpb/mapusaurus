@@ -7270,6 +7270,12 @@ select b {
 .summary-data-table tbody tr td.lar {
   text-align: right;
 }
+.summary-data-table tbody tr td.odds-warning {
+  background-color: #e8a091;
+}
+.summary-data-table tbody tr td.odds-caution {
+  background-color: #f6d9d3;
+}
 .summary-data-table.peer-table .target-row td {
   padding-top: .5em;
   padding-bottom: 0;
@@ -7279,12 +7285,6 @@ select b {
 }
 .summary-data-table.basic-table .target-row td {
   border-bottom: 1px solid #bababa;
-}
-td.odds-warning {
-  background-color: #e8a091;
-}
-td.odds-caution {
-  background-color: #f6d9d3;
 }
 #closeTable {
   float: right;

@@ -413,3 +413,18 @@ function toggleDataContainer(showData) {
     }
     setMapHeight();
 }
+
+
+// Helper function to check Odds class
+function getOddsClass( ratio ){
+    var oddsClass = 'odds-normal';
+    if( 0 < ratio && ratio <= .5 ){
+        oddsClass = 'odds-warning';
+    } else if ( .5 < ratio && ratio < 1 ){
+        console.log('between .5 and 1');
+        oddsClass = 'odds-caution';
+    } else {
+        oddsClass = 'odds-normal';
+    }
+    return oddsClass;
+}
