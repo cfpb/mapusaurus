@@ -127,13 +127,11 @@
             $('#lender-peers-list').addClass('hidden');
             $('#lender-peers').removeClass('green-highlight');
             $('.peers-of-true').addClass('hidden');
-            $('.tooltipsy.peer-component').addClass('hidden');
             $('#download-data').attr('href', origUrl);
         } else {
             $('#lender-peers-list').removeClass('hidden');
             $('.peers-of-true').removeClass('hidden');
             $('#lender-peers').addClass('green-highlight');
-            $('.tooltipsy.peer-component').removeClass('hidden');
             $('#download-data').attr('href', url);
         }
         addParam('peers', status);
