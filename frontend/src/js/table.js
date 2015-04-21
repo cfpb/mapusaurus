@@ -108,7 +108,8 @@ function createTable(showPeers) {
         $('#closeTable').on('click', function(){
             toggleDataContainer(false);
             currentChart = 'undefined';  
-         });
+        });
+        generateTooltips('#table-container', [0,-1]);
     });
 }
 

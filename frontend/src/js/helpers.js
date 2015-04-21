@@ -381,6 +381,40 @@
         cat = catVal.toString();
         catId = '#' + cat;
     }
+
+    function generateTooltips(selector, offset){
+        // Generate the tool-tip listener for anything with that class - one can only do this once for 
+        // the entire app and then must do so again for any new tooltipsy elements or else the duplicates
+        // will cause UI anomalies
+        if(!offset){
+            offset = [1,0]; // Default 1px to the right
+        }
+
+        if( selector ){
+            $(selector + ' .tooltipsy').tooltipsy({
+                className: 'bubbletooltip_tip',
+                offset: offset,
+                show: function (e, $el) {
+                    $el.fadeIn(100);
+                },
+                hide: function (e, $el) {
+                    $el.fadeOut(450);
+                }
+            });            
+        } else {
+            $('.tooltipsy').tooltipsy({
+                className: 'bubbletooltip_tip',
+                offset: offset,
+                show: function (e, $el) {
+                    $el.fadeIn(100);
+                },
+                hide: function (e, $el) {
+                    $el.fadeOut(450);
+                }
+            });
+        }
+        
+    }
     /* 
         END UTILITY FUNCTIONS
     */
