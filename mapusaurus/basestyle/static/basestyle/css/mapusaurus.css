@@ -5922,7 +5922,7 @@ select b {
   display: inline-block;
 }
 .css-legend-chart {
-  width: 85px;
+  width: 100px;
   border-width: 0;
   display: inline-block;
   height: 8px;
@@ -5940,6 +5940,7 @@ select b {
 .pct-minority-value {
   display: inline-block;
   border-width: 0;
+  float: right;
 }
 .pct-minority-value::after {
   content: "%";
@@ -6038,6 +6039,9 @@ select b {
 .lt-ie9 .map-aside h4 {
   font-weight: normal !important;
 }
+.map-aside p {
+  padding-top: 12px;
+}
 .map-aside p,
 .map-aside dt,
 .map-aside dd {
@@ -6128,7 +6132,7 @@ select b {
   font-style: normal;
   font-weight: normal;
   width: 230px;
-  border: solid 1px #000;
+  border: solid 1px #babbbd;
   background: #fff;
   padding: 5px;
 }
