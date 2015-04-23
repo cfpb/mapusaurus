@@ -3,8 +3,8 @@
     <tr class="<%- data.className %>">
       
       <td class="name" >
-          <% if (!data.isPeer) { %>
-              <% if (data.name) { %><%-data.name%><% } %> <%-data.rowType%> 
+          <% if (!data.isPeer) { console.log('Data Name: ', data.name ); %>
+              <% if (data.name) { %> <% if (data.name == 'MSA' ){ data.name = %> <% {{ metro.name }} %> <% } %><%-data.name%><% } %> <%-data.rowType%> 
           <% } %>
       </td>
 
@@ -26,10 +26,11 @@
       <td class="lar lma_ct"><%-numeral(data.lma).format('0,0')%></td>
       <td class="lar mma_ct"><%-numeral(data.mma).format('0,0')%></td>
       <td class="lar hma_ct"><%-numeral(data.hma).format('0,0')%></td>
-      <td class="lar maj_ct"><%-numeral(data.mma + data.hma).format('0,0')%></td>
+      <td class="lar maj_ct hma_ct"><%-numeral(data.mma + data.hma).format('0,0')%></td>
       <td class="lar lma_pct"><%-data.lma_pct%>%</td>
       <td class="lar mma_pct"><%-data.mma_pct%>%</td>
       <td class="lar hma_pct"><%-data.hma_pct%>%</td>
+      <td class="lar hma_pct"><%-data.hma_pct + data.mma_pct%>%</td>
 
 
       <% if (data.showPeers) { %>
@@ -42,11 +43,15 @@
           </td>
           <td class="<%-getOddsClass(data.odds_hma)%> odds_ratio hma_ratio">  
           <%-data.odds_hma%>
-          </td>          
+          </td>    
+          <td class="<%-getOddsClass((data.odds_hma + data.odds_mma)/2) %> odds_ratio maj_ratio hma_ratio">  
+          <%-(data.odds_hma + data.odds_mma )/ 2%>
+          </td>        
         <% } else { %>
           <td class="odds_ratio lma_ratio"></td>
           <td class="odds_ratio mma_ratio"></td>
           <td class="odds_ratio hma_ratio"></td>
+          <td class="odds_ratio hma_ratio maj_ratio"></td>
         <% } %>
       <% } %>
     </tr>
@@ -64,12 +69,12 @@
           Basic Summary
         <% } %>
           Data Tables</th>
-         <th class="sorter-false number" colspan="5">Number of Applications</th>          
+         <th class="sorter-false number center-header" colspan="5">Number of Applications</th>          
         <% if (data.showPeers) { %>
-          <th class="sorter-false percentage" colspan="3">Percentage of Market</th>
-          <th class="sorter-false odds" colspan="3">Odds Ratio <span class="tooltipsy" title="Odds Ratio is the ratio of selected lender loans to average peer loans in this area. [VALIDATE LANGUAGE]"><i class="cf-icon cf-icon-information-round"></i></span> <span id="closeTable" class="cf-icon cf-icon-delete"></span></th>
+          <th class="sorter-false percentage center-header" colspan="4">Percentage of Market</th>
+          <th class="sorter-false odds center-header" colspan="4">Odds Ratio <span class="tooltipsy" title="Odds Ratio is the ratio of selected lender loans to average peer loans in this area. [VALIDATE LANGUAGE]"><i class="cf-icon cf-icon-information-round"></i></span> <span id="closeTable" class="cf-icon cf-icon-delete"></span></th>
         <% } else { %>
-          <th class="sorter-false percentage" colspan="3">Percentage of Market <span id="closeTable" class="cf-icon cf-icon-delete"></span></th>
+          <th class="sorter-false percentage center-header" colspan="4">Percentage of Market <span id="closeTable" class="cf-icon cf-icon-delete"></span></th>
           <% } %>
      </tr>
      <tr class="sortable-header header-two">
@@ -109,7 +114,7 @@
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
-        <th class="lar maj_ct" data-sortclass="maj_ct">
+        <th class="lar maj_ct hma_pct" data-sortclass="maj_ct">
              <span class="color-coded sortable-content tooltipsy" title="Majority Minority Areas: > 50% minority population">Maj</span>
              <div class="arrows">
                  <div class="cf-icon cf-icon-up"></div>
@@ -137,6 +142,13 @@
                  <div class="cf-icon cf-icon-down"></div>
              </div>
          </th>
+         <th class="lar hma_pct maj_ct" data-sortclass="maj_ct">
+           <span class="color-coded sortable-content tooltipsy" title="Majority Minority Areas: > 50% minority population">Maj</span>
+           <div class="arrows">
+               <div class="cf-icon cf-icon-up"></div>
+               <div class="cf-icon cf-icon-down"></div>
+           </div>
+         </th>
          <% if (data.showPeers) { %>
          <th class="odds_ratio lma_ratio">
              <span class="color-coded sortable-content tooltipsy" title="Low Minority Areas: < 50% minority population">LMA</span>
@@ -159,6 +171,13 @@
                   <div class="cf-icon cf-icon-down"></div>
               </div>
           </th>
+          <th class="lar maj_ct hma_pct" data-sortclass="maj_ct">
+           <span class="color-coded sortable-content tooltipsy" title="Majority Minority Areas: > 50% minority population">Maj</span>
+           <div class="arrows">
+               <div class="cf-icon cf-icon-up"></div>
+               <div class="cf-icon cf-icon-down"></div>
+           </div>
+         </th>
          <% } %>
      </tr>
      </thead>

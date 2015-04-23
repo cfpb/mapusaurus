@@ -46,8 +46,8 @@
         </div>
         <div style="display:inline-block; position: relative; text-align: right; float:right;">
              <span class="peers-of-true hidden">Peers of </span><strong>{{ lender.name }}</strong> - {{ lender.agency_id }}{{ lender.respondent_id }}<br/>
-            {{ metro.name }}<br/>
-            <strong>Map Base: </strong><span id="minorityValue"></span><br/>
+            <b>MSA: {{ metro.name }}<br/>
+            <strong>Layer: </strong><span id="minorityValue"></span><br/>
         </div>
         <div id="filterStatus" style="display:inline-block; vertical-align:top; top: 5px;"></div>
       </div>
@@ -65,7 +65,7 @@
             <div id="lender-info" class="map-divider"><!-- lender-info ID is in a test, it needs to be changed in the test -->                
                 <h3 class="tab-main">{{ lender.name }}</h3>
                 <div class="header-group">
-                    <h6 class="item-sub">Regulating Agency</h6>
+                    <h6 class="item-sub">Regulating Agency:</h6>
                     <h6 class="item-main">{{ lender.agency.acronym }}</h6>    
                 </div>
                 <div class="header-group">

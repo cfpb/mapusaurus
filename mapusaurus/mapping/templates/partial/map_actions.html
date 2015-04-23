@@ -2,13 +2,13 @@
     <div id="map-aside__msa-analysis" class="map-aside__msa-analysis">
         <div class="map-divider"><h6 class="tab-title">Analysis Themes</h6></div>
             <div class="map-divider">
-                <h4 class="selector-label item-sub">Select the Geography in which you'd like to display LAR circles:</h4>
+                <h4 class="selector-label item-sub">Choose display of Loan Application Records (LAR):</h4>
                 <select name="geoTypeQuerySelector" id="geoTypeQuerySelector" class="selector">
                     <option value="selected">Show LAR for Selected MSA</option>
                     <option value="all_msa">Show LAR for All MSAs on Map</option>
                     <option value="all">Show all LAR on Map</option>
                 </select>
-                <h4 class="selector-label item-sub">Select the LAR Actions you would like to display:</h4>
+                <h4 class="selector-label item-sub">Choose how to filter the LAR:</h4>
                 <select id="action-taken-selector" class="selector">
                     <option value="all-apps-5" selected data-scale="{{ scaled_median_loans }}">All applications</option>
                     <option value="all-apps-6" data-scale="{{ scaled_median_loans }}">Applications and purchases</option>
@@ -77,7 +77,7 @@
 
             </div>
             <div id="lender-branches" class="map-divider lighter">
-                <input type="checkbox" id="branchSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Branch Locations <span class="tooltipsy branch-component" title="Locations are only shown for {{lender.name}} and will not include peers nor affiliates"><i class="cf-icon cf-icon-information-round"></i></span></h6> 
+                <input type="checkbox" id="branchSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Branch Locations <span class="tooltipsy branch-component" title="Locations are only shown for {{lender.name}} and will not include peers or affiliates"><i class="cf-icon cf-icon-information-round"></i></span></h6> 
             </div>  
 
             {% if institution_hierarchy.count > 0 %}       
@@ -135,7 +135,7 @@
             <div class="map-divider print-map">
                 <div class="header-group">
                     <h3 class="tab-main">Print map exhibit</h3>
-                    <h6 class="item-sub">Based on your current settings and selections</h6>
+                    <h6 class="item-sub">Print the map using your current settings and selections</h6>
                     <p>
                         <a id="printLink" href="/map/print/" class="btn" target="mapPrintView">
                             <span class="btn_icon__left cf-icon cf-icon-print"></span>
@@ -148,7 +148,7 @@
             <div class="map-divider download-csv">
                 <div class="header-group">
                     <h3 class="tab-main">HMDA data</h3>
-                    <h6 class="item-sub">Download the 2013 loan application records (LAR) for {{ lender.name }} in the {{ metro.name }} location for {{ lender.year }}.</h6>
+                    <h6 class="item-sub">Download the 2013 loan application records (LAR) for {{ lender.name }} in the {{ metro.name }} MSA.</h6>
                     <p>
                         <a target="_blank" id="downloadData" data-download="{{ download_url }}" data-super-download="{{ hierarchy_download_url }}" data-peer-download="{{ peer_download_url }}" href="{{ download_url}}"  class="btn btn__secondary">
                             <span class="btn_icon__left cf-icon cf-icon-download"></span>

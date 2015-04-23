@@ -201,6 +201,13 @@ if (!window.console) console = {log: function() {}};
         // Kick off the application
         initCalls(geoQueryType);
 
+        $('.leaflet-control-layers-toggle').css(
+            {
+                'background-image': 'url(/static/basestyle/img/icon_map-layers.png)',
+                'background-size': '26px',
+                'background-position': '0,0'
+        });
+
     });
 
         // Let the application do its thing 

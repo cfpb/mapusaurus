@@ -5193,6 +5193,9 @@ html b {
 	 ========================================================================== */
 /* Small tablet (600px) */
 @media only screen and (min-width: 37.5em) {
+  .header {
+    padding: 15px;
+  }
   .header .site-title {
     display: inline-block;
     -webkit-box-sizing: border-box;
@@ -5204,6 +5207,7 @@ html b {
     vertical-align: top;
     width: 66.66666667%;
     text-align: left;
+    border-width: 0;
   }
   .ie .header .site-title {
     margin-right: -0.26em;
@@ -5230,6 +5234,7 @@ html b {
     vertical-align: top;
     width: 33.33333333%;
     text-align: right;
+    border-width: 0;
   }
   .ie .header .site-logo {
     margin-right: -0.26em;
@@ -5242,6 +5247,7 @@ html b {
   }
   .header .site-logo .logo {
     display: inline;
+    width: 170px;
   }
 }
 /* ==========================================================================
@@ -5782,6 +5788,14 @@ select b {
 .map-divider-minor .sub-header-name {
   margin-left: 25px;
   display: inline-block;
+  text-transform: none;
+  color: #75787b;
+  font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+}
+.lt-ie9 .map-divider-minor .sub-header-name {
+  font-weight: normal !important;
 }
 .map-divider-minor i.cf-icon-right {
   font-size: .75em;
@@ -5799,6 +5813,9 @@ select b {
 }
 .map-divider-minor.option.active-layer {
   background: #dbedd4;
+}
+.map-divider-minor.option.active-layer .sub-header-name {
+  color: #101820;
 }
 .map-divider-minor.option.active-layer:hover {
   background: #addc91;
@@ -6316,6 +6333,13 @@ select b {
 }
 .tabpanel:after {
   clear: both;
+}
+.cf-icon-analysis-themes {
+  background-image: url(/static/basestyle/img/icon_analysis-layers.png);
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 16px;
 }
 @media print {
   .no-print,
@@ -7217,6 +7241,9 @@ select b {
 .summary-data-table .chart-title {
   min-width: 45px;
 }
+.summary-data-table .lar {
+  font-size: .9em;
+}
 .summary-data-table .odds_ratio {
   min-width: 45px;
 }
@@ -7296,6 +7323,9 @@ select b {
 }
 .summary-data-table.basic-table .target-row td {
   border-bottom: 1px solid #bababa;
+}
+.center-header {
+  text-align: center;
 }
 #closeTable {
   float: right;
