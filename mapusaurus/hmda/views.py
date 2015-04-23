@@ -21,7 +21,7 @@ def loan_originations(request):
     peers = request.GET.get('peers')
     census_tracts = get_censustract_geos(request)
 
-    query = HMDARecord.objects.filter(base_hmda_query())            
+    query = HMDARecord.objects.all()            
 
     #if lender param key is passed in
     if institution_id:

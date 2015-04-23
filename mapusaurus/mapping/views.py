@@ -42,7 +42,7 @@ def make_download_url(lender, metro):
     into divisions in that tool, so make sure the query uses the proper ids"""
     where = ""
     if lender:
-        where = 'as_of_year=2013 AND property_type IN (1,2) AND lien_status=1 AND owner_occupancy=1 AND '
+        where = 'as_of_year=2013 AND '
         count = 0 
         if type(lender) is QuerySet:
             for item in lender:
