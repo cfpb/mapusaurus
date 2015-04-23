@@ -58,9 +58,6 @@ class ViewsTest(TestCase):
             record.save()
         mkrecord("91000000001", 1, '222', '1122233300')
         mkrecord("91000000001", 1, '222', '1122233400')
-        #mkrecord("91000000001", 1, '222', '1122333300')
-
-
 
     def tearDown(self):
         Census2010RaceStats.objects.all().delete()
