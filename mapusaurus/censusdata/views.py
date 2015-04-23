@@ -221,13 +221,10 @@ def race_summary_http(request):
     return HttpResponse(json.dumps(race_summary_as_json(request)))
 
 def race_summary_csv(request):
-    institution_id = request.GET.get('lender')
-    metro = request.GET.get('metro')
-    action_taken_param = request.GET.get('action_taken')
-    action_taken_selected = action_taken_param.split(',')
+    lar_data = loan_originations_as_json(request)
     tracts_in_msa = get_censustract_geos(request)
     queryset = Census2010RaceStats.objects.filter(geoid__in=tracts_in_msa)
-    file_name = 'HMDA-Census-Tract_2013_Lender%s_MSA%s.csv' % (institution_id, metro)
+    file_name = 'HMDA-Census-Tract_2013_Lender%s_MSA%s.csv' % (request.GET.get('lender'), request.GET.get('metro'))
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=%s' % file_name
     writer = csv.writer(response, csv.excel)
@@ -244,12 +241,15 @@ def race_summary_csv(request):
     ])
     for obj in queryset:
         geoid = "'%s'" % str(obj.geoid.geoid)
-        lar_count = HMDARecord.objects.filter(institution_id=institution_id, geo=obj.geoid, action_taken__in=action_taken_selected).filter(base_hmda_query()).count()
-        census_households = Census2010Households.objects.filter(geoid=obj.geoid).first()
-        if census_households:
-            num_households = census_households.total
-        else:
+        try:
+            lar_count = lar_data[obj.geoid.geoid]['volume']
+        except:
+            lar_count = 0
+        try:
+            num_households = lar_data[obj.geoid.geoid]['num_households']
+        except:
             num_households = 0
+
         writer.writerow([
             smart_str(geoid),
             smart_str(obj.total_pop),

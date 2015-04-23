@@ -2,12 +2,13 @@ import json
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-
+from respondents.models import Institution
+from geo.models import Geo
 from censusdata.models import Census2010RaceStats
-from hmda.models import LendingStats
+from hmda.models import HMDARecord, LendingStats
 
 class ViewsTest(TestCase):
-    fixtures = ['dummy_tracts']
+    fixtures = ['agency', 'fake_respondents', 'dummy_tracts', 'fake_msa']
 
     def setUp(self):
         stats = Census2010RaceStats(
@@ -35,6 +36,28 @@ class ViewsTest(TestCase):
             lar_median=3, lar_count=4,
             fha_count=2, fha_bucket=2)
         lendstats.save()
+
+        def mkrecord(institution_id, action_taken, countyfp, geoid):
+            respondent = Institution.objects.get(institution_id=institution_id)
+            geo = Geo.objects.get(geoid=geoid)
+            record = HMDARecord(
+                as_of_year=2014, respondent_id=respondent.respondent_id, agency_code=respondent.agency_id,
+                loan_type=1, property_type=1, loan_purpose=1, owner_occupancy=1,
+                loan_amount_000s=222, preapproval='1', action_taken=action_taken,
+                msamd='01234', statefp='11', countyfp=countyfp,
+                census_tract_number ='01234', applicant_ethnicity='1',
+                co_applicant_ethnicity='1', applicant_race_1='1', co_applicant_race_1='1',
+                applicant_sex='1', co_applicant_sex='1', applicant_income_000s='1000',
+                purchaser_type='1', rate_spread='0123', hoepa_status='1', lien_status='1',
+                sequence_number='1', population='1', minority_population='1',
+                ffieic_median_family_income='1000', tract_to_msamd_income='1000',
+                number_of_owner_occupied_units='1', number_of_1_to_4_family_units='1',
+                application_date_indicator=1)
+            record.geo = geo
+            record.institution = respondent
+            record.save()
+        mkrecord("91000000001", 1, '222', '1122233300')
+        mkrecord("91000000001", 1, '222', '1122233400')
 
     def tearDown(self):
         Census2010RaceStats.objects.all().delete()
@@ -74,7 +97,7 @@ class ViewsTest(TestCase):
 
     def test_race_summary_csv(self):
         resp = self.client.get(reverse('censusdata:race_summary_csv'),
-            {'metro':'10000', 'lender':'736-4045996', 'action_taken':'1,2,3,4'})
+            {'metro':'10000', 'lender':'91000000001', 'action_taken':'1,2,3,4'})
         resp = resp.content
         self.assertTrue('1122233300' in resp)
         self.assertTrue('1122233400' in resp)
