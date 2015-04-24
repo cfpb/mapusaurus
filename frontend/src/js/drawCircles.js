@@ -17,6 +17,8 @@
     }
 
     function drawCircle(geo, options){
+        console.log("geo: ", geo);
+        console.log("key attempt: ", geo.keys() );
         var data = geo,
             style;
 

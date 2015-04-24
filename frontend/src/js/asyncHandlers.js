@@ -60,7 +60,7 @@
     // Return a promise.
     function getTractData( actionTakenVal, bounds, geoType ){
         $('#bubbles_loading').show();
-        var endpoint = '/api/all/',
+        var endpoint = '/api/hmda',
             params = { year: 2013,
                         'lh': false,
                         'peers': false,

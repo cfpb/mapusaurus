@@ -254,33 +254,32 @@ if (!window.console) console = {log: function() {}};
         if( gt === 'selected'){
             // run init with no bounds and no geo_type
             blockStuff();
-            $.when( getTractsInBounds(false, false), getTractData(action, false, false) ).done( function(data1, data2){
-                init(data1, data2);
+            $.when( getTractData(action, false, false) ).done( function(data1){
+                init(data1);
             });
         } else if ( gt === 'all_msa'){
             // run init with bounds and geo_type = msa
             blockStuff();
-            $.when( getTractsInBounds(getBoundParams(), 'msa'), getTractData(action, getBoundParams(), 'msa') ).done( function(data1, data2){
-                init(data1, data2);  
+            $.when( getTractData(action, getBoundParams(), 'msa') ).done( function(data1){
+                init(data1);  
             });
         } else if ( gt === 'all'){
             // run init with bounds and geo_type = false
             blockStuff();
-            $.when( getTractsInBounds( getBoundParams(), false ), getTractData(action, getBoundParams(), false )).done( function(data1, data2){
-                init(data1, data2);
+            $.when( getTractData(action, getBoundParams(), false )).done( function(data1){
+                init(data1);
             });
         }
 
     }
 
     // Do what you need to do with the received data to build the map
-    function init(data1, data2){
+    function init(data1){
         var hashInfo = getHashParams(),
             layerInfo = getLayerType(hashInfo.category.values);
 
         // Create our two global data objects with our returned data
-        rawGeo = data1[0];
-        rawData = data2[0];
+        rawData = data1;
 
         // Create our Tract Data Object (Datastore.tracts) from the raw sources
         createTractDataObj(); 

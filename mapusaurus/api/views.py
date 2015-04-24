@@ -80,7 +80,7 @@ def msa(request):
 
 def hmda(request):
     """This endpoint returns hmda data using params from the request"""
-    return HttpResponse(json.dumps(loan_originations_as_json(request)))
+    return HttpResponse(json.dumps(loan_originations_as_json(request)), content_type='application/json')
 
 def census(request):
     """This endpoint returns census data used for circle coloring over tracts"""
