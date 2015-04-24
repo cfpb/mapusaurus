@@ -60,6 +60,7 @@ def loan_originations_as_json(request):
     if records:
         for row in records:
             data[row['geo_id']] = {
+                'geoid': row['geo_id'],
                 'volume': row['volume'],
                 'num_households': row['geo__census2010households__total'],
                 'centlat': row['geo__centlat'],
