@@ -80,12 +80,10 @@
         if( !status ){
             layers.Branches.clearLayers();
             $('#branchKey').addClass('hidden');
-            $('.tooltipsy.branch-component').addClass('hidden');
             $('#lender-branches').removeClass('green-highlight');
         } else {
             drawBranches();
             $('#branchKey').removeClass('hidden');
-            $('.tooltipsy.branch-component').removeClass('hidden');
             $('#lender-branches').addClass('green-highlight');
         }
 

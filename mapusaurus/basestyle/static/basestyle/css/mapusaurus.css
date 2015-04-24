@@ -5698,10 +5698,13 @@ select b {
   line-height: 1.375;
 }
 .map-divider select {
-  width: 100%;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  font-size: large;
+  width: 90%;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left: 3px;
+}
+.map-divider .selector-label {
+  padding: 5px;
 }
 .map-divider .tab-title {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
@@ -5786,13 +5789,14 @@ select b {
   position: relative;
 }
 .map-divider-minor .sub-header-name {
-  margin-left: 25px;
+  margin-left: 20px;
   display: inline-block;
   text-transform: none;
   color: #75787b;
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
+  letter-spacing: 0px;
 }
 .lt-ie9 .map-divider-minor .sub-header-name {
   font-weight: normal !important;
@@ -5840,6 +5844,9 @@ select b {
 }
 .green-highlight {
   background-color: #dbedd4;
+}
+.green-highlight .sub-header-name {
+  color: #101820;
 }
 .divided {
   border-bottom: 1px solid #babbbd;
@@ -5939,7 +5946,7 @@ select b {
   display: inline-block;
 }
 .css-legend-chart {
-  width: 100px;
+  width: 85px;
   border-width: 0;
   display: inline-block;
   height: 8px;
@@ -5957,7 +5964,6 @@ select b {
 .pct-minority-value {
   display: inline-block;
   border-width: 0;
-  float: right;
 }
 .pct-minority-value::after {
   content: "%";
@@ -6056,9 +6062,6 @@ select b {
 .lt-ie9 .map-aside h4 {
   font-weight: normal !important;
 }
-.map-aside p {
-  padding-top: 12px;
-}
 .map-aside p,
 .map-aside dt,
 .map-aside dd {
@@ -6078,6 +6081,7 @@ select b {
 }
 .map-aside .btn {
   font-size: .875em;
+  margin-top: 15px;
 }
 .map-aside__lender-details,
 .map-aside__msa-details,
@@ -6149,7 +6153,7 @@ select b {
   font-style: normal;
   font-weight: normal;
   width: 230px;
-  border: solid 1px #babbbd;
+  border: solid 1px #000;
   background: #fff;
   padding: 5px;
 }

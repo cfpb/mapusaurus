@@ -17,8 +17,6 @@
     }
 
     function drawCircle(geo, options){
-        console.log("geo: ", geo);
-        console.log("key attempt: ", geo.keys() );
         var data = geo,
             style;
 
@@ -43,11 +41,6 @@
         }
 
         circle.on('mouseover mousemove', function(e){
-            var hisp,white,black,asian;
-            hisp = (data['hispanic_perc']*100).toFixed(2);
-            white = (data['non_hisp_white_only_perc']*100).toFixed(2);
-            black = (data['non_hisp_black_only_perc']*100).toFixed(2);
-            asian = (data['non_hisp_asian_only_perc']*100).toFixed(2);
             new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false, y_bound: 160 })
                 .setContent('<div class="bubble-header">Tract '+ circle.geoid + 
                     '</div><div class="lar-count"><span class="circle-hover-data">' +data['volume'] + 
