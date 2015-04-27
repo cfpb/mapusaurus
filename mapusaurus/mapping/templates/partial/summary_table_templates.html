@@ -1,4 +1,4 @@
-<!-- Begin: TR Template Definition. -->
+1<!-- Begin: TR Template Definition. -->
 <script type="text/template" class="row-template">
     <tr class="<%- data.className %>">
       
@@ -30,12 +30,12 @@
       <td class="lar lma_pct"><%-data.lma_pct%>%</td>
       <td class="lar mma_pct"><%-data.mma_pct%>%</td>
       <td class="lar hma_pct"><%-data.hma_pct%>%</td>
-      <td class="lar hma_pct"><%-data.hma_pct + data.mma_pct%>%</td>
+      <td class="lar hma_pct"><%-data.maj_pct%>%</td>
 
 
       <% if (data.showPeers) { %>
         <% if (!data.isPeer) { %>
-          <td class="<%-getOddsClass(data.odds_lma)%> odds_ratio lma_ratio">  
+          <td class="odds_ratio lma_ratio">  
           <%-data.odds_lma%>
           </td>
           <td class="<%-getOddsClass(data.odds_mma)%> odds_ratio mma_ratio">  
@@ -44,7 +44,7 @@
           <td class="<%-getOddsClass(data.odds_hma)%> odds_ratio hma_ratio">  
           <%-data.odds_hma%>
           </td>    
-          <td class="<%-getOddsClass((data.odds_hma + data.odds_mma)/2) %> odds_ratio maj_ratio hma_ratio">  
+          <td class="<%-getOddsClass(data.odds_maj) %> odds_ratio maj_ratio hma_ratio">  
           <%-(data.odds_hma + data.odds_mma )/ 2%>
           </td>        
         <% } else { %>
