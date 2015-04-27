@@ -111,8 +111,8 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <div id="lender-peers" class="map-divider lighter">
-                    <input type="checkbox" disabled=true /><h6 class="header-name" style="display:inline-block">No Peers Available <span class="tooltipsy peer-component" title="Peers are institutions that have between 50% and 200% of {{lender.name}} LAR count, and and a similar percentage of overall FHA Applications in {{ metro.name}}"><i class="cf-icon cf-icon-information-round"></i></span></h6>
+                <div id="lender-peers" class="map-divider-minor">
+                    <input type="checkbox" disabled=true /><h6 class="sub-header-name" style="display:inline-block">No Peers Available <span class="tooltipsy peer-component" title="Peers are institutions that have between 50% and 200% of {{lender.name}} LAR count, and and a similar percentage of overall FHA Applications in {{ metro.name}}"><i class="cf-icon cf-icon-information-round"></i></span></h6>
                 </div>  
             {% endif %}
         </div><!-- /.tabpanel -->            
@@ -123,9 +123,15 @@
          <div id="chart-toggle__basic-table" class="chart-toggle map-divider lighter">
             <h6 class="header-name" style="display:inline-block">Basic Summary Data Table</h6>
         </div>
+        {% if institution_peers.count > 0 %}
         <div id="chart-toggle__peer-table" class="chart-toggle map-divider lighter">
             <h6 class="header-name" style="display:inline-block">Peer Summary Data Table</h6>
         </div>
+        {% else %}
+            <div class="map-divider lighter">
+                <h6 class="header-name" style="display:inline-block; color: #75787B;">No Peer Table Available</h6>
+            </div>            
+        {% endif %}
     </div><!-- /.tabpanel --> 
 
     <div id="map-aside__download-export">
