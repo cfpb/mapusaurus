@@ -376,6 +376,8 @@ function destroyData() {
     // destroy table        
     destroyTable();
     $('#table-container').hide();
+    setMapHeight();
+
 }
 
 /**
@@ -390,6 +392,8 @@ function destroyTable() {
     $(".summary-data-table")
         .trigger("destroy")
         .remove();
+    
+    setMapHeight();        
 }
 
 /**
@@ -419,10 +423,9 @@ function toggleDataContainer(showData) {
 // Helper function to check Odds class
 function getOddsClass( ratio ){
     var oddsClass = 'odds-normal';
-    if( 0 <= ratio && ratio <= .5 ){
+    if( 0 < ratio && ratio <= .4 ){
         oddsClass = 'odds-warning';
-    } else if ( .5 < ratio && ratio < 1 ){
-        console.log('between .5 and 1');
+    } else if ( .4 < ratio && ratio < .8 ){
         oddsClass = 'odds-caution';
     } else {
         oddsClass = 'odds-normal';
