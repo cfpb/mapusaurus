@@ -42,12 +42,12 @@
                 <span class="btn_icon__left cf-icon cf-icon-print"></span>
                 Print
             </span>
-            <p class="no-print" style="font-size: .85em; padding-bottom: 2px;">Recommended Print Setting: Landscape, no margin, enable Backgrounds / Graphics</p>
+            <p class="no-print" style="font-size: .85em; padding-bottom: 2px;">Recommended Print Setting: Landscape, low margin, enable Backgrounds, Legal Size</p>
         </div>
         <div style="display:inline-block; position: relative; text-align: right; float:right;">
              <span class="peers-of-true hidden">Peers of </span><strong>{{ lender.name }}</strong> - {{ lender.agency_id }}{{ lender.respondent_id }}<br/>
-            <b>MSA: {{ metro.name }}<br/>
-            <strong>Layer: </strong><span id="minorityValue"></span><br/>
+            <b>MSA:</b> {{ metro.name }}<br/>
+            <b>Layer: </b><span id="minorityValue"></span><br/>
         </div>
         <div id="filterStatus" style="display:inline-block; vertical-align:top; top: 5px;"></div>
       </div>
@@ -88,7 +88,7 @@
                 <h3>Affiliated Institutions included in LAR count:</h3>
                 {% for inst in institution_hierarchy %}
                     <span style="display:inline-block; min-width:250px; max-width:250px; height:60px; vertical-align:top;">
-                        <span class="item-main"><b>{{ inst.name }}</b></span><br/><span class="item-sub">{{ inst.institution_id }}</span>
+                        <span class="item-main"><b>{{ inst.institution.name }}</b></span><br/><span class="item-sub">{{ inst.institution_id }}</span>
                     </span>
                 {% endfor %}
             </div>
@@ -248,7 +248,7 @@
     <script>
         $(document).ready(function(){
             var minorityVal = $('.map-divider-minor.active-layer').attr('id');
-            $('#minorityValue').text( getLayerType(minorityVal).displayName + ' Layer' );
+            $('#minorityValue').text( getLayerType(minorityVal).displayName);
 
             var loadParams = getHashParams();
             console.log("LH? ", loadParams.lh.values);

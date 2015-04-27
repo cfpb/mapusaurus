@@ -251,7 +251,7 @@
                 layer = layers.MedianIncome;
                 type = 'seq';
                 keyPath = '/static/basestyle/img/key_med-fam-income.png';
-                displayName = 'Median Family Income';                
+                displayName = 'Median Family Income by Census Tract';                
                 break;   
             case 'median_value':
                 layer = layers.MedianValue;
