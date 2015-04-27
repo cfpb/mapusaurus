@@ -55,10 +55,13 @@ select {
   }
 
   select {
-    width: 100%;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    font-size: large;
+    width: 90%;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 3px;
+  }
+  .selector-label{ 
+    padding: 5px;
   }
 
   .tab-title{
@@ -105,11 +108,15 @@ select {
   padding-top: 5px;
   padding-bottom: 5px;
   cursor: pointer;
-  position: relative;
+  position: relative; 
 
   .sub-header-name{
-    margin-left: 25px;
+    margin-left: 20px;
     display:inline-block;
+    text-transform: none;
+    color: @gray;
+    .webfont-demi();
+    letter-spacing: 0px;
   }
   i.cf-icon-right {
     font-size: .75em;
@@ -129,6 +136,9 @@ select {
 }
 .map-divider-minor.option.active-layer{
   background: @green-tint;
+  .sub-header-name {
+    color: @black;
+  }
 }
 .map-divider-minor.option.active-layer:hover{
     background: @green-midtone;
@@ -158,6 +168,9 @@ select {
 
 .green-highlight {
   background-color: @green-tint;
+  .sub-header-name {
+    color: @black;
+  }
 }
 
 .divided {
@@ -367,6 +380,7 @@ select {
   .btn {
     //width: 150px;
     font-size: .875em;
+    margin-top: 15px;
   }
 }
 
@@ -639,6 +653,15 @@ select {
     min-height: 2em;
 
 } //.tabpanel
+
+.cf-icon-analysis-themes {
+  // Custom icon setting
+  background-image: url(/static/basestyle/img/icon_analysis-layers.png);
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 16px;
+}
 
 @media print
 {    

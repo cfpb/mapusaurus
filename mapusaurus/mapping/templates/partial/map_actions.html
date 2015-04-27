@@ -2,13 +2,13 @@
     <div id="map-aside__msa-analysis" class="map-aside__msa-analysis">
         <div class="map-divider"><h6 class="tab-title">Analysis Themes</h6></div>
             <div class="map-divider">
-                <h4 class="selector-label item-sub">Select the Geography in which you'd like to display LAR circles:</h4>
+                <h4 class="selector-label item-sub">Choose display of Loan Application Records (LAR):</h4>
                 <select name="geoTypeQuerySelector" id="geoTypeQuerySelector" class="selector">
                     <option value="selected">Show LAR for Selected MSA</option>
                     <option value="all_msa">Show LAR for All MSAs on Map</option>
                     <option value="all">Show all LAR on Map</option>
                 </select>
-                <h4 class="selector-label item-sub">Select the LAR Actions you would like to display:</h4>
+                <h4 class="selector-label item-sub">Choose how to filter the LAR:</h4>
                 <select id="action-taken-selector" class="selector">
                     <option value="all-apps-5" selected data-scale="{{ scaled_median_loans }}">All applications</option>
                     <option value="all-apps-6" data-scale="{{ scaled_median_loans }}">Applications and purchases</option>
@@ -20,22 +20,22 @@
             </div> 
             <div id="layerOptions">  
                 <div id="inv_non_hisp_white_only_perc" class="map-divider-minor option darker">
-                    <h6 class="sub-header-name">Pct Minority</h6><i class="cf-icon cf-icon-right"></i>
+                    <h6 class="sub-header-name">Percent Minority</h6><i class="cf-icon cf-icon-right"></i>
                 </div> 
                 <div id="plurality" class="map-divider-minor option darker">
                     <h6 class="sub-header-name">Minority Plurality</h6><i class="cf-icon cf-icon-right"></i>
                 </div> 
                 <div id="non_hisp_black_only_perc" class="map-divider-minor option darker">
-                    <h6 class="sub-header-name">Pct Black / AA</h6><i class="cf-icon cf-icon-right"></i>
+                    <h6 class="sub-header-name">Percent Black / African-American</h6><i class="cf-icon cf-icon-right"></i>
                 </div> 
                 <div id="non_hisp_asian_only_perc" class="map-divider-minor option darker">
-                    <h6 class="sub-header-name">Pct Asian</h6><i class="cf-icon cf-icon-right"></i>
+                    <h6 class="sub-header-name">Percent Asian</h6><i class="cf-icon cf-icon-right"></i>
                 </div> 
                 <div id="hispanic_perc" class="map-divider-minor option darker">
-                    <h6 class="sub-header-name">Pct Hispanic</h6><i class="cf-icon cf-icon-right"></i>
+                    <h6 class="sub-header-name">Percent Hispanic</h6><i class="cf-icon cf-icon-right"></i>
                 </div>                                     
                 <div id="non_hisp_white_only_perc" class="map-divider-minor option darker">
-                    <h6 class="sub-header-name">Pct White</h6><i class="cf-icon cf-icon-right"></i>
+                    <h6 class="sub-header-name">Percent White</h6><i class="cf-icon cf-icon-right"></i>
                 </div>  
                 <div id="marketCriteria" class="map-divider-minor darker-still">
                     <h6 class="main-header-name" >Market Criteria <span class="tooltipsy" title="For complete details on market data and how designations are determined please <a href='/map/faq/'>view our Data / FAQ page.</a>"><i class="cf-icon cf-icon-information-round"></i></span></h6>
@@ -76,15 +76,15 @@
                 </div>
 
             </div>
-            <div id="lender-branches" class="map-divider lighter">
-                <input type="checkbox" id="branchSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Branch Locations <span class="tooltipsy branch-component" title="Locations are only shown for {{lender.name}} and will not include peers nor affiliates"><i class="cf-icon cf-icon-information-round"></i></span></h6> 
+            <div id="lender-branches" class="map-divider-minor">
+                <input type="checkbox" id="branchSelect" style="display:inline-block"/><h6 class="sub-header-name" style="display:inline-block">Show Branch Locations <span class="tooltipsy branch-component" title="Locations are only shown for {{lender.name}} and will not include peers or affiliates"><i class="cf-icon cf-icon-information-round"></i></span></h6> 
             </div>  
 
             {% if institution_hierarchy.count > 0 %}       
-                <div id="lender-affiliates" class="map-divider lighter">
-                    <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Include Parent/Affiliate LAR</h6>
+                <div id="lender-affiliates" class="map-divider-minor">
+                    <input type="checkbox" id="superSelect" style="display:inline-block"/><h6 class="sub-header-name" style="display:inline-block">Include Parent/Affiliate LAR</h6>
                 </div>
-                <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-affiliate-list">
+                <div class="map-divider lighter hidden" id="lender-affiliate-list">
                     {% for inst in institution_hierarchy %}
                         <div class="header-group divided">
                             <h6 class="item-main">{{ inst.institution.name }}</h6>
@@ -93,14 +93,14 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <div id="lender-affiliates" class="map-divider lighter">
-                    <input type="checkbox" disabled=true style="display:inline-block"/><h6 class="header-name" style="display:inline-block">No Parents / Affiliates</h6>
+                <div id="lender-affiliates" class="map-divider-minor">
+                    <input type="checkbox" disabled=true style="display:inline-block"/><h6 class="sub-header-name" style="display:inline-block">No Parents / Affiliates</h6>
                 </div>                
             {% endif %}
 
             {% if institution_peers.count > 0 %}
-                <div id="lender-peers" class="map-divider lighter">
-                    <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="header-name" style="display:inline-block">Show Peer LAR ({{ institution_peers.count}} Peer{{ institution_peers.count|pluralize}}) <span class="tooltipsy peer-component" title="A 'peer' is an institution that has <li class='tooltip-li'>Between 50% and 200% of the total HMDA LAR submissions of the selected entity; and</li><li class='tooltip-li'>A similar percentage of FHA applications in the selected MSA.</li> The LAR from the peer entities are aggregated and displayed on the map when 'Show Peer LAR' is selected. <a href='/map/faq'>Full Peer Details</a>"><i class="cf-icon cf-icon-information-round"></i></span></h6>
+                <div id="lender-peers" class="map-divider-minor">
+                    <input type="checkbox" id="peerSelect" style="display:inline-block"/><h6 class="sub-header-name" style="display:inline-block">Show Peer LAR ({{ institution_peers.count}} Peer{{ institution_peers.count|pluralize}}) <span class="tooltipsy peer-component" title="A 'peer' is an institution that has <li class='tooltip-li'>Between 50% and 200% of the total HMDA LAR submissions of the selected entity; and</li><li class='tooltip-li'>A similar percentage of FHA applications in the selected MSA.</li> The LAR from the peer entities are aggregated and displayed on the map when 'Show Peer LAR' is selected. <a href='/map/faq'>Full Peer Details</a>"><i class="cf-icon cf-icon-information-round"></i></span></h6>
                 </div>
                 <div style="max-height:275px; overflow:scroll" class="map-divider lighter hidden" id="lender-peers-list">
                     {% for peer in institution_peers %}
@@ -121,10 +121,10 @@
     <div id="map-aside__summary-tables" class="map-aside__summary-tables">
         <div class="map-divider"><h6 class="tab-title">Summary Tables</div>
          <div id="chart-toggle__basic-table" class="chart-toggle map-divider lighter">
-            <h6 class="header-name" style="display:inline-block">Basic Summary Data Table<span class="tooltipsy hidden peer-component" title=""><i class="cf-icon cf-icon-information-round"></i></span></h6>
+            <h6 class="header-name" style="display:inline-block">Basic Summary Data Table</h6>
         </div>
         <div id="chart-toggle__peer-table" class="chart-toggle map-divider lighter">
-            <h6 class="header-name" style="display:inline-block">Peer Summary Data Table<span class="tooltipsy hidden peer-component" title=""><i class="cf-icon cf-icon-information-round"></i></span></h6>
+            <h6 class="header-name" style="display:inline-block">Peer Summary Data Table</h6>
         </div>
     </div><!-- /.tabpanel --> 
 
@@ -135,26 +135,22 @@
             <div class="map-divider print-map">
                 <div class="header-group">
                     <h3 class="tab-main">Print map exhibit</h3>
-                    <h6 class="item-sub">Based on your current settings and selections</h6>
-                    <p>
-                        <a id="printLink" href="/map/print/" class="btn" target="mapPrintView">
-                            <span class="btn_icon__left cf-icon cf-icon-print"></span>
-                        Print
-                        </a>
-                    </p>
+                    <h6 class="item-sub">Print the map using your current settings and selections</h6>
+                    <a id="printLink" href="/map/print/" class="btn" target="mapPrintView">
+                        <span class="btn_icon__left cf-icon cf-icon-print"></span>
+                    Print
+                    </a>
                 </div>
             </div>
         {% if download_url %}
             <div class="map-divider download-csv">
                 <div class="header-group">
                     <h3 class="tab-main">HMDA data</h3>
-                    <h6 class="item-sub">Download the 2013 loan application records (LAR) for {{ lender.name }} in the {{ metro.name }} location for {{ lender.year }}.</h6>
-                    <p>
-                        <a target="_blank" id="downloadData" data-download="{{ download_url }}" data-super-download="{{ hierarchy_download_url }}" data-peer-download="{{ peer_download_url }}" href="{{ download_url}}"  class="btn btn__secondary">
-                            <span class="btn_icon__left cf-icon cf-icon-download"></span>
-                        Download CSV
-                        </a>
-                    </p>
+                    <h6 class="item-sub">Download the 2013 loan application records (LAR) for {{ lender.name }} in the {{ metro.name }} MSA.</h6>
+                    <a target="_blank" id="downloadData" data-download="{{ download_url }}" data-super-download="{{ hierarchy_download_url }}" data-peer-download="{{ peer_download_url }}" href="{{ download_url}}"  class="btn btn__secondary">
+                        <span class="btn_icon__left cf-icon cf-icon-download"></span>
+                    Download CSV
+                    </a>
                 </div>
             </div>
 
@@ -163,12 +159,10 @@
                 <div class="header-group">
                     <h3 class="tab-main">Census data</h3>
                     <h6 class="item-sub">Download the 2010 SF-1 Census demographic data for {{ metro.name }}. This download also includes LAR counts by tract, filtered as explained below.</h6>
-                    <p>
-                        <a target="_blank" id="downloadCensus" href="/census/race_summary_csv/"  class="btn btn__secondary">
-                            <span class="btn_icon__left cf-icon cf-icon-download"></span>
-                        Download CSV
-                        </a>
-                    </p>
+                    <a target="_blank" id="downloadCensus" href="/census/race_summary_csv/"  class="btn btn__secondary">
+                        <span class="btn_icon__left cf-icon cf-icon-download"></span>
+                    Download CSV
+                    </a>
                 </div>
             </div>
             

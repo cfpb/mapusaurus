@@ -12,33 +12,8 @@
     // Creates the dataStore.tracts object global for use by application (depends upon rawGeo / rawData)
     function createTractDataObj( callback ){
         var count = 0;
-        dataStore.tracts = {};
+        dataStore.tracts = rawData;
 
-        // For each top-level data element returned (minority, loanVolume)
-        _.each( rawGeo.features, function(feature, key){
-            // Loop through each tract and merge the dataset (this could be done server side as well if faster)
-            // Make sure the tracts object exists before writing to it.
-            var geoid = feature.properties.geoid;
-            dataStore.tracts[geoid] = feature.properties;
-            _.extend( dataStore.tracts[geoid], rawData.minority[geoid] );
-
-            if( typeof rawData.loanVolume[geoid] !== 'undefined'){
-                _.extend( dataStore.tracts[geoid], rawData.loanVolume[geoid] );
-            } else {
-                dataStore.tracts[geoid].volume = 0;
-            }
-            
-            pctMinority.push(1.0 - rawData.minority[geoid]['non_hisp_white_only_perc']);
-            var loanVolume = rawData.loanVolume[geoid];
-
-            if (_.isUndefined(loanVolume)) {
-              larVolume.push(0);
-            } else {
-              larVolume.push((loanVolume['volume'] / loanVolume['num_households']) * 1000);
-            }
-
-            count++;
-        });
 
         if( typeof callback === 'function' && callback() ){
             callback();
@@ -105,12 +80,10 @@
         if( !status ){
             layers.Branches.clearLayers();
             $('#branchKey').addClass('hidden');
-            $('.tooltipsy.branch-component').addClass('hidden');
             $('#lender-branches').removeClass('green-highlight');
         } else {
             drawBranches();
             $('#branchKey').removeClass('hidden');
-            $('.tooltipsy.branch-component').removeClass('hidden');
             $('#lender-branches').addClass('green-highlight');
         }
 
