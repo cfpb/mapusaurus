@@ -4,11 +4,10 @@ from django.utils.encoding import smart_str
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 
-from hmda.models import HMDARecord
-from .models import Census2010RaceStats, Census2010Households
+from .models import Census2010RaceStats
 from geo.views import get_censustract_geos
 from geo.models import Geo
-from hmda.views import loan_originations_as_json, base_hmda_query
+from hmda.views import loan_originations_as_json
 from respondents.models import Institution
 
 def get_minority_area_stats(target_lar_data, peer_lar_data, tracts):
@@ -64,6 +63,7 @@ def assemble_stats(lma_sum, mma_sum, hma_sum, peer_lma_sum, peer_mma_sum, peer_h
         lma_pct = round(1.0 * lma_sum / target_lar_total, 3)
         mma_pct = round(1.0 * mma_sum / target_lar_total, 3)
         hma_pct = round(1.0 * hma_sum / target_lar_total, 3)
+        maj_pct = round(mma_pct + hma_pct, 3)
         stats.update({
                 'lma': lma_sum, 
                 'lma_pct': lma_pct, 
@@ -71,6 +71,7 @@ def assemble_stats(lma_sum, mma_sum, hma_sum, peer_lma_sum, peer_mma_sum, peer_h
                 'mma_pct': mma_pct,
                 'hma': hma_sum,
                 'hma_pct': hma_pct,
+                'maj_pct': maj_pct,
                 'lar_total': target_lar_total
         })
     else:
@@ -89,6 +90,7 @@ def assemble_stats(lma_sum, mma_sum, hma_sum, peer_lma_sum, peer_mma_sum, peer_h
         peer_lma_pct = round(1.0 * peer_lma_sum / peer_lar_total, 3)
         peer_mma_pct = round(1.0 * peer_mma_sum / peer_lar_total, 3)
         peer_hma_pct = round(1.0 * peer_hma_sum / peer_lar_total, 3)
+        peer_maj_pct = round(peer_mma_pct + peer_hma_pct, 3)
         stats.update({
                 'peer_lma': peer_lma_sum, 
                 'peer_lma_pct': peer_lma_pct, 
@@ -96,6 +98,7 @@ def assemble_stats(lma_sum, mma_sum, hma_sum, peer_lma_sum, peer_mma_sum, peer_h
                 'peer_mma_pct': peer_mma_pct,
                 'peer_hma': peer_hma_sum,
                 'peer_hma_pct': peer_hma_pct,
+                'peer_maj_pct': peer_maj_pct,
                 'peer_lar_total': peer_lar_total
         })
     else:
@@ -111,10 +114,12 @@ def assemble_stats(lma_sum, mma_sum, hma_sum, peer_lma_sum, peer_mma_sum, peer_h
     odds_lma = odds_ratio(lma_pct, peer_lma_pct)
     odds_mma = odds_ratio(mma_pct, peer_mma_pct)
     odds_hma = odds_ratio(hma_pct, peer_hma_pct)
+    odds_maj = odds_ratio(mma_pct+hma_pct, peer_mma_pct+peer_hma_pct)
     stats.update({
         'odds_lma':odds_lma,
         'odds_mma':odds_mma,
-        'odds_hma':odds_hma
+        'odds_hma':odds_hma,
+        'odds_maj':odds_maj
     })
     return stats
     

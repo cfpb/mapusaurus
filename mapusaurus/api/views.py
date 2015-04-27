@@ -84,13 +84,13 @@ def hmda(request):
 
 def census(request):
     """This endpoint returns census data used for circle coloring over tracts"""
-    return HttpResponse(json.dumps(race_summary_as_json(request)))
+    return HttpResponse(json.dumps(race_summary_as_json(request)), content_type='application/json')
 
 def tractCentroids(request):
     """This endpoint returns census tract centroids used to determine circle position on map"""
     geos = get_censustract_geos(request)
     if geos is None:
-        return HttpResponseBadRequest("Missing one of lat/lon bounds or metro")
+        return HttpResponseNotFound("Missing one of lat/lon bounds or metro")
     tracts_geo_json = geo_as_json(geos)
     return HttpResponse(json.dumps(tracts_geo_json), content_type='application/json')
     
