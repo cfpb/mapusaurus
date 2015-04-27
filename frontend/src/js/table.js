@@ -423,7 +423,7 @@ function toggleDataContainer(showData) {
 // Helper function to check Odds class
 function getOddsClass( ratio ){
     var oddsClass = 'odds-normal';
-    if( 0 < ratio && ratio <= .4 ){
+    if( 0 < ratio && ratio <= .4 || ratio === 0 ){
         oddsClass = 'odds-warning';
     } else if ( .4 < ratio && ratio < .8 ){
         oddsClass = 'odds-caution';
