@@ -5189,6 +5189,9 @@ html b {
 .header .site-logo {
   display: none;
 }
+.header .site-logo img {
+  margin-right: 20px;
+}
 /* Media Queries
 	 ========================================================================== */
 /* Small tablet (600px) */
