@@ -3,8 +3,8 @@
     <tr class="<%- data.className %>">
       
       <td class="name" >
-          <% if (!data.isPeer) { console.log('Data Name: ', data.name ); %>
-               <%-data.rowType%> 
+          <% if (!data.isPeer) { %>
+              <% if (data.name) { %><%-data.name%><% } %> <%-data.rowType%> 
           <% } %>
       </td>
 
