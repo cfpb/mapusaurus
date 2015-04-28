@@ -68,6 +68,3 @@ Thumbs.db
 frontend/node_modules
 frontend/bower_components
 frontend/dist
-
-#Content
-mapusaurus/mapping/templates/partial/faq_contents.html
