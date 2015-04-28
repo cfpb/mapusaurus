@@ -5189,6 +5189,9 @@ html b {
 .header .site-logo {
   display: none;
 }
+.header .site-logo img {
+  margin-right: 20px;
+}
 /* Media Queries
 	 ========================================================================== */
 /* Small tablet (600px) */
@@ -5823,6 +5826,10 @@ select b {
 }
 .map-divider-minor.option.active-layer:hover {
   background: #addc91;
+}
+.chart-toggle h6 {
+  text-transform: none;
+  letter-spacing: 0;
 }
 #layerOptions .option i {
   color: #babbbd;
@@ -7126,6 +7133,15 @@ select b {
 }
 .chart-toggle {
   cursor: pointer;
+}
+.chart-toggle:hover {
+  background: #e3e4e5;
+}
+.chart-toggle.active-layer {
+  background: #dbedd4;
+}
+.chart-toggle.active-layer:hover {
+  background: #addc91;
 }
 #map-aside {
   overflow: scroll;

@@ -1,10 +1,10 @@
-1<!-- Begin: TR Template Definition. -->
+<!-- Begin: TR Template Definition. -->
 <script type="text/template" class="row-template">
     <tr class="<%- data.className %>">
       
       <td class="name" >
-          <% if (!data.isPeer) { console.log('Data Name: ', data.name ); %>
-              <% if (data.name) { %> <% if (data.name == 'MSA' ){ data.name = %> <% {{ metro.name }} %> <% } %><%-data.name%><% } %> <%-data.rowType%> 
+          <% if (!data.isPeer) { %>
+              <% if (data.name) { %><%-data.name%><% } %> <%-data.rowType%> 
           <% } %>
       </td>
 
@@ -45,7 +45,7 @@
           <%-data.odds_hma%>
           </td>    
           <td class="<%-getOddsClass(data.odds_maj) %> odds_ratio maj_ratio hma_ratio">  
-          <%-(data.odds_hma + data.odds_mma )/ 2%>
+          <%-data.odds_maj%>
           </td>        
         <% } else { %>
           <td class="odds_ratio lma_ratio"></td>
