@@ -7155,6 +7155,10 @@ select b {
 #table-container {
   display: none;
 }
+#table-container th,
+#table-container td {
+  padding: .75em .3em;
+}
 .summary-data-table {
   margin-bottom: 0;
   width: 100%;
@@ -7259,19 +7263,22 @@ select b {
 }
 .summary-data-table .lar,
 .summary-data-table .chart-title {
-  min-width: 45px;
+  min-width: 50px;
 }
 .summary-data-table .lar {
+  font-size: .9em;
+}
+.summary-data-table th.lar {
   font-size: .9em;
 }
 .summary-data-table .odds_ratio {
   min-width: 45px;
 }
 .summary-data-table .chart {
-  width: 125px;
+  width: 100px;
 }
 .summary-data-table .chart .bar {
-  width: 125px;
+  width: 90px;
   height: 16px;
   display: inline-block;
 }

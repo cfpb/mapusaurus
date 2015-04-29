@@ -131,7 +131,7 @@
 
         // Setup the minimap
         var miniLayer = new L.mapbox.TileLayer('cfpb.k55b27gd', {minZoom: 0, maxZoom: 13 });
-        var miniMap = new L.Control.MiniMap(miniLayer, {'height': 120, 'width': 120, 'toggleDisplay': 'true'}).addTo(map);
+        var miniMap = new L.Control.MiniMap(miniLayer, {'height': 120, 'width': 120, 'position': 'bottomleft' }).addTo(map);
 
         // This array allows us to remove them from the map when a new one is selected (later)
         var minorityLayers = [layers.PctMinority, layers.PctHispanic, layers.PctBlack, layers.PctAsian, layers.PctWhite, layers.Plurality, layers.MedianIncome, layers.OwnerOccupancy, layers.MedianValue, layers.MedianYearBuilt];

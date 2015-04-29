@@ -36,6 +36,9 @@
 
 #table-container {
     display: none;
+    th, td {
+        padding: .75em .3em;
+    }
 }
 
 .summary-data-table {
@@ -166,10 +169,13 @@
     
     .lar,
     .chart-title {
-        min-width: 45px;
+        min-width: 50px;
     }
 
     .lar {
+        font-size: .9em;
+    }
+    th.lar {
         font-size: .9em;
     }
     
@@ -178,10 +184,10 @@
     }
     
     .chart {
-        width: 125px;
+        width: 100px;
         
         .bar {
-            width: 125px;
+            width: 90px;
             height:16px;
             .u-inline-block;
             
