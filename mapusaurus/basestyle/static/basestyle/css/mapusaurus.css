@@ -5944,8 +5944,10 @@ select b {
   }
 }
 .minority-key {
-  width: 220px;
-  padding: 0;
+  width: 100%;
+  padding: 5px;
+  background-color: #fff;
+  border: 1px solid #101820;
 }
 .minority-label {
   width: 65px;
@@ -6155,36 +6157,37 @@ select b {
   padding: 8px;
   border: 1px solid #ccc;
 }
-#key {
+.key-contents {
   font-family: "AvenirNextLTW01-Regular", Arial, sans-serif;
   font-style: normal;
   font-weight: normal;
   width: 230px;
   border: solid 1px #000;
+  border-bottom: none;
   background: #fff;
   padding: 5px;
 }
-#key em,
-#key i {
+.key-contents em,
+.key-contents i {
   font-family: "AvenirNextLTW01-Italic", Arial, sans-serif;
   font-style: italic;
   font-weight: normal;
 }
-.lt-ie9 #key em,
-.lt-ie9 #key i {
+.lt-ie9 .key-contents em,
+.lt-ie9 .key-contents i {
   font-style: normal !important;
 }
-#key strong,
-#key b {
+.key-contents strong,
+.key-contents b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
 }
-.lt-ie9 #key strong,
-.lt-ie9 #key b {
+.lt-ie9 .key-contents strong,
+.lt-ie9 .key-contents b {
   font-weight: normal !important;
 }
-#key label {
+.key-contents label {
   font-size: larger;
   font-weight: bold;
 }
@@ -6252,6 +6255,7 @@ select b {
   font-family: "AvenirNextLTW01-Demi", Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
+  line-height: normal;
 }
 .ie .circle-key-label {
   margin-right: -0.26em;
@@ -6279,9 +6283,17 @@ select b {
   width: 25%;
   text-align: right;
 }
+#key {
+  width: 230px;
+}
 .show-hide-control {
   text-align: right;
   cursor: pointer;
+  color: #0072ce;
+  background-color: #e3e4e5;
+  border: 1px solid #101820;
+  border-bottom: none;
+  padding: 5px;
 }
 .vex-dialog-message h2 {
   font-weight: bold;
@@ -6327,7 +6339,7 @@ select b {
   background-color: #e3e4e5;
 }
 .tabs ul li a:hover {
-  background-color: #f1f2f2;
+  background-color: #e3e4e5;
 }
 .tabs ul li a:hover,
 .tabs ul li a:focus {
