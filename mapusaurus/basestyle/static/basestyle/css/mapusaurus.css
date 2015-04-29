@@ -7203,12 +7203,12 @@ select b {
 .summary-data-table thead th.lar.mma_ct .color-coded:before,
 .summary-data-table thead th.lar.mma_pct .color-coded:before,
 .summary-data-table thead th.mma_ratio .color-coded:before {
-  color: #b8cad9;
+  color: #a7c4b6;
 }
 .summary-data-table thead th.lar.hma_ct .color-coded:before,
 .summary-data-table thead th.lar.hma_pct .color-coded:before,
 .summary-data-table thead th.hma_ratio .color-coded:before {
-  color: #7ea4be;
+  color: #5c9796;
 }
 .summary-data-table thead th .sortable-content,
 .summary-data-table thead th .arrows {
@@ -7305,10 +7305,10 @@ select b {
   background-color: #eae9e5;
 }
 .summary-data-table .chart .bar .segment.mma {
-  background-color: #b8cad9;
+  background-color: #a7c4b6;
 }
 .summary-data-table .chart .bar .segment.hma {
-  background-color: #7ea4be;
+  background-color: #5c9796;
 }
 .summary-data-table .chart .bar.peer {
   height: 8px;
