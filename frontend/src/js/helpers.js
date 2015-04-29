@@ -176,6 +176,7 @@
 
         if( keyPath ){
             $('#altScaleImg').attr('src', keyPath);
+            $('#altScaleImgLabel').text(layerEval.displayName);
             $('#altScale').removeClass('hidden');
             $('#scale').addClass('hidden');
         } else {
@@ -245,7 +246,7 @@
                 layer = layers.OwnerOccupancy;
                 type = 'seq';
                 keyPath = '/static/basestyle/img/key_own-occupancy.png';
-                displayName = 'Owner Occapancy Rate';                
+                displayName = 'Owner Occupancy Rate';                
                 break;                
             case 'median_family_income':
                 layer = layers.MedianIncome;
@@ -257,7 +258,7 @@
                 layer = layers.MedianValue;
                 type = 'seq';
                 keyPath = '/static/basestyle/img/key_med-hse-val.png';
-                displayName = 'Median Value of Owner-Occupied Housing';                
+                displayName = 'Median Value of O-O Housing';                
                 break;  
             case 'median_year':
                 layer = layers.MedianYearBuilt;

@@ -274,8 +274,10 @@ select {
 
 } //end media query
 .minority-key{
-  width: 220px;
-  padding: 0;
+  width: 100%;
+  padding: 5px;
+  background-color: #fff;
+  border: 1px solid @black;
 }
 .minority-label{
   width: 65px;
@@ -503,10 +505,11 @@ select {
 }
 
 
-#key {
+.key-contents {
   .webfont-regular();
   width: 230px;
   border: solid 1px #000;
+  border-bottom: none;
   background: #fff;
   padding: 5px;
 
@@ -553,6 +556,7 @@ select {
   border-width: 0;
   .webfont-demi();
   font-weight: bold;
+  line-height: normal;
 }
 
 #percentage-container {
@@ -574,9 +578,20 @@ select {
 
 }
 
+#key {
+  width: 230px;
+}
+
+
+
 .show-hide-control {
   text-align: right;
   cursor: pointer;
+  color: @pacific;
+  background-color: @gray-20;
+  border: 1px solid @black;
+  border-bottom: none;
+  padding: 5px;
 }
 
 .vex-dialog-message h2 {
@@ -638,7 +653,7 @@ select {
               }
 
               &:hover {
-                  background-color: @gray-10;
+                  background-color: @gray-20;
                   
               }
 
