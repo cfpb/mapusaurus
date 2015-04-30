@@ -14,4 +14,4 @@ simplejson==3.6.3
 six==1.7.3
 sphinx-me==0.3
 wsgiref==0.1.2
-gunicorn==18.0
+gunicorn==19.1.1
