@@ -6285,6 +6285,7 @@ select b {
 }
 #key {
   width: 230px;
+  background-color: #fff;
 }
 .show-hide-control {
   text-align: right;
@@ -6368,6 +6369,10 @@ select b {
   .no-print,
   .no-print * {
     display: none !important;
+  }
+  #key {
+    padding: 5px;
+    border: 1px solid #101820;
   }
 }
 /* Shrink the default button sizes by a few pixels */
