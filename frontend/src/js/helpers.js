@@ -109,8 +109,15 @@
         }
         addParam('peers', status);
         getPeerLinks();
-        $('#peerSelect').prop('checked', status );
 
+        // If Peer is checked, uncheck and disable Peers and branches as they will not be displayed for peer set.
+        $('#branchSelect').prop('disabled', status );
+        $('#superSelect').prop('disabled', status );
+        toggleBranches(false);
+        toggleSuper(false);
+
+        // Check the box
+        $('#peerSelect').prop('checked', status );
     }     
 
     // Uses jQuery BlockUI plugin to block UI on data loading
@@ -202,6 +209,8 @@
         // or layer type.
     }
 
+
+    // Adjudicate the variables associated with selected app layers across the application (names, paths, etc)
     function getLayerType( layer ){
         var type, keyPath, displayName;
 
