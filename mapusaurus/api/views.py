@@ -37,6 +37,47 @@ def msas(request):
     except:
         return HttpResponseNotFound("Invalid lat/lon bounding coordinates")
 
+def msa(request):
+    """returns simplified tract shapes for dot-density mapping, with loan volume"""
+    try:
+        metro = request.GET.get('metro')
+        tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=metro)
+        tract_loans = loan_originations_as_json(request)
+    except:
+        return HttpResponseNotFound("request failed; details: %s" % request)
+    else:
+        try:
+            with open("/var/www/static/tracts/%s.json" % metro, 'r') as f:
+                local_tracts = json.loads(f.read())
+        except:
+            local_tracts = None
+        tracts_out = { 
+             "type": "FeatureCollection",
+                "features": []
+                 }
+        if local_tracts:
+            for tract_id in local_tracts:
+                volume = 0
+                if tract_id in tract_loans and tract_loans[tract_id]['volume']:
+                    volume += tract_loans[tract_id]['volume']
+                tracts_out['features'].append({
+                        "type": "Feature",
+                        "geometry": {"type": "Polygon", "coordinates": local_tracts[tract_id]},
+                        "properties": {"tract_id": tract_id, "volume": volume}
+                        })
+        else:
+            for tract in tracts:
+                volume = 0
+                if tract.geoid in tract_loans and isinstance(tract_loans[tract.geoid]['volume'], int):
+                    volume += tract_loans[tract.geoid]['volume']
+                tracts_out['features'].append({
+                        "type": "Feature",
+                        "geometry": {"type": "Polygon", "coordinates": tract.geom.simplify(0.001).coords},
+                        "properties": {"tract_id": tract.geoid, "volume": volume}
+                        })
+        context = {'tracts': tracts_out}
+        return HttpResponse(json.dumps(context), content_type='application/json')
+
 def hmda(request):
     """This endpoint returns hmda data using params from the request"""
     return HttpResponse(json.dumps(loan_originations_as_json(request)), content_type='application/json')
