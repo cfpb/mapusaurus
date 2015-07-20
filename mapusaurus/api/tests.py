@@ -7,7 +7,7 @@ from django.test import TestCase
 from mock import Mock
 
 from utils import use_GET_in
-from api.views import msa, msas, tables
+from api.views import msas, tables
 
 class ConversionTest(TestCase):
     def test_use_GET_in(self):
@@ -82,15 +82,6 @@ class ViewsTests(TestCase):
         result_list = json.loads(resp.content)
         self.assertTrue(isinstance(result_list, list))
         self.assertContains(resp, '49180')
-
-    def test_api_msa_endpoint(self):
-        """should return tract-level geojson for a lender/MSA pair"""
-        params = {'lender': '90000451965', 'metro': '49180'}
-        url = reverse(msa)
-        resp = self.client.get(url, params)
-        result_dict = json.loads(resp.content)
-        self.assertTrue(isinstance(result_dict, dict))
-        self.assertContains(resp, 'features')
 
     def test_api_tables_endpoint(self):
         """should return table_data json for a lender/MSA pair"""
