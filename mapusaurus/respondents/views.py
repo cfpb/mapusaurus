@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import HttpResponseBadRequest
 from respondents.models import Institution, Branch
+from django.utils.html import escape
 
 
 def respondent(request, agency_id, respondent):
@@ -74,7 +75,7 @@ LENDER_REGEXES = [PREFIX_RE, PAREN_RE]
 
 @api_view(['GET'])
 def search_results(request):
-    query_str = request.GET.get('q', '').strip()
+    query_str = escape(request.GET.get('q', '')).strip()
     lender_id = False
     respondent_id = False
     for regex in LENDER_REGEXES:
@@ -87,9 +88,7 @@ def search_results(request):
     
     query = SearchQuerySet().models(Institution).load_all()
     
-    current_sort = request.GET.get('sort')
-    if current_sort == None:
-        current_sort = '-assets'
+    current_sort = '-assets'
 
     query = SearchQuerySet().models(Institution).load_all().order_by(current_sort)
 
@@ -97,7 +96,7 @@ def search_results(request):
         query = query.filter(lender_id=Exact(lender_id))
     elif respondent_id:
         query = query.filter(respondent_id=Exact(respondent_id))
-    elif query_str and request.GET.get('auto'):
+    elif query_str and escape(request.GET.get('auto')):
         query = query.filter(text_auto=AutoQuery(query_str))
     elif query_str:
         query = query.filter(content=AutoQuery(query_str))
@@ -124,7 +123,7 @@ def search_results(request):
         start_results = 0
         end_results = num_results
 
-    sort = current_sort #request.GET.get('sort', 'relevance')
+    sort = current_sort
 
     total_results = len(query)
 
@@ -170,11 +169,11 @@ def branch_locations_as_json(request):
 
 def branch_locations(request):
     """This endpoint returns geocoded branch locations"""
-    lender = request.GET.get('lender')
-    northEastLat = request.GET.get('neLat')
-    northEastLon = request.GET.get('neLon')
-    southWestLat = request.GET.get('swLat')
-    southWestLon = request.GET.get('swLon')
+    lender = escape(request.GET.get('lender'))
+    northEastLat = escape(request.GET.get('neLat'))
+    northEastLon = escape(request.GET.get('neLon'))
+    southWestLat = escape(request.GET.get('swLat'))
+    southWestLon = escape(request.GET.get('swLon'))
     try:
         maxlat, minlon, minlat, maxlon = float(northEastLat), float(southWestLon), float(southWestLat), float(northEastLon)
     except ValueError:
