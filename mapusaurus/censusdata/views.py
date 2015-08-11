@@ -3,6 +3,7 @@ import csv
 from django.utils.encoding import smart_str
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 from .models import Census2010RaceStats
 from geo.views import get_censustract_geos
@@ -226,43 +227,48 @@ def race_summary_http(request):
     return HttpResponse(json.dumps(race_summary_as_json(request)))
 
 def race_summary_csv(request):
-    lar_data = loan_originations_as_json(request)
-    tracts_in_msa = get_censustract_geos(request)
-    queryset = Census2010RaceStats.objects.filter(geoid__in=tracts_in_msa)
-    file_name = 'HMDA-Census-Tract_2013_Lender%s_MSA%s.csv' % (request.GET.get('lender'), request.GET.get('metro'))
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=%s' % file_name
-    writer = csv.writer(response, csv.excel)
-    #response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
-    writer.writerow([
-        smart_str(u"geoid"),
-        smart_str(u"Total Population"),
-        smart_str(u"Hispanic Percentage"),
-        smart_str(u"White Only Percentage"),
-        smart_str(u"Non Hispanic Black Only Percentage"),
-        smart_str(u"Non Hispanic Asian Only Percentage"),
-        smart_str(u"HMDA LAR Count"),
-        smart_str(u"Total Households"),
-    ])
-    for obj in queryset:
-        geoid = "'%s'" % str(obj.geoid.geoid)
-        try:
-            lar_count = lar_data[obj.geoid.geoid]['volume']
-        except:
-            lar_count = 0
-        try:
-            num_households = lar_data[obj.geoid.geoid]['num_households']
-        except:
-            num_households = 0
-
+    institution_id = request.GET.get('lender')
+    metro = request.GET.get('metro')
+    if institution_id and metro: 
+        lar_data = loan_originations_as_json(request)
+        tracts_in_msa = get_censustract_geos(request)
+        queryset = Census2010RaceStats.objects.filter(geoid__in=tracts_in_msa)
+        file_name = 'HMDA-Census-Tract_2013_Lender%s_MSA%s.csv' % (institution_id, metro)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=%s' % file_name
+        writer = csv.writer(response, csv.excel)
         writer.writerow([
-            smart_str(geoid),
-            smart_str(obj.total_pop),
-            smart_str(obj.hispanic_perc * 100),
-            smart_str(obj.non_hisp_white_only_perc * 100),
-            smart_str(obj.non_hisp_black_only_perc * 100),
-            smart_str(obj.non_hisp_asian_only_perc * 100),
-            smart_str(lar_count),
-            smart_str(num_households),
+            smart_str(u"geoid"),
+            smart_str(u"Total Population"),
+            smart_str(u"Hispanic Percentage"),
+            smart_str(u"White Only Percentage"),
+            smart_str(u"Non Hispanic Black Only Percentage"),
+            smart_str(u"Non Hispanic Asian Only Percentage"),
+            smart_str(u"HMDA LAR Count"),
+            smart_str(u"Total Households"),
         ])
-    return response
+        for obj in queryset:
+            geoid = "'%s'" % str(obj.geoid.geoid)
+            try:
+                lar_count = lar_data[obj.geoid.geoid]['volume']
+            except:
+                lar_count = 0
+            try:
+                num_households = lar_data[obj.geoid.geoid]['num_households']
+            except:
+                num_households = 0
+
+            writer.writerow([
+                smart_str(geoid),
+                smart_str(obj.total_pop),
+                smart_str(obj.hispanic_perc * 100),
+                smart_str(obj.non_hisp_white_only_perc * 100),
+                smart_str(obj.non_hisp_black_only_perc * 100),
+                smart_str(obj.non_hisp_asian_only_perc * 100),
+                smart_str(lar_count),
+                smart_str(num_households),
+            ])
+        return response
+    else: 
+        raise Http404("Invalid Institution or Metro")
+
