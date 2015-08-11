@@ -88,8 +88,10 @@ def search_results(request):
     
     query = SearchQuerySet().models(Institution).load_all()
     
-    current_sort = '-assets'
-
+    current_sort = request.GET.get('sort')
+    if current_sort == None:
+        current_sort = '-assets'
+        
     query = SearchQuerySet().models(Institution).load_all().order_by(current_sort)
 
     if lender_id:
