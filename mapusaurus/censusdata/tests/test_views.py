@@ -96,12 +96,16 @@ class ViewsTest(TestCase):
         self.assertEqual(resp['1122233400']['non_hisp_asian_only_perc'], .2)
 
     def test_race_summary_csv(self):
+        resp = self.client.get(reverse('censusdata:race_summary_csv'))
+        self.assertEqual(resp.status_code, 404)
+
         resp = self.client.get(reverse('censusdata:race_summary_csv'),
             {'metro':'10000', 'lender':'91000000001', 'action_taken':'1,2,3,4'})
         resp = resp.content
         self.assertTrue('1122233300' in resp)
         self.assertTrue('1122233400' in resp)
         self.assertTrue('1122333300' in resp)
+
 
 
 
