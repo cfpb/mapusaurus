@@ -68,3 +68,4 @@ Thumbs.db
 frontend/node_modules
 frontend/bower_components
 frontend/dist
+*.js.map
