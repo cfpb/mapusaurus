@@ -12,15 +12,23 @@ def map(request, template):
     template"""
     lender_selected = request.GET.get('lender', '')
     metro_selected = request.GET.get('metro')
+    year_selected = request.GET.get('year', 2014)
     context = {}
     lender = Institution.objects.filter(institution_id=lender_selected).select_related('agency', 'zip_code', 'lenderhierarchy').first()
     metro = Geo.objects.filter(geo_type=Geo.METRO_TYPE,geoid=metro_selected).first()
+    
+    try: 
+        year = int(year_selected)
+    except ValueError:
+        year = 2014
     if lender:
         context['lender'] = lender
         hierarchy_list = lender.get_lender_hierarchy(True, True)
         context['institution_hierarchy'] = hierarchy_list 
     if metro:
         context['metro'] = metro
+    if year:
+        context['year'] = year
     if lender and metro:
         peer_list = lender.get_peer_list(metro, True, True) 
         context['institution_peers'] = peer_list
