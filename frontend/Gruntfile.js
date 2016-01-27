@@ -2,6 +2,8 @@ module.exports = function(grunt) {
 
   'use strict';
 
+  var isCI = !!(process.env.JENKINS_URL || process.env.CONTINUOUS_INTEGRATION);
+  
   grunt.initConfig({
 
     /**
@@ -27,7 +29,7 @@ module.exports = function(grunt) {
       map: {
         src: [
           'frontend/src/less/leaflet.rrose.css',
-          'frontend/bower_components/leaflet-MiniMap/src/Control.MiniMap.css'
+          'frontend/bower_components/leaflet-minimap/dist/Control.MiniMap.min.css'
         ],
         dest: 'frontend/dist/map/css/vendor.css',
       }
@@ -45,7 +47,7 @@ module.exports = function(grunt) {
         options: {
           paths: ['frontend/src/less'],
           compress: false,
-          sourceMap: true,
+          sourceMap: !isCI,
           sourceMapFilename: 'frontend/dist/basestyle/css/mapusaurus_sourcemap.css.map',
           sourceMapURL: '/static/basestyle/css/mapusaurus_sourcemap.css.map'
         },
@@ -77,9 +79,11 @@ module.exports = function(grunt) {
      */
     uglify: {
       options: {
-        compress: true,
+        compress: {},
         mangle: false,
-        beautify: true
+        beautify: true,
+        sourceMap: !isCI,
+        sourceMapIncludeSources: !isCI
       },
       vendor: {
         src: [
@@ -99,10 +103,10 @@ module.exports = function(grunt) {
           'frontend/bower_components/blockui/jquery.blockUI.js',
           'frontend/src/js/leaflet/leaflet.js',
           'frontend/bower_components/leaflet-hash/leaflet-hash.js',
-          'frontend/bower_components/leaflet-utfgrid/src/leaflet.utfgrid.js',
+          'frontend/bower_components/Leaflet.utfgrid/dist/leaflet.utfgrid.js',
           'frontend/bower_components/leaflet-rrose/rrose-src.js',
           'frontend/bower_components/numeral-js/min/numeral.min.js',
-          'frontend/bower_components/leaflet-MiniMap/src/Control.MiniMap.js'
+          'frontend/bower_components/leaflet-MiniMap/dist/Control.MiniMap.min.js'
         ],
         dest: 'frontend/dist/map/js/map-vendor.min.js'
       },

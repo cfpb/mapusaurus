@@ -60,7 +60,7 @@
     // Return a promise.
     function getTractData( actionTakenVal, bounds, geoType ){
         $('#bubbles_loading').show();
-        var endpoint = '/api/hmda',
+        var endpoint = '/api/hmda/',
             params = { year: 2013,
                         'lh': false,
                         'peers': false,
@@ -131,7 +131,7 @@
 
     // Get the Metro Areas currently shown on the map (used to check if we need to load new data on move)
     function getMsasInBounds(){
-        var endpoint = '/api/msas', 
+        var endpoint = '/api/msas/', 
             params = {},
             bounds = getBoundParams();
 
