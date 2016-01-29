@@ -19,7 +19,7 @@
         <p>Welcome to the Fair Lending HMDA Visualization Toolkit! Please contact us with feedback or questions
         <a class="cf-icon cf-icon-email-social" href="mailto:{{ contact_us_email }}?subject=Visualization%20Toolkit%20Feedback"></a>.</p>
 
-        <p>The tool klasjdflkajsdflkjds loan application records (LAR) from the 2013 HMDA data set for a chosen lender in a selected Metropolitan Statistical Area (MSA). Demographic data displayed is from the 2010 Census (SF-1) and 2013 American Community Survey (ACS).
+        <p>The tool displays loan application records (LAR) from the 2013 HMDA data set for a chosen lender in a selected Metropolitan Statistical Area (MSA). Demographic data displayed is from the 2010 Census (SF-1) and 2013 American Community Survey (ACS).
         <p>&nbsp;</p>
 
         <div class="search-indent">
@@ -28,36 +28,37 @@
                    <div class="circlelabel">1</div>
                 </div>
                 <div class="search-title-column2">
-                    <h3>  Find an institution with 2013 originations</h3>
+                    <h3>  Find an institution with originations in 
+                        <select id="search-year" name="search-year">
+                            <option value=""></option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                        </select>
+                    </h3>
                 </div>
             </div>
             <p>&nbsp;</p>
-            <p>&nbsp;</p>
+            <p>&nbsp;</p>            
 
-            <label for="search-year" class="search-name-label">Select a year</label>
-            <select id="search-year" name="search-year">
-                <option value=""></option>
-                <option value="2014">2014</option>
-                <option value="2013">2013</option>
-            </select>
-
-            <form action="{% url 'respondents:search_results' %}" method="GET" class="year 2013 hidden">
+            <form action="{% url 'respondents:search_results' %}" method="GET" class="year 2013">
                 <div class="search-field">
                     <label for="search_name" class="search-name-label">Search by name or lender ID
                         (<a target="new" href="http://www.ffiec.gov/nicpubweb/nicweb/SearchForm.aspx">Need a Lender ID?</a> <span class="cf-icon cf-icon-external-link"></span>)
                     </label>
-                    <input type="text" id="search_name" name="q" />
+                    <input type="text" id="search_name" name="q" class="search_institution" />
+                    <input type="hidden" name="year" value="2013">
                     <button type="submit" class="btn active">Search</button>
                     <span class="example-hint">ex: 99992222111; First Federal Savings</span>
                 </div>
             </form>
 
-            <form action="{% url 'respondents:search_results' %}" method="GET" class="year 2014 hidden">
+            <form action="{% url 'respondents:search_results' %}" method="GET" class="year 2014">
                 <div class="search-field">
                     <label for="search_name" class="search-name-label">Search by name or lender ID
                         (<a target="new" href="http://www.ffiec.gov/nicpubweb/nicweb/SearchForm.aspx">Need a Lender ID?</a> <span class="cf-icon cf-icon-external-link"></span>)
                     </label>
-                    <input type="text" id="search_name" name="q" />
+                    <input type="text" id="search_name" name="q" class="search_institution" />
+                    <input type="hidden" name="year" value="2014">
                     <button type="submit" class="btn active">Search</button>
                     <span class="example-hint">ex: 99992222111; First Federal Savings</span>
                 </div>
