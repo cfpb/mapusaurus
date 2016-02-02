@@ -47,11 +47,10 @@ def search_home(request):
     })
 
 
-def select_metro(request, agency_id, respondent):
+def select_metro(request, year, agency_id, respondent):
     """Once an institution is selected, search for a metro"""
     institution = get_object_or_404(Institution, respondent_id=respondent,
                                     agency_id=int(agency_id))
-    year = request.session.get('year', 2014)
     return render(request, 'respondents/metro_search.html', {
         'institution': institution,
         'year': year
@@ -79,7 +78,6 @@ LENDER_REGEXES = [PREFIX_RE, PAREN_RE]
 def search_results(request):
     query_str = escape(request.GET.get('q', '')).strip()
     year = escape(request.GET.get('year', '')).strip()
-    request.session['year'] = year
     lender_id = False
     respondent_id = False
     for regex in LENDER_REGEXES:
