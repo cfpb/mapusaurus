@@ -2,8 +2,8 @@ $(document).ready(function() {
 
     var $typeahead = $('#institutions_search input.search_institution');
     var $year = $('#search-year');
-
-    window.selectedYear = getYear();
+    var selectedYear = getYear();
+    
     initTypeahead();
 
     $year.on('change', function() {
