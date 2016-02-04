@@ -116,7 +116,7 @@ class ViewTest(TestCase):
     def test_select_metro(self):
         results = self.client.get(
             reverse('respondents:select_metro',
-                    kwargs={'agency_id': '0', 'respondent': '0987654321'}))
+                    kwargs={'agency_id': '0', 'respondent': '0987654321', 'year': 2013}))
         self.assertEqual(404, results.status_code)
 
         zipcode = ZipcodeCityState.objects.create(
@@ -128,7 +128,7 @@ class ViewTest(TestCase):
 
         results = self.client.get(
             reverse('respondents:select_metro',
-                    kwargs={'agency_id': '9', 'respondent': '9879879870'}))
+                    kwargs={'agency_id': '9', 'respondent': '9879879870', 'year': 2013}))
         self.assertEqual(200, results.status_code)
 
         inst.delete()
@@ -157,12 +157,14 @@ class ViewTest(TestCase):
         result1.object.assets = 201
         result1.object.agency_id = 1
         result1.object.respondent_id = '0123456789'
+        result1.object.year = '2013'
         result2.object.name = 'Bank & Loan'
         result1.object.assets = 202
         result2.object.agency_id = 2
         result2.object.respondent_id = '1122334455'
+        result2.object.year = '2013'
         resp = self.client.get(reverse('respondents:search_results'),
-                               {'q': 'Bank'})
+                               {'q': 'Bank', 'year': '2013'})
 
 
         self.assertTrue('Bank' in str(SQS.filter.call_args))
@@ -177,9 +179,9 @@ class ViewTest(TestCase):
         result = Mock()
         SQS.filter.return_value = [result]
         result.object.name, result.object.id = 'Some Bank', 1234
-        result.object.agency_id, result.object.respondent_id = 3, '3232434354'
+        result.object.year, result.object.agency_id, result.object.respondent_id = 2013, 3, '3232434354'
         self.client.get(reverse('respondents:search_results'),
-                        {'q': 'Bank', 'auto': '1'})
+                        {'q': 'Bank', 'auto': '1', 'year': '2013'})
         self.assertTrue('Bank' in str(SQS.filter.call_args))
         self.assertTrue('text_auto' in str(SQS.filter.call_args))
 
@@ -189,18 +191,17 @@ class ViewTest(TestCase):
         result = Mock()
         SQS.filter.return_value = [result]
         result.object.name, result.object.id = 'Some Bank', 1234
-        result.object.agency_id, result.object.respondent_id = 3, '1234543210'
-
+        result.object.year, result.object.agency_id, result.object.respondent_id = 2013, 3, '1234543210'
 
         resp = self.client.get(reverse('respondents:search_results'),
-                               {'q': '01234567'})
+                               {'q': '01234567', 'year': '2013'})
 
         self.assertTrue('01234567' in str(SQS.filter.call_args))
         self.assertTrue('Some Bank' in resp.content)
         self.assertRaises(ValueError, json.loads, resp.content)
 
         resp = self.client.get(reverse('respondents:search_results'),
-                               {'q': '012345-7899'})
+                               {'q': '012345-7899', 'year': '2013'})
         self.assertTrue('012345-7899' in str(SQS.filter.call_args))
         self.assertTrue('lender_id' in str(SQS.filter.call_args))
         self.assertTrue('Some Bank' in resp.content)
