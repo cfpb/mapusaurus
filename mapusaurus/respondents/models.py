@@ -66,7 +66,7 @@ class Institution(models.Model):
     year = models.SmallIntegerField()
     respondent_id = models.CharField(max_length=10)
     agency = models.ForeignKey('Agency')
-    institution_id = models.CharField(max_length=11, primary_key=True)
+    institution_id = models.CharField(max_length=15, primary_key=True)
     tax_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     mailing_address = models.CharField(max_length=40)
