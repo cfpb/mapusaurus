@@ -5,7 +5,7 @@ from geo.models import Geo
 from hmda.management.commands.calculate_loan_stats import (
      calculate_median_loans, calculate_lar_count, calculate_fha_count, get_fha_bucket, Command)
 from hmda.models import HMDARecord, LendingStats
-from respondents.models import Institution, Agency, ZipcodeCityState
+from respondents.models import Institution, Agency, ZipcodeCityStateYear
 
 
 class PrecalcTest(TestCase):
@@ -72,8 +72,8 @@ class PrecalcTest(TestCase):
                 geo=self.non_city_tract2, institution=self.respondent, loan_type=2, **hmda_params))
 
         hmda_params['respondent_id'] = 'other'
-        self.zipcode = ZipcodeCityState.objects.create(
-            zip_code=12345, city='City', state='IL')
+        self.zipcode = ZipcodeCityStateYear.objects.create(
+            zip_code=12345, city='City', state='IL', year=1234)
         self.inst1 = Institution.objects.create(
             year=1234, respondent_id='9876543210', agency=Agency.objects.get(pk=9),
             institution_id='99876543210', tax_id='1111111111', name='Institution', mailing_address='mail', 
