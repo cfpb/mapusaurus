@@ -55,13 +55,13 @@ def make_download_url(lender, metro):
         if type(lender) is QuerySet:
             for item in lender:
                 query = '(agency_code=%s AND respondent_id="%s" AND as_of_year=%s)'
-                where += query % (item.institution.agency_id, item.institution.respondent_id, item.institution.as_of_year)
+                where += query % (item.institution.agency_id, item.institution.respondent_id, item.institution.year)
                 count += 1
                 if(count < len(lender)):
                     where += "OR"
         else:
             query = '(agency_code=%s AND respondent_id="%s" AND as_of_year=%s)'
-            where += query % (lender.agency_id, lender.respondent_id, lender.as_of_year)
+            where += query % (lender.agency_id, lender.respondent_id, lender.year)
     if metro:
         divisions = [div.metdiv for div in
                      Geo.objects.filter(
