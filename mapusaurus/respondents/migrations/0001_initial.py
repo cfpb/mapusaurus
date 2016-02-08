@@ -8,18 +8,19 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'ZipcodeCityState'
-        db.create_table(u'respondents_zipcodecitystate', (
+        # Adding model 'ZipcodeCityStateYear'
+        db.create_table(u'respondents_zipcodecitystateyear', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('zip_code', self.gf('django.db.models.fields.IntegerField')()),
             ('plus_four', self.gf('django.db.models.fields.IntegerField')(null=True)),
             ('city', self.gf('django.db.models.fields.CharField')(max_length=25)),
             ('state', self.gf('localflavor.us.models.USStateField')(max_length=2)),
+            ('year', self.gf('django.db.models.fields.SmallIntegerField')()),
         ))
-        db.send_create_signal(u'respondents', ['ZipcodeCityState'])
+        db.send_create_signal(u'respondents', ['ZipcodeCityStateYear'])
 
-        # Adding unique constraint on 'ZipcodeCityState', fields ['zip_code', 'city']
-        db.create_unique(u'respondents_zipcodecitystate', ['zip_code', 'city'])
+        # Adding unique constraint on 'ZipcodeCityStateYear', fields ['zip_code', 'city']
+        db.create_unique(u'respondents_zipcodecitystateyear', ['zip_code', 'city', 'year'])
 
         # Adding model 'Agency'
         db.create_table(u'respondents_agency', (
@@ -97,10 +98,10 @@ class Migration(SchemaMigration):
         db.delete_unique(u'respondents_institution', ['institution_id', 'year'])
 
         # Removing unique constraint on 'ZipcodeCityState', fields ['zip_code', 'city']
-        db.delete_unique(u'respondents_zipcodecitystate', ['zip_code', 'city'])
+        db.delete_unique(u'respondents_zipcodecitystateyear', ['zip_code', 'city','year'])
 
         # Deleting model 'ZipcodeCityState'
-        db.delete_table(u'respondents_zipcodecitystate')
+        db.delete_table(u'respondents_zipcodecitystateyear')
 
         # Deleting model 'Agency'
         db.delete_table(u'respondents_agency')
@@ -170,13 +171,14 @@ class Migration(SchemaMigration):
             'state': ('django.db.models.fields.CharField', [], {'max_length': '2', 'null': 'True'}),
             'year': ('django.db.models.fields.SmallIntegerField', [], {})
         },
-        u'respondents.zipcodecitystate': {
+        u'respondents.zipcodecitystateyear': {
             'Meta': {'unique_together': "(('zip_code', 'city'),)", 'object_name': 'ZipcodeCityState'},
             'city': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'plus_four': ('django.db.models.fields.IntegerField', [], {'null': 'True'}),
             'state': ('localflavor.us.models.USStateField', [], {'max_length': '2'}),
-            'zip_code': ('django.db.models.fields.IntegerField', [], {})
+            'zip_code': ('django.db.models.fields.IntegerField', [], {}),
+            'year': ('django.db.models.fields.SmallIntegerField', [],{})
         }
     }
 

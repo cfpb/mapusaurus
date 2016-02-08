@@ -1,20 +1,22 @@
 [
   {
-    "model": "respondents.zipcodecitystate",
+    "model": "respondents.zipcodecitystateyear",
     "pk": 11111,
     "fields": {
       "zip_code": "11111",
       "city": "Somewhere",
-      "state": "NE"
+      "state": "NE",
+      "year":"2009"
     }
   },
   {
-    "model": "respondents.zipcodecitystate",
+    "model": "respondents.zipcodecitystateyear",
     "pk": 20171,
     "fields": {
       "zip_code": "20171",
       "city": "Herndon",
-      "state": "VA"
+      "state": "VA",
+      "year":"2011"
     }
   },
   {

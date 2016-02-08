@@ -17,7 +17,7 @@ class ZipcodeUtilsTests(TestCase):
         ZipcodeCityStateYear.objects.all().delete()
         zipcode_utils.create_zipcode('20852', 'Rockville', 'MD', '2013')
 
-        results = ZipcodeCityState.objects.filter(state='MD')
+        results = ZipcodeCityStateYear.objects.filter(state='MD')
         self.assertEqual(1, len(results))
 
         self.assertEqual(results[0].zip_code, 20852)
