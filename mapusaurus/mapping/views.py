@@ -50,18 +50,18 @@ def make_download_url(lender, metro):
     into divisions in that tool, so make sure the query uses the proper ids"""
     where = ""
     if lender:
-        where = 'as_of_year=2013 AND '
-        count = 0 
+        where = ''
+        count = 0
         if type(lender) is QuerySet:
             for item in lender:
-                query = '(agency_code=%s AND respondent_id="%s")'
-                where += query % (item.institution.agency_id, item.institution.respondent_id)
+                query = '(agency_code=%s AND respondent_id="%s" AND year=%s)'
+                where += query % (item.institution.agency_id, item.institution.respondent_id, item.institution.year)
                 count += 1
                 if(count < len(lender)):
                     where += "OR"
         else:
-            query = '(agency_code=%s AND respondent_id="%s")'
-            where += query % (lender.agency_id, lender.respondent_id)
+            query = '(agency_code=%s AND respondent_id="%s" AND year=%s)'
+            where += query % (lender.agency_id, lender.respondent_id, lender.year)
     if metro:
         divisions = [div.metdiv for div in
                      Geo.objects.filter(
