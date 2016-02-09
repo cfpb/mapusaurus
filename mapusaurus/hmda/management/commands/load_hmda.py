@@ -138,7 +138,7 @@ class Command(BaseCommand):
 
                     record.geo_id = errors.in_2010.get(censustract, censustract)
 
-                    record.institution_id = row[2]+row[1]                    
+                    record.institution_id = str(record.as_of_year) + record.agency_code + record.respondent_id
 
                     self.total_lines_read = self.total_lines_read + 1
 

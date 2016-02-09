@@ -213,8 +213,8 @@ class Migration(SchemaMigration):
             'state': ('django.db.models.fields.CharField', [], {'max_length': '2', 'null': 'True'}),
             'year': ('django.db.models.fields.SmallIntegerField', [], {})
         },
-        u'respondents.zipcodecitystate': {
-            'Meta': {'unique_together': "(('zip_code', 'city'),)", 'object_name': 'ZipcodeCityState'},
+        u'respondents.zipcodecitystateyear': {
+            'Meta': {'unique_together': "(('zip_code', 'city', 'year'),)", 'object_name': 'ZipcodeCityStateYear'},
             'city': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'plus_four': ('django.db.models.fields.IntegerField', [], {'null': 'True'}),

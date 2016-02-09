@@ -87,9 +87,7 @@ def search_results(request):
     resp_only_match = RESP_RE.match(query_str)
     if resp_only_match:
         respondent_id = resp_only_match.group('respondent')
-    
-    query = SearchQuerySet().models(Institution).load_all()
-    
+
     current_sort = request.GET.get('sort')
     if current_sort == None:
         current_sort = '-assets'
