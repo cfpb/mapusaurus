@@ -16,7 +16,7 @@ class PrecalcTest(TestCase):
         tract_params = {
             'geo_type': Geo.TRACT_TYPE, 'minlat': 0.11, 'minlon': 0.22,
             'maxlat': 1.33, 'maxlon': 1.44, 'centlat': 45.4545,
-            'centlon': 67.67, 'geom': "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))"}
+            'centlon': 67.67, 'geom': "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", 'year':'2013'}
         self.city_tract1 = Geo.objects.create(
             name='City Tract 1', cbsa='99999', geoid='11111111',
             **tract_params)
@@ -146,10 +146,11 @@ class PrecalcTest(TestCase):
         self.assertEqual(1, calculate_fha_count(lender_id, self.metro))
 
     def test_saves_stats(self):
+        year = "2013"
         lender_id = self.respondent.institution_id
         command = Command()
         command.stdout = Mock()
-        command.handle()
+        command.handle(year)
 
         found = False
         for stats in LendingStats.objects.all():

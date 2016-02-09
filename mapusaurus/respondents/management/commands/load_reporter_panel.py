@@ -131,8 +131,8 @@ def create_parent_institution(reporter):
 
 def get_or_create_parent_institution(creator, rssd_id, year, reporter):
     try:
-        parent = ParentInstitution.objects.filter(
-            rssd_id=rssd_id, year=year)
+        parent = ParentInstitution.objects.get(
+                rssd_id=rssd_id, year=year)
     except ParentInstitution.DoesNotExist:
         parent = creator(reporter)
     return parent
