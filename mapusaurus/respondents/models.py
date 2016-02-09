@@ -5,19 +5,20 @@ import json
 from respondents.managers import AgencyManager
 from hmda.models import LendingStats
 
-class ZipcodeCityState(models.Model):
-    """ For each zipcode, maintain the city, state information. """
+class ZipcodeCityStateYear(models.Model):
+    """ For each zipcode, maintain the city, state information by year. """
     zip_code = models.IntegerField()
     plus_four = models.IntegerField(null=True)
     city = models.CharField(max_length=25)
     state = USStateField()
+    year = models.SmallIntegerField()
 
     class Meta:
-        unique_together = ('zip_code', 'city')
+        unique_together = ('zip_code', 'city', 'year')
 
     @property
     def unique_name(self):
-        return '%s, %s %s' % (self.city, self.state, self.zip_code)
+        return '%s, %s %s %s' % (self.city, self.state, self.zip_code, self.year)
 
     def __unicode__(self):
         return self.unique_name
@@ -48,9 +49,11 @@ class ParentInstitution(models.Model):
     country = models.CharField(max_length=40, null=True)
     rssd_id = models.CharField(
         max_length=10,
-        unique=True,
         help_text='Id on the National Information Center repository',
         null=True)
+
+    class Meta:
+        unique_together = ('rssd_id', 'year')
 
     def __unicode__(self):
         return self.name
@@ -63,11 +66,11 @@ class Institution(models.Model):
     year = models.SmallIntegerField()
     respondent_id = models.CharField(max_length=10)
     agency = models.ForeignKey('Agency')
-    institution_id = models.CharField(max_length=11, primary_key=True)
+    institution_id = models.CharField(max_length=15, primary_key=True)
     tax_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     mailing_address = models.CharField(max_length=40)
-    zip_code = models.ForeignKey('ZipCodeCityState', null=False)
+    zip_code = models.ForeignKey('ZipCodeCityStateYear', null=False)
     assets = models.PositiveIntegerField(
         default=0,
         help_text='Prior year reported assets in thousands of dollars'

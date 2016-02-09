@@ -47,12 +47,13 @@ def search_home(request):
     })
 
 
-def select_metro(request, agency_id, respondent):
+def select_metro(request, year, agency_id, respondent):
     """Once an institution is selected, search for a metro"""
     institution = get_object_or_404(Institution, respondent_id=respondent,
                                     agency_id=int(agency_id))
     return render(request, 'respondents/metro_search.html', {
-        'institution': institution
+        'institution': institution,
+        'year': year
     })
 
 
@@ -76,6 +77,7 @@ LENDER_REGEXES = [PREFIX_RE, PAREN_RE]
 @api_view(['GET'])
 def search_results(request):
     query_str = escape(request.GET.get('q', '')).strip()
+    year = escape(request.GET.get('year', '')).strip()
     lender_id = False
     respondent_id = False
     for regex in LENDER_REGEXES:
@@ -85,9 +87,7 @@ def search_results(request):
     resp_only_match = RESP_RE.match(query_str)
     if resp_only_match:
         respondent_id = resp_only_match.group('respondent')
-    
-    query = SearchQuerySet().models(Institution).load_all()
-    
+
     current_sort = request.GET.get('sort')
     if current_sort == None:
         current_sort = '-assets'
@@ -163,7 +163,8 @@ def search_results(request):
          'end_results': end_results, 'sort': sort,
          'page_num': page, 'total_results': total_results,
          'next_page': next_page, 'prev_page': prev_page,
-         'total_pages': total_pages, 'current_sort': current_sort},
+         'total_pages': total_pages, 'current_sort': current_sort,
+         'year': year},
         template_name='respondents/search_results.html')
 
 def branch_locations_as_json(request):

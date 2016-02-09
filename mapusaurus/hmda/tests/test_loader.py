@@ -20,14 +20,15 @@ class LoadHmdaTest(TestCase):
         lenders = set(r.institution_id for r in HMDARecord.objects.all())
         geos = set(r.geo_id for r in HMDARecord.objects.all())
         self.assertEqual(3, len(lenders))
-        self.assertTrue(('5' + '0000000319') in lenders)
-        self.assertTrue(('5' + '0000000435') in lenders)
-        self.assertTrue(('3' + '0000001281') in lenders)
+        self.assertTrue(('2013'+'5' + '0000000319') in lenders)
+        self.assertTrue(('2013'+'5' + '0000000435') in lenders)
+        self.assertTrue(('2013'+'3' + '0000001281') in lenders)
         self.assertEqual(4, len(geos))
-        self.assertTrue('1122233300' in geos)
-        self.assertTrue('1122233400' in geos)
-        self.assertTrue('1122333300' in geos)
-        self.assertTrue('1222233300' in geos)
+        print geos
+        self.assertTrue('20131122233300' in geos)
+        self.assertTrue('20131122233400' in geos)
+        self.assertTrue('20131122333300' in geos)
+        self.assertTrue('20131222233300' in geos)
 
         HMDARecord.objects.all().delete()
 
@@ -41,8 +42,9 @@ class LoadHmdaTest(TestCase):
         geos = set(r.geo_id for r in HMDARecord.objects.all())
         self.assertEqual(4, len(geos))
         # 1122233300 got replaced
-        self.assertTrue('9988877766' in geos)
-        self.assertFalse('1122233300' in geos)
+        print geos
+        self.assertTrue('20139988877766' in geos)
+        self.assertFalse('20131122233300' in geos)
 
         HMDARecord.objects.all().delete()
 
@@ -61,13 +63,13 @@ class LoadHmdaTest(TestCase):
         geos = set(r.geo_id for r in HMDARecord.objects.all())
 
         self.assertEqual(3, len(lenders))
-        self.assertTrue(('5' + '0000000319') in lenders)
-        self.assertTrue(('5' + '0000000435') in lenders)
-        self.assertTrue(('3' + '0000001281') in lenders)
+        self.assertTrue(('2013'+'5' + '0000000319') in lenders)
+        self.assertTrue(('2013'+'5' + '0000000435') in lenders)
+        self.assertTrue(('2013'+'3' + '0000001281') in lenders)
         self.assertEqual(4, len(geos))
-        self.assertTrue('1122233300' in geos)
-        self.assertTrue('1122233400' in geos)
-        self.assertTrue('1122333300' in geos)
-        self.assertTrue('1222233300' in geos)
+        self.assertTrue('20131122233300' in geos)
+        self.assertTrue('20131122233400' in geos)
+        self.assertTrue('20131122333300' in geos)
+        self.assertTrue('20131222233300' in geos)
 
         HMDARecord.objects.all().delete()

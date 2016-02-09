@@ -23,36 +23,38 @@ class LoadSummaryDataTest(TestCase):
     @patch.object(Command, 'handle_filethree')
     def test_handle(self, hf3, hf4, hf5):
         # Create Mock GEO file
+        year = '2013'
         shutil.copyfile(os.path.join("censusdata", "tests", "mock_geo.txt"),
                         os.path.join(self.tempdir, "ZZgeo2010.sf1"))
 
         command = Command()
-        command.handle(os.path.join(self.tempdir, 'ZZgeo2010.sf1'))
+        command.handle(os.path.join(self.tempdir, 'ZZgeo2010.sf1'), year)
         positional_args = hf4.call_args[0]
         self.assertEqual(positional_args[0],
                          os.path.join(self.tempdir, "ZZgeo2010.sf1"))
         self.assertEqual(positional_args[1], '11')  # State
         self.assertEqual(len(positional_args[2]), 2)
-        self.assertEqual(positional_args[2]['0007159'], '11001000100')
-        self.assertEqual(positional_args[2]['0007211'], '11001000902')
+        self.assertEqual(positional_args[2]['0007159'], year+'11001000100')
+        self.assertEqual(positional_args[2]['0007211'], year+'11001000902')
 
     @patch('censusdata.management.commands.load_summary_one.errors')
     @patch.object(Command, 'handle_filefive')
     @patch.object(Command, 'handle_filefour')
     @patch.object(Command, 'handle_filethree')
     def test_handle_errors_dict(self, hf3, hf4, hf5, errors):
+        year = '2001'
         errors.in_2010 = {'11001000100': '22002000200', '11001000902': None}
         # Create Mock GEO file
         shutil.copyfile(os.path.join("censusdata", "tests", "mock_geo.txt"),
                         os.path.join(self.tempdir, "ZZgeo2010.sf1"))
 
         command = Command()
-        command.handle(os.path.join(self.tempdir, 'ZZgeo2010.sf1'))
+        command.handle(os.path.join(self.tempdir, 'ZZgeo2010.sf1'), year)
         positional_args = hf4.call_args[0]
         # The None causes us to skip 11001000902
         self.assertEqual(len(positional_args[2]), 1)
         # This entry was converted
-        self.assertEqual(positional_args[2]['0007159'], '22002000200')
+        self.assertEqual(positional_args[2]['0007159'], year+'22002000200')
 
     def test_handle_filethree(self):
         shutil.copyfile(os.path.join("censusdata", "tests", "mock_file3.txt"),

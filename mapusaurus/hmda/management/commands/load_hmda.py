@@ -135,10 +135,10 @@ class Command(BaseCommand):
                         number_of_1_to_4_family_units=row[43], application_date_indicator=row[44])
 
                     censustract = row[11] + row[12] + row[13].replace('.', '')
+                    censustract = errors.in_2010.get(censustract, censustract)
+                    record.geo_id = str(record.as_of_year) + censustract
 
-                    record.geo_id = errors.in_2010.get(censustract, censustract)
-
-                    record.institution_id = row[2]+row[1]                    
+                    record.institution_id = str(record.as_of_year) + record.agency_code + record.respondent_id
 
                     self.total_lines_read = self.total_lines_read + 1
 
@@ -209,13 +209,3 @@ class Command(BaseCommand):
             log_info("All Files Total Skipped: " + str(self.total_skipped))
             log_info("All Files Total Skipped for GeoID=NA: " + str(self.na_skipped))
             log_info("All Files Total Skipped for other reason: " + str(self.other_skipped ))
-
-
-
-
-
-
-
-
-
-

@@ -129,10 +129,10 @@ def create_parent_institution(reporter):
     return parent
 
 
-def get_or_create_parent_institution(creator, rssd_id, reporter):
+def get_or_create_parent_institution(creator, rssd_id, year, reporter):
     try:
         parent = ParentInstitution.objects.get(
-            rssd_id=rssd_id)
+                rssd_id=rssd_id, year=year)
     except ParentInstitution.DoesNotExist:
         parent = creator(reporter)
     return parent
@@ -145,7 +145,7 @@ def assign_parent(bank, reporter):
         parent = get_parent(reporter)
         if parent is None:
             parent = get_or_create_parent_institution(
-                create_parent_institution, reporter.parent_rssd_id, reporter)
+                create_parent_institution, reporter.parent_rssd_id, reporter.year, reporter)
             bank.non_reporting_parent = parent
         else:
             bank.parent = parent
@@ -158,7 +158,7 @@ def assign_top_holder(bank, reporter):
         bank.top_holder = None
     else:
         bank.top_holder = get_or_create_parent_institution(
-            create_top_holder, reporter.top_holder_rssd_id, reporter)
+            create_top_holder, reporter.top_holder_rssd_id, reporter.year, reporter)
     return bank
 
 

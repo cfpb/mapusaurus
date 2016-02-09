@@ -5,7 +5,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = patterns(
     '',
-    url(r'^(?P<agency_id>[0-9])(?P<respondent>[0-9-]{10})/metro/?$',
+    url(r'^(?P<year>[0-9]{4})/(?P<agency_id>[0-9])(?P<respondent>[0-9-]{10})/metro/?$',
         'respondents.views.select_metro', name='select_metro'),
     url(r'^search/$', 'respondents.views.search_results',
         name='search_results'),
