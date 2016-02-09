@@ -23,6 +23,7 @@ class Command(BaseCommand):
                                + "path/to/XXgeo2010.sf1")
         geoids_by_record = {}
         geofile = open(args[0], 'r')
+        year = args[1]
         # As each file covers one state, all geos will have the same state id
         state = ""
         for line in geofile:
@@ -31,6 +32,7 @@ class Command(BaseCommand):
                 censustract = line[27:32] + line[54:60]
                 censustract = errors.in_2010.get(censustract, censustract)
                 if censustract is not None:
+                    censustract = year + censustract
                     geoids_by_record[recordnum] = censustract
                 state = line[27:29]
         geofile.close()

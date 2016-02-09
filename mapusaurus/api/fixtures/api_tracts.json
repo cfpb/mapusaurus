@@ -16,7 +16,8 @@
       "maxlat": 36.123218,
       "maxlon": -80.257619,
       "centlat": 0.5,
-      "centlon": 0.5
+      "centlon": 0.5,
+      "year": 2000
     }
   },
   {
@@ -36,7 +37,8 @@
       "maxlat": 36.123218,
       "maxlon": -80.257619,
       "centlat": 0.5,
-      "centlon": 0.5
+      "centlon": 0.5,
+      "year": 2000
     }
   },
   {
@@ -56,7 +58,8 @@
       "maxlat": 1,
       "maxlon": 1,
       "centlat": 0.5,
-      "centlon": 0.5
+      "centlon": 0.5, 
+      "year": 2000
     }
   },
   {
@@ -76,7 +79,8 @@
       "maxlat": 1,
       "maxlon": 1,
       "centlat": 0.5,
-      "centlon": 0.5
+      "centlon": 0.5,
+      "year": 2000
     }
   },
   {
@@ -96,7 +100,8 @@
       "maxlat": 1,
       "maxlon": 1,
       "centlat": 0.5,
-      "centlon": 0.5
+      "centlon": 0.5,
+      "year": 2000
     }
   },
   {
@@ -116,7 +121,8 @@
       "maxlat": -4,
       "maxlon": -4,
       "centlat": -4.5,
-      "centlon": -4.5
+      "centlon": -4.5,
+      "year": 2000
     }
   },
   {

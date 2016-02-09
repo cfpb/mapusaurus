@@ -15,7 +15,8 @@ class Command(BaseCommand):
             SET cbsa = (SELECT cbsa FROM geo_geo county
                         WHERE county.geo_type = %s
                         AND county.state = geo_geo.state
-                        AND county.county = geo_geo.county)
+                        AND county.county = geo_geo.county
+                        AND county.year = geo_geo.year)
             WHERE geo_type = %s;
         """, (Geo.COUNTY_TYPE, Geo.TRACT_TYPE))
         cursor.execute("""
@@ -23,7 +24,8 @@ class Command(BaseCommand):
             SET csa = (SELECT csa FROM geo_geo county
                         WHERE county.geo_type = %s
                         AND county.state = geo_geo.state
-                        AND county.county = geo_geo.county)
+                        AND county.county = geo_geo.county
+                        AND county.year = geo_geo.year)
             WHERE geo_type = %s;
         """, (Geo.COUNTY_TYPE, Geo.TRACT_TYPE))
         cursor.close()

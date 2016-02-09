@@ -27,6 +27,8 @@ class Geo(models.Model):
 
     geom = models.MultiPolygonField(srid=4269)
 
+    year = models.SmallIntegerField()
+
     minlat = models.FloatField()
     maxlat = models.FloatField()
     minlon = models.FloatField()

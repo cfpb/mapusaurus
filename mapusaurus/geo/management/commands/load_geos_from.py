@@ -9,7 +9,7 @@ from geo.models import Geo
 
 class Command(BaseCommand):
     help = "Load shapes (tracts, counties, msas) from a shape file."
-    args = "<path/to/shapefile>"
+    args = "<year> <path/to/shapefile>"
 
     def geo_type(self, row_dict):
         """Inspect the row to determine which type of geometry it represents"""
@@ -24,7 +24,7 @@ class Command(BaseCommand):
         if row_dict.get('LSAD') == 'M3':
             return Geo.METDIV_TYPE
 
-    def process_row(self, row, field_names):
+    def process_row(self, year, row, field_names):
         """Runs for every shape in the shape file. Returns a kw-dict which
         will be passed to Geo"""
         row_dict = dict((field_name, row[idx])
@@ -39,7 +39,7 @@ class Command(BaseCommand):
 
         # Use ".get('field') or None" to convert empty strings into Nones
         return {
-            'geoid': row_dict['GEOID'], 'geo_type': self.geo_type(row_dict),
+            'geoid': year+row_dict['GEOID'], 'geo_type': self.geo_type(row_dict),
             'name': row_dict['NAME'], 'state': row_dict.get('STATEFP') or None,
             'county': row_dict.get('COUNTYFP') or None,
             'tract': row_dict.get('TRACTCE') or None,
@@ -50,7 +50,8 @@ class Command(BaseCommand):
             'maxlon': max(lons),
             'centlat': float(row_dict['INTPTLAT']),
             'centlon': float(row_dict['INTPTLON']),
-            'geom': geom}
+            'geom': geom, 
+            'year': year}
 
     def save_batch(self, batch):
         """We don't want to break any FKs, so we will only update geos if they
@@ -72,7 +73,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         old_debug = settings.DEBUG
         settings.DEBUG = False
-        shapefile_name = args[0]
+        year = args[0]
+        shapefile_name = args[1]
         ds = DataSource(shapefile_name, encoding='iso-8859-1')
         layer = ds[0]
         columns = [layer.get_fields(field) for field in layer.fields]
@@ -80,7 +82,7 @@ class Command(BaseCommand):
         rows = itertools.izip(*columns)
         batch, batch_count = [], 0
         for row in rows:
-            batch.append(self.process_row(row, layer.fields))
+            batch.append(self.process_row(year, row, layer.fields))
             if len(batch) == 100:
                 batch_count += 1
                 self.stdout.write('Saving batch %d' % batch_count)

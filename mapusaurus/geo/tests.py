@@ -66,18 +66,18 @@ class SetTractCBSATest(TestCase):
         }
         self.county1 = Geo.objects.create(
             geoid='11222', geo_type=Geo.COUNTY_TYPE, state='11', county='222',
-            csa='987', **generic_geo)
+            csa='987', year='2012', **generic_geo)
         self.county2 = Geo.objects.create(
             geoid='11223', geo_type=Geo.COUNTY_TYPE, state='11', county='223',
-            cbsa='88776', **generic_geo)
+            cbsa='88776', year='2012', **generic_geo)
         self.metro = Geo.objects.create(
-            geoid='88776', geo_type=Geo.METRO_TYPE, cbsa='88776',
+            geoid='88776', geo_type=Geo.METRO_TYPE, cbsa='88776', year='2012',
             **generic_geo)
         self.tract1 = Geo.objects.create(
-            geoid='1122233333', geo_type=Geo.TRACT_TYPE, state='11',
+            geoid='1122233333', geo_type=Geo.TRACT_TYPE, state='11', year='2012',
             county='222', tract='33333', **generic_geo)
         self.tract2 = Geo.objects.create(
-            geoid='1122333333', geo_type=Geo.TRACT_TYPE, state='11',
+            geoid='1122333333', geo_type=Geo.TRACT_TYPE, state='11', year='2012',
             county='223', tract='33333', **generic_geo)
 
     def tearDown(self):
@@ -99,14 +99,15 @@ class SetTractCBSATest(TestCase):
 
 class LoadGeosFromTest(TestCase):
     def test_census_tract(self):
+        year = "2013"
         row = ('1122233333', 'Tract 33333', '11', '222', '33333', '-45',
                '45', Polygon(((0, 0), (0, 2), (-1, 2), (0, 0))))
         field_names = ('GEOID', 'NAME', 'STATEFP', 'COUNTYFP', 'TRACTCE',
                        'INTPTLAT', 'INTPTLON')
         command = LoadGeos()
-        geo = command.process_row(row, field_names)
+        geo = command.process_row(year, row, field_names)
 
-        self.assertEqual('1122233333', geo['geoid'])
+        self.assertEqual('20131122233333', geo['geoid'])
         self.assertEqual(Geo.TRACT_TYPE, geo['geo_type'])
         self.assertEqual('Tract 33333', geo['name'])
         self.assertEqual('11', geo['state'])
@@ -118,8 +119,10 @@ class LoadGeosFromTest(TestCase):
         self.assertEqual((0, 2), (geo['minlat'], geo['maxlat']))
         self.assertEqual(-45, geo['centlat'])
         self.assertEqual(45, geo['centlon'])
+        self.assertEqual("2013", geo['year'])
 
     def test_county(self):
+        year = "2010"
         poly1 = Polygon(((0, 0), (0, 2), (-1, 2), (0, 0)))
         poly2 = Polygon(((-4, -2), (-6, -1), (-2, -2), (-4, -2)))
         row = ('11222', 'Some County', '11', '222', '-45', '45',
@@ -127,9 +130,9 @@ class LoadGeosFromTest(TestCase):
         field_names = ('GEOID', 'NAME', 'STATEFP', 'COUNTYFP', 'INTPTLAT',
                        'INTPTLON')
         command = LoadGeos()
-        geo = command.process_row(row, field_names)
+        geo = command.process_row(year, row, field_names)
 
-        self.assertEqual('11222', geo['geoid'])
+        self.assertEqual('201011222', geo['geoid'])
         self.assertEqual(Geo.COUNTY_TYPE, geo['geo_type'])
         self.assertEqual('Some County', geo['name'])
         self.assertEqual('11', geo['state'])
@@ -141,16 +144,18 @@ class LoadGeosFromTest(TestCase):
         self.assertEqual((-2, 2), (geo['minlat'], geo['maxlat']))
         self.assertEqual(-45, geo['centlat'])
         self.assertEqual(45, geo['centlon'])
+        self.assertEqual("2010", geo['year'])
 
     def test_metro(self):
+        year = "2010"
         row = ('12345', 'Big City', '090', '12345', 'M1', '-45', '45',
                Polygon(((0, 0), (0, 2), (-1, 2), (0, 0))))
         field_names = ('GEOID', 'NAME', 'CSAFP', 'CBSAFP', 'LSAD', 'INTPTLAT',
                        'INTPTLON')
         command = LoadGeos()
-        geo = command.process_row(row, field_names)
+        geo = command.process_row(year, row, field_names)
 
-        self.assertEqual('12345', geo['geoid'])
+        self.assertEqual('201012345', geo['geoid'])
         self.assertEqual(Geo.METRO_TYPE, geo['geo_type'])
         self.assertEqual('Big City', geo['name'])
         self.assertEqual(None, geo['state'])
@@ -158,16 +163,18 @@ class LoadGeosFromTest(TestCase):
         self.assertEqual(None, geo['tract'])
         self.assertEqual('090', geo['csa'])
         self.assertEqual('12345', geo['cbsa'])
+        self.assertEqual("2010", geo['year'])
 
     def test_micro(self):
+        year = '1900'
         row = ('12345', 'Small Town', '', '12345', 'M2', '-45', '45',
                Polygon(((0, 0), (0, 2), (-1, 2), (0, 0))))
         field_names = ('GEOID', 'NAME', 'CSAFP', 'CBSAFP', 'LSAD', 'INTPTLAT',
                        'INTPTLON')
         command = LoadGeos()
-        geo = command.process_row(row, field_names)
+        geo = command.process_row(year, row, field_names)
 
-        self.assertEqual('12345', geo['geoid'])
+        self.assertEqual('190012345', geo['geoid'])
         self.assertEqual(Geo.MICRO_TYPE, geo['geo_type'])
         self.assertEqual('Small Town', geo['name'])
         self.assertEqual(None, geo['state'])
@@ -175,12 +182,13 @@ class LoadGeosFromTest(TestCase):
         self.assertEqual(None, geo['tract'])
         self.assertEqual(None, geo['csa'])
         self.assertEqual('12345', geo['cbsa'])
+        self.assertEqual('1900', geo['year'])
 
     def test_replacing(self):
         command = LoadGeos()
         old_geo = {
             'geoid': '1111111111', 'geo_type': Geo.TRACT_TYPE,
-            'name': 'Geo in 1990', 'state': '11', 'county': '111',
+            'name': 'Geo in 1990', 'year': '1990', 'state': '11', 'county': '111',
             'tract': '11111', 'minlat': -1, 'maxlat': 1, 'minlon': -1,
             'maxlon': 1, 'centlat': 0, 'centlon': 0,
             'geom': MultiPolygon(

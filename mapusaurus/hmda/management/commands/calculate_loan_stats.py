@@ -6,13 +6,15 @@ from hmda.models import HMDARecord, LendingStats
 
 class Command(BaseCommand):
     help = "Generate loans stats per lender, metro combination"
+    args = "<year>"
 
     def handle(self, *args, **kwargs):
         #   Remove existing stats; we're going to regenerate them
         LendingStats.objects.all().delete()
+        year = args[0]
         lender_q = HMDARecord.objects.values_list('institution_id', flat=True).distinct('institution')
         for metro in Geo.objects.filter(
-                geo_type=Geo.METRO_TYPE).order_by('name'):
+                geo_type=Geo.METRO_TYPE, year=year).order_by('name'):
             self.stdout.write("Processing " + metro.name)
             query = lender_q.filter(geo__cbsa=metro.geoid)
             for lender_str in query.iterator():

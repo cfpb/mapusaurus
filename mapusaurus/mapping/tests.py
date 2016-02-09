@@ -18,7 +18,7 @@ class ViewTest(TestCase):
             geoid='12121', geo_type=Geo.METRO_TYPE, name='MetMetMet',
             geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
-            centlon=67.6767)
+            centlon=67.6767, year='2012')
 
     def tearDown(self):
         self.metro.delete()
@@ -47,6 +47,7 @@ class ViewTest(TestCase):
         self.assertTrue('10' in resp.content)
         self.assertTrue('12' in resp.content)
         self.assertTrue('MetMetMet' in resp.content)
+        self.assertTrue('year' in resp.content)
 
     def test_make_download_url(self):
         self.assertEqual("https://api.consumerfinance.gov/data/hmda/slice/hmda_lar.csv?%24where=&%24limit=0", make_download_url(None, None))
@@ -62,12 +63,12 @@ class ViewTest(TestCase):
             geoid='123123', geo_type=Geo.METDIV_TYPE, name='MetMetMet',
             geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
-            centlon=67.6767, cbsa='12121', metdiv='98989')
+            centlon=67.6767, cbsa='12121', metdiv='98989', year='2013')
         div2 = Geo.objects.create(
             geoid='123124', geo_type=Geo.METDIV_TYPE, name='MetMetMet',
             geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
-            centlon=67.6767, cbsa='12121', metdiv='78787')
+            centlon=67.6767, cbsa='12121', metdiv='78787', year='2013')
         
         url = make_download_url(self.respondent, self.metro)
         self.assertFalse('12121' in url)
