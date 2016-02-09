@@ -9,7 +9,7 @@
                 <div class="search-result-record__left-col">
                     <h4 class="search-result-record__title"><a href="{% url 'respondents:select_metro' res.year res.agency_id res.respondent_id %}">{{res.name}}</a></h4>
                     <div class="search-result-record__cfpb-id">
-                        <a href="{% url 'respondents:respondent_profile' res.agency_id res.respondent_id %}">{{res.agency_id}}{{res.respondent_id}}</a>
+                        <a href="{% url 'respondents:respondent_profile' res.year res.agency_id res.respondent_id %}">{{res.year}}{{res.agency_id}}{{res.respondent_id}}</a>
                     </div>
                     <div class="search-result-record__hq">
                         <small>HQ:</small> {{res.zip_code.city|title}}, {{res.zip_code.state|upper}}
