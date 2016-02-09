@@ -18,9 +18,9 @@ class Command(BaseCommand):
         Assumes XX#####2010.sf1 files are in the same directory."""
 
     def handle(self, *args, **options):
-        if not args:
-            raise CommandError("Needs a first argument, "
-                               + "path/to/XXgeo2010.sf1")
+        if len(args) == 2:
+            raise CommandError("Needs a arguments, "
+                               + "path/to/XXgeo2010.sf1 year")
         geoids_by_record = {}
         geofile = open(args[0], 'r')
         year = args[1]
