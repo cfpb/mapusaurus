@@ -12,14 +12,14 @@ class Command(BaseCommand):
     """Loads Summary File 1 data from the decennial census. Official
     documentation for fields at
     http://www.census.gov/prod/cen2010/doc/sf1.pdf"""
-    args = "<path/to/XXgeo2010.sf1>"
+    args = "<path/to/XXgeo2010.sf1> <year>"
     help = """
         Load Decennial Census data for a state.
         Assumes XX#####2010.sf1 files are in the same directory."""
 
     def handle(self, *args, **options):
-        if len(args) == 2:
-            raise CommandError("Needs a arguments, "
+        if len(args) != 2:
+            raise CommandError("Needs 2 arguments, "
                                + "path/to/XXgeo2010.sf1 year")
         geoids_by_record = {}
         geofile = open(args[0], 'r')
