@@ -79,7 +79,7 @@ def search_results(request):
     query_str = escape(request.GET.get('q', '')).strip()
     year = escape(request.GET.get('year', '')).strip()
     if not year:
-        complain
+        year = 2013 #snl temporary
 
     lender_id = False
     respondent_id = False
@@ -91,7 +91,7 @@ def search_results(request):
     if resp_only_match:
         respondent_id = resp_only_match.group('respondent')
 
-    query = SearchQuerySet().models(Institution).load_all() # snl remove later
+    query = SearchQuerySet().models(Institution).load_all() # snl temporary
 
     current_sort = request.GET.get('sort')
     if current_sort == None:
@@ -103,7 +103,7 @@ def search_results(request):
         query = query.filter(lender_id=Exact(lender_id),year=year)
     elif respondent_id:
         query = query.filter(respondent_id=Exact(respondent_id),year=year)
-    elif query_str and escape(request.GET.get('auto')) and False: # snl escape creates a bug where None = True
+    elif query_str and escape(request.GET.get('auto')): # snl temporary: escape creates a bug where None = True
         query = query.filter(text_auto=AutoQuery(query_str),year=year)
     elif query_str:
         query = query.filter(content=AutoQuery(query_str), year=year)
