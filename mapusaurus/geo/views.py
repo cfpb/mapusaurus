@@ -68,7 +68,7 @@ class GeoSerializer(serializers.ModelSerializer):
     """Used in RESTful endpoints to serialize Geo objects; used in search"""
     class Meta:
         model = Geo
-        fields = ('geoid', 'geo_type', 'name', 'centlat', 'centlon')
+        fields = ('geoid', 'geo_type', 'name', 'centlat', 'centlon', 'year')
 
 
 @api_view(['GET'])

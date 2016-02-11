@@ -24,8 +24,9 @@ class ViewTest(TestCase):
         result.object.name = 'MSA 1'
         result.object.centlat = 45
         result.object.centlon = 52
-        SQS.filter.return_value = [result]
-        resp = self.client.get(reverse('geo:search'), {'q': 'Chicago'})
+        result.object.year = 2013
+        SQS.filter.return_value.filter.return_value = [result]
+        resp = self.client.get(reverse('geo:search'), {'q': 'Chicago', 'year': '2013'})
         self.assertTrue('Chicago' in str(SQS.filter.call_args))
         self.assertTrue('content' in str(SQS.filter.call_args))
         self.assertFalse('text_auto' in str(SQS.filter.call_args))
@@ -41,11 +42,12 @@ class ViewTest(TestCase):
     @patch('geo.views.SearchQuerySet')
     def test_search_autocomplete(self, SQS):
         SQS = SQS.return_value.models.return_value.load_all.return_value
-        SQS.filter.return_value = [Mock()]
-        self.client.get(reverse('geo:search'), {'q': 'Chicago', 'auto': '1'})
+        SQS.filter.return_value.filter.return_value = [Mock()]
+        self.client.get(reverse('geo:search'), {'q': 'Chicago', 'auto': '1', 'year': '2013'})
         self.assertTrue('Chicago' in str(SQS.filter.call_args))
         self.assertFalse('content' in str(SQS.filter.call_args))
         self.assertTrue('text_auto' in str(SQS.filter.call_args))
+        self.assertTrue('year' in str(SQS.filter.return_value.filter.call_args))
 
 class UtilsTest(TestCase):
     def test_check_bounds(self):
