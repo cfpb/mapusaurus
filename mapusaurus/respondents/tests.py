@@ -130,7 +130,7 @@ class ViewTest(TestCase):
 
         results = self.client.get(
             reverse('respondents:select_metro',
-                    kwargs={'agency_id': '9', 'respondent': '9879879870', 'year': 2013}))
+                    kwargs={'agency_id': '9', 'respondent': '9879879870', 'year': 1234}))
         self.assertEqual(200, results.status_code)
 
         inst.delete()
