@@ -130,7 +130,7 @@ class ViewTest(TestCase):
 
         results = self.client.get(
             reverse('respondents:select_metro',
-                    kwargs={'agency_id': '9', 'respondent': '9879879870', 'year': 2013}))
+                    kwargs={'agency_id': '9', 'respondent': '9879879870', 'year': 1234}))
         self.assertEqual(200, results.status_code)
 
         inst.delete()
@@ -142,10 +142,10 @@ class ViewTest(TestCase):
         self.client.get(reverse('respondents:search_results'))
         self.assertFalse(SQS.filter.called)
 
-        self.client.get(reverse('respondents:search_results'), {'q': ''})
+        self.client.get(reverse('respondents:search_results'), {'q': '', 'year': '2013'})
         self.assertFalse(SQS.filter.called)
 
-        self.client.get(reverse('respondents:search_results'), {'q': '     '})
+        self.client.get(reverse('respondents:search_results'), {'q': '     ', 'year': ''})
         self.assertFalse(SQS.filter.called)
 
     @patch('respondents.views.SearchQuerySet')
@@ -212,14 +212,14 @@ class ViewTest(TestCase):
         for q in ['01123456799',
                   'Some Bank (01123456799)']:
             resp = self.client.get(reverse('respondents:search_results'),
-                                   {'q': q})
+                                   {'q': q, 'year': '2013'})
             self.assertTrue('01123456799' in str(SQS.filter.call_args))
             self.assertTrue('lender_id' in str(SQS.filter.call_args))
             self.assertTrue('Some Bank' in resp.content)
             self.assertRaises(ValueError, json.loads, resp.content)
 
         resp = self.client.get(reverse('respondents:search_results'),
-                               {'q': 'Some Bank (0112345799)'})
+                               {'q': 'Some Bank (0112345799)', 'year': '2013'})
         self.assertTrue('0112345799' in str(SQS.filter.call_args))
         self.assertFalse('lender_id' in str(SQS.filter.call_args))
         self.assertTrue('Some Bank' in resp.content)
@@ -235,7 +235,7 @@ class ViewTest(TestCase):
         result.object = Institution(name='Some Bank')
 
         resp = self.client.get(reverse('respondents:search_results'),
-                               {'q': 'Bank'},
+                               {'q': 'Bank', 'year': '2013'},
                                HTTP_ACCEPT='application/json')
 
         resp = json.loads(resp.content)
@@ -251,7 +251,7 @@ class ViewTest(TestCase):
         result.num_loans = 45
         result.object = Institution(name='Some Bank')
 
-        request = RequestFactory().get('/', data={'q': 'Bank'})
+        request = RequestFactory().get('/', data={'q': 'Bank', 'year': '2013'})
         results = views.search_results(request)
         self.assertEqual(len(results.data['institutions']), 1)
         self.assertEqual(45, results.data['institutions'][0].num_loans)
@@ -266,49 +266,49 @@ class ViewTest(TestCase):
         self.assertTrue(load_all.order_by.called)
 
         request = RequestFactory().get('/', data={'q': 'Bank',
-                                                  'sort': 'another-sort'})
+                                                  'sort': 'another-sort', 'year': '2013'})
         views.search_results(request)
         self.assertTrue(load_all.order_by.called)
 
         for sort in ('assets', '-assets', 'num_loans', '-num_loans'):
             request = RequestFactory().get('/', data={'q': 'Bank',
-                                                      'sort': sort})
+                                                      'sort': sort, 'year': '2013'})
             views.search_results(request)
             self.assertTrue(load_all.order_by.called)
 
     @patch('respondents.views.SearchQuerySet')
     def test_search_pagination(self, SQS):
-        request = RequestFactory().get('/', data={'q': 'Bank'})
+        request = RequestFactory().get('/', data={'q': 'Bank', 'year': '2013'})
         results = views.search_results(request)
         # page number should default to 1
         self.assertEqual(results.data['page_num'], 1)
 
         request = RequestFactory().get('/', data={'q': 'Bank',
-                                                  'page': 3})
+                                                  'page': 3, 'year': '2013'})
         results = views.search_results(request)
         self.assertEqual(results.data['page_num'], 3)
         self.assertEqual(results.data['next_page'], 0)
         self.assertEqual(results.data['prev_page'], 2)
 
         request = RequestFactory().get('/', data={'q': 'Bank',
-                                                  'page': 'str'})
+                                                  'page': 'str', 'year': '2013'})
         results = views.search_results(request)
         self.assertEqual(results.data['page_num'], 1)
 
     @patch('respondents.views.SearchQuerySet')
     def test_search_num_results(self, SQS):
-        request = RequestFactory().get('/', data={'q': 'Bank'})
+        request = RequestFactory().get('/', data={'q': 'Bank', 'year': '2013'})
         results = views.search_results(request)
         # number of results should default to 25
         self.assertEqual(results.data['num_results'], 25)
 
         request = RequestFactory().get('/', data={'q': 'Bank',
-                                                  'num_results': 10})
+                                                  'num_results': 10, 'year': '2013'})
         results = views.search_results(request)
         self.assertEqual(results.data['num_results'], 10)
 
         request = RequestFactory().get('/', data={'q': 'Bank',
-                                                  'num_results': 'str'})
+                                                  'num_results': 'str', 'year': '2013'})
         results = views.search_results(request)
         self.assertEqual(results.data['num_results'], 25)
 

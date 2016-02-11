@@ -68,18 +68,19 @@ class GeoSerializer(serializers.ModelSerializer):
     """Used in RESTful endpoints to serialize Geo objects; used in search"""
     class Meta:
         model = Geo
-        fields = ('geoid', 'geo_type', 'name', 'centlat', 'centlon')
+        fields = ('geoid', 'geo_type', 'name', 'centlat', 'centlon', 'year')
 
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))     # until we need HTML
 def search(request):
     query_str = request.GET.get('q', '').strip()
+    year= request.GET.get('year', '').strip()
     query = SearchQuerySet().models(Geo).load_all()
     if request.GET.get('auto'):
-        query = query.filter(text_auto=AutoQuery(query_str))
+        query = query.filter(text_auto=AutoQuery(query_str)).filter(year=year)
     else:
-        query = query.filter(content=AutoQuery(query_str))
+        query = query.filter(content=AutoQuery(query_str)).filter(year=year)
     query = query[:25]
     results = [result.object for result in query]
     results = GeoSerializer(results, many=True).data

@@ -33,8 +33,8 @@
             <div class="search-field">
                 <label for="geoid">Select an MSA:</label><br/>
                 <input type="text" id="geoid"><br/><br/>
-                <input type="hidden" name="lender" value="{{institution.agency_id}}{{institution.respondent_id}}">
-                <input type="hidden" name="year" value="{{year}}">
+                <input type="hidden" name="lender" value="{{year}}{{institution.agency_id}}{{institution.respondent_id}}">
+                <input type="hidden" id="year" name="year" value="{{year}}">
                 <input type="hidden" id="msa-field" name="metro">
                 <button type="submit" id="metro-search__submit" class="btn btn__disabled" disabled>Select</button>
                 
