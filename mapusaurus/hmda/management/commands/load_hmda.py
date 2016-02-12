@@ -68,8 +68,7 @@ class Command(BaseCommand):
             working_directory = lar_path
 
             for file in os.listdir(working_directory):
-                if os.path.isfile(os.path.join(working_directory,file)) and
-                        'hmda_csv_'+year+'_' in file:
+                if os.path.isfile(os.path.join(working_directory,file)) and 'hmda_csv_'+year+'_' in file:
                     csv_files.append(os.path.join(working_directory, file))
         else:
             raise Exception("Not a file or Directory! " + lar_path)
