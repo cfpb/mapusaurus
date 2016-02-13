@@ -51,7 +51,7 @@ class Command(BaseCommand):
             for arg in args:
                 if  "delete_file:" in arg:
                     tmp_delete_flag= arg.split(":")
-                    if tmp_delete_flag[1] == "true":
+                    if tmp_delete_flag[1] == "true" or tmp_delete_flag[1] == "True":
                         delete_file = True
 
                         print "************* CSV File(s) WiLL BE REMOVED AFTER PROCESSING ***********"
