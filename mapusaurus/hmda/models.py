@@ -133,6 +133,7 @@ class HMDARecord(models.Model):
        HMDA Loan Application Register Format
        https://www.ffiec.gov/hmdarawdata/FORMATS/2013HMDALARRecordFormat.pdf
     """
+    as_of_year = models.PositiveIntegerField(help_text="The reporting year of the HMDA record.")
     respondent_id = models.CharField(max_length=10, help_text="A code representing the bank or other financial institution that is reporting the loan or application.")
     agency_code = models.CharField(max_length=1, choices=AGENCY_CHOICES, help_text="A code representing the federal agency to which the HMDA-reporting institution submits its HMDA data.")
     loan_type = models.PositiveIntegerField(choices=LOAN_TYPE_CHOICES, help_text="A code representing the type of loan applied for. Many loans are insured or guaranteed by government programs offered by Federal Housing Administration (FHA), the Department of Veterans Affairs (VA), or the Department of Agriculture's Rural Housing Service (RHS) or Farm Service Agency (FSA). All other loans are classified as conventional.")
@@ -178,7 +179,6 @@ class HMDARecord(models.Model):
     number_of_1_to_4_family_units = models.CharField(max_length=8, help_text="The number of dwellings in the tract that are built to house fewer than 5 families.")
     application_date_indicator = models.PositiveIntegerField(choices=APPLICATION_DATE_INDICATOR_CHOICES, help_text="A code representing the date of the application. '0' means the application was made on or after 1/1/2004; '1' means the application was made before 1/1/2004; '2' means the application date is not available.")
    
-    as_of_year = models.ForeignKey('Year', to_field='hmda_year')
     institution = models.ForeignKey('respondents.Institution', to_field='institution_id')
     geo = models.ForeignKey('geo.Geo', to_field='geoid',
                               db_index=True)
