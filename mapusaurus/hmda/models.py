@@ -178,7 +178,7 @@ class HMDARecord(models.Model):
     number_of_1_to_4_family_units = models.CharField(max_length=8, help_text="The number of dwellings in the tract that are built to house fewer than 5 families.")
     application_date_indicator = models.PositiveIntegerField(choices=APPLICATION_DATE_INDICATOR_CHOICES, help_text="A code representing the date of the application. '0' means the application was made on or after 1/1/2004; '1' means the application was made before 1/1/2004; '2' means the application date is not available.")
    
-    as_of_year = models.ForeignKey('Years', to_field='hmda_year')
+    as_of_year = models.ForeignKey('Year', to_field='hmda_year')
     institution = models.ForeignKey('respondents.Institution', to_field='institution_id')
     geo = models.ForeignKey('geo.Geo', to_field='geoid',
                               db_index=True)
