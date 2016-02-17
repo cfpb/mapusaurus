@@ -1,0 +1,18 @@
+[
+  {
+    "model": "hmda.Year",
+    "fields": {
+      "hmda_year": 2014,
+      "census_year": 2004,
+      "geo_year": 2006
+    }
+  },
+  {
+    "model": "hmda.Year",
+    "fields": {
+      "hmda_year": 2015,
+      "census_year": 2005,
+      "geo_year": 2007
+    }
+  }
+]
