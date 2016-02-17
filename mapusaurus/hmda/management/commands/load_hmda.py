@@ -17,8 +17,8 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        if not args:
-            raise CommandError("Needs a first argument, " + Command.args)
+        if len(args) < 2:
+            raise CommandError("Need args for CSV path and year, " + Command.args)
 
         delete_file = False
         filter_hmda = False
@@ -162,7 +162,6 @@ class Command(BaseCommand):
                             self.total_skipped = self.total_skipped + 1
 
                         skipped_counter += 1
-
 
                 except:
                     prevent_delete= True
