@@ -80,7 +80,7 @@ def search_results(request):
     query_str = escape(request.GET.get('q', '')).strip()
     year = escape(request.GET.get('year', '')).strip()
     if not year:
-        year = Year.objects.latest().hmda_year
+        year = str(Year.objects.latest().hmda_year)
 
     lender_id = False
     respondent_id = False
