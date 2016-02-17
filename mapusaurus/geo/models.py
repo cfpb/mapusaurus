@@ -39,12 +39,12 @@ class Geo(models.Model):
     objects = models.GeoManager()
 
     class Meta:
-        index_together = [("geo_type", "minlat", "minlon"),
-                          ("geo_type", "minlat", "maxlon"),
-                          ("geo_type", "maxlat", "minlon"),
-                          ("geo_type", "maxlat", "maxlon"),
-                          ("geo_type", "centlat", "centlon"),
-                          ("geo_type", "cbsa")]
+        index_together = [("geo_type", "minlat", "minlon", "year"),
+                          ("geo_type", "minlat", "maxlon", "year"),
+                          ("geo_type", "maxlat", "minlon", "year"),
+                          ("geo_type", "maxlat", "maxlon", "year"),
+                          ("geo_type", "centlat", "centlon", "year"),
+                          ("geo_type", "cbsa", "year")]
 
     def tract_centroids_as_geojson(self):
         """Convert this model into a geojson string"""
