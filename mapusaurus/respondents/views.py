@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import HttpResponseBadRequest
 from respondents.models import Institution, Branch
+from hmda.models import Year
 from django.utils.html import escape
 
 
@@ -79,7 +80,7 @@ def search_results(request):
     query_str = escape(request.GET.get('q', '')).strip()
     year = escape(request.GET.get('year', '')).strip()
     if not year:
-        year = 2013 #snl temporary
+        year = str(Year.objects.latest().hmda_year)
 
     lender_id = False
     respondent_id = False

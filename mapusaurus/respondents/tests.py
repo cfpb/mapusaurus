@@ -100,7 +100,7 @@ class LenderHierarchyTest(TestCase):
         self.assertEqual(len(hierarchy_list_exclude_order), 2)
 
 class ViewTest(TestCase):
-    fixtures = ['agency', 'fake_respondents', 'fake_hierarchy', 'fake_branches']
+    fixtures = ['agency', 'fake_respondents', 'fake_hierarchy', 'fake_branches', 'fake_year']
  
     def test_branch_locations(self):
         resp = self.client.get(reverse('branchLocations'), 
