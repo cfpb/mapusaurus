@@ -82,7 +82,7 @@ def search(request):
     else:
         query = query.filter(content=AutoQuery(query_str)).filter(year=year)
     query = query[:25]
-    results = [result.object for result in query]
+    results = [result.object for result in query if result]
     results = GeoSerializer(results, many=True).data
 
     return Response({'geos': results})
