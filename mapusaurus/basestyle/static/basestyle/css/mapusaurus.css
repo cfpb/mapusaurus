@@ -6440,7 +6440,7 @@ select b {
 .search-home .search-field .tt-suggestion p {
   margin-bottom: 8px;
 }
-.search-home .search-year {
+.search-home #search-year {
   font-size: .9em;
   border: 1px solid #BABBBD;
 }
