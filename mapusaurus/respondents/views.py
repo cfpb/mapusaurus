@@ -43,8 +43,10 @@ def respondent(request, agency_id, respondent):
 
 def search_home(request):
     """Search for an institution"""
+    years = Year.objects.values().order_by('-hmda_year');
     return render(request, 'respondents/search_home.html', {
-        'contact_us_email': settings.CONTACT_US_EMAIL
+        'contact_us_email': settings.CONTACT_US_EMAIL,
+        'years': years
     })
 
 
