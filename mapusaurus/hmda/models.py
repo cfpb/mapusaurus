@@ -191,7 +191,7 @@ class HMDARecord(models.Model):
 
 class Year(models.Model):
     """Various year fields in the app data"""
-    YEAR_CHOICES = zip( range(1970,250), range(1970,2050) )
+    YEAR_CHOICES = zip( range(1970,2050), range(1970,2050) )
     hmda_year = models.PositiveIntegerField(primary_key=True, choices=YEAR_CHOICES, help_text="The reporting year of the HMDA record.")
     census_year = models.PositiveIntegerField(choices=YEAR_CHOICES, help_text="Year of census data.", null=False)
     geo_year = models.PositiveIntegerField(choices=YEAR_CHOICES, help_text="Year that geographic boundaries were recorded.", null=False)
