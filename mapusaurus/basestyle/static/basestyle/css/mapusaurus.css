@@ -6162,8 +6162,8 @@ select b {
   font-style: normal;
   font-weight: normal;
   width: 230px;
-  border: solid 1px #000;
-  border-bottom: none;
+  border-right: solid 1px #000;
+  border-left: solid 1px #000;
   background: #fff;
   padding: 5px;
 }
@@ -6293,7 +6293,6 @@ select b {
   color: #0072ce;
   background-color: #e3e4e5;
   border: 1px solid #101820;
-  border-bottom: none;
   padding: 5px;
 }
 .vex-dialog-message h2 {
@@ -6441,9 +6440,9 @@ select b {
 .search-home .search-field .tt-suggestion p {
   margin-bottom: 8px;
 }
-.search-home .search-year {
+.search-home #search-year {
   font-size: .9em;
-  border: 1px solid #BABBBD;
+  background: transparent;
 }
 /* Search input form (gray bar at top of page ) */
 .search-results-form {
