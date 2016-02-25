@@ -12,13 +12,13 @@ import logging
 
 
 class Command(BaseCommand):
-    args = "<path/to/20XXHMDALAR - National.csv> <delete_file:true/false> <filterhmda>"
+    args = "<path/to/20XXHMDALAR - National.csv> <year> <delete_file:true/false> <filterhmda>"
     help = """ Load HMDA data (for all states)."""
 
 
     def handle(self, *args, **options):
-        if not args:
-            raise CommandError("Needs a first argument, " + Command.args)
+        if len(args) < 2:
+            raise CommandError("Need args for CSV path and year, " + Command.args)
 
         delete_file = False
         filter_hmda = False
@@ -45,11 +45,13 @@ class Command(BaseCommand):
         ### default is False
         ### if filter_hmda is passed in, setup known_hmda & geo_states
         ### else load all HMDA records without filtering
-        if len(args) > 1:
+        lar_path = args[0]
+        year = args[1]
+        if len(args) > 2:
             for arg in args:
                 if  "delete_file:" in arg:
                     tmp_delete_flag= arg.split(":")
-                    if tmp_delete_flag[1] == "true":
+                    if tmp_delete_flag[1] == "true" or tmp_delete_flag[1] == "True":
                         delete_file = True
 
                         print "************* CSV File(s) WiLL BE REMOVED AFTER PROCESSING ***********"
@@ -60,17 +62,16 @@ class Command(BaseCommand):
 
 
         csv_files = []
-
-        if os.path.isfile(args[0]):
-            csv_files.append(args[0]);
-        elif os.path.isdir(args[0]):
-            working_directory = args[0]
+        if os.path.isfile(lar_path):
+            csv_files.append(lar_path);
+        elif os.path.isdir(lar_path):
+            working_directory = lar_path
 
             for file in os.listdir(working_directory):
-                if os.path.isfile(os.path.join(working_directory,file)) and 'hmda_csv_' in file:
+                if os.path.isfile(os.path.join(working_directory,file)) and 'hmda_csv_'+year+'_' in file:
                     csv_files.append(os.path.join(working_directory, file))
         else:
-            raise Exception("Not a file or Directory! " + args[0])
+            raise Exception("Not a file or Directory! " + lar_path)
 
 
 
@@ -135,10 +136,10 @@ class Command(BaseCommand):
                         number_of_1_to_4_family_units=row[43], application_date_indicator=row[44])
 
                     censustract = row[11] + row[12] + row[13].replace('.', '')
+                    censustract = errors.in_2010.get(censustract, censustract)
+                    record.geo_id = str(record.as_of_year) + censustract
 
-                    record.geo_id = errors.in_2010.get(censustract, censustract)
-
-                    record.institution_id = row[2]+row[1]                    
+                    record.institution_id = str(record.as_of_year) + record.agency_code + record.respondent_id
 
                     self.total_lines_read = self.total_lines_read + 1
 
@@ -161,7 +162,6 @@ class Command(BaseCommand):
                             self.total_skipped = self.total_skipped + 1
 
                         skipped_counter += 1
-
 
                 except:
                     prevent_delete= True
@@ -209,13 +209,3 @@ class Command(BaseCommand):
             log_info("All Files Total Skipped: " + str(self.total_skipped))
             log_info("All Files Total Skipped for GeoID=NA: " + str(self.na_skipped))
             log_info("All Files Total Skipped for other reason: " + str(self.other_skipped ))
-
-
-
-
-
-
-
-
-
-

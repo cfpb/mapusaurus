@@ -133,7 +133,7 @@ class HMDARecord(models.Model):
        HMDA Loan Application Register Format
        https://www.ffiec.gov/hmdarawdata/FORMATS/2013HMDALARRecordFormat.pdf
     """
-    as_of_year = models.PositiveIntegerField(help_text="The reporting year of the HMDA record.")
+    as_of_year = models.PositiveIntegerField(db_index=True, help_text="The reporting year of the HMDA record.")
     respondent_id = models.CharField(max_length=10, help_text="A code representing the bank or other financial institution that is reporting the loan or application.")
     agency_code = models.CharField(max_length=1, choices=AGENCY_CHOICES, help_text="A code representing the federal agency to which the HMDA-reporting institution submits its HMDA data.")
     loan_type = models.PositiveIntegerField(choices=LOAN_TYPE_CHOICES, help_text="A code representing the type of loan applied for. Many loans are insured or guaranteed by government programs offered by Federal Housing Administration (FHA), the Department of Veterans Affairs (VA), or the Department of Agriculture's Rural Housing Service (RHS) or Farm Service Agency (FSA). All other loans are classified as conventional.")
@@ -188,6 +188,16 @@ class HMDARecord(models.Model):
 
     def save(self, *args, **kwargs):
         super(HMDARecord, self).save(*args, **kwargs)
+
+class Year(models.Model):
+    """Various year fields in the app data"""
+    YEAR_CHOICES = zip( range(1970,2050), range(1970,2050) )
+    hmda_year = models.PositiveIntegerField(primary_key=True, choices=YEAR_CHOICES, help_text="The reporting year of the HMDA record.")
+    census_year = models.PositiveIntegerField(choices=YEAR_CHOICES, help_text="Year of census data.", null=False)
+    geo_year = models.PositiveIntegerField(choices=YEAR_CHOICES, help_text="Year that geographic boundaries were recorded.", null=False)
+
+    class Meta:
+        get_latest_by = 'hmda_year'
 
 
 class LendingStats(models.Model):

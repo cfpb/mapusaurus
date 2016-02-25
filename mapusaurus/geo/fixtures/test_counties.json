@@ -13,7 +13,8 @@
       "maxlat": 5,
       "maxlon": 5,
       "centlat": 4.5,
-      "centlon": 4.5
+      "centlon": 4.5,
+      "year":"2013"
     }
   },
   {
@@ -30,7 +31,8 @@
       "maxlat": -2,
       "maxlon": -2,
       "centlat": -3,
-      "centlon": -3
+      "centlon": -3,
+      "year":"2013"
     }
   }
 ]

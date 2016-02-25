@@ -17,18 +17,19 @@ class Command(BaseCommand):
             transmittal_reader = csv.reader(institutioncsv, delimiter='\t')
             institutions = []
             for inst_line in transmittal_reader:
+                year = inst_line[0]
                 zip_code = inst_line[8]
                 state = inst_line[7]
                 city = inst_line[6]
-                zipcode_city = create_zipcode(zip_code, city, state)
+                zipcode_city = create_zipcode(zip_code, city, state, year)
 
                 agency = agencies[int(inst_line[2])]
 
                 inst = Institution(
-                    year=inst_line[0],
+                    year=year,
                     respondent_id=inst_line[1],
                     agency=agency,
-                    institution_id = inst_line[2]+inst_line[1],
+                    institution_id=year+inst_line[2]+inst_line[1],
                     tax_id=inst_line[3],
                     name=inst_line[4],
                     mailing_address=inst_line[5],

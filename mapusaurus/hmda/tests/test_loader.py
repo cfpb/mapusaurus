@@ -13,21 +13,21 @@ class LoadHmdaTest(TestCase):
     def test_handle(self):
         command = Command()
         command.stdout = Mock()
-        command.handle(os.path.join("hmda", "tests", "mock_2014.csv"))
+        command.handle(os.path.join("hmda", "tests", "mock_2013.csv"),2013)
 
         # The mock data file contains 10 records, 8 for known states
         self.assertEqual(8, HMDARecord.objects.count())
         lenders = set(r.institution_id for r in HMDARecord.objects.all())
         geos = set(r.geo_id for r in HMDARecord.objects.all())
         self.assertEqual(3, len(lenders))
-        self.assertTrue(('5' + '0000000319') in lenders)
-        self.assertTrue(('5' + '0000000435') in lenders)
-        self.assertTrue(('3' + '0000001281') in lenders)
+        self.assertTrue(('2013'+'5' + '0000000319') in lenders)
+        self.assertTrue(('2013'+'5' + '0000000435') in lenders)
+        self.assertTrue(('2013'+'3' + '0000001281') in lenders)
         self.assertEqual(4, len(geos))
-        self.assertTrue('1122233300' in geos)
-        self.assertTrue('1122233400' in geos)
-        self.assertTrue('1122333300' in geos)
-        self.assertTrue('1222233300' in geos)
+        self.assertTrue('20131122233300' in geos)
+        self.assertTrue('20131122233400' in geos)
+        self.assertTrue('20131122333300' in geos)
+        self.assertTrue('20131222233300' in geos)
 
         HMDARecord.objects.all().delete()
 
@@ -36,13 +36,13 @@ class LoadHmdaTest(TestCase):
         errors.in_2010 = {'1122233300': '9988877766'}
         command = Command()
         command.stdout = Mock()
-        command.handle(os.path.join("hmda", "tests", "mock_2014.csv"))
+        command.handle(os.path.join("hmda", "tests", "mock_2013.csv"), '2013')
 
         geos = set(r.geo_id for r in HMDARecord.objects.all())
         self.assertEqual(4, len(geos))
         # 1122233300 got replaced
-        self.assertTrue('9988877766' in geos)
-        self.assertFalse('1122233300' in geos)
+        self.assertTrue('20139988877766' in geos)
+        self.assertFalse('20131122233300' in geos)
 
         HMDARecord.objects.all().delete()
 
@@ -55,19 +55,18 @@ class LoadHmdaTest(TestCase):
 
         main_csv_directory = main_csv_directory + "/"
 
-        command.handle(main_csv_directory , "delete_file:false", "filterhmda" )
-
+        command.handle(main_csv_directory, '2013', "delete_file:false", "filterhmda")
         lenders = set(r.institution_id for r in HMDARecord.objects.all())
         geos = set(r.geo_id for r in HMDARecord.objects.all())
 
         self.assertEqual(3, len(lenders))
-        self.assertTrue(('5' + '0000000319') in lenders)
-        self.assertTrue(('5' + '0000000435') in lenders)
-        self.assertTrue(('3' + '0000001281') in lenders)
+        self.assertTrue(('2013'+'5' + '0000000319') in lenders)
+        self.assertTrue(('2013'+'5' + '0000000435') in lenders)
+        self.assertTrue(('2013'+'3' + '0000001281') in lenders)
         self.assertEqual(4, len(geos))
-        self.assertTrue('1122233300' in geos)
-        self.assertTrue('1122233400' in geos)
-        self.assertTrue('1122333300' in geos)
-        self.assertTrue('1222233300' in geos)
+        self.assertTrue('20131122233300' in geos)
+        self.assertTrue('20131122233400' in geos)
+        self.assertTrue('20131122333300' in geos)
+        self.assertTrue('20131222233300' in geos)
 
         HMDARecord.objects.all().delete()

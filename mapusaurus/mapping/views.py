@@ -12,15 +12,23 @@ def map(request, template):
     template"""
     lender_selected = request.GET.get('lender', '')
     metro_selected = request.GET.get('metro')
+    year_selected = request.GET.get('year', 2014)
     context = {}
     lender = Institution.objects.filter(institution_id=lender_selected).select_related('agency', 'zip_code', 'lenderhierarchy').first()
     metro = Geo.objects.filter(geo_type=Geo.METRO_TYPE,geoid=metro_selected).first()
+    
+    try: 
+        year = int(year_selected)
+    except ValueError:
+        year = 2014
     if lender:
         context['lender'] = lender
         hierarchy_list = lender.get_lender_hierarchy(True, True)
         context['institution_hierarchy'] = hierarchy_list 
     if metro:
         context['metro'] = metro
+    if year:
+        context['year'] = year
     if lender and metro:
         peer_list = lender.get_peer_list(metro, True, True) 
         context['institution_peers'] = peer_list
@@ -42,18 +50,18 @@ def make_download_url(lender, metro):
     into divisions in that tool, so make sure the query uses the proper ids"""
     where = ""
     if lender:
-        where = 'as_of_year=2013 AND '
-        count = 0 
+        where = ''
+        count = 0
         if type(lender) is QuerySet:
             for item in lender:
-                query = '(agency_code=%s AND respondent_id="%s")'
-                where += query % (item.institution.agency_id, item.institution.respondent_id)
+                query = '(agency_code=%s AND respondent_id="%s" AND year=%s)'
+                where += query % (item.institution.agency_id, item.institution.respondent_id, item.institution.year)
                 count += 1
                 if(count < len(lender)):
                     where += "OR"
         else:
-            query = '(agency_code=%s AND respondent_id="%s")'
-            where += query % (lender.agency_id, lender.respondent_id)
+            query = '(agency_code=%s AND respondent_id="%s" AND as_of_year=%s)'
+            where += query % (lender.agency_id, lender.respondent_id, lender.year)
     if metro:
         divisions = [div.metdiv for div in
                      Geo.objects.filter(

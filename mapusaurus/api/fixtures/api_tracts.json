@@ -5,7 +5,7 @@
     "fields": {
       "geoid": "37067000700",
       "geo_type": 3,
-      "cbsa": "49180",
+      "cbsa": "556",
       "name": "12",
       "state": "11",
       "county": "222",
@@ -16,7 +16,8 @@
       "maxlat": 36.123218,
       "maxlon": -80.257619,
       "centlat": 0.5,
-      "centlon": 0.5
+      "centlon": 0.5,
+      "year": 2013
     }
   },
   {
@@ -25,7 +26,7 @@
     "fields": {
       "geoid": "37067001200",
       "geo_type": 3,
-      "cbsa": "49180",
+      "cbsa": "556",
       "name": "12",
       "state": "11",
       "county": "222",
@@ -36,14 +37,15 @@
       "maxlat": 36.123218,
       "maxlon": -80.257619,
       "centlat": 0.5,
-      "centlon": 0.5
+      "centlon": 0.5,
+      "year": 2013
     }
   },
   {
     "pk": 101,
     "model": "geo.geo",
     "fields": {
-      "cbsa": "49180",
+      "cbsa": "556",
       "geoid": "1122233300",
       "geo_type": 3,
       "name": "333",
@@ -56,14 +58,15 @@
       "maxlat": 1,
       "maxlon": 1,
       "centlat": 0.5,
-      "centlon": 0.5
+      "centlon": 0.5, 
+      "year": 2000
     }
   },
   {
     "pk": 102,
     "model": "geo.geo",
     "fields": {
-      "cbsa": "49180",
+      "cbsa": "556",
       "geoid": "1122233400",
       "geo_type": 3,
       "name": "334",
@@ -76,14 +79,15 @@
       "maxlat": 1,
       "maxlon": 1,
       "centlat": 0.5,
-      "centlon": 0.5
+      "centlon": 0.5,
+      "year": 2000
     }
   },
   {
     "pk": 103,
     "model": "geo.geo",
     "fields": {
-      "cbsa": "49180",
+      "cbsa": "556",
       "geoid": "1122233500",
       "geo_type": 3,
       "name": "335",
@@ -96,14 +100,15 @@
       "maxlat": 1,
       "maxlon": 1,
       "centlat": 0.5,
-      "centlon": 0.5
+      "centlon": 0.5,
+      "year": 2000
     }
   },
   {
     "pk": 104,
     "model": "geo.geo",
     "fields": {
-      "cbsa": "49180",
+      "cbsa": "556",
       "geoid": "1122233600",
       "geo_type": 3,
       "name": "336",
@@ -116,7 +121,8 @@
       "maxlat": -4,
       "maxlon": -4,
       "centlat": -4.5,
-      "centlon": -4.5
+      "centlon": -4.5,
+      "year": 2000
     }
   },
   {

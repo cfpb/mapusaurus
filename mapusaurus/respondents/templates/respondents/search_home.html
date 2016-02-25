@@ -16,35 +16,41 @@
 
     <div class="search-home">
         <p>&nbsp;</p>
-        <p>Welcome to the Fair Lending HMDA Visualization Toolkit! Please contact us with feedback or questions
-        <a class="cf-icon cf-icon-email-social" href="mailto:{{ contact_us_email }}?subject=Visualization%20Toolkit%20Feedback"></a>.</p>
+        <p>Welcome to the Redlining Risk Assessment Mapper! Please <a href="mailto:{{ contact_us_email }}?subject=Redlining%20Risk%20Assessment%20Mapper%20Feedback">contact us</a> with feedback or questions.</p>
 
-        <p>The tool displays loan application records (LAR) from the 2013 HMDA data set for a chosen lender in a selected Metropolitan Statistical Area (MSA). Demographic data displayed is from the 2010 Census (SF-1) and 2013 American Community Survey (ACS).
+        <p>The tool displays loan application records (LAR) from the HMDA data set for a chosen lender in a selected Metropolitan Statistical Area (MSA). Demographic data displayed is from the 2010 Census (SF-1) and the American Community Survey (ACS).
         <p>&nbsp;</p>
 
         <div class="search-indent">
-            <div >
+            <div>
                 <div class="search-title-column1">
                    <div class="circlelabel">1</div>
                 </div>
                 <div class="search-title-column2">
-                    <h3>  Find an institution with 2013 originations</h3>
+                    <h3>  Find an institution with originations in 
+                        <select id="search-year" name="search-year">
+                            {% for year in years %}
+                                <option value="{{year.hmda_year}}">{{year.hmda_year}}</option>
+                            {% endfor %}
+                        </select>
+                    </h3>
                 </div>
             </div>
             <p>&nbsp;</p>
-            <p>&nbsp;</p>
+            <p>&nbsp;</p>            
 
-
-            <form action="{% url 'respondents:search_results' %}" method="GET">
+            <form action="{% url 'respondents:search_results' %}" method="GET" id="institutions_search">
                 <div class="search-field">
                     <label for="search_name" class="search-name-label">Search by name or lender ID
                         (<a target="new" href="http://www.ffiec.gov/nicpubweb/nicweb/SearchForm.aspx">Need a Lender ID?</a> <span class="cf-icon cf-icon-external-link"></span>)
                     </label>
-                    <input type="text" id="search_name" name="q" />
+                    <input type="text" id="search_name" name="q" class="search_institution" />
+                    <input type="hidden" id="search_year" name="year" value="{{years.0.hmda_year}}">
                     <button type="submit" class="btn active">Search</button>
                     <span class="example-hint">ex: 99992222111; First Federal Savings</span>
                 </div>
             </form>
+
         </div>
         
     </div>
