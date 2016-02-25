@@ -27,7 +27,7 @@ class Geo(models.Model):
 
     geom = models.MultiPolygonField(srid=4269)
 
-    year = models.SmallIntegerField()
+    year = models.SmallIntegerField(db_index=True)
 
     minlat = models.FloatField()
     maxlat = models.FloatField()
@@ -44,7 +44,8 @@ class Geo(models.Model):
                           ("geo_type", "maxlat", "minlon", "year"),
                           ("geo_type", "maxlat", "maxlon", "year"),
                           ("geo_type", "centlat", "centlon", "year"),
-                          ("geo_type", "cbsa", "year")]
+                          ("geo_type", "cbsa", "year"), 
+                          ("state", "year"),]
 
     def tract_centroids_as_geojson(self):
         """Convert this model into a geojson string"""
@@ -79,5 +80,5 @@ class Geo(models.Model):
 
     def get_censustract_geos_by_msa(self):
         """returns tracts associated with an MSA"""
-        tracts = get_list_or_404(Geo, geo_type=Geo.TRACT_TYPE, cbsa=self.geoid)
+        tracts = get_list_or_404(Geo, geo_type=Geo.TRACT_TYPE, cbsa=self.cbsa, year=self.year)
         return tracts

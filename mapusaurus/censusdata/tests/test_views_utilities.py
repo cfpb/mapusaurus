@@ -39,19 +39,19 @@ class ViewsUtilitiesTests(TestCase):
         metro = Geo.objects.get(geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
         peer_request = HttpRequest()
         peer_request.GET['lender'] = lender.institution_id
-        peer_request.GET['metro']= metro.geoid
+        peer_request.GET['metro'] = metro.geoid
         peer_request.GET['peers'] = 'true'
         peer_request.GET['action_taken'] = '1,2,3,4,5'
         peer_lar_data = loan_originations_as_json(peer_request)
-        tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=request.GET.get('metro'))
+        tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa=metro.cbsa)
         lender_stats = assemble_stats(*get_minority_area_stats(lar_data, peer_lar_data, tracts))
         self.assertEqual(lender_stats['hma_pct'], 0)
         self.assertEqual(lender_stats['lma_pct'], 1)
         self.assertEqual(lender_stats['mma_pct'], 0)
-        self.assertEqual(lender_stats['lma'], 7)
+        self.assertEqual(lender_stats['lma'], 3)
         self.assertEqual(lender_stats['mma'], 0)
         self.assertEqual(lender_stats['hma'], 0)
-        self.assertEqual(lender_stats['lar_total'], 7)
+        self.assertEqual(lender_stats['lar_total'], 3)
 
     def test_odds_ratio(self):
         """

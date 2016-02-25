@@ -32,10 +32,11 @@ class LoadSummaryDataTest(TestCase):
         positional_args = hf4.call_args[0]
         self.assertEqual(positional_args[0],
                          os.path.join(self.tempdir, "ZZgeo2010.sf1"))
-        self.assertEqual(positional_args[1], '11')  # State
-        self.assertEqual(len(positional_args[2]), 2)
-        self.assertEqual(positional_args[2]['0007159'], year+'11001000100')
-        self.assertEqual(positional_args[2]['0007211'], year+'11001000902')
+        self.assertEqual(positional_args[1], year)
+        self.assertEqual(positional_args[2], '11')  # State
+        self.assertEqual(len(positional_args[3]), 2)
+        self.assertEqual(positional_args[3]['0007159'], year+'11001000100')
+        self.assertEqual(positional_args[3]['0007211'], year+'11001000902')
 
     @patch('censusdata.management.commands.load_summary_one.errors')
     @patch.object(Command, 'handle_filefive')
@@ -52,16 +53,16 @@ class LoadSummaryDataTest(TestCase):
         command.handle(os.path.join(self.tempdir, 'ZZgeo2010.sf1'), year)
         positional_args = hf4.call_args[0]
         # The None causes us to skip 11001000902
-        self.assertEqual(len(positional_args[2]), 1)
+        self.assertEqual(len(positional_args[2]), 2)
         # This entry was converted
-        self.assertEqual(positional_args[2]['0007159'], year+'22002000200')
+        self.assertEqual(positional_args[3]['0007159'], year+'22002000200')
 
     def test_handle_filethree(self):
         shutil.copyfile(os.path.join("censusdata", "tests", "mock_file3.txt"),
                         os.path.join(self.tempdir, "ZZ000032010.sf1"))
         command = Command()
         command.handle_filethree(os.path.join(self.tempdir, "ZZgeo2010.sf1"),
-                                 '11',  # State
+                                 '2013', '11',  # State
                                  {'0007159': '11001000100',
                                   '0007211': '11001000902'})
         model = models.Census2010RaceStats.objects.get(pk='11001000100')
@@ -87,7 +88,7 @@ class LoadSummaryDataTest(TestCase):
                         os.path.join(self.tempdir, "ZZ000032010.sf1"))
         command = Command()
         command.handle_filethree(os.path.join(self.tempdir, "ZZgeo2010.sf1"),
-                                 '11',  # State
+                                 '2013', '11',  # State
                                  {'0007159': '11001000100',
                                   '0007211': '11001000902'})
         self.assertEqual(len(models.Census2010RaceStats.objects.all()), 2)
@@ -96,7 +97,7 @@ class LoadSummaryDataTest(TestCase):
 
         # Importing again should do nothing
         command.handle_filethree(os.path.join(self.tempdir, "ZZgeo2010.sf1"),
-                                 '11',  # State
+                                 '2013', '11',  # State
                                  {'0007159': '11001000100',
                                   '0007211': '11001000902'})
         self.assertEqual(len(models.Census2010RaceStats.objects.all()), 1)
@@ -107,7 +108,7 @@ class LoadSummaryDataTest(TestCase):
                         os.path.join(self.tempdir, "ZZ000052010.sf1"))
         command = Command()
         command.handle_filefive(os.path.join(self.tempdir, "ZZgeo2010.sf1"),
-                                '11',  # State
+                                '2013', '11',  # State
                                 {'0007159': '11001000100',
                                  '0007211': '11001000902'})
         model = models.Census2010Households.objects.get(pk='11001000100')

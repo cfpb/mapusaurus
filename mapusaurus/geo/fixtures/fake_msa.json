@@ -7,6 +7,7 @@
       "geo_type": 4,
       "name": "Dev MSA 1",
       "csa": "100",
+      "cbsa": "10000",
       "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
       "minlat": 0,
       "minlon": 0,
@@ -14,7 +15,7 @@
       "maxlon": 1,
       "centlat": 0.5,
       "centlon": 0.5,
-      "year":"2013"
+      "year":2013
     }
   },
   {
@@ -25,6 +26,7 @@
       "geo_type": 4,
       "name": "Wisalem 1",
       "csa": "100",
+      "cbsa": "31740",
       "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
       "minlat": 38.869704,
       "minlon": -96.963688,
@@ -32,7 +34,7 @@
       "maxlon": -96.034612,
       "centlat": 39.2684241,
       "centlon": -96.5622422,
-      "year":"2013"
+      "year":2013
     }
   },
   {
@@ -43,6 +45,7 @@
       "geo_type": 4,
       "name": "Wisalem 2",
       "csa": "100",
+      "cbsa": "45820",
       "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
       "minlat": 38.433544,
       "minlon": -96.501722,
@@ -50,7 +53,7 @@
       "maxlon": -95.179827,
       "centlat": 39.0413888,
       "centlon": -95.8026393,
-      "year":"2013"
+      "year":2013
     }
   },
 {
@@ -61,6 +64,7 @@
       "geo_type": 4,
       "name": "Dev MSA 1",
       "csa": "100",
+      "cbsa": "10001",
       "geom": "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))",
       "minlat": 0,
       "minlon": 0,
@@ -68,7 +72,7 @@
       "maxlon": 1,
       "centlat": 0.5,
       "centlon": 0.5,
-      "year":"2013"
+      "year":2013
     }
   },
 {
@@ -79,6 +83,7 @@
       "geo_type": 4,
       "name": "Wichita",
       "csa": "556",
+      "cbsa": "48620",
       "geom": "MULTIPOLYGON (((-97.808358 36.998546, -97.808358 38.175081, -96.522782 38.175081, -97.808358 36.998546)))",
       "minlat": 36.998546,
       "minlon": -97.808358,
@@ -86,7 +91,7 @@
       "maxlon": -96.522782,
       "centlat": 37.6385839,
       "centlon": -97.2460377,
-      "year":"2013"
+      "year":2013
     }
   },
 {
@@ -97,6 +102,7 @@
       "geo_type": 4,
       "name": "Winston-Salem",
       "csa": "556",
+      "cbsa": "556",
       "geom": "MULTIPOLYGON (((-80.88218 35.742811, -80.88218 36.55063, -80.027269 36.55063, -80.88218 35.742811)))",
       "minlat": 35.742811,
       "minlon": -80.88218,
@@ -104,7 +110,7 @@
       "maxlon": -80.027269,
       "centlat": 36.1905412,
       "centlon": -80.3969029,
-      "year":"2013"
+      "year":2013
     }
   }
 ]
