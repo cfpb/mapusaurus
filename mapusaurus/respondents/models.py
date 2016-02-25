@@ -42,7 +42,7 @@ class ParentInstitution(models.Model):
     because (1) they can be international and (2) they might not report HMDA so
     we have fewer details. If we have an RSSD ID we try and store it here. """
 
-    year = models.SmallIntegerField()
+    year = models.SmallIntegerField(db_index=True)
     name = models.CharField(max_length=30)
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=2, null=True)
