@@ -15,9 +15,9 @@ from hmda.models import Year
 from django.utils.html import escape
 
 
-def respondent(request, agency_id, respondent):
+def respondent(request, agency_id, respondent, year):
     respondent = get_object_or_404(Institution, respondent_id=respondent,
-                                   agency_id=int(agency_id))
+                                   agency_id=int(agency_id), year=year)
     context = {'respondent': respondent}
 
     parents = [respondent]
