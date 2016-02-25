@@ -16,7 +16,7 @@ class PrecalcTest(TestCase):
         tract_params = {
             'geo_type': Geo.TRACT_TYPE, 'minlat': 0.11, 'minlon': 0.22,
             'maxlat': 1.33, 'maxlon': 1.44, 'centlat': 45.4545,
-            'centlon': 67.67, 'geom': "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", 'year':'2013'}
+            'centlon': 67.67, 'geom': "MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", 'year':2013}
         self.city_tract1 = Geo.objects.create(
             name='City Tract 1', cbsa='99999', geoid='11111111',
             **tract_params)
@@ -37,12 +37,12 @@ class PrecalcTest(TestCase):
             name='Non-City Tract 6', geoid='11111116', **tract_params)
         del tract_params['geo_type']
         self.metro = Geo.objects.create(
-            name='City', geoid='99999', geo_type=Geo.METRO_TYPE,
+            name='City', geoid='201399999',cbsa='99999', geo_type=Geo.METRO_TYPE,
             **tract_params)
         
 
         hmda_params = {
-            'as_of_year': 2010, 'respondent_id': self.respondent.respondent_id,
+            'as_of_year': 2013, 'respondent_id': self.respondent.respondent_id,
             'agency_code': str(self.respondent.agency_id),
             'property_type': 1, 'loan_purpose': 1, 'owner_occupancy': 1,
             'loan_amount_000s': 100, 'preapproval': '1', 'action_taken': 1, 
@@ -73,9 +73,9 @@ class PrecalcTest(TestCase):
 
         hmda_params['respondent_id'] = 'other'
         self.zipcode = ZipcodeCityStateYear.objects.create(
-            zip_code=12345, city='City', state='IL', year=1234)
+            zip_code=12345, city='City', state='IL', year=2013)
         self.inst1 = Institution.objects.create(
-            year=1234, respondent_id='9876543210', agency=Agency.objects.get(pk=9),
+            year=2013, respondent_id='9876543210', agency=Agency.objects.get(pk=9),
             institution_id='99876543210', tax_id='1111111111', name='Institution', mailing_address='mail', 
             zip_code=self.zipcode)
         # these should not affect the results, since they are another lender
@@ -154,7 +154,7 @@ class PrecalcTest(TestCase):
 
         found = False
         for stats in LendingStats.objects.all():
-            if stats.geo_id == '99999' and stats.institution_id == lender_id:
+            if stats.geo_id == '201399999' and stats.institution_id == lender_id:
                 found = True
                 self.assertEqual(stats.lar_median, 3)
         self.assertTrue(found)
