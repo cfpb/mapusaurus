@@ -6442,7 +6442,8 @@ select b {
 }
 .search-home #search-year {
   font-size: .9em;
-  border: 1px solid #BABBBD;
+  padding: 5px;
+  background: transparent;
 }
 /* Search input form (gray bar at top of page ) */
 .search-results-form {
