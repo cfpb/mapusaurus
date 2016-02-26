@@ -184,7 +184,8 @@
                 
                     <label for="geoid">Search and select a city:</label>
                     <input type="text" id="geoid">
-                    <input type="hidden" name="lender" value="{{ lender.agency_id }}{{ lender.respondent_id }}">
+                    <input type="hidden" name="lender" value="{{year}}{{ lender.agency_id }}{{ lender.respondent_id }}">
+                    <input type="hidden" id="year" name="year" value="{{year}}">
                     <input type="hidden" id="msa-field" name="metro">
                     <button type="submit" id="metro-search__submit" class="btn btn__disabled" disabled>Go to MSA</button>
                 
