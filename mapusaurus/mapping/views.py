@@ -3,7 +3,7 @@ from urllib import urlencode
 from django.shortcuts import render
 from django.db.models.query import QuerySet
 from geo.models import Geo
-from hmda.models import LendingStats
+from hmda.models import LendingStats, Year
 from hmda.management.commands.calculate_loan_stats import (calculate_median_loans)
 from respondents.models import Institution
 
