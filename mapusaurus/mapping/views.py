@@ -60,12 +60,12 @@ def make_download_url(lender, metro):
     if metro:
         divisions = [div.metdiv for div in
                      Geo.objects.filter(
-                         geo_type=Geo.METDIV_TYPE, cbsa=metro.geoid
-                     ).order_by('geoid')]
+                         geo_type=Geo.METDIV_TYPE, cbsa=metro.cbsa
+                     ).order_by('cbsa')]
         if divisions:
             where += ' AND msamd IN ("' + '","'.join(divisions) + '")'
         else:   # no divisions, so just use the MSA
-            where += ' AND msamd="' + metro.geoid + '"'
+            where += ' AND msamd="' + metro.cbsa + '"'
 
     query = urlencode({
         '$where': where,
