@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from mock import Mock, patch
 
+from hmda.models import Year
 from geo.models import Geo
 from mapping.views import lookup_median, make_download_url
 from respondents.models import Institution
@@ -19,6 +20,7 @@ class ViewTest(TestCase):
             geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
             centlon=67.6767, year='2012')
+        self.year = Year.objects.create(hmda_year=2012, census_year=2010, geo_year=2011)
 
     def tearDown(self):
         self.metro.delete()
