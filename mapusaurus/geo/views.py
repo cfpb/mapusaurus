@@ -28,6 +28,7 @@ def get_censustract_geos(request):
     northEastLon = request.GET.get('neLon')
     southWestLat = request.GET.get('swLat')
     southWestLon = request.GET.get('swLon')
+    year = request.GET.get('year')
     metro = request.GET.get('metro')
     geo_type = request.GET.get('geoType')
     geos = []
@@ -36,7 +37,7 @@ def get_censustract_geos(request):
         if bounds:
             if geo_type == "msa":
                 #*bounds expands the set from check_bounds
-                msas = get_geos_by_bounds_and_type(*bounds, metro=True)
+                msas = get_geos_by_bounds_and_type(*bounds, year=year, metro=True)
                 geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
             else:
                 geos = get_geos_by_bounds_and_type(*bounds)
@@ -47,7 +48,7 @@ def get_censustract_geos(request):
         geos = msa.get_censustract_geos_by_msa()
     return geos
 
-def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
+def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year=year, metro=False):
     """handles requests for tract-level ids or MSA ids"""
     if metro == False:
         geoTypeId = 3
@@ -61,7 +62,7 @@ def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
     #Create a polygon of the entire map screen
     poly = Polygon (((point_top_left, point_bottom_left, point_bottom_right, point_top_right, point_top_left)))
     #check if geo polygon interects with the screen polygon. no get_object_or_404 since user can drag to alaska, pr, hawaii
-    geos = Geo.objects.filter(geo_type = geoTypeId).filter(geom__intersects=poly)
+    geos = Geo.objects.filter(geo_type = geoTypeId, year = year).filter(geom__intersects=poly)
     return geos
 
 class GeoSerializer(serializers.ModelSerializer):
