@@ -10,8 +10,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         #   Remove existing stats; we're going to regenerate them
-        LendingStats.objects.all().delete()
         year = args[0]
+        LendingStats.objects.filter(institution__year=year).delete()
         lender_q = HMDARecord.objects.values_list('institution_id', flat=True).distinct('institution')
         for metro in Geo.objects.filter(
                 geo_type=Geo.METRO_TYPE, year=year).order_by('name'):
