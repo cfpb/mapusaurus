@@ -227,11 +227,12 @@ def race_summary_http(request):
 def race_summary_csv(request):
     institution_id = request.GET.get('lender')
     metro = request.GET.get('metro')
+    year = request.GET.get('year')
     if institution_id and metro: 
         lar_data = loan_originations_as_json(request)
         tracts_in_msa = get_censustract_geos(request)
         queryset = Census2010RaceStats.objects.filter(geoid__in=tracts_in_msa)
-        file_name = 'HMDA-Census-Tract_2013_Lender%s_MSA%s.csv' % (institution_id, metro)
+        file_name = 'HMDA-Census-Tract_Year%s_Lender%s_MSA%s.csv' % (year, institution_id, metro)
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=%s' % file_name
         writer = csv.writer(response, csv.excel)
