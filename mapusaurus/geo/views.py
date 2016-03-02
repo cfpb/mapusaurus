@@ -35,20 +35,21 @@ def get_censustract_geos(request):
     if northEastLat or northEastLon or southWestLat or southWestLon:
         bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
         if bounds:
+            maxlat, minlon, minlat, maxlon = bounds
             if geo_type == "msa":
                 #*bounds expands the set from check_bounds
-                msas = get_geos_by_bounds_and_type(*bounds, year=year, metro=True)
+                msas = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year, metro=True)
                 geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
             else:
-                geos = get_geos_by_bounds_and_type(*bounds)
+                geos = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year)
         else:
             raise Http404("Invalid bounds")
     elif metro:
-        msa = get_object_or_404(Geo, geo_type=Geo.METRO_TYPE, geoid=metro)
+        msa = get_object_or_404(Geo, geo_type=Geo.METRO_TYPE, geoid=metro) # metro includes year
         geos = msa.get_censustract_geos_by_msa()
     return geos
 
-def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year=year, metro=False):
+def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year, metro=False):
     """handles requests for tract-level ids or MSA ids"""
     if metro == False:
         geoTypeId = 3
@@ -62,7 +63,7 @@ def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year=year, metro
     #Create a polygon of the entire map screen
     poly = Polygon (((point_top_left, point_bottom_left, point_bottom_right, point_top_right, point_top_left)))
     #check if geo polygon interects with the screen polygon. no get_object_or_404 since user can drag to alaska, pr, hawaii
-    geos = Geo.objects.filter(geo_type = geoTypeId, year = year).filter(geom__intersects=poly)
+    geos = Geo.objects.filter(geo_type=geoTypeId, year=year).filter(geom__intersects=poly)
     return geos
 
 class GeoSerializer(serializers.ModelSerializer):
