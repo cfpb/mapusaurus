@@ -25,7 +25,8 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
             WHERE hmda_hmdarecord.institution_id
                     = respondents_institution.institution_id"""
         return self.get_model().objects.extra(
-            select={"num_loans": 1337})
+            select={"num_loans": "SELECT COUNT(*) " + subquery_tail},
+            where=["SELECT COUNT(*) > 0 " + subquery_tail])
 
     def read_queryset(self, using=None):
         """A more efficient query than the index query -- makes use of select
