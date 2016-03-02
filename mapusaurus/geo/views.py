@@ -39,7 +39,7 @@ def get_censustract_geos(request):
             if geo_type == "msa":
                 #*bounds expands the set from check_bounds
                 msas = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year, metro=True)
-                geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
+                geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('cbsa', flat=True))
             else:
                 geos = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year)
         else:

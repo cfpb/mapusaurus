@@ -27,11 +27,9 @@ def msas(request):
         northEastLon = request.GET.get('neLon')
         southWestLat = request.GET.get('swLat')
         southWestLon = request.GET.get('swLon')
-        bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
-        if bounds:
-            pass
-            #maxlat, minlon, minlat, maxlon = bounds[0], bounds[1], bounds[2], bounds[3]
-        msas = get_geos_by_bounds_and_type(*bounds, metro=True)
+        year = request.GET.get('year')
+        maxlat, minlon, minlat, maxlon = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
+        msas = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year, metro=True)
         msa_list = [metro.geoid for metro in msas]
         return HttpResponse(json.dumps(msa_list), content_type='application/json')
     except:
