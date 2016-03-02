@@ -60,7 +60,7 @@ def make_download_url(lender, metro):
     if metro:
         divisions = [div.metdiv for div in
                      Geo.objects.filter(
-                         geo_type=Geo.METDIV_TYPE, cbsa=metro.cbsa
+                         geo_type=Geo.METDIV_TYPE, cbsa=metro.cbsa, year=metro.year
                      ).order_by('cbsa')]
         if divisions:
             where += ' AND msamd IN ("' + '","'.join(divisions) + '")'

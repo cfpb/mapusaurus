@@ -76,7 +76,7 @@ class ViewsTests(TestCase):
 
     def test_api_msas_endpoint(self):
         """should return a list of MSA ids in view"""
-        coords = {'neLat': '36.551569', 'neLon':'-78.961487', 'swLat':'35.824494', 'swLon':'-81.828918'}
+        coords = {'neLat': '36.551569', 'neLon':'-78.961487', 'swLat':'35.824494', 'swLon':'-81.828918', 'year':2013}
         url = reverse(msas)
         resp = self.client.get(url, coords)
         result_list = json.loads(resp.content)
