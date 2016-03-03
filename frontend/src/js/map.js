@@ -169,9 +169,6 @@ $(document).ready(function(){
         }
     });
 
-    map.on('moveend', function(){
-        moveEndAction[geoQueryType]();
-    });
     map.on('zoomend', function(){
         buildKeyCircles();
     });
