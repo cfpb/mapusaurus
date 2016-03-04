@@ -103,11 +103,11 @@ class Institution(models.Model):
     """ Returns a list of related institutions for the selected institution.  
     Allows to exclude selected institution/lender and order by institution's assets
     """ 
-    def get_lender_hierarchy(self, exclude, order):
+    def get_lender_hierarchy(self, exclude, order, year):
         lender_hierarchy = self.lenderhierarchy_set.first()
         if lender_hierarchy:
             org_id = lender_hierarchy.organization_id
-            hierarchy_list = LenderHierarchy.objects.filter(organization_id=org_id).select_related('institution')
+            hierarchy_list = LenderHierarchy.objects.filter(organization_id=org_id).select_related('institution').filter(institution__year=year)
             if exclude:
                 hierarchy_list = hierarchy_list.exclude(institution=self)
             if order:

@@ -19,7 +19,7 @@ def map(request, template):
     
     if lender:
         context['lender'] = lender
-        hierarchy_list = lender.get_lender_hierarchy(True, True)
+        hierarchy_list = lender.get_lender_hierarchy(True, True, year_selected)
         context['institution_hierarchy'] = hierarchy_list 
     if metro:
         context['metro'] = metro
