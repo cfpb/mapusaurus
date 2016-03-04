@@ -19,17 +19,16 @@ def loan_originations(request):
     action_taken_param = request.GET.get('action_taken')
     lender_hierarchy = request.GET.get('lh')
     peers = request.GET.get('peers')
+    year = request.GET.get('year')
     census_tracts = get_censustract_geos(request)
 
-    query = HMDARecord.objects.all()            
-
-    #if lender param key is passed in
+    query = HMDARecord.objects.all()
     if institution_id:
         institution_selected = get_object_or_404(Institution, pk=institution_id)
         if lender_hierarchy == 'true':
-            hierarchy_list = institution_selected.get_lender_hierarchy(False, False)
+            hierarchy_list = institution_selected.get_lender_hierarchy(False, False, year)
             if len(hierarchy_list) > 0:
-                query = query.filter(institution__in=hierarchy_list) 
+                query = query.filter(institution__in=hierarchy_list)
             else: 
                 query = query.filter(institution=institution_selected)
         elif peers == 'true' and metro:
