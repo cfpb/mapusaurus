@@ -6,15 +6,17 @@ from hmda.models import HMDARecord, LendingStats
 
 class Command(BaseCommand):
     help = "Generate loans stats per lender, metro combination"
+    args = "<year>"
 
     def handle(self, *args, **kwargs):
         #   Remove existing stats; we're going to regenerate them
-        LendingStats.objects.all().delete()
+        year = args[0]
+        LendingStats.objects.filter(institution__year=year).delete()
         lender_q = HMDARecord.objects.values_list('institution_id', flat=True).distinct('institution')
         for metro in Geo.objects.filter(
-                geo_type=Geo.METRO_TYPE).order_by('name'):
+                geo_type=Geo.METRO_TYPE, year=year).order_by('name'):
             self.stdout.write("Processing " + metro.name)
-            query = lender_q.filter(geo__cbsa=metro.geoid)
+            query = lender_q.filter(geo__cbsa=metro.cbsa, geo__year=year)
             for lender_str in query.iterator():
                 median = calculate_median_loans(lender_str, metro) or 0
                 lar = calculate_lar_count(lender_str, metro)
@@ -25,10 +27,12 @@ class Command(BaseCommand):
                     fha_percentage = 0.0
                 bucket = get_fha_bucket(fha_percentage)
                 LendingStats.objects.create(
-                    institution_id=lender_str, geo=metro, lar_median=median, lar_count=lar, fha_count=fha, fha_bucket=bucket)
+                    institution_id=lender_str, geo=metro, lar_median=median, 
+                    lar_count=lar, fha_count=fha, fha_bucket=bucket)
 
 def lar_query(lender_str, metro):
-    lar_query = HMDARecord.objects.filter(institution_id=lender_str, geo__cbsa=metro.geoid, geo__geo_type=Geo.TRACT_TYPE, action_taken__in=[1,2,3,4,5])
+    lar_query = HMDARecord.objects.filter(institution_id=lender_str, 
+       geo__cbsa=metro.cbsa, geo__geo_type=Geo.TRACT_TYPE, action_taken__in=[1,2,3,4,5])
     return lar_query
 
 def calculate_lar_count(lender_str, metro):
@@ -62,9 +66,8 @@ def calculate_median_loans(lender_str, metro):
     query = Geo.objects.filter(
         geo_type=Geo.TRACT_TYPE, hmdarecord__institution_id=lender_str)
     if metro:
-        query = query.filter(cbsa=metro.geoid)
+        query = query.filter(cbsa=metro.cbsa, year=metro.year)
     num_tracts = query.values('geoid').distinct('geoid').count()
-
     cursor = connection.cursor()
     # Next, aggregate the # of loans per tract. This query will *not*
     # include zeros
@@ -77,7 +80,7 @@ def calculate_median_loans(lender_str, metro):
     params = [Geo.TRACT_TYPE, lender_str]
     if metro:
         query = query + "AND cbsa = %s\n"
-        params.append(metro.geoid)
+        params.append(metro.cbsa)
     query += """
         GROUP BY geo_geo.geoid
         ORDER BY loan_count

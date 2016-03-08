@@ -12,17 +12,19 @@ class Command(BaseCommand):
     """Loads Summary File 1 data from the decennial census. Official
     documentation for fields at
     http://www.census.gov/prod/cen2010/doc/sf1.pdf"""
-    args = "<path/to/XXgeo2010.sf1>"
+    args = "<path/to/XXgeo2010.sf1> <year>"
     help = """
         Load Decennial Census data for a state.
         Assumes XX#####2010.sf1 files are in the same directory."""
 
     def handle(self, *args, **options):
-        if not args:
-            raise CommandError("Needs a first argument, "
-                               + "path/to/XXgeo2010.sf1")
+        if len(args) != 2:
+            raise CommandError("Needs 2 arguments, "
+                               + "path/to/XXgeo2010.sf1 year")
         geoids_by_record = {}
-        geofile = open(args[0], 'r')
+        geofile_name = args[0]
+        geofile = open(geofile_name, 'r')
+        year = args[1]
         # As each file covers one state, all geos will have the same state id
         state = ""
         for line in geofile:
@@ -31,26 +33,25 @@ class Command(BaseCommand):
                 censustract = line[27:32] + line[54:60]
                 censustract = errors.in_2010.get(censustract, censustract)
                 if censustract is not None:
-                    geoids_by_record[recordnum] = censustract
+                    geoids_by_record[recordnum] = year + censustract
                 state = line[27:29]
         geofile.close()
-        self.handle_filethree(args[0], state, geoids_by_record)
-        self.handle_filefour(args[0], state, geoids_by_record)
-        self.handle_filefive(args[0], state, geoids_by_record)
+        self.handle_filethree(geofile_name, year, state, geoids_by_record)
+        self.handle_filefour(geofile_name, year, state, geoids_by_record)
+        self.handle_filefive(geofile_name, year, state, geoids_by_record)
 
-    def handle_filethree(self, geofile_name, state, geoids_by_record):
+    def handle_filethree(self, geofile_name, year, state, geoids_by_record):
         """File three (XX000032010.sf1) contains race and ethnicity summaries.
         Documentation starts at page 6-22."""
         file3_name = geofile_name[:-11] + "000032010.sf1"
         datafile = open(file3_name, 'r')
-        state = geoids_by_record.values()[0][:2]
         race, hispanic, stats = [], [], []
         skip_race = Census2010Race.objects.filter(
-            geoid__state=state).exists()
+            geoid__state=state, geoid__year=year).exists()
         skip_hisp = Census2010HispanicOrigin.objects.filter(
-            geoid__state=state).exists()
+            geoid__state=state, geoid__year=year).exists()
         skip_stats = Census2010RaceStats.objects.filter(
-            geoid__state=state).exists()
+            geoid__state=state, geoid__year=year).exists()
 
         if not skip_race or not skip_hisp or not skip_stats:
             for row in reader(datafile):
@@ -89,15 +90,15 @@ class Command(BaseCommand):
         if not skip_stats:
             Census2010RaceStats.objects.bulk_create(stats)
 
-    def handle_filefour(self, geofile_name, state, geoids_by_record):
+    def handle_filefour(self, geofile_name, year, state, geoids_by_record):
         """File four (XX000042010.sf1) contains age demographics and
         correlations with race, ethnicity, and sex. Documentation starts at
         page 6-30"""
         file4_name = geofile_name[:-11] + "000042010.sf1"
         datafile = open(file4_name, 'r')
         sex, age = [], []
-        skip_sex = Census2010Sex.objects.filter(geoid__state=state).exists()
-        skip_age = Census2010Age.objects.filter(geoid__state=state).exists()
+        skip_sex = Census2010Sex.objects.filter(geoid__state=state, geoid__year=year).exists()
+        skip_age = Census2010Age.objects.filter(geoid__state=state, geoid__year=year).exists()
         if not skip_sex or not skip_age:
             for row in reader(datafile):
                 recordnum = row[4]
@@ -125,7 +126,7 @@ class Command(BaseCommand):
         if not skip_age:
             Census2010Age.objects.bulk_create(age)
 
-    def handle_filefive(self, geofile_name, state, geoids_by_record):
+    def handle_filefive(self, geofile_name, year, state, geoids_by_record):
         """File five (XX000052010.sf1) contains household metrics, including
         divisions by household type, household size, etc. Documentation starts
         at page 6-38"""
@@ -133,7 +134,7 @@ class Command(BaseCommand):
         datafile = open(file4_name, 'r')
         households = []
         skip_households = Census2010Households.objects.filter(
-            geoid__state=state).exists()
+            geoid__state=state, geoid__year=year).exists()
         if not skip_households:
             for row in reader(datafile):
                 recordnum = row[4]

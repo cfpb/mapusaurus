@@ -27,13 +27,14 @@
     <p>&nbsp;</p>
 
     <p>You have selected: <span class="institution-name" >{{institution.formatted_name}}</span></p>
-    <p>To create a map of their 2013 mortgage applications and originations, select an MSA:</p>
+    <p>To create a map of their {{year}} mortgage applications and originations, select an MSA:</p>
 
         <form action="{% url 'map' %}" method="GET">
             <div class="search-field">
                 <label for="geoid">Select an MSA:</label><br/>
                 <input type="text" id="geoid"><br/><br/>
-                <input type="hidden" name="lender" value="{{institution.agency_id}}{{institution.respondent_id}}">
+                <input type="hidden" name="lender" value="{{year}}{{institution.agency_id}}{{institution.respondent_id}}">
+                <input type="hidden" id="year" name="year" value="{{year}}">
                 <input type="hidden" id="msa-field" name="metro">
                 <button type="submit" id="metro-search__submit" class="btn btn__disabled" disabled>Select</button>
                 

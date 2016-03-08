@@ -312,7 +312,7 @@
         var peerList = $('.peer-link');
         $.each(peerList, function(i, val){
             var instid = $(val).data('instid');
-            var href = '/map/?metro=' + urlParam('metro') + '&lender=' + instid + window.location.hash.replace('&peers=true', '');            
+            var href = '/map/?metro=' + urlParam('metro') + '&lender=' + instid + '&year=' + selectedYear + window.location.hash.replace('&peers=true', '');            
             $(val).attr('href', href);
         });
     }
@@ -321,7 +321,7 @@
     function updateCensusLink(){
         var actions = getHashParams()
         var actionVar = getActionTaken( actions.action.values );
-        $('#downloadCensus').attr('href', '/census/race_summary_csv/?metro=' + urlParam('metro') + '&lender=' + urlParam('lender') + '&action_taken=' + actionVar );
+        $('#downloadCensus').attr('href', '/census/race_summary_csv/?metro=' + urlParam('metro') + '&lender=' + urlParam('lender') + '&action_taken=' + actionVar  + '&year=' + selectedYear );
     }
 
     // Parameter helper function that filters the query according to dropdown values

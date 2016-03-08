@@ -22,7 +22,7 @@ class Command(BaseCommand):
                     lat = branch_location_line[13], 
                     lon = branch_location_line[12],
                 )
-                record.institution_id = (branch_location_line[1]+branch_location_line[2]).replace("'", "")
+                record.institution_id = (branch_location_line[0]+branch_location_line[1]+branch_location_line[2]).replace("'", "")
                 if Institution.objects.filter(institution_id=record.institution_id).count() > 0:
                     branch_location.append(record)
                 if len(branch_location) > 9999:

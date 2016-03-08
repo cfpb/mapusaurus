@@ -2,6 +2,7 @@
 
 $(document).ready(function() {
     var searchNameBox = $('#geoid'),
+        year = $('#year').val(),
         msaField = $('#msa-field'),
         search = new Bloodhound({
             datumTokenizer: function(d) {
@@ -9,7 +10,7 @@ $(document).ready(function() {
             },
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-                url: '/shapes/search/?auto=1&q=%QUERY',
+                url: '/shapes/search/?auto=1&q=%QUERY&year=' + year,
                 filter: function(resp) {
                     return resp.geos;
                 }

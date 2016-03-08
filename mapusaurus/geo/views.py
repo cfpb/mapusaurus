@@ -28,26 +28,28 @@ def get_censustract_geos(request):
     northEastLon = request.GET.get('neLon')
     southWestLat = request.GET.get('swLat')
     southWestLon = request.GET.get('swLon')
+    year = request.GET.get('year')
     metro = request.GET.get('metro')
     geo_type = request.GET.get('geoType')
     geos = []
     if northEastLat or northEastLon or southWestLat or southWestLon:
         bounds = check_bounds(northEastLat, northEastLon, southWestLat, southWestLon)
         if bounds:
+            maxlat, minlon, minlat, maxlon = bounds
             if geo_type == "msa":
                 #*bounds expands the set from check_bounds
-                msas = get_geos_by_bounds_and_type(*bounds, metro=True)
-                geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('geoid', flat=True))
+                msas = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year, metro=True)
+                geos = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, cbsa__in=msas.values_list('cbsa', flat=True))
             else:
-                geos = get_geos_by_bounds_and_type(*bounds)
+                geos = get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year)
         else:
             raise Http404("Invalid bounds")
     elif metro:
-        msa = get_object_or_404(Geo, geo_type=Geo.METRO_TYPE, geoid=metro)
+        msa = get_object_or_404(Geo, geo_type=Geo.METRO_TYPE, geoid=metro) # metro includes year
         geos = msa.get_censustract_geos_by_msa()
     return geos
 
-def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
+def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, year, metro=False):
     """handles requests for tract-level ids or MSA ids"""
     if metro == False:
         geoTypeId = 3
@@ -61,27 +63,28 @@ def get_geos_by_bounds_and_type(maxlat, minlon, minlat, maxlon, metro=False):
     #Create a polygon of the entire map screen
     poly = Polygon (((point_top_left, point_bottom_left, point_bottom_right, point_top_right, point_top_left)))
     #check if geo polygon interects with the screen polygon. no get_object_or_404 since user can drag to alaska, pr, hawaii
-    geos = Geo.objects.filter(geo_type = geoTypeId).filter(geom__intersects=poly)
+    geos = Geo.objects.filter(geo_type=geoTypeId, year=year).filter(geom__intersects=poly)
     return geos
 
 class GeoSerializer(serializers.ModelSerializer):
     """Used in RESTful endpoints to serialize Geo objects; used in search"""
     class Meta:
         model = Geo
-        fields = ('geoid', 'geo_type', 'name', 'centlat', 'centlon')
+        fields = ('geoid', 'geo_type', 'name', 'centlat', 'centlon', 'year')
 
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))     # until we need HTML
 def search(request):
     query_str = request.GET.get('q', '').strip()
+    year= request.GET.get('year', '').strip()
     query = SearchQuerySet().models(Geo).load_all()
     if request.GET.get('auto'):
-        query = query.filter(text_auto=AutoQuery(query_str))
+        query = query.filter(text_auto=AutoQuery(query_str)).filter(year=year)
     else:
-        query = query.filter(content=AutoQuery(query_str))
+        query = query.filter(content=AutoQuery(query_str)).filter(year=year)
     query = query[:25]
-    results = [result.object for result in query]
+    results = [result.object for result in query if result]
     results = GeoSerializer(results, many=True).data
 
     return Response({'geos': results})

@@ -160,9 +160,7 @@ def minority_aggregation_as_json(request):
 
     msa_stats = {}
 
-   
     lar_data = loan_originations_as_json(request)
-
     lender = get_object_or_404(Institution, pk=request.GET.get('lender'))
     metro = get_object_or_404(Geo, geo_type=Geo.METRO_TYPE, geoid=request.GET.get('metro'))
     peer_request = HttpRequest()
@@ -171,10 +169,10 @@ def minority_aggregation_as_json(request):
     peer_request.GET['peers'] = 'true'
     peer_lar_data = loan_originations_as_json(peer_request)
 
-    msa_counties = Geo.objects.filter(geo_type=Geo.COUNTY_TYPE, cbsa=metro.geoid)
+    msa_counties = Geo.objects.filter(geo_type=Geo.COUNTY_TYPE, cbsa=metro.cbsa, year=metro.year)
     county_stats = {}
     for county in msa_counties:
-        county_tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, state=county.state, county=county.county)
+        county_tracts = Geo.objects.filter(geo_type=Geo.TRACT_TYPE, state=county.state, county=county.county, year=metro.year)
         minority_area_stats = get_minority_area_stats(lar_data, peer_lar_data, county_tracts)
         county_stats[county.geoid] = assemble_stats(*minority_area_stats)
         county_stats[county.geoid]['name'] = county.name
@@ -229,11 +227,12 @@ def race_summary_http(request):
 def race_summary_csv(request):
     institution_id = request.GET.get('lender')
     metro = request.GET.get('metro')
+    year = request.GET.get('year')
     if institution_id and metro: 
         lar_data = loan_originations_as_json(request)
         tracts_in_msa = get_censustract_geos(request)
         queryset = Census2010RaceStats.objects.filter(geoid__in=tracts_in_msa)
-        file_name = 'HMDA-Census-Tract_2013_Lender%s_MSA%s.csv' % (institution_id, metro)
+        file_name = 'HMDA-Census-Tract_Year%s_Lender%s_MSA%s.csv' % (year, institution_id, metro)
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=%s' % file_name
         writer = csv.writer(response, csv.excel)

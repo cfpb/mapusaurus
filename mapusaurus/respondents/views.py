@@ -11,12 +11,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import HttpResponseBadRequest
 from respondents.models import Institution, Branch
+from hmda.models import Year
 from django.utils.html import escape
 
 
-def respondent(request, agency_id, respondent):
+def respondent(request, agency_id, respondent, year):
     respondent = get_object_or_404(Institution, respondent_id=respondent,
-                                   agency_id=int(agency_id))
+                                   agency_id=int(agency_id), year=year)
     context = {'respondent': respondent}
 
     parents = [respondent]
@@ -42,17 +43,20 @@ def respondent(request, agency_id, respondent):
 
 def search_home(request):
     """Search for an institution"""
+    years = Year.objects.values().order_by('-hmda_year');
     return render(request, 'respondents/search_home.html', {
-        'contact_us_email': settings.CONTACT_US_EMAIL
+        'contact_us_email': settings.CONTACT_US_EMAIL,
+        'years': years
     })
 
 
-def select_metro(request, agency_id, respondent):
+def select_metro(request, year, agency_id, respondent):
     """Once an institution is selected, search for a metro"""
     institution = get_object_or_404(Institution, respondent_id=respondent,
-                                    agency_id=int(agency_id))
+                                    agency_id=int(agency_id), year=year)
     return render(request, 'respondents/metro_search.html', {
-        'institution': institution
+        'institution': institution,
+        'year': year
     })
 
 
@@ -76,18 +80,22 @@ LENDER_REGEXES = [PREFIX_RE, PAREN_RE]
 @api_view(['GET'])
 def search_results(request):
     query_str = escape(request.GET.get('q', '')).strip()
+    year = escape(request.GET.get('year', '')).strip()
+    if not year:
+        year = str(Year.objects.latest().hmda_year)
+
     lender_id = False
     respondent_id = False
     for regex in LENDER_REGEXES:
         match = regex.match(query_str)
         if match:
-            lender_id = match.group('agency') + match.group('respondent')
+            lender_id = year + match.group('agency') + match.group('respondent')
     resp_only_match = RESP_RE.match(query_str)
     if resp_only_match:
         respondent_id = resp_only_match.group('respondent')
-    
-    query = SearchQuerySet().models(Institution).load_all()
-    
+
+    query = SearchQuerySet().models(Institution).load_all() # snl temporary
+
     current_sort = request.GET.get('sort')
     if current_sort == None:
         current_sort = '-assets'
@@ -95,13 +103,13 @@ def search_results(request):
     query = SearchQuerySet().models(Institution).load_all().order_by(current_sort)
 
     if lender_id:
-        query = query.filter(lender_id=Exact(lender_id))
+        query = query.filter(lender_id=Exact(lender_id),year=year)
     elif respondent_id:
-        query = query.filter(respondent_id=Exact(respondent_id))
-    elif query_str and escape(request.GET.get('auto')):
-        query = query.filter(text_auto=AutoQuery(query_str))
+        query = query.filter(respondent_id=Exact(respondent_id),year=year)
+    elif query_str and escape(request.GET.get('auto')): # snl temporary: escape creates a bug where None = True
+        query = query.filter(text_auto=AutoQuery(query_str),year=year)
     elif query_str:
-        query = query.filter(content=AutoQuery(query_str))
+        query = query.filter(content=AutoQuery(query_str), year=year)
     else:
         query = []
 
@@ -163,7 +171,8 @@ def search_results(request):
          'end_results': end_results, 'sort': sort,
          'page_num': page, 'total_results': total_results,
          'next_page': next_page, 'prev_page': prev_page,
-         'total_pages': total_pages, 'current_sort': current_sort},
+         'total_pages': total_pages, 'current_sort': current_sort,
+         'year': year},
         template_name='respondents/search_results.html')
 
 def branch_locations_as_json(request):

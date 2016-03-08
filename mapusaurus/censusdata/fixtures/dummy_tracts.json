@@ -15,7 +15,8 @@
       "maxlat": 1,
       "maxlon": 1,
       "centlat": 0.0,
-      "centlon": 0.0
+      "centlon": 0.0,
+      "year": 2013
     }
   },
   {
@@ -34,7 +35,8 @@
       "maxlat": 1,
       "maxlon": 1,
       "centlat": 0.0,
-      "centlon": 0.0
+      "centlon": 0.0,
+      "year": 2013
     }
   },
   {
@@ -53,7 +55,8 @@
       "maxlat": 1,
       "maxlon": 1,
       "centlat": 0.0,
-      "centlon": 0.0
+      "centlon": 0.0,
+      "year": 2013
     }
   },
   {
@@ -72,7 +75,8 @@
       "maxlat": 1,
       "maxlon": 1,
       "centlat": 0.0,
-      "centlon": 0.0
+      "centlon": 1.0,
+      "year": 2013
     }
   },
   {
@@ -91,7 +95,8 @@
       "maxlat": 2,
       "maxlon": 2,
       "centlat": 1.0,
-      "centlon": 1.0
+      "centlon": 1.0,
+      "year": 2013
     }
   },
   {
@@ -110,7 +115,8 @@
       "maxlat": 2,
       "maxlon": 2,
       "centlat": 1.0,
-      "centlon": 1.0
+      "centlon": 1.0,
+      "year": "2013"
     }
   }
 ]

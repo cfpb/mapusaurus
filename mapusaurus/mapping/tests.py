@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from mock import Mock, patch
 
+from hmda.models import Year
 from geo.models import Geo
 from mapping.views import lookup_median, make_download_url
 from respondents.models import Institution
@@ -15,10 +16,11 @@ class ViewTest(TestCase):
     def setUp(self):
         self.respondent = Institution.objects.get(institution_id="922-333")
         self.metro = Geo.objects.create(
-            geoid='12121', geo_type=Geo.METRO_TYPE, name='MetMetMet',
+            geoid='12121', cbsa='12345', geo_type=Geo.METRO_TYPE, name='MetMetMet',
             geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
-            centlon=67.6767)
+            centlon=67.6767, year='2012')
+        self.year = Year.objects.create(hmda_year=2012, census_year=2010, geo_year=2011)
 
     def tearDown(self):
         self.metro.delete()
@@ -47,6 +49,7 @@ class ViewTest(TestCase):
         self.assertTrue('10' in resp.content)
         self.assertTrue('12' in resp.content)
         self.assertTrue('MetMetMet' in resp.content)
+        self.assertTrue('year' in resp.content)
 
     def test_make_download_url(self):
         self.assertEqual("https://api.consumerfinance.gov/data/hmda/slice/hmda_lar.csv?%24where=&%24limit=0", make_download_url(None, None))
@@ -56,22 +59,22 @@ class ViewTest(TestCase):
         self.assertFalse('msamd' in url)
 
         url = make_download_url(self.respondent, self.metro)
-        self.assertTrue('msamd="12121"' in unquote(url))
+        self.assertTrue('msamd="12345"' in unquote(url))
 
         div1 = Geo.objects.create(
             geoid='123123', geo_type=Geo.METDIV_TYPE, name='MetMetMet',
             geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
-            centlon=67.6767, cbsa='12121', metdiv='98989')
+            centlon=67.6767, cbsa='12345', metdiv='98989', year='2012')
         div2 = Geo.objects.create(
             geoid='123124', geo_type=Geo.METDIV_TYPE, name='MetMetMet',
             geom="MULTIPOLYGON (((0 0, 0 1, 1 1, 0 0)))", minlat=0.11,
             minlon=0.22, maxlat=1.33, maxlon=1.44, centlat=45.4545,
-            centlon=67.6767, cbsa='12121', metdiv='78787')
+            centlon=67.6767, cbsa='12345', metdiv='78787', year='2012')
         
         url = make_download_url(self.respondent, self.metro)
         self.assertFalse('12121' in url)
-        self.assertTrue('msamd+IN+("98989","78787")' in unquote(url))
+        self.assertTrue('msamd+IN+("78787","98989")' in unquote(url) or 'msamd+IN+("98989","78787")' in unquote(url))
 
         div1.delete()
         div2.delete()

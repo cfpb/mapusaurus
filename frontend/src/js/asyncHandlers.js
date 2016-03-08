@@ -4,6 +4,7 @@
     */    
 
     var rawGeo, rawLar, rawMinority, rawData, 
+    selectedYear = selectedYear || 2014,
     isUIBlocked = false,
     larVolume = [],
     pctMinority = [],
@@ -17,7 +18,7 @@
 
         // Create the appropriate URL path to return values
         var endpoint = '/api/tractCentroids/', 
-            params = {};
+            params = { year: selectedYear };
 
         if( bounds && typeof bounds === 'object' ){
             params.neLat = bounds.neLat;
@@ -60,8 +61,8 @@
     // Return a promise.
     function getTractData( actionTakenVal, bounds, geoType ){
         $('#bubbles_loading').show();
-        var endpoint = '/api/hmda',
-            params = { year: 2013,
+        var endpoint = '/api/hmda/',
+            params = { year: selectedYear,
                         'lh': false,
                         'peers': false,
                         'geo_type': geoType };
@@ -131,8 +132,8 @@
 
     // Get the Metro Areas currently shown on the map (used to check if we need to load new data on move)
     function getMsasInBounds(){
-        var endpoint = '/api/msas', 
-            params = {},
+        var endpoint = '/api/msas/', 
+            params = { year: selectedYear },
             bounds = getBoundParams();
 
         params.neLat = bounds.neLat;
@@ -160,7 +161,8 @@
 
         // Create the appropriate URL path to return values
         var endpoint = '/api/branchLocations/', 
-            params = { neLat: bounds.neLat,
+            params = { year: selectedYear,
+                       neLat: bounds.neLat,
                        neLon: bounds.neLon,
                        swLat: bounds.swLat,
                        swLon: bounds.swLon };

@@ -126,14 +126,17 @@ $(document).ready(function(){
     var keyHide = $('.hide-key');
     var keyShow = $('.show-key');
     var keyContents = $('.key-contents');
+    var minorityKeyContents = $('.minority-key');
     keyHide.on('click', function(e){
         keyShow.removeClass('hidden');
         keyContents.addClass('hidden');
+        minorityKeyContents.addClass('hidden');
         keyHide.addClass('hidden');
     });
     keyShow.on('click', function(e){
         keyHide.removeClass('hidden');
         keyContents.removeClass('hidden');
+        minorityKeyContents.removeClass('hidden');
         keyShow.addClass('hidden');
     });
 
@@ -166,9 +169,6 @@ $(document).ready(function(){
         }
     });
 
-    map.on('moveend', function(){
-        moveEndAction[geoQueryType]();
-    });
     map.on('zoomend', function(){
         buildKeyCircles();
     });

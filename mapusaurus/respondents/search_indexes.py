@@ -12,6 +12,7 @@ class InstitutionIndex(indexes.SearchIndex, indexes.Indexable):
     lender_id = indexes.CharField()
     assets = indexes.IntegerField(model_attr='assets')
     num_loans = indexes.IntegerField(model_attr='num_loans')
+    year = indexes.IntegerField(model_attr='year')
 
     def get_model(self):
         return Institution

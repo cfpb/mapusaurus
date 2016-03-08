@@ -8,6 +8,7 @@ class MetroIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, model_attr='name')
     text_auto = indexes.EdgeNgramField(model_attr='name')
     geo_type = indexes.IntegerField(model_attr='geo_type')
+    year = indexes.IntegerField(model_attr='year')
 
     def get_model(self):
         return Geo

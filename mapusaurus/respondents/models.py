@@ -5,19 +5,20 @@ import json
 from respondents.managers import AgencyManager
 from hmda.models import LendingStats
 
-class ZipcodeCityState(models.Model):
-    """ For each zipcode, maintain the city, state information. """
+class ZipcodeCityStateYear(models.Model):
+    """ For each zipcode, maintain the city, state information by year. """
     zip_code = models.IntegerField()
     plus_four = models.IntegerField(null=True)
     city = models.CharField(max_length=25)
     state = USStateField()
+    year = models.SmallIntegerField()
 
     class Meta:
-        unique_together = ('zip_code', 'city')
+        unique_together = ('zip_code', 'city', 'year')
 
     @property
     def unique_name(self):
-        return '%s, %s %s' % (self.city, self.state, self.zip_code)
+        return '%s, %s %s %s' % (self.city, self.state, self.zip_code, self.year)
 
     def __unicode__(self):
         return self.unique_name
@@ -41,16 +42,18 @@ class ParentInstitution(models.Model):
     because (1) they can be international and (2) they might not report HMDA so
     we have fewer details. If we have an RSSD ID we try and store it here. """
 
-    year = models.SmallIntegerField()
+    year = models.SmallIntegerField(db_index=True)
     name = models.CharField(max_length=30)
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=2, null=True)
     country = models.CharField(max_length=40, null=True)
     rssd_id = models.CharField(
         max_length=10,
-        unique=True,
         help_text='Id on the National Information Center repository',
         null=True)
+
+    class Meta:
+        unique_together = ('rssd_id', 'year')
 
     def __unicode__(self):
         return self.name
@@ -63,11 +66,11 @@ class Institution(models.Model):
     year = models.SmallIntegerField()
     respondent_id = models.CharField(max_length=10)
     agency = models.ForeignKey('Agency')
-    institution_id = models.CharField(max_length=11, primary_key=True)
+    institution_id = models.CharField(max_length=15, primary_key=True)
     tax_id = models.CharField(max_length=10)
     name = models.CharField(max_length=30)
     mailing_address = models.CharField(max_length=40)
-    zip_code = models.ForeignKey('ZipCodeCityState', null=False)
+    zip_code = models.ForeignKey('ZipCodeCityStateYear', null=False)
     assets = models.PositiveIntegerField(
         default=0,
         help_text='Prior year reported assets in thousands of dollars'
@@ -100,11 +103,11 @@ class Institution(models.Model):
     """ Returns a list of related institutions for the selected institution.  
     Allows to exclude selected institution/lender and order by institution's assets
     """ 
-    def get_lender_hierarchy(self, exclude, order):
+    def get_lender_hierarchy(self, exclude, order, year):
         lender_hierarchy = self.lenderhierarchy_set.first()
         if lender_hierarchy:
             org_id = lender_hierarchy.organization_id
-            hierarchy_list = LenderHierarchy.objects.filter(organization_id=org_id).select_related('institution')
+            hierarchy_list = LenderHierarchy.objects.filter(organization_id=org_id).select_related('institution').filter(institution__year=year)
             if exclude:
                 hierarchy_list = hierarchy_list.exclude(institution=self)
             if order:
