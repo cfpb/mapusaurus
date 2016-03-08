@@ -99,52 +99,52 @@
         map.options.inertia = false;
 
         // Initialize all of our layers
-        var yearLayers = {
-            year2013: {
-                MBBase: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.k55b27gd/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-                Base: L.mapbox.tileLayer('cfpb.a760eab8', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                Water: L.mapbox.tileLayer('cfpb.FL_WATER_all_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                Boundaries: L.mapbox.tileLayer('cfpb.4da32f68', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                CountyLabels: L.mapbox.tileLayer('cfpb.becdd200', {errorTileUrl: '/static/basestyle/img/0.png'}),            
-                MSALabels: L.mapbox.tileLayer('cfpb.5de9fd0f', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                PctMinority: L.mapbox.tileLayer('cfpb.b831eeca', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                PctHispanic: L.mapbox.tileLayer('cfpb.b5842925', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                PctBlack: L.mapbox.tileLayer('cfpb.58886e54', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                PctAsian: L.mapbox.tileLayer('cfpb.371a62d9', {errorTileUrl: '  /static/basestyle/img/0.png'}),
-                PctWhite: L.mapbox.tileLayer('cfpb.6c9e98c4', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                Plurality: L.mapbox.tileLayer('cfpb.FL_TRACT_minor_plurality_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                MedianIncome: L.mapbox.tileLayer('cfpb.d08a14ab', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                OwnerOccupancy: L.mapbox.tileLayer('cfpb.6b1a095b', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                MedianValue: L.mapbox.tileLayer('cfpb.FL_TRACT_med-hse-val_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                MedianYearBuilt: L.mapbox.tileLayer('cfpb.FL_TRACT_med-yr-blt_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                Centroids: L.layerGroup([]),
-                Branches: L.layerGroup([])
-            },
-            year2014: {
-                MBBase: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.k55b27gd/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
-                Base: L.mapbox.tileLayer('cfpb.a760eab8', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                Water: L.mapbox.tileLayer('cfpb.FL_WATER_all_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                Boundaries: L.mapbox.tileLayer('cfpb.4a612b0a', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                CountyLabels: L.mapbox.tileLayer('cfpb.5cc6733d', {errorTileUrl: '/static/basestyle/img/0.png'}),            
-                MSALabels: L.mapbox.tileLayer('cfpb.434952df', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                PctMinority: L.mapbox.tileLayer('cfpb.8961f4ed', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                // The following two layers were created with MapBox Studio. Eventually, all layers will use this new format.
-                PctHispanic: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikiwpxi500639akpqyjis3jl/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-                PctBlack: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikiy27e5006hbgm1b1k429kn/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-                PctAsian: L.mapbox.tileLayer('cfpb.20020fca', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                PctWhite: L.mapbox.tileLayer('cfpb.bdb5ee3b', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                Plurality: L.mapbox.tileLayer('cfpb.FL_TRACT_minor_plurality_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
-                MedianIncome: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikpm3d7c00ks96kq8kmagjb7/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-                OwnerOccupancy: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikpmq2a800k89vm0t6jhcl5s/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-                MedianValue: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikpm2exq00m3bgm1ee851343/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-                MedianYearBuilt: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikpmaa7z00m4bgm19yf8vsj5/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
-                Centroids: L.layerGroup([]),
-                Branches: L.layerGroup([])
-            }
+        var yearLayers = {};
+
+        yearLayers['2013'] = {
+            MBBase: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.k55b27gd/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            Base: L.mapbox.tileLayer('cfpb.a760eab8', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Water: L.mapbox.tileLayer('cfpb.FL_WATER_all_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Boundaries: L.mapbox.tileLayer('cfpb.4da32f68', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            CountyLabels: L.mapbox.tileLayer('cfpb.becdd200', {errorTileUrl: '/static/basestyle/img/0.png'}),            
+            MSALabels: L.mapbox.tileLayer('cfpb.5de9fd0f', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctMinority: L.mapbox.tileLayer('cfpb.b831eeca', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctHispanic: L.mapbox.tileLayer('cfpb.b5842925', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctBlack: L.mapbox.tileLayer('cfpb.58886e54', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctAsian: L.mapbox.tileLayer('cfpb.371a62d9', {errorTileUrl: '  /static/basestyle/img/0.png'}),
+            PctWhite: L.mapbox.tileLayer('cfpb.6c9e98c4', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Plurality: L.mapbox.tileLayer('cfpb.FL_TRACT_minor_plurality_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianIncome: L.mapbox.tileLayer('cfpb.d08a14ab', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            OwnerOccupancy: L.mapbox.tileLayer('cfpb.6b1a095b', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianValue: L.mapbox.tileLayer('cfpb.FL_TRACT_med-hse-val_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianYearBuilt: L.mapbox.tileLayer('cfpb.FL_TRACT_med-yr-blt_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Centroids: L.layerGroup([]),
+            Branches: L.layerGroup([])
+        };
+        yearLayers['2014'] = {
+            MBBase: L.tileLayer('https://{s}.tiles.mapbox.com/v4/cfpb.k55b27gd/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken),
+            Base: L.mapbox.tileLayer('cfpb.a760eab8', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Water: L.mapbox.tileLayer('cfpb.FL_WATER_all_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Boundaries: L.mapbox.tileLayer('cfpb.4a612b0a', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            CountyLabels: L.mapbox.tileLayer('cfpb.5cc6733d', {errorTileUrl: '/static/basestyle/img/0.png'}),            
+            MSALabels: L.mapbox.tileLayer('cfpb.434952df', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctMinority: L.mapbox.tileLayer('cfpb.8961f4ed', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            // The following two layers were created with MapBox Studio. Eventually, all layers will use this new format.
+            PctHispanic: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikiwpxi500639akpqyjis3jl/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctBlack: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikiy27e5006hbgm1b1k429kn/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctAsian: L.mapbox.tileLayer('cfpb.20020fca', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            PctWhite: L.mapbox.tileLayer('cfpb.bdb5ee3b', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Plurality: L.mapbox.tileLayer('cfpb.FL_TRACT_minor_plurality_US', {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianIncome: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikpm3d7c00ks96kq8kmagjb7/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            OwnerOccupancy: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikpmq2a800k89vm0t6jhcl5s/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianValue: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikpm2exq00m3bgm1ee851343/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            MedianYearBuilt: L.tileLayer('https://api.mapbox.com/styles/v1/cfpb/cikpmaa7z00m4bgm19yf8vsj5/tiles/{z}/{x}/{y}?access_token=' + L.mapbox.accessToken, {errorTileUrl: '/static/basestyle/img/0.png'}),
+            Centroids: L.layerGroup([]),
+            Branches: L.layerGroup([])
         };
 
         // Reference the layers that correspond to the selected year.
-        var layers = yearLayers['year' + selectedYear];
+        var layers = yearLayers[selectedYear];
 
         // Baselayers are created here and show up in our layer selector on the screen as radio buttons
         var baseLayers = {
