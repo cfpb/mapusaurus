@@ -88,7 +88,7 @@
                     {% for inst in institution_hierarchy %}
                         <div class="header-group divided">
                             <h6 class="item-main">{{ inst.institution.name }}</h6>
-                            <h6 class="item-sub">{{ inst.institution.institution_id }}</h6>
+                            <h6 class="item-sub">{{ inst.institution.agency_id }}{{ inst.institution.respondent_id }}</h6>
                         </div>
                     {% endfor %}
                 </div>
