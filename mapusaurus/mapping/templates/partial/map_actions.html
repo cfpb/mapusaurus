@@ -119,7 +119,7 @@
     {% endif %}
 
     <div id="map-aside__summary-tables" class="map-aside__summary-tables">
-        <div class="map-divider"><h6 class="tab-title">Summary Tables</div>
+        <div class="map-divider"><h6 class="tab-title">Summary Tables <a href="/api/tables_csv/?lender={{ lender.institution_id }}&metro={{ metro.geoid }}&year={{ year }}" target="_blank"><span id="downloadTable" class="table-action cf-icon cf-icon-download"></span></a></h6></div>
          <div id="chart-toggle__basic-table" class="chart-toggle map-divider lighter">
             <h6 class="sub-header-name" style="display:inline-block">Basic Summary Data Table</h6>
         </div>

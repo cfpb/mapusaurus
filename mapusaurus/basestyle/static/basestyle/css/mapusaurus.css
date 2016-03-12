@@ -7380,6 +7380,11 @@ select b {
   padding-top: 3px;
   color: #0072ce;
 }
+#downloadTable {
+  float: right;
+  font-size: 1.3em;
+  color: #0072ce;
+}
 #tableLoadImage {
   margin: auto;
   padding: 5px;
