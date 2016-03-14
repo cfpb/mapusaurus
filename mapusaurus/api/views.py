@@ -26,21 +26,28 @@ def tables_csv(request):
     metro = request.GET.get('metro')
     year = request.GET.get('year')
 
-    aggregation = minority_aggregation_as_json(request)
-    msa = aggregation['msa']
-    counties = aggregation['counties']
     file_name = 'HMDA-Summary-Table_Year%s_Lender%s_MSA%s.csv' % (year, institution_id, metro)
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=%s' % file_name
 
-    writer = csv.writer(response, csv.excel)
-    writer.writerow(['msa_or_county_id'] + counties.itervalues().next().keys())
+    aggregation = minority_aggregation_as_json(request)
+    msa = aggregation['msa']
+    counties = aggregation['counties']
+    input_keys = ['msa_or_county_id', 'peer_lar_total', 'name']
+    lender_keys  = ['hma_pct', 'lma_pct', 'mma_pct', 'lma', 'mma', 'hma', 'lar_total', 
+        'peer_hma_pct', 'peer_lma_pct', 'peer_mma_pct', 'peer_lma', 'peer_mma', 
+        'peer_hma', 'peer_lar_total', 'odds_lma', 'odds_mma', 'odds_hma']
+    keys = input_keys + lender_keys
+    msa['msa_or_county_id'] = institution_id
     # MSA has no county name so insert the word "MSA"
-    msa = msa.values()
-    msa.insert(1, 'MSA')
-    writer.writerow([institution_id] + msa)
-    for county in counties:
-        writer.writerow([county] + counties[county].values())
+    msa['name'] = 'MSA'
+    writer = csv.writer(response, csv.excel)
+    writer.writerow(keys)
+    writer.writerow([msa[k] for k in keys])
+    for id,county in counties.iteritems():
+        county = counties[id]
+        county['msa_or_county_id'] = id
+        writer.writerow([county[k] for k in keys])
     return response
     
 def msas(request):
