@@ -114,6 +114,15 @@ class ViewsTests(TestCase):
             'peer_hma_pct', 'peer_lma_pct', 'peer_mma_pct', 'peer_lma', 'peer_mma', 
             'peer_hma', 'peer_lar_total', 'odds_lma', 'odds_mma', 'odds_hma']
         keys = input_keys + lender_keys
+        header_dict = { "msa_or_county_id":"MSA or County ID",
+            "peer_lar_total":"Total LAR of Peers","name":"County Name",
+            "hma_pct":"Pct in HMA","lma_pct":"Pct in LMA","mma_pct":"Pct in MMA",
+            "lma":"LAR Count in LMA","mma":"LAR Count in MMA","hma":"LAR Count in HMA",
+            "lar_total":"Total LAR in MSA","peer_hma_pct":"Odds Ratio in HMA",
+            "peer_mma_pct":"Odds Ratio in MMA","peer_lma_pct":"Odds Ratio in LMA",
+            "peer_lma":"Total Peer LAR in LMA","peer_mma":"Total Peer LAR in MMA",
+            "peer_hma":"Total Peer LAR in HMA",
+            "odds_lma":"odds LMA","odds_mma":"Odds MMA","odds_hma":"Odds HMA"}
         for key in keys:
-            self.assertTrue(key in result_dict.keys())
-        self.assertTrue(len(result_dict['msa_or_county_id']) > 0)
+            self.assertTrue(header_dict[key] in result_dict.keys())
+        self.assertTrue(len(result_dict[header_dict['msa_or_county_id']]) > 0)
