@@ -243,7 +243,7 @@ def race_summary_csv(request):
             smart_str(u"White Only Percentage"),
             smart_str(u"Non Hispanic Black Only Percentage"),
             smart_str(u"Non Hispanic Asian Only Percentage"),
-            smart_str(u"HMDA LAR Count"),
+            smart_str(u"Originated Loans"),
             smart_str(u"Total Households"),
         ])
         for obj in queryset:

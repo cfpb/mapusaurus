@@ -119,7 +119,7 @@
     {% endif %}
 
     <div id="map-aside__summary-tables" class="map-aside__summary-tables">
-        <div class="map-divider"><h6 class="tab-title">Summary Tables</div>
+        <div class="map-divider"><h6 class="tab-title">Summary Tables <a href="/api/tables_csv/?lender={{ lender.institution_id }}&metro={{ metro.geoid }}&year={{ year }}" target="_blank"><span id="downloadTable" class="table-action cf-icon cf-icon-download"></span></a></h6></div>
          <div id="chart-toggle__basic-table" class="chart-toggle map-divider lighter">
             <h6 class="sub-header-name" style="display:inline-block">Basic Summary Data Table</h6>
         </div>
@@ -164,7 +164,7 @@
             <div class="map-divider download-census">
                 <div class="header-group">
                     <h3 class="tab-main">Census data</h3>
-                    <h6 class="item-sub">Download the 2010 SF-1 Census demographic data for {{ metro.name }}. This download also includes LAR counts by tract, filtered as explained below.</h6>
+                    <h6 class="item-sub">Download the 2010 SF-1 Census demographic data for {{ metro.name }}. This download also includes originated loan counts by tract.</h6>
                     <a target="_blank" id="downloadCensus" href="/census/race_summary_csv/"  class="btn btn__secondary">
                         <span class="btn_icon__left cf-icon cf-icon-download"></span>
                     Download CSV
