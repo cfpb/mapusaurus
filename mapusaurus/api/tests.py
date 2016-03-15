@@ -81,7 +81,10 @@ class ViewsTests(TestCase):
         resp = self.client.get(url, coords)
         result_list = json.loads(resp.content)
         self.assertTrue(isinstance(result_list, list))
+        # in the fake_msa.json fixture
         self.assertContains(resp, '49180')
+        # don't find an MSA with the wrong year
+        self.assertNotContains(resp, '49181')
 
     def test_api_tables_endpoint(self):
         """should return table_data json for a lender/MSA pair"""
