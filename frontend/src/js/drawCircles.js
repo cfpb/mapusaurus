@@ -31,7 +31,7 @@
                               hmdaStat(data), style );
 
         //  We will use the tractid when redrawing
-        circle.tracid = geo.tractid || '';
+        circle.tractid = geo.tractid || '';
         circle.volume = geo.volume;
         circle.type = "tract-circle";
         circle.keyCircle = 0;
