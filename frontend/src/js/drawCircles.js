@@ -31,10 +31,13 @@
                               hmdaStat(data), style );
 
         //  We will use the geoid when redrawing
-        circle.geoid = geo.geoid;
+        circle.geoid = geo.geoid || '';
         circle.volume = geo.volume;
         circle.type = "tract-circle";
         circle.keyCircle = 0;
+
+        // Trim the year from the census ID
+        circle.geoid = circle.geoid.replace(new RegExp('^' + selectedYear), '');
 
         if( typeof options !== "undefined"){
             circle.keyCircle = options.keyCircle;
