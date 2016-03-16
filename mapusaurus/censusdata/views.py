@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 
-from .models import Census2010RaceStats
+from .models import Census2010RaceStats,Census2010Households
 from geo.views import get_censustract_geos
 from geo.models import Geo
 from hmda.views import loan_originations_as_json
@@ -255,7 +255,8 @@ def race_summary_csv(request):
             try:
                 num_households = lar_data[obj.geoid.geoid]['num_households']
             except:
-                num_households = 0
+                # if there's no loan data we can still get household data
+                num_households = get_object_or_404(Census2010Households, geoid_id=obj.geoid.geoid).total
 
             writer.writerow([
                 smart_str(geoid),
