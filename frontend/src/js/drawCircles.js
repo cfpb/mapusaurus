@@ -30,14 +30,11 @@
         var circle = L.circle([geo.centlat, geo.centlon],
                               hmdaStat(data), style );
 
-        //  We will use the geoid when redrawing
-        circle.geoid = geo.geoid || '';
+        //  We will use the tractid when redrawing
+        circle.tracid = geo.tractid || '';
         circle.volume = geo.volume;
         circle.type = "tract-circle";
         circle.keyCircle = 0;
-
-        // Trim the year from the census ID
-        circle.geoid = circle.geoid.replace(new RegExp('^' + selectedYear), '');
 
         if( typeof options !== "undefined"){
             circle.keyCircle = options.keyCircle;
@@ -45,7 +42,7 @@
 
         circle.on('mouseover mousemove', function(e){
             new L.Rrose({ offset: new L.Point(0,0), closeButton: false, autoPan: false, y_bound: 160 })
-                .setContent('<div class="bubble-header">Tract '+ circle.geoid + 
+                .setContent('<div class="bubble-header">Tract '+ circle.tractid + 
                     '</div><div class="lar-count"><span class="circle-hover-data">' +data['volume'] + 
                     '</span><span class="circle-hover-label">LAR</span></div><div class="hh-count"><span class="circle-hover-data">' + data['num_households'] + 
                     '</span><span class="circle-hover-label">Households</span></div></div>')
