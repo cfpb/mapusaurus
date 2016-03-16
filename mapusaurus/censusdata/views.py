@@ -248,16 +248,13 @@ def race_summary_csv(request):
         ])
         for obj in queryset:
             geoid = "'%s'" % str(obj.geoid.geoid)
-            try:
+            if lar_data.get(obj.geoid.geoid,None):
                 lar_count = lar_data[obj.geoid.geoid]['volume']
-            except:
-                lar_count = 0
-            try:
                 num_households = lar_data[obj.geoid.geoid]['num_households']
-            except:
+            else:
+                lar_count = 0
                 # if there's no loan data we can still get household data
                 num_households = get_object_or_404(Census2010Households, geoid_id=obj.geoid.geoid).total
-
             writer.writerow([
                 smart_str(geoid),
                 smart_str(obj.total_pop),
