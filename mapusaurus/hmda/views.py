@@ -50,7 +50,8 @@ def loan_originations(request):
             query = query.filter(action_taken__in=action_taken_selected)
 
     #count on geo_id
-    query = query.values('geo_id', 'geo__census2010households__total', 'geo__centlat', 'geo__centlon').annotate(volume=Count('geo_id'))
+    query = query.values('geo_id', 'geo__census2010households__total', 'geo__centlat', 'geo__centlon',
+                         'geo__state', 'geo__county', 'geo__tract').annotate(volume=Count('geo_id'))
     return query; 
 
 def loan_originations_as_json(request):
@@ -58,8 +59,10 @@ def loan_originations_as_json(request):
     data = {}
     if records:
         for row in records:
+            tract_id = row['geo__state']+row['geo__county']+row['geo__tract']
             data[row['geo_id']] = {
                 'geoid': row['geo_id'],
+                'tractid': tract_id,
                 'volume': row['volume'],
                 'num_households': row['geo__census2010households__total'],
                 'centlat': row['geo__centlat'],
