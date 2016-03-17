@@ -106,7 +106,7 @@
                     {% for peer in institution_peers %}
                         <div class="header-group divided">
                             <h6 class="item-main"><a class="peer-link" data-instid="{{ peer.institution.institution_id}}" target="_blank" href="#">{{ peer.institution.name }}</a></h6>
-                            <h6 class="item-sub">{{ peer.institution.institution_id }} | {{ peer.lar_count}} LAR</h6>
+                            <h6 class="item-sub">{{ peer.institution.agency_id }}{{ peer.institution.respondent_id }} | {{ peer.lar_count}} LAR</h6>
                         </div>
                     {% endfor %}
                 </div>
