@@ -46,7 +46,7 @@ def tables_csv(request):
         "peer_mma_pct":"Odds Ratio in MMA","peer_lma_pct":"Odds Ratio in LMA",
         "peer_lma":"Total Peer LAR in LMA" ,"peer_mma":"Total Peer LAR in MMA",
         "peer_hma":"Total Peer LAR in HMA", 
-        "odds_lma":"odds LMA", "odds_mma":"Odds MMA", "odds_hma":"Odds HMA"}
+        "odds_lma":"Odds LMA", "odds_mma":"Odds MMA", "odds_hma":"Odds HMA"}
     msa['msa_or_county_id'] = institution_id
     # MSA has no county name so insert the word "MSA"
     msa['name'] = 'MSA'
