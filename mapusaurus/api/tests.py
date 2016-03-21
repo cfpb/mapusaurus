@@ -125,7 +125,7 @@ class ViewsTests(TestCase):
             "peer_mma_pct":"Odds Ratio in MMA","peer_lma_pct":"Odds Ratio in LMA",
             "peer_lma":"Total Peer LAR in LMA","peer_mma":"Total Peer LAR in MMA",
             "peer_hma":"Total Peer LAR in HMA",
-            "odds_lma":"odds LMA","odds_mma":"Odds MMA","odds_hma":"Odds HMA"}
+            "odds_lma":"Odds LMA","odds_mma":"Odds MMA","odds_hma":"Odds HMA"}
         for key in keys:
             self.assertTrue(header_dict[key] in result_dict.keys())
         self.assertTrue(len(result_dict[header_dict['msa_or_county_id']]) > 0)
