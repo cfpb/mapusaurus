@@ -4,7 +4,7 @@
     */    
 
     var rawGeo, rawLar, rawMinority, rawData, 
-    selectedYear = selectedYear || 2014,
+    selectedYear = selectedYear || 2015,
     isUIBlocked = false,
     larVolume = [],
     pctMinority = [],
