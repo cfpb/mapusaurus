@@ -8,7 +8,7 @@ class HMDARecordTest(TestCase):
 
     def test_auto_fields(self):
         record = HMDARecord(
-            as_of_year=2014, respondent_id='22-333', agency_code='9',
+            as_of_year=2015, respondent_id='22-333', agency_code='9',
             loan_type=1, property_type=1, loan_purpose=1, owner_occupancy=1,
             loan_amount_000s=55, preapproval='1', action_taken=1,
             msamd='01234', statefp='11', countyfp='222',
@@ -27,7 +27,7 @@ class HMDARecordTest(TestCase):
         record.delete()
 
         record = HMDARecord(
-            as_of_year=2014, respondent_id='22-333', agency_code='9',
+            as_of_year=2015, respondent_id='22-333', agency_code='9',
             loan_type=1, property_type=1, loan_purpose=1, owner_occupancy=1,
             loan_amount_000s=55, preapproval='1', action_taken=1,
             msamd='01234', statefp='11', countyfp='222',
