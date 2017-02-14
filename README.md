@@ -1,11 +1,9 @@
-Mapusaurus
-=======
+Mapusaurus [![Build Status](https://travis-ci.org/cfpb/mapusaurus.png)](https://travis-ci.org/cfpb/mapusaurus) [![Coverage Status](https://coveralls.io/repos/cfpb/mapusaurus/badge.svg)](https://coveralls.io/r/cfpb/mapusaurus)
 
- [![Build Status](https://travis-ci.org/cfpb/mapusaurus.png)](https://travis-ci.org/cfpb/mapusaurus)
+![Mapusaurus screenshot](screenshot.png)
 
- [![Coverage Status](https://coveralls.io/repos/cfpb/mapusaurus/badge.svg)](https://coveralls.io/r/cfpb/mapusaurus)
 
-## Description 
+## Description
 
 This repository provides data and scripts to set up an API endpoint for serving Home Mortgage Disclosure Act data as well as front-end and back-end application components that feed off this data.
 Financial institution data is loaded from raw HMDA files and welded to National Information Center data to allow for more robust analysis in the front-end application.
@@ -18,9 +16,9 @@ The Mapusaurus back-end is a Python/Django application. Additional requirements 
 The data you can load is:
 
 * HMDA Transmittal Sheet
-* HMDA Reporter Panel 
+* HMDA Reporter Panel
 
-Both are available from the FFIEC. 
+Both are available from the FFIEC.
 
 Here are the 2013 files:
 
@@ -30,7 +28,7 @@ http://www.ffiec.gov/hmdarawdata/OTHER/2013HMDAInstitutionRecords.zip
 Reporter panel:
 http://www.ffiec.gov/hmdarawdata/OTHER/2013HMDAReporterPanel.zip
 
-## Requirements 
+## Requirements
 
 This currently uses:
 Django 1.7
@@ -59,24 +57,25 @@ There's also a fixture that you need to load some information from:
     python manage.py loaddata agency
 ```
 
-This loads static regulator agency data. 
+This loads static regulator agency data.
 
-Download the two transmittal sheet and reporter panel flat files. 
+Download the two transmittal sheet and reporter panel flat files.
 
-There are two management commands that will load data, and need to be run 
+There are two management commands that will load data, and need to be run
 in the following order:
 
-``` 
+```
 1. python manage.py load_transmittal <path/to/transmittal_sheet>
 2. python manage.py load_reporter_panel <path/to/reporter_panel>
 ```
 
+
 ## GEO
 
 The 'geo' application requires GeoDjango and PostGIS. Follow the instructions
-for installing GeoDjango. 
+for installing GeoDjango.
 
-Here are some separate instructions for running the geo application. 
+Here are some separate instructions for running the geo application.
 
 ```
     python manage.py migrate geo
@@ -95,7 +94,7 @@ ftp://ftp2.census.gov/geo/tiger/TIGER2013/METDIV/
 This is how you load the data:
 
 ```
-    # This example only loads census tracts from IL (FIPS code: 17); repeat 
+    # This example only loads census tracts from IL (FIPS code: 17); repeat
     # for other states as needed
     python manage.py load_geos_from /path/to/tl_2013_17_tract.shp
     python manage.py load_geos_from /path/to/tl_2013_us_county.shp
