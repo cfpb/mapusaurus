@@ -16,6 +16,7 @@ class Command(BaseCommand):
         with open(transmittal_filename) as institutioncsv:
             transmittal_reader = csv.reader(institutioncsv, delimiter='\t')
             institutions = []
+            # count = 1 # use if want to see which item failed, see comment below where we create institution individually
             for inst_line in transmittal_reader:
                 year = inst_line[0]
                 zip_code = inst_line[8]
@@ -37,5 +38,9 @@ class Command(BaseCommand):
                     assets=int(inst_line[17]),
                 )
 
+                # This can be used to figure out which exact item was failing, will need to disable bulk create below to use this
+                # Institution.objects.create(inst)
+                # inst.save()
+                # count += 1
                 institutions.append(inst)
             Institution.objects.bulk_create(institutions)

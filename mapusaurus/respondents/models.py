@@ -71,7 +71,7 @@ class Institution(models.Model):
     name = models.CharField(max_length=30)
     mailing_address = models.CharField(max_length=40)
     zip_code = models.ForeignKey('ZipCodeCityStateYear', null=False)
-    assets = models.PositiveIntegerField(
+    assets = models.BigIntegerField(
         default=0,
         help_text='Prior year reported assets in thousands of dollars'
     )
@@ -145,7 +145,7 @@ class LenderHierarchy(models.Model):
 class Branch(models.Model):
     year = models.SmallIntegerField()
     institution = models.ForeignKey('Institution', to_field='institution_id')
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     street = models.CharField(max_length=100)
     city = models.CharField(max_length=25)
     state = USStateField()

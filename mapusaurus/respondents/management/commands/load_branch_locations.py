@@ -14,20 +14,27 @@ class Command(BaseCommand):
             for branch_location_line in branch_location_reader:
                 record = Branch(
                     year = branch_location_line[0].replace("'", ""),
-                    name = branch_location_line[6],
-                    street = branch_location_line[7] if branch_location_line[7] != '0' else '', 
-                    city = branch_location_line[8],
-                    state = branch_location_line[10],
-                    zipcode = branch_location_line[11],
+                    name = branch_location_line[6].strip().upper(),
+                    street = branch_location_line[7].strip().upper() if branch_location_line[7] != '0' else '',
+                    city = branch_location_line[8].strip().upper(),
+                    state = branch_location_line[10].strip().upper(),
+                    zipcode = branch_location_line[11].strip(),
                     lat = branch_location_line[13], 
                     lon = branch_location_line[12],
                 )
-                record.institution_id = (branch_location_line[0]+branch_location_line[1]+branch_location_line[2]).replace("'", "")
+                record.institution_id = (branch_location_line[0]+branch_location_line[1]+branch_location_line[2]).replace("'", "").replace(" ", "")
                 if Institution.objects.filter(institution_id=record.institution_id).count() > 0:
                     branch_location.append(record)
+                else:
+                    print "Can't find institution_id"
+                    print '{}\t{}\t{}'.format(record.institution_id, record.name, record.street)
                 if len(branch_location) > 9999:
                     count += len(branch_location)
                     Branch.objects.bulk_create(branch_location, batch_size=1000)
                     print "Record count: " + str(count)
                     branch_location[:] = []
-                
+            if len(branch_location) > 0:
+                count += len(branch_location)
+                Branch.objects.bulk_create(branch_location, batch_size=1000)
+                print "Record count: " + str(count)
+                branch_location[:] = []

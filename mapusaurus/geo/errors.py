@@ -56,6 +56,5 @@ def change_specific_year(census_tract, year):
     new_census_tract = census_tract
     for yr in sorted(changes):
         if int(year) > yr:
-            changes[yr].get(new_census_tract, new_census_tract)
-
+            new_census_tract = changes[yr].get(new_census_tract, new_census_tract)
     return new_census_tract
