@@ -31,8 +31,11 @@ class Command(BaseCommand):
             if line[8:11] == '140':    # Aggregated by Census Tract
                 recordnum = line[18:25]
                 censustract = line[27:32] + line[54:60]
+                print "censustract", censustract
                 censustract = errors.in_2010.get(censustract, censustract)
+                print "censustract after in 2010", censustract
                 censustract = errors.change_specific_year(censustract, year)
+                print "censustract after spec year", censustract
                 if censustract is not None:
                     geoids_by_record[recordnum] = year + censustract
                 state = line[27:29]
