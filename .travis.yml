@@ -5,6 +5,8 @@ install:
   - |
     echo "DATABASES = {'default': {'ENGINE': 'django.contrib.gis.db.backends.postgis', 'NAME': 'travisdb', 'USER': 'postgres'}}" > mapusaurus/mapusaurus/settings/local_settings.py
   - pip install -r requirements.txt
+  - pip uninstall psycopg2
+  - pip install psycopg2
   - pip install coverage coveralls
 addons:
   postgresql: "9.3"
