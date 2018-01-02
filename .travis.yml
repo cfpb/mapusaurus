@@ -6,8 +6,6 @@ install:
     echo "DATABASES = {'default': {'ENGINE': 'django.contrib.gis.db.backends.postgis', 'NAME': 'travisdb', 'USER': 'postgres'}}" > mapusaurus/mapusaurus/settings/local_settings.py
   - pip install -r requirements_test.txt
   - pip install coverage coveralls
-addons:
-  postgresql: "9.3"
 before_script:
   - psql -c 'CREATE DATABASE travisdb;' -U postgres
   - psql -c 'CREATE EXTENSION postgis;' -U postgres -d travisdb
