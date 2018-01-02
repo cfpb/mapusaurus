@@ -52,6 +52,7 @@ class LoadSummaryDataTest(TestCase):
         command = Command()
         command.handle(os.path.join(self.tempdir, 'ZZgeo2010.sf1'), year)
         positional_args = hf4.call_args[0]
+        print "positional_args", positional_args
         # The None causes us to skip 11001000902
         self.assertEqual(len(positional_args[2]), 2)
         # This entry was converted
