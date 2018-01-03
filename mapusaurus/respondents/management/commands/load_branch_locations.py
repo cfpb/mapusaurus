@@ -5,6 +5,9 @@ from respondents.models import Branch, Institution
 class Command(BaseCommand):
     args = "<filename>"
 
+    def normalize(s):
+        return s.strip().upper()
+
     def handle(self, *args, **options):
         branch_location_filename = args[0]
         count = 0; 
@@ -14,11 +17,11 @@ class Command(BaseCommand):
             for branch_location_line in branch_location_reader:
                 record = Branch(
                     year = branch_location_line[0].replace("'", ""),
-                    name = branch_location_line[6].strip().upper(),
-                    street = branch_location_line[7].strip().upper() if branch_location_line[7] != '0' else '',
-                    city = branch_location_line[8].strip().upper(),
-                    state = branch_location_line[10].strip().upper(),
-                    zipcode = branch_location_line[11].strip(),
+                    name = normalize(branch_location_line[6]),
+                    street = normalize(branch_location_line[7]) if branch_location_line[7] != '0' else '',
+                    city = normalize(branch_location_line[8]),
+                    state = normalize(branch_location_line[10]),
+                    zipcode = normalize(branch_location_line[11]),
                     lat = branch_location_line[13], 
                     lon = branch_location_line[12],
                 )
