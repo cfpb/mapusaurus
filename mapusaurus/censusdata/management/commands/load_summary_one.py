@@ -32,6 +32,7 @@ class Command(BaseCommand):
                 recordnum = line[18:25]
                 censustract = line[27:32] + line[54:60]
                 censustract = errors.in_2010.get(censustract, censustract)
+                censustract = errors.change_specific_year(censustract, year)
                 if censustract is not None:
                     geoids_by_record[recordnum] = year + censustract
                 state = line[27:29]

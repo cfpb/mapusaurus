@@ -2,8 +2,12 @@
 # Unfortunately, both HMDA and census population statistics refer to the
 # original, erroneous census tracts. See
 # http://www.census.gov/geo/reference/pdfs/Geography_Notes.pdf
+# https://www.census.gov/programs-surveys/acs/technical-documentation/table-and-geography-changes.201X.html, where X is the last digit of the year
 in_2010 = {
     # Original -> Correct
+
+    # 2012
+    # https://www.census.gov/programs-surveys/acs/technical-documentation/table-and-geography-changes/2012/geography-changes.html
     "04019002701": "04019002704",
     "04019002903": "04019002906",
     "04019410501": "04019004118",
@@ -14,6 +18,8 @@ in_2010 = {
 
     "06037930401": "06037137000",
 
+    # 2011
+    # https://www.census.gov/programs-surveys/acs/technical-documentation/table-and-geography-changes/2011/geography-changes.html
     "36053940101": "36053030101",
     "36053940102": "36053030102",
     "36053940103": "36053030103",
@@ -32,3 +38,23 @@ in_2010 = {
     # removing it
     "36085008900": None,
 }
+
+changes = {
+  #https://www.census.gov/geo/maps-data/maps/2010ref/stXX_tract.html, XX to replace with the state code
+    2014: {
+        "51515050100": "51019050100",
+    },
+    2015: {
+        "02270000100": "02158000100",
+        "46113940500": "46102940500",
+        "46113940800": "46102940800",
+        "46113940900": "46102940900",
+        # More soon
+    }
+}
+def change_specific_year(census_tract, year):
+    new_census_tract = census_tract
+    for yr in sorted(changes):
+        if int(year) > yr:
+            new_census_tract = changes[yr].get(new_census_tract, new_census_tract)
+    return new_census_tract
